@@ -1,0 +1,73 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #2A7D2F;
+    --secondary: #69AF0B;
+    --lighter: #f2a921;
+    --bg1: #FFFFFF;
+    --bg2: #F3F4F6;
+    --heading: #002E2E;
+    --text: #1F2937;
+  }
+}
+
+/* Global styles */
+body {
+  background-color: var(--bg2);
+  color: var(--text);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--heading);
+  font-weight: 600;
+}
+
+/* Links / buttons */
+a, button {
+  transition: opacity 0.2s ease-in-out;
+}
+
+a:hover, button:hover {
+  opacity: 0.9;
+}
+
+/* Background utilities */
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.bg-secondary {
+  background-color: var(--secondary);
+}
+
+.bg-accent {
+  background-color: var(--accent);
+}
+
+.bg-bg1 {
+  background-color: var(--bg1);
+}
+
+.bg-bg2 {
+  background-color: var(--bg2);
+}
+
+/* Text utilities */
+.text-primary {
+  color: var(--primary);
+}
+
+.text-secondary {
+  color: var(--secondary);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.text-heading {
+  color: var(--heading);
+}
