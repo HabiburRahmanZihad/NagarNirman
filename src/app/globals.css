@@ -1,73 +1,68 @@
+/* ============================
+    Import Tailwind CSS Core
+============================ */
 @import "tailwindcss";
-@tailwind utilities;
 
-@layer base {
-  :root {
-    --primary: #2A7D2F;
-    --secondary: #69AF0B;
-    --lighter: #f2a921;
-    --bg1: #FFFFFF;
-    --bg2: #F3F4F6;
-    --heading: #002E2E;
-    --text: #1F2937;
-  }
+/* ============================
+    DaisyUI Theme Configuration
+============================ */
+@plugin "daisyui" {
+    themes: light --default, dark;
 }
 
-/* Global styles */
+/* 🌞 Light Theme  */
+@plugin "daisyui/theme" {
+    name: "light";
+    default: true;
+
+  /* === Brand Colors === */
+  --color-primary: #067315; /* Soft Green - primary buttons, highlights */
+  --color-secondary: #aef452; /* Lime Green - secondary buttons, badges */
+  --color-accent: #f2a921; /* Amber Gold - alerts, badges, highlights */
+
+  /* === Neutral & Text === */
+  --color-neutral: #6B7280; /* Cool Gray - neutral text, borders, placeholders */
+
+  /* === Backgrounds === */
+  --color-base-100: #FFFFFF; /* Background 1 - main background, card interiors */
+  --color-base-200: #F3F4F6; /* Background 2 - section dividers, light areas */
+  --color-base-300: #F6FFF9; /* Background 3 - soft mint tone for subtle areas */
+
+  /* === Text Heading === */
+  --color-info: #002E2E; /* Deep Green - headings, emphasis */
+}
+
+
+/* 🌙 Dark Theme  */
+@plugin "daisyui/theme" {
+    name: "dark";
+
+/* === Brand Colors === */
+  --color-primary: #5ec76a; /* Muted Green - for buttons, links */
+  --color-secondary: #9ad83e; /* Soft Lime - secondary buttons, badges */
+  --color-accent: #ffcc33; /* Warm Amber - accent highlights */
+
+  /* === Neutral & Text === */
+  --color-neutral: #E5E7EB; /* Light gray text for readability */
+  --color-info: #D1FAE5; /* Light mint-green info text */
+
+  /* === Backgrounds === */
+  --color-base-100: #0f1a16; /* Deep green-black background */
+  --color-base-200: #1b2a25; /* Slightly lighter background for cards */
+  --color-base-300: #243832; /* For borders, elevated sections */
+
+  /* === Highlights === */
+  --color-warning: #fbbf24; /* Amber warning tone */
+  --color-success: #81d586; /* Reuse soft green for success states */
+}
+
+/* ============================
+    Global Styling
+============================ */
+* {
+    box-sizing: border-box;
+}
+
 body {
-  background-color: var(--bg2);
-  color: var(--text);
-}
-
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--heading);
-  font-weight: 600;
-}
-
-/* Links / buttons */
-a, button {
-  transition: opacity 0.2s ease-in-out;
-}
-
-a:hover, button:hover {
-  opacity: 0.9;
-}
-
-/* Background utilities */
-.bg-primary {
-  background-color: var(--primary);
-}
-
-.bg-secondary {
-  background-color: var(--secondary);
-}
-
-.bg-accent {
-  background-color: var(--accent);
-}
-
-.bg-bg1 {
-  background-color: var(--bg1);
-}
-
-.bg-bg2 {
-  background-color: var(--bg2);
-}
-
-/* Text utilities */
-.text-primary {
-  color: var(--primary);
-}
-
-.text-secondary {
-  color: var(--secondary);
-}
-
-.text-accent {
-  color: var(--accent);
-}
-
-.text-heading {
-  color: var(--heading);
+    font-family: var(--font-urbanist), system-ui, -apple-system, sans-serif;
 }
