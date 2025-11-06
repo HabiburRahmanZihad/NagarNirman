@@ -1,37 +1,46 @@
-// User Controller
-import User from '../models/User.js';
-import Report from '../models/Report.js';
-import Task from '../models/Task.js';
+// User Controller (Native MongoDB)
+import { ObjectId } from 'mongodb';
+import {
+  getUserById,
+  findUsers,
+  updateUser,
+  updateUserApproval,
+  getUsersCollection,
+} from '../models/User.js';
+import { findReports } from '../models/Report.js';
+import { findTasks } from '../models/Task.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
 // @desc    Get all users
 // @route   GET /api/users
-// @access  Private (Authority only)
+// @access  Private (Authority)
 export const getUsers = asyncHandler(async (req, res) => {
-  const { role, district, approved, page = 1, limit = 20 } = req.query;
+  const {
+    page = 1,
+    limit = 10,
+    role,
+    approved,
+    sortBy = 'createdAt',
+    order = 'desc',
+  } = req.query;
 
   const filter = {};
   if (role) filter.role = role;
-  if (district) filter.district = district;
   if (approved !== undefined) filter.approved = approved === 'true';
 
-  const skip = (parseInt(page) - 1) * parseInt(limit);
+  const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
 
-  const users = await User.find(filter)
-    .select('-password')
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(parseInt(limit));
-
-  const total = await User.countDocuments(filter);
+  const result = await findUsers(filter, {
+    page: parseInt(page),
+    limit: parseInt(limit),
+    sort,
+  });
 
   res.status(200).json({
     success: true,
-    count: users.length,
-    total,
-    page: parseInt(page),
-    pages: Math.ceil(total / parseInt(limit)),
-    data: users,
+    count: result.users.length,
+    pagination: result.pagination,
+    data: result.users,
   });
 });
 
@@ -39,192 +48,236 @@ export const getUsers = asyncHandler(async (req, res) => {
 // @route   GET /api/users/:id
 // @access  Private
 export const getUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select('-password');
+  try {
+    const user = await getUserById(req.params.id);
 
-  if (!user) {
-    return res.status(404).json({
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    res.status(400).json({
       success: false,
-      message: 'User not found',
+      message: error.message,
     });
   }
-
-  res.status(200).json({
-    success: true,
-    data: user,
-  });
 });
 
-// @desc    Apply to become problem solver/NGO
+// @desc    Apply to become problem solver
 // @route   POST /api/users/apply-problem-solver
 // @access  Private
 export const applyProblemSolver = asyncHandler(async (req, res) => {
-  const { role } = req.body; // 'problemSolver' or 'ngo'
+  try {
+    const user = await getUserById(req.user.id);
 
-  if (!['problemSolver', 'ngo'].includes(role)) {
-    return res.status(400).json({
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    if (user.role === 'problemSolver' || user.role === 'ngo') {
+      return res.status(400).json({
+        success: false,
+        message: 'User is already a problem solver',
+      });
+    }
+
+    // Update user role to problemSolver and set approved to false
+    const updatedUser = await updateUser(req.user.id, {
+      role: 'problemSolver',
+      approved: false,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Application submitted successfully. Awaiting approval.',
+      data: updatedUser,
+    });
+  } catch (error) {
+    res.status(400).json({
       success: false,
-      message: 'Invalid role. Must be problemSolver or ngo',
+      message: error.message,
     });
   }
-
-  const user = await User.findById(req.user.id);
-
-  if (user.role === 'problemSolver' || user.role === 'ngo') {
-    return res.status(400).json({
-      success: false,
-      message: 'You are already a problem solver/NGO',
-    });
-  }
-
-  user.role = role;
-  user.approved = false; // Requires authority approval
-  await user.save();
-
-  res.status(200).json({
-    success: true,
-    message: 'Application submitted successfully. Awaiting approval.',
-    data: user.getPublicProfile(),
-  });
 });
 
-// @desc    Approve/Reject problem solver application
+// @desc    Approve user (problem solver)
 // @route   PATCH /api/users/:id/approve
-// @access  Private (Authority only)
+// @access  Private (Authority)
 export const approveUser = asyncHandler(async (req, res) => {
-  const { approved } = req.body;
+  const { approve } = req.body;
 
-  const user = await User.findById(req.params.id);
-
-  if (!user) {
-    return res.status(404).json({
-      success: false,
-      message: 'User not found',
-    });
-  }
-
-  if (user.role !== 'problemSolver' && user.role !== 'ngo') {
+  if (approve === undefined) {
     return res.status(400).json({
       success: false,
-      message: 'User is not a problem solver/NGO',
+      message: 'Please specify approve status',
     });
   }
 
-  user.approved = approved;
-  await user.save();
+  try {
+    const user = await updateUserApproval(req.params.id, approve);
 
-  res.status(200).json({
-    success: true,
-    message: `User ${approved ? 'approved' : 'rejected'} successfully`,
-    data: user.getPublicProfile(),
-  });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `User ${approve ? 'approved' : 'rejected'} successfully`,
+      data: user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
 });
 
 // @desc    Get user statistics
 // @route   GET /api/users/:id/stats
 // @access  Private
 export const getUserStats = asyncHandler(async (req, res) => {
-  const userId = req.params.id;
+  try {
+    const user = await getUserById(req.params.id);
 
-  // Check authorization
-  if (req.user.id !== userId && req.user.role !== 'authority') {
-    return res.status(403).json({
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    const userId = new ObjectId(req.params.id);
+
+    // Get reports created by user
+    const reportsResult = await findReports({ createdBy: userId });
+    const totalReports = reportsResult.pagination.total;
+
+    // Count reports by status
+    const reportsByStatus = {};
+    for (const report of reportsResult.reports) {
+      reportsByStatus[report.status] = (reportsByStatus[report.status] || 0) + 1;
+    }
+
+    // Get tasks assigned to user (if problem solver)
+    let tasksStats = null;
+    if (user.role === 'problemSolver' || user.role === 'ngo') {
+      const tasksResult = await findTasks({ assignedTo: userId });
+      const totalTasks = tasksResult.pagination.total;
+
+      const tasksByStatus = {};
+      for (const task of tasksResult.tasks) {
+        tasksByStatus[task.status] = (tasksByStatus[task.status] || 0) + 1;
+      }
+
+      tasksStats = {
+        total: totalTasks,
+        byStatus: tasksByStatus,
+      };
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user: {
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          points: user.points,
+          approved: user.approved,
+        },
+        reports: {
+          total: totalReports,
+          byStatus: reportsByStatus,
+        },
+        tasks: tasksStats,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
       success: false,
-      message: 'Not authorized to view these statistics',
+      message: error.message,
     });
   }
-
-  const user = await User.findById(userId);
-
-  if (!user) {
-    return res.status(404).json({
-      success: false,
-      message: 'User not found',
-    });
-  }
-
-  let stats = {
-    totalReports: 0,
-    pendingReports: 0,
-    inProgressReports: 0,
-    resolvedReports: 0,
-    totalTasks: 0,
-    completedTasks: 0,
-    points: user.points || 0,
-  };
-
-  // Stats for regular users
-  if (user.role === 'user') {
-    const reports = await Report.find({ createdBy: userId });
-    stats.totalReports = reports.length;
-    stats.pendingReports = reports.filter(r => r.status === 'pending').length;
-    stats.inProgressReports = reports.filter(r => r.status === 'inProgress').length;
-    stats.resolvedReports = reports.filter(r => r.status === 'resolved').length;
-  }
-
-  // Stats for problem solvers
-  if (user.role === 'problemSolver' || user.role === 'ngo') {
-    const tasks = await Task.find({ assignedTo: userId });
-    stats.totalTasks = tasks.length;
-    stats.completedTasks = tasks.filter(t => t.status === 'completed').length;
-  }
-
-  // Stats for authorities
-  if (user.role === 'authority') {
-    const districtReports = await Report.find({ 'location.district': user.district });
-    stats.totalReports = districtReports.length;
-    stats.pendingReports = districtReports.filter(r => r.status === 'pending').length;
-    stats.inProgressReports = districtReports.filter(r => r.status === 'inProgress').length;
-    stats.resolvedReports = districtReports.filter(r => r.status === 'resolved').length;
-  }
-
-  res.status(200).json({
-    success: true,
-    data: stats,
-  });
 });
 
 // @desc    Get leaderboard
 // @route   GET /api/users/leaderboard
 // @access  Public
 export const getLeaderboard = asyncHandler(async (req, res) => {
-  const { limit = 10 } = req.query;
+  const limit = parseInt(req.query.limit) || 10;
 
-  const leaderboard = await User.find({
-    role: { $in: ['problemSolver', 'ngo'] },
-    approved: true,
-  })
-    .select('name email district role points avatar')
-    .sort({ points: -1 })
-    .limit(parseInt(limit));
+  try {
+    const leaderboard = await getUsersCollection()
+      .find(
+        {
+          $or: [{ role: 'problemSolver' }, { role: 'ngo' }],
+          approved: true,
+        },
+        { projection: { password: 0 } }
+      )
+      .sort({ points: -1 })
+      .limit(limit)
+      .toArray();
 
-  res.status(200).json({
-    success: true,
-    count: leaderboard.length,
-    data: leaderboard,
-  });
+    res.status(200).json({
+      success: true,
+      count: leaderboard.length,
+      data: leaderboard,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
 });
 
-// @desc    Deactivate/Activate user
+// @desc    Update user status (activate/deactivate)
 // @route   PATCH /api/users/:id/status
-// @access  Private (Authority only)
+// @access  Private (Authority)
 export const updateUserStatus = asyncHandler(async (req, res) => {
   const { isActive } = req.body;
 
-  const user = await User.findById(req.params.id);
-
-  if (!user) {
-    return res.status(404).json({
+  if (isActive === undefined) {
+    return res.status(400).json({
       success: false,
-      message: 'User not found',
+      message: 'Please specify user status',
     });
   }
 
-  user.isActive = isActive;
-  await user.save();
+  try {
+    const user = await updateUser(req.params.id, { isActive });
 
-  res.status(200).json({
-    success: true,
-    message: `User ${isActive ? 'activated' : 'deactivated'} successfully`,
-    data: user.getPublicProfile(),
-  });
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `User ${isActive ? 'activated' : 'deactivated'} successfully`,
+      data: user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
 });

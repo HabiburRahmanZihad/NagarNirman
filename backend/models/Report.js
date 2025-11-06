@@ -1,162 +1,279 @@
-// Report Model Schema
-import mongoose from 'mongoose';
+// Report Model Helper Functions (Native MongoDB)
+import { ObjectId } from 'mongodb';
+import { getDB } from '../config/db.js';
 
-const commentSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  comment: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-});
+// Get reports collection
+export const getReportsCollection = () => getDB().collection('reports');
 
-const historySchema = new mongoose.Schema({
-  status: {
-    type: String,
-    required: true,
-  },
-  updatedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
-  note: {
-    type: String,
-    default: '',
-  },
-});
+// Validate problem type
+export const isValidProblemType = (type) => {
+  const validTypes = [
+    'road',
+    'drainage',
+    'street light',
+    'waste management',
+    'water supply',
+    'electricity',
+    'public property',
+    'other',
+  ];
+  return validTypes.includes(type);
+};
 
-const reportSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: [true, 'Title is required'],
-    trim: true,
-    maxlength: [200, 'Title cannot exceed 200 characters'],
-  },
-  description: {
-    type: String,
-    required: [true, 'Description is required'],
-    trim: true,
-    maxlength: [2000, 'Description cannot exceed 2000 characters'],
-  },
-  category: {
-    type: String,
-    required: [true, 'Category is required'],
-    enum: [
-      'road_infrastructure',
-      'lighting_electrical',
-      'garbage_sanitation',
-      'water_supply',
-      'public_facilities',
-      'environmental',
-      'safety',
-      'health_hygiene',
-      'transport',
-      'other'
+// Validate severity
+export const isValidSeverity = (severity) => {
+  const validSeverities = ['low', 'medium', 'high', 'urgent'];
+  return validSeverities.includes(severity);
+};
+
+// Validate status
+export const isValidStatus = (status) => {
+  const validStatuses = ['pending', 'approved', 'in-progress', 'resolved', 'rejected'];
+  return validStatuses.includes(status);
+};
+
+// Create new report
+export const createReport = async (reportData) => {
+  const {
+    title,
+    description,
+    problemType,
+    severity,
+    location,
+    images = [],
+    createdBy,
+  } = reportData;
+
+  // Validate required fields
+  if (!title || !description || !problemType || !severity || !location || !createdBy) {
+    throw new Error('Please provide all required fields');
+  }
+
+  if (!isValidProblemType(problemType)) {
+    throw new Error('Invalid problem type');
+  }
+
+  if (!isValidSeverity(severity)) {
+    throw new Error('Invalid severity level');
+  }
+
+  if (!ObjectId.isValid(createdBy)) {
+    throw new Error('Invalid user ID');
+  }
+
+  // Create report document
+  const report = {
+    title: title.trim(),
+    description: description.trim(),
+    images,
+    problemType,
+    severity,
+    status: 'pending',
+    location: {
+      address: location.address,
+      district: location.district,
+      coordinates: location.coordinates || [], // [longitude, latitude]
+    },
+    upvotes: [],
+    comments: [],
+    createdBy: new ObjectId(createdBy),
+    assignedTo: null,
+    history: [
+      {
+        status: 'pending',
+        note: 'Report submitted',
+        updatedBy: new ObjectId(createdBy),
+        date: new Date(),
+      },
     ],
-  },
-  subcategory: {
-    type: String,
-    default: null,
-  },
-  photoURL: {
-    type: String,
-    required: [true, 'Photo is required'],
-  },
-  location: {
-    city: {
-      type: String,
-      required: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const result = await getReportsCollection().insertOne(report);
+  report._id = result.insertedId;
+
+  return report;
+};
+
+// Get report by ID
+export const getReportById = async (reportId) => {
+  if (!ObjectId.isValid(reportId)) {
+    throw new Error('Invalid report ID');
+  }
+  return await getReportsCollection().findOne({ _id: new ObjectId(reportId) });
+};
+
+// Find reports with filters
+export const findReports = async (filter = {}, options = {}) => {
+  const { page = 1, limit = 10, sort = { createdAt: -1 } } = options;
+  const skip = (page - 1) * limit;
+
+  const reports = await getReportsCollection()
+    .find(filter)
+    .sort(sort)
+    .skip(skip)
+    .limit(limit)
+    .toArray();
+
+  const total = await getReportsCollection().countDocuments(filter);
+
+  return {
+    reports,
+    pagination: {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
     },
-    district: {
-      type: String,
-      required: true,
+  };
+};
+
+// Update report
+export const updateReport = async (reportId, updateData) => {
+  if (!ObjectId.isValid(reportId)) {
+    throw new Error('Invalid report ID');
+  }
+
+  updateData.updatedAt = new Date();
+
+  const result = await getReportsCollection().findOneAndUpdate(
+    { _id: new ObjectId(reportId) },
+    { $set: updateData },
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+// Add comment to report
+export const addCommentToReport = async (reportId, commentData) => {
+  if (!ObjectId.isValid(reportId)) {
+    throw new Error('Invalid report ID');
+  }
+
+  if (!ObjectId.isValid(commentData.user)) {
+    throw new Error('Invalid user ID');
+  }
+
+  const comment = {
+    _id: new ObjectId(),
+    user: new ObjectId(commentData.user),
+    comment: commentData.comment,
+    date: new Date(),
+  };
+
+  const result = await getReportsCollection().findOneAndUpdate(
+    { _id: new ObjectId(reportId) },
+    {
+      $push: { comments: comment },
+      $set: { updatedAt: new Date() },
     },
-    address: {
-      type: String,
-      default: '',
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+// Add upvote to report
+export const toggleReportUpvote = async (reportId, userId) => {
+  if (!ObjectId.isValid(reportId) || !ObjectId.isValid(userId)) {
+    throw new Error('Invalid ID');
+  }
+
+  const userObjectId = new ObjectId(userId);
+  const report = await getReportById(reportId);
+
+  if (!report) {
+    throw new Error('Report not found');
+  }
+
+  // Check if already upvoted
+  const hasUpvoted = report.upvotes.some((id) => id.equals(userObjectId));
+
+  if (hasUpvoted) {
+    // Remove upvote
+    const result = await getReportsCollection().findOneAndUpdate(
+      { _id: new ObjectId(reportId) },
+      {
+        $pull: { upvotes: userObjectId },
+        $set: { updatedAt: new Date() },
+      },
+      { returnDocument: 'after' }
+    );
+    return { report: result, action: 'removed' };
+  } else {
+    // Add upvote
+    const result = await getReportsCollection().findOneAndUpdate(
+      { _id: new ObjectId(reportId) },
+      {
+        $push: { upvotes: userObjectId },
+        $set: { updatedAt: new Date() },
+      },
+      { returnDocument: 'after' }
+    );
+    return { report: result, action: 'added' };
+  }
+};
+
+// Update report status with history
+export const updateReportStatus = async (reportId, status, note, updatedBy) => {
+  if (!ObjectId.isValid(reportId) || !ObjectId.isValid(updatedBy)) {
+    throw new Error('Invalid ID');
+  }
+
+  if (!isValidStatus(status)) {
+    throw new Error('Invalid status');
+  }
+
+  const historyEntry = {
+    status,
+    note: note || '',
+    updatedBy: new ObjectId(updatedBy),
+    date: new Date(),
+  };
+
+  const result = await getReportsCollection().findOneAndUpdate(
+    { _id: new ObjectId(reportId) },
+    {
+      $set: { status, updatedAt: new Date() },
+      $push: { history: historyEntry },
     },
-    coordinates: {
-      type: [Number], // [longitude, latitude]
-      required: true,
-      validate: {
-        validator: function (v) {
-          return v.length === 2;
-        },
-        message: 'Coordinates must be [longitude, latitude]',
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+// Delete report
+export const deleteReport = async (reportId) => {
+  if (!ObjectId.isValid(reportId)) {
+    throw new Error('Invalid report ID');
+  }
+
+  const result = await getReportsCollection().deleteOne({
+    _id: new ObjectId(reportId),
+  });
+
+  return result.deletedCount > 0;
+};
+
+// Assign report to user
+export const assignReportTo = async (reportId, userId) => {
+  if (!ObjectId.isValid(reportId) || !ObjectId.isValid(userId)) {
+    throw new Error('Invalid ID');
+  }
+
+  const result = await getReportsCollection().findOneAndUpdate(
+    { _id: new ObjectId(reportId) },
+    {
+      $set: {
+        assignedTo: new ObjectId(userId),
+        updatedAt: new Date(),
       },
     },
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'inProgress', 'resolved'],
-    default: 'pending',
-  },
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  assignedTo: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: null,
-  },
-  history: [historySchema],
-  upvotes: {
-    type: Number,
-    default: 0,
-  },
-  upvotedBy: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  }],
-  comments: [commentSchema],
-  priority: {
-    type: String,
-    enum: ['low', 'medium', 'high', 'urgent'],
-    default: 'medium',
-  },
-  isPublic: {
-    type: Boolean,
-    default: true,
-  },
-}, {
-  timestamps: true,
-});
+    { returnDocument: 'after' }
+  );
 
-// Index for geospatial queries
-reportSchema.index({ 'location.coordinates': '2dsphere' });
-
-// Index for common queries
-reportSchema.index({ status: 1, createdAt: -1 });
-reportSchema.index({ 'location.district': 1, status: 1 });
-reportSchema.index({ createdBy: 1 });
-
-// Add to history when status changes
-reportSchema.pre('save', function (next) {
-  if (this.isModified('status') && !this.isNew) {
-    this.history.push({
-      status: this.status,
-      updatedBy: this.assignedTo || this.createdBy,
-      date: new Date(),
-    });
-  }
-  next();
-});
-
-const Report = mongoose.model('Report', reportSchema);
-
-export default Report;
+  return result;
+};

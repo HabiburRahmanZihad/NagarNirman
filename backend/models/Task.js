@@ -1,82 +1,233 @@
-// Task Model Schema
-import mongoose from 'mongoose';
+// Task Model Helper Functions (Native MongoDB)
+import { ObjectId } from 'mongodb';
+import { getDB } from '../config/db.js';
 
-const taskSchema = new mongoose.Schema({
-  reportId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Report',
-    required: true,
-  },
-  assignedTo: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  assignedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'inProgress', 'completed', 'cancelled'],
-    default: 'pending',
-  },
-  proofURL: {
-    type: String,
-    default: null,
-  },
-  proofDescription: {
-    type: String,
-    default: null,
-  },
-  rewardGranted: {
-    type: Boolean,
-    default: false,
-  },
-  rewardPoints: {
-    type: Number,
-    default: 0,
-  },
-  completedAt: {
-    type: Date,
-    default: null,
-  },
-  deadline: {
-    type: Date,
-    default: null,
-  },
-  notes: {
-    type: String,
-    default: '',
-  },
-  rating: {
-    type: Number,
-    min: 1,
-    max: 5,
-    default: null,
-  },
-  feedback: {
-    type: String,
-    default: null,
-  },
-}, {
-  timestamps: true,
-});
+// Get tasks collection
+export const getTasksCollection = () => getDB().collection('tasks');
 
-// Index for common queries
-taskSchema.index({ assignedTo: 1, status: 1 });
-taskSchema.index({ reportId: 1 });
-taskSchema.index({ status: 1, createdAt: -1 });
+// Validate priority
+export const isValidPriority = (priority) => {
+  const validPriorities = ['low', 'medium', 'high', 'urgent'];
+  return validPriorities.includes(priority);
+};
 
-// Update completedAt when status changes to completed
-taskSchema.pre('save', function (next) {
-  if (this.isModified('status') && this.status === 'completed' && !this.completedAt) {
-    this.completedAt = new Date();
+// Validate status
+export const isValidStatus = (status) => {
+  const validStatuses = ['pending', 'assigned', 'in-progress', 'completed', 'verified'];
+  return validStatuses.includes(status);
+};
+
+// Create new task
+export const createTask = async (taskData) => {
+  const {
+    title,
+    description,
+    report,
+    assignedTo,
+    assignedBy,
+    priority = 'medium',
+    deadline,
+  } = taskData;
+
+  // Validate required fields
+  if (!title || !description || !report || !assignedTo || !assignedBy) {
+    throw new Error('Please provide all required fields');
   }
-  next();
-});
 
-const Task = mongoose.model('Task', taskSchema);
+  if (!ObjectId.isValid(report) || !ObjectId.isValid(assignedTo) || !ObjectId.isValid(assignedBy)) {
+    throw new Error('Invalid ID');
+  }
 
-export default Task;
+  if (!isValidPriority(priority)) {
+    throw new Error('Invalid priority');
+  }
+
+  // Create task document
+  const task = {
+    title: title.trim(),
+    description: description.trim(),
+    report: new ObjectId(report),
+    assignedTo: new ObjectId(assignedTo),
+    assignedBy: new ObjectId(assignedBy),
+    status: 'assigned',
+    priority,
+    deadline: deadline ? new Date(deadline) : null,
+    proofUrl: null,
+    completedAt: null,
+    verifiedAt: null,
+    points: 0,
+    rating: null,
+    feedback: '',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const result = await getTasksCollection().insertOne(task);
+  task._id = result.insertedId;
+
+  return task;
+};
+
+// Get task by ID
+export const getTaskById = async (taskId) => {
+  if (!ObjectId.isValid(taskId)) {
+    throw new Error('Invalid task ID');
+  }
+  return await getTasksCollection().findOne({ _id: new ObjectId(taskId) });
+};
+
+// Find tasks with filters
+export const findTasks = async (filter = {}, options = {}) => {
+  const { page = 1, limit = 10, sort = { createdAt: -1 } } = options;
+  const skip = (page - 1) * limit;
+
+  const tasks = await getTasksCollection()
+    .find(filter)
+    .sort(sort)
+    .skip(skip)
+    .limit(limit)
+    .toArray();
+
+  const total = await getTasksCollection().countDocuments(filter);
+
+  return {
+    tasks,
+    pagination: {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+    },
+  };
+};
+
+// Update task
+export const updateTask = async (taskId, updateData) => {
+  if (!ObjectId.isValid(taskId)) {
+    throw new Error('Invalid task ID');
+  }
+
+  updateData.updatedAt = new Date();
+
+  const result = await getTasksCollection().findOneAndUpdate(
+    { _id: new ObjectId(taskId) },
+    { $set: updateData },
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+// Update task status
+export const updateTaskStatus = async (taskId, status) => {
+  if (!ObjectId.isValid(taskId)) {
+    throw new Error('Invalid task ID');
+  }
+
+  if (!isValidStatus(status)) {
+    throw new Error('Invalid status');
+  }
+
+  const updateData = {
+    status,
+    updatedAt: new Date(),
+  };
+
+  // Set completed time if status is completed
+  if (status === 'completed') {
+    updateData.completedAt = new Date();
+  }
+
+  // Set verified time if status is verified
+  if (status === 'verified') {
+    updateData.verifiedAt = new Date();
+  }
+
+  const result = await getTasksCollection().findOneAndUpdate(
+    { _id: new ObjectId(taskId) },
+    { $set: updateData },
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+// Submit task completion proof
+export const submitTaskProof = async (taskId, proofUrl, notes) => {
+  if (!ObjectId.isValid(taskId)) {
+    throw new Error('Invalid task ID');
+  }
+
+  const result = await getTasksCollection().findOneAndUpdate(
+    { _id: new ObjectId(taskId) },
+    {
+      $set: {
+        proofUrl,
+        notes: notes || '',
+        status: 'completed',
+        completedAt: new Date(),
+        updatedAt: new Date(),
+      },
+    },
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+// Verify task and award points
+export const verifyTask = async (taskId, points, rating, feedback) => {
+  if (!ObjectId.isValid(taskId)) {
+    throw new Error('Invalid task ID');
+  }
+
+  const result = await getTasksCollection().findOneAndUpdate(
+    { _id: new ObjectId(taskId) },
+    {
+      $set: {
+        status: 'verified',
+        points: points || 0,
+        rating: rating || null,
+        feedback: feedback || '',
+        verifiedAt: new Date(),
+        updatedAt: new Date(),
+      },
+    },
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+// Delete task
+export const deleteTask = async (taskId) => {
+  if (!ObjectId.isValid(taskId)) {
+    throw new Error('Invalid task ID');
+  }
+
+  const result = await getTasksCollection().deleteOne({
+    _id: new ObjectId(taskId),
+  });
+
+  return result.deletedCount > 0;
+};
+
+// Get tasks by user ID
+export const getTasksByUserId = async (userId, options = {}) => {
+  if (!ObjectId.isValid(userId)) {
+    throw new Error('Invalid user ID');
+  }
+
+  return await findTasks({ assignedTo: new ObjectId(userId) }, options);
+};
+
+// Get tasks by report ID
+export const getTasksByReportId = async (reportId) => {
+  if (!ObjectId.isValid(reportId)) {
+    throw new Error('Invalid report ID');
+  }
+
+  return await getTasksCollection()
+    .find({ report: new ObjectId(reportId) })
+    .toArray();
+};

@@ -1,11 +1,19 @@
-// Authentication Controller
+// Authentication Controller (Native MongoDB)
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import {
+  createUser,
+  getUserByEmailWithPassword,
+  getUserById,
+  updateUser,
+  updateUserPassword,
+  getPublicProfile,
+  matchPassword,
+} from '../models/User.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
 // Generate JWT Token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id: id.toString() }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE || '7d',
   });
 };
@@ -14,29 +22,21 @@ const generateToken = (id) => {
 // @route   POST /api/auth/register
 // @access  Public
 export const register = asyncHandler(async (req, res) => {
-  const { name, email, password, district, role } = req.body;
+  const { name, email, password, district, role, avatar } = req.body;
 
-  // Check if user already exists
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    return res.status(400).json({
-      success: false,
-      message: 'User with this email already exists',
+  try {
+    // Create user (will throw error if validation fails or user exists)
+    const user = await createUser({
+      name,
+      email,
+      password,
+      district,
+      role: role || 'user',
+      avatar,
     });
-  }
 
-  // Create user
-  const user = await User.create({
-    name,
-    email,
-    password,
-    district,
-    role: role || 'user',
-  });
-
-  if (user) {
     const token = generateToken(user._id);
-    const userProfile = user.getPublicProfile();
+    const userProfile = getPublicProfile(user);
 
     res.status(201).json({
       success: true,
@@ -44,10 +44,10 @@ export const register = asyncHandler(async (req, res) => {
       token,
       user: userProfile,
     });
-  } else {
+  } catch (error) {
     res.status(400).json({
       success: false,
-      message: 'Invalid user data',
+      message: error.message,
     });
   }
 });
@@ -66,8 +66,8 @@ export const login = asyncHandler(async (req, res) => {
     });
   }
 
-  // Check for user (include password for comparison)
-  const user = await User.findOne({ email }).select('+password');
+  // Get user with password
+  const user = await getUserByEmailWithPassword(email);
 
   if (!user) {
     return res.status(401).json({
@@ -77,7 +77,7 @@ export const login = asyncHandler(async (req, res) => {
   }
 
   // Check if password matches
-  const isMatch = await user.matchPassword(password);
+  const isMatch = await matchPassword(password, user.password);
 
   if (!isMatch) {
     return res.status(401).json({
@@ -95,7 +95,7 @@ export const login = asyncHandler(async (req, res) => {
   }
 
   const token = generateToken(user._id);
-  const userProfile = user.getPublicProfile();
+  const userProfile = getPublicProfile(user);
 
   res.status(200).json({
     success: true,
@@ -105,15 +105,22 @@ export const login = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Get current logged in user
+// @desc    Get current user
 // @route   GET /api/auth/me
 // @access  Private
 export const getMe = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id);
+  const user = await getUserById(req.user.id);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found',
+    });
+  }
 
   res.status(200).json({
     success: true,
-    data: user,
+    user,
   });
 });
 
@@ -121,31 +128,33 @@ export const getMe = asyncHandler(async (req, res) => {
 // @route   PUT /api/auth/profile
 // @access  Private
 export const updateProfile = asyncHandler(async (req, res) => {
-  const fieldsToUpdate = {
-    name: req.body.name,
-    phone: req.body.phone,
-    address: req.body.address,
-    avatar: req.body.avatar,
-  };
+  const { name, district, avatar } = req.body;
 
-  // Remove undefined fields
-  Object.keys(fieldsToUpdate).forEach(key =>
-    fieldsToUpdate[key] === undefined && delete fieldsToUpdate[key]
-  );
+  const updateData = {};
+  if (name) updateData.name = name.trim();
+  if (district) updateData.district = district;
+  if (avatar) updateData.avatar = avatar;
 
-  const user = await User.findByIdAndUpdate(
-    req.user.id,
-    fieldsToUpdate,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  if (Object.keys(updateData).length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: 'No fields to update',
+    });
+  }
+
+  const user = await updateUser(req.user.id, updateData);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found',
+    });
+  }
 
   res.status(200).json({
     success: true,
     message: 'Profile updated successfully',
-    data: user,
+    user,
   });
 });
 
@@ -162,10 +171,26 @@ export const changePassword = asyncHandler(async (req, res) => {
     });
   }
 
-  const user = await User.findById(req.user.id).select('+password');
+  if (newPassword.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message: 'New password must be at least 6 characters',
+    });
+  }
 
-  // Check current password
-  const isMatch = await user.matchPassword(currentPassword);
+  // Get user with password
+  const user = await getUserByIdWithPassword(req.user.id);
+
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      message: 'User not found',
+    });
+  }
+
+  // Check if current password is correct
+  const isMatch = await matchPassword(currentPassword, user.password);
+
   if (!isMatch) {
     return res.status(401).json({
       success: false,
@@ -174,8 +199,7 @@ export const changePassword = asyncHandler(async (req, res) => {
   }
 
   // Update password
-  user.password = newPassword;
-  await user.save();
+  await updateUserPassword(req.user.id, newPassword);
 
   res.status(200).json({
     success: true,

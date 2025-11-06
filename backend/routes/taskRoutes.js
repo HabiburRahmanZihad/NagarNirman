@@ -4,7 +4,7 @@ import {
   getTasks,
   getTask,
   assignTask,
-  updateTaskStatus,
+  changeTaskStatus,
   completeTask,
   grantReward,
   getMyTasks,
@@ -16,7 +16,7 @@ const router = express.Router();
 // Protected routes
 router.get('/my-tasks', protect, checkApproved, getMyTasks);
 router.get('/:id', protect, getTask);
-router.patch('/:id/status', protect, updateTaskStatus);
+router.patch('/:id/status', protect, changeTaskStatus);
 
 // Problem solver routes
 router.post('/:id/complete', protect, authorize('problemSolver', 'ngo'), checkApproved, completeTask);
