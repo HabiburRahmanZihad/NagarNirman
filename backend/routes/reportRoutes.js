@@ -3,10 +3,10 @@ import express from 'express';
 import {
   getReports,
   getReport,
-  createReport,
-  updateReport,
-  updateReportStatus,
-  deleteReport,
+  createNewReport,
+  updateExistingReport,
+  changeReportStatus,
+  removeReport,
   addComment,
   upvoteReport,
   getUserReports,
@@ -20,14 +20,14 @@ router.get('/', getReports);
 router.get('/:id', getReport);
 
 // Protected routes
-router.post('/', protect, createReport);
-router.put('/:id', protect, updateReport);
-router.delete('/:id', protect, deleteReport);
+router.post('/', protect, createNewReport);
+router.put('/:id', protect, updateExistingReport);
+router.delete('/:id', protect, removeReport);
 router.post('/:id/comment', protect, addComment);
 router.post('/:id/upvote', protect, upvoteReport);
 router.get('/user/:userId', protect, getUserReports);
 
 // Authority only routes
-router.patch('/:id/status', protect, authorize('authority'), updateReportStatus);
+router.patch('/:id/status', protect, authorize('authority'), changeReportStatus);
 
 export default router;

@@ -1,6 +1,6 @@
-// Authentication Middleware
+// Authentication Middleware (Native MongoDB)
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import { getUserById } from '../models/User.js';
 
 // Protect routes - verify JWT token
 export const protect = async (req, res, next) => {
@@ -14,22 +14,29 @@ export const protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Get user from token (exclude password)
-      req.user = await User.findById(decoded.id).select('-password');
+      // Get user from token (without password)
+      const user = await getUserById(decoded.id);
 
-      if (!req.user) {
+      if (!user) {
         return res.status(401).json({
           success: false,
           message: 'User not found',
         });
       }
 
-      if (!req.user.isActive) {
+      if (!user.isActive) {
         return res.status(401).json({
           success: false,
           message: 'Account is deactivated',
         });
       }
+
+      // Attach user to request
+      req.user = {
+        id: user._id.toString(),
+        role: user.role,
+        approved: user.approved,
+      };
 
       next();
     } catch (error) {
@@ -39,9 +46,7 @@ export const protect = async (req, res, next) => {
         message: 'Not authorized, token failed',
       });
     }
-  }
-
-  if (!token) {
+  } else {
     return res.status(401).json({
       success: false,
       message: 'Not authorized, no token provided',
@@ -62,13 +67,15 @@ export const authorize = (...roles) => {
   };
 };
 
-// Check if user is approved (for problemSolver and NGO)
+// Check if user is approved (for problem solvers/NGOs)
 export const checkApproved = (req, res, next) => {
-  if ((req.user.role === 'problemSolver' || req.user.role === 'ngo') && !req.user.approved) {
-    return res.status(403).json({
-      success: false,
-      message: 'Your account is pending approval',
-    });
+  if (req.user.role === 'problemSolver' || req.user.role === 'ngo') {
+    if (!req.user.approved) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account is pending approval',
+      });
+    }
   }
   next();
 };
