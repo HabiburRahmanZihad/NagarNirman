@@ -11,7 +11,6 @@ import {
   deleteReport,
   assignReportTo,
 } from '../models/Report.js';
-import { getUserById } from '../models/User.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
 // @desc    Get all reports
