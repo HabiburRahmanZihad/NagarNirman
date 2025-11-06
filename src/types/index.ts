@@ -1,0 +1,91 @@
+// Type definitions for NagarNirman
+
+export type UserRole = 'user' | 'authority' | 'problemSolver' | 'ngo';
+
+export type ReportStatus = 'pending' | 'inProgress' | 'resolved';
+
+export type TaskStatus = 'pending' | 'inProgress' | 'completed';
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  password?: string; // Only in forms, not in responses
+  role: UserRole;
+  district: string;
+  points?: number;
+  approved?: boolean; // for NGO/problemSolver applications
+  createdAt?: Date;
+}
+
+export interface Location {
+  city: string;
+  district: string;
+  coordinates: [number, number]; // [longitude, latitude]
+}
+
+export interface Comment {
+  user: string; // User ID
+  comment: string;
+  date: Date;
+}
+
+export interface HistoryEntry {
+  status: string;
+  updatedBy: string; // User ID
+  date: Date;
+}
+
+export interface Report {
+  _id: string;
+  title: string;
+  description: string;
+  photoURL: string;
+  location: Location;
+  status: ReportStatus;
+  createdBy: string; // User ID
+  assignedTo?: string; // Problem solver/NGO ID
+  history: HistoryEntry[];
+  upvotes: number;
+  comments: Comment[];
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
+export interface Task {
+  _id: string;
+  reportId: string;
+  assignedTo: string; // Problem solver/NGO ID
+  status: TaskStatus;
+  proofURL?: string;
+  rewardGranted?: boolean;
+  completedAt?: Date;
+  createdAt?: Date;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  district: string;
+  role?: UserRole;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+  token?: string;
+  user?: User;
+}
+
+export interface ApiResponse<T = any> {
+  success: boolean;
+  message?: string;
+  data?: T;
+  error?: string;
+}

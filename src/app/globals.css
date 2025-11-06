@@ -1,9 +1,4 @@
 /* ============================
-    Import Google Fonts
-============================ */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&family=Roboto&display=swap');
-
-/* ============================
     Import Tailwind CSS Core
 ============================ */
 @import "tailwindcss";
@@ -17,8 +12,8 @@
 
 /* 🌞 Light Theme  */
 @plugin "daisyui/theme" {
-  name: "light";
-  /* default: true; */
+    name: "light";
+    default: true;
 
   /* === Brand Colors === */
   --color-primary: #067315; /* Soft Green - primary buttons, highlights */
@@ -41,7 +36,6 @@
 /* 🌙 Dark Theme  */
 @plugin "daisyui/theme" {
     name: "dark";
-    default: true;
 
 /* === Brand Colors === */
   --color-primary: #5ec76a; /* Muted Green - for buttons, links */
@@ -66,20 +60,9 @@
     Global Styling
 ============================ */
 * {
-    font-family: 'Roboto', sans-serif;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: 'Poppins', sans-serif;
-}
-
-@tailwind utilities;
-
-* {
     box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-urbanist), system-ui, -apple-system, sans-serif;
 }
