@@ -9,7 +9,7 @@ const connectDB = async () => {
     client = new MongoClient(process.env.MONGODB_URI);
     await client.connect();
 
-    db = client.db(); // Uses database from connection string
+    db = client.db('nagarNirmanDB'); // Specify database name
 
     console.log(`✅ MongoDB Connected: ${client.options.hosts[0]}`);
     console.log(`📊 Database Name: ${db.databaseName}`);
