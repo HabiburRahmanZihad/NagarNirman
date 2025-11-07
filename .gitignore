@@ -1,152 +1,105 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# ============================================
-# Dependencies
-# ============================================
-node_modules/
-node_modules
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# ============================================
-# Environment Variables (CRITICAL - NEVER COMMIT!)
-# ============================================
-.env
-.env*.local
-.env.development
-.env.production
-.env.test
-backend/.env
-frontend/.env
-
-# ============================================
-# Next.js (Frontend)
-# ============================================
-/.next/
-/out/
-.next/
-out/
-build/
-dist/
-
-# ============================================
-# Testing
-# ============================================
-/coverage
-coverage/
-*.coverage
-.nyc_output
-.jest-cache
-
-# ============================================
-# Build outputs
-# ============================================
-/build
-*.tsbuildinfo
-next-env.d.ts
-
-# ============================================
-# IDE & Editor files
-# ============================================
-.vscode/
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.idea/
+﻿# OS & Editor junk
+.DS_Store
+Thumbs.db
 *.swp
 *.swo
 *~
-.DS_Store
-*.sublime-project
-*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.iml
 
-# ============================================
-# OS generated files
-# ============================================
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
-
-# ============================================
-# Logs
-# ============================================
+# Logs & diagnostics
 logs/
+backend/logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
+pnpm-debug.log*
 lerna-debug.log*
-pids
-*.pid
-*.seed
-*.pid.lock
+*.tsbuildinfo
+.eslintcache
+.turbo/
+.nx/
 
-# ============================================
-# Temporary files
-# ============================================
-tmp/
-temp/
-*.tmp
-*.temp
-
-# ============================================
-# Package managers
-# ============================================
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
-# ============================================
-# SSL/TLS Certificates
-# ============================================
+# Env & secrets
+.env
+.env.*
+!.env.example
+!**/.env.example
 *.pem
 *.key
+*.pfx
+*.p12
 *.cert
 *.crt
 
-# ============================================
-# Vercel
-# ============================================
-.vercel
-.vercel.json
+# Dependency directories
+node_modules/
+bower_components/
+jspm_packages/
+.pnp.*
+.yarn/*
+!.yarn/releases/
+!.yarn/plugins/
+!.yarn/sdks/
+!.yarn/versions/
 
-# ============================================
-# Backend specific
-# ============================================
+# Frontend build artifacts
+build/
+dist/
+public/build/
+.next/
+out/
+.nuxt/
+.svelte-kit/
+.vite/
+.storybook-out/
+storybook-static/
+.cache/
+.vercel/
+.vscode-test/
+
+# Backend build/runtime artifacts
+server/dist/
+server/build/
+backend/dist/
+backend/build/
+api/dist/
+api/build/
+lib/
+tmp/
+temp/
+backend/tmp/
+backend/temp/
 backend/uploads/
 backend/public/uploads/
-backend/logs/
-backend/tmp/
+backend/storage/
+backend/sessions/
+backend/.cache/
+*.pid
+*.pid.lock
 
-# ============================================
-# Database
-# ============================================
+# Databases
 *.sqlite
 *.sqlite3
 *.db
+*.db-journal
 
-# ============================================
-# Cloudinary cache (if any)
-# ============================================
-.cloudinary/
+# Testing outputs
+coverage/
+coverage-*
+reports/
+cypress/screenshots/
+cypress/videos/
+playwright-report/
+test-results/
+.jest/
+.nyc_output/
 
-# ============================================
-# Optional: Keep example files
-# ============================================
-!.env.example
-!backend/.env.example
+# Package archives
+*.tgz
+*.zip
+*.tar
+*.tar.gz
