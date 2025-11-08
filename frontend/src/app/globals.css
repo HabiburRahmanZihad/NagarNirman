@@ -16,7 +16,7 @@
     default: true;
 
   /* === Brand Colors === */
-  --color-primary: #067315; /* Soft Green - primary buttons, highlights */
+  --color-primary: #2a7d2f; /* Soft Green - primary buttons, highlights */
   --color-secondary: #aef452; /* Lime Green - secondary buttons, badges */
   --color-accent: #f2a921; /* Amber Gold - alerts, badges, highlights */
 
@@ -38,7 +38,7 @@
     name: "dark";
 
 /* === Brand Colors === */
-  --color-primary: #5ec76a; /* Muted Green - for buttons, links */
+  --color-primary: #2a7d2f; /* Muted Green - for buttons, links */
   --color-secondary: #9ad83e; /* Soft Lime - secondary buttons, badges */
   --color-accent: #ffcc33; /* Warm Amber - accent highlights */
 

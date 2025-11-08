@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   title: "NagarNirman - Report. Resolve. Rebuild.",
   description: "Citizen-powered platform for reporting and tracking public infrastructure issues in Bangladesh",
   keywords: ["Bangladesh", "Infrastructure", "City Management", "SDG 11", "Citizen Reports"],
+  icons: {
+    icon: "/favicon.png",
+  },
+
 };
 
 export default function RootLayout({
@@ -28,7 +32,9 @@ export default function RootLayout({
         <AuthProvider>
           <Navbar />
           <main className="flex-1">
-            {children}
+            <div className="container mx-auto">
+              {children}
+            </div>
           </main>
           <Footer />
         </AuthProvider>
