@@ -15,11 +15,10 @@ export default function Home() {
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="flex justify-center mb-8">
           <Image
-            src="/logo/NN_logo_green.png"
+            src="/logo/logo.png"
             alt="NagarNirman Logo"
-            width={120}
-            height={120}
-            className="rounded-full shadow-lg"
+            width={220}
+            height={220}
           />
         </div>
 

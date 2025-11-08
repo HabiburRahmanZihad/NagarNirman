@@ -5,20 +5,24 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { formatRole } from '@/utils/helpers';
 import Button from './Button';
+import Image from 'next/image';
 
 const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto py-2">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#81d586] rounded-full flex items-center justify-center text-white font-bold">
-              NN
-            </div>
-            <span className="text-xl font-bold text-[#002E2E]">NagarNirman</span>
+          <Link href="/">
+            <Image
+              src="/logo/logo.png"
+              alt="NagarNirman Logo"
+              width={140}
+              height={140}
+              className=""
+            />            
           </Link>
 
           {/* Navigation Links */}
