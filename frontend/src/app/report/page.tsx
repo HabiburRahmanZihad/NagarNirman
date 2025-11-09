@@ -1,6 +1,6 @@
 'use client';
 
-import '../../app/globals.css';
+// import '../../app/globals.css';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
 import Link from 'next/link';
