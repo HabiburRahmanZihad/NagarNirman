@@ -58,17 +58,17 @@ export default function UserDashboard() {
         <Card>
           <h2 className="text-xl font-bold text-[#002E2E] mb-4">Quick Actions</h2>
           <div className="space-y-3">
-            <Link href="/reports/new">
+            <Link href="/report/new">
               <Button variant="primary" className="w-full">
                 Report New Issue
               </Button>
             </Link>
-            <Link href="/reports">
+            <Link href="/report">
               <Button variant="secondary" className="w-full">
                 View All Reports
               </Button>
             </Link>
-            <Link href="/dashboard/user/my-reports">
+            <Link href="/dashboard/user/my-report">
               <Button variant="outline" className="w-full">
                 My Reports
               </Button>
