@@ -22,7 +22,7 @@ const Navbar: React.FC = () => {
               width={140}
               height={140}
               className=""
-            />            
+            />
           </Link>
 
           {/* Navigation Links */}
@@ -31,8 +31,8 @@ const Navbar: React.FC = () => {
               Home
             </Link>
 
-            <Link href="/reports" className="text-[#374151] hover:text-[#81d586] transition-colors">
-              Reports
+            <Link href="/report" className="text-[#374151] hover:text-[#81d586] transition-colors">
+              Report
             </Link>
 
             {isAuthenticated && user?.role === 'user' && (
@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
                 <Link href="/dashboard/user" className="text-[#374151] hover:text-[#81d586] transition-colors">
                   Dashboard
                 </Link>
-                <Link href="/reports/new" className="text-[#374151] hover:text-[#81d586] transition-colors">
+                <Link href="/report/new" className="text-[#374151] hover:text-[#81d586] transition-colors">
                   Report Issue
                 </Link>
               </>
