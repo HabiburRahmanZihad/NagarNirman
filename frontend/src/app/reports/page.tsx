@@ -1,6 +1,5 @@
 'use client';
 
-// import '../../app/globals.css';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
 import Link from 'next/link';
@@ -15,7 +14,7 @@ export default function ReportsPage() {
           </h1>
           <p className="text-[#6B7280] border-l-4 border-[#81d586] pl-4">Browse and search infrastructure issues across Bangladesh</p>
         </div>
-        <Link href="/report/new">
+        <Link href="/reports/new">
           <Button variant="primary">
             Report New Issue
           </Button>
@@ -78,7 +77,7 @@ export default function ReportsPage() {
         <p className="text-[#6B7280] mb-6">
           Be the first to report an infrastructure issue in your area
         </p>
-        <Link href="/report/new">
+        <Link href="/reports/new">
           <Button variant="primary">
             Create First Report
           </Button>

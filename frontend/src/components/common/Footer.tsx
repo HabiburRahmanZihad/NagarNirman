@@ -28,12 +28,12 @@ const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/report" className="text-gray-300 hover:text-[#81d586] transition-colors">
+                <Link href="/reports" className="text-gray-300 hover:text-[#81d586] transition-colors">
                   Browse Reports
                 </Link>
               </li>
               <li>
-                <Link href="/report/new" className="text-gray-300 hover:text-[#81d586] transition-colors">
+                <Link href="/reports/new" className="text-gray-300 hover:text-[#81d586] transition-colors">
                   Report Issue
                 </Link>
               </li>

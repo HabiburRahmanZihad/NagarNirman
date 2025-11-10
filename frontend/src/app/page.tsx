@@ -38,12 +38,12 @@ export default function Home() {
         <div className="flex flex-wrap justify-center gap-4">
           {isAuthenticated ? (
             <>
-              <Link href="/report/new">
+              <Link href="/reports/new">
                 <Button variant="primary" size="lg">
-                  Report an Issue
+                  Reports an Issue
                 </Button>
               </Link>
-              <Link href="/report">
+              <Link href="/reports">
                 <Button variant="secondary" size="lg">
                   View All Reports
                 </Button>
@@ -56,7 +56,7 @@ export default function Home() {
                   Get Started
                 </Button>
               </Link>
-              <Link href="/report">
+              <Link href="/reports">
                 <Button variant="outline" size="lg">
                   Browse Reports
                 </Button>
@@ -150,7 +150,7 @@ export default function Home() {
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/report" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/reports" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> Browse All Reports
                 </Link>
               </li>
@@ -190,12 +190,12 @@ export default function Home() {
                 </Link>
               </li>
               <li>
-                <Link href="/report/new" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/reports/new" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> Report New Issue
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/user/my-report" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/user/my-reports" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> My Reports
                 </Link>
               </li>
@@ -225,7 +225,7 @@ export default function Home() {
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/authority/report" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/authority/reports" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> Manage Reports
                 </Link>
               </li>
@@ -290,7 +290,7 @@ export default function Home() {
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/report" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/reports" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> All Reports
                 </Link>
               </li>
@@ -310,7 +310,7 @@ export default function Home() {
                 </Link>
               </li>
               <li>
-                <Link href="/report/map" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/reports/map" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> Map View
                 </Link>
               </li>
