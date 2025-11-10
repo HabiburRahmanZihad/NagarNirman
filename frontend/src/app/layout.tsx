@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
+import { Toaster } from "react-hot-toast";
 
 const urbanist = Urbanist({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${urbanist.variable} font-sans antialiased min-h-screen flex flex-col`}>
         <AuthProvider>
+          <Toaster position="top-right" />
           <Navbar />
           <main className="flex-1">
               {children}
