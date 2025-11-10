@@ -41,9 +41,6 @@ dist/
 # ============================================
 # Testing
 # ============================================
-/coverage
-coverage/
-*.coverage
 .nyc_output
 .jest-cache
 

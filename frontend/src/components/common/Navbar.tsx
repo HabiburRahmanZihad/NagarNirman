@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
               Home
             </Link>
 
-            <Link href="/report" className="text-[#374151] hover:text-[#81d586] transition-colors">
+            <Link href="/reports" className="text-[#374151] hover:text-[#81d586] transition-colors">
               Report
             </Link>
 
@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
                 <Link href="/dashboard/user" className="text-[#374151] hover:text-[#81d586] transition-colors">
                   Dashboard
                 </Link>
-                <Link href="/report/new" className="text-[#374151] hover:text-[#81d586] transition-colors">
+                <Link href="/reports/new" className="text-[#374151] hover:text-[#81d586] transition-colors">
                   Report Issue
                 </Link>
               </>
