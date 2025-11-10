@@ -86,7 +86,7 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
 
           {/* Location */}
           <div className="flex items-center gap-2 text-sm text-[#6B7280] mb-4">
-            <FaMapMarkerAlt className="text-[#f2a921] flex-shrink-0" />
+            <FaMapMarkerAlt className="text-[#f2a921] shrink-0" />
             <span className="line-clamp-1">{report.location.address}</span>
           </div>
 

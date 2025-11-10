@@ -126,7 +126,7 @@ export default function MyReportsPage() {
 
         {/* Stats Dashboard */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
-          <Card className="p-4 bg-gradient-to-br from-[#2a7d2f] to-[#1e5d22] text-white">
+          <Card className="p-4 bg-linear-to-br from-[#2a7d2f] to-[#1e5d22] text-white">
             <div className="text-3xl font-bold">{stats.total}</div>
             <div className="text-sm opacity-90">Total Reports</div>
           </Card>
@@ -142,7 +142,7 @@ export default function MyReportsPage() {
             <div className="text-3xl font-bold text-green-600">{stats.resolved}</div>
             <div className="text-sm text-[#6B7280]">Resolved</div>
           </div>
-          <Card className="p-4 bg-gradient-to-br from-[#f2a921] to-[#e69710] text-white">
+          <Card className="p-4 bg-linear-to-br from-[#f2a921] to-[#e69710] text-white">
             <div className="text-3xl font-bold">{stats.totalUpvotes}</div>
             <div className="text-sm opacity-90">Total Upvotes</div>
           </Card>
@@ -150,7 +150,7 @@ export default function MyReportsPage() {
 
         {/* Resolution Rate */}
         {stats.total > 0 && (
-          <Card className="p-6 mb-6 bg-gradient-to-r from-green-50 to-blue-50">
+          <Card className="p-6 mb-6 bg-linear-to-r from-green-50 to-blue-50">
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
@@ -170,7 +170,7 @@ export default function MyReportsPage() {
             </div>
             <div className="mt-4 bg-gray-200 rounded-full h-3 overflow-hidden">
               <div
-                className="bg-gradient-to-r from-[#2a7d2f] to-[#aef452] h-full transition-all duration-500"
+                className="bg-linear-to-r from-[#2a7d2f] to-[#aef452] h-full transition-all duration-500"
                 style={{ width: `${(stats.resolved / stats.total) * 100}%` }}
               />
             </div>
