@@ -104,9 +104,9 @@ const AboutTeamPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-[#F6FFF9]">
+    <div className="min-h-screen bg-linear-to-b from-white to-[#F6FFF9]">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-r from-[#2a7d2f] to-[#1e5d22] text-white overflow-hidden">
+      <section className="relative py-20 bg-linear-to-r from-[#2a7d2f] to-[#1e5d22] text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-32 h-32 bg-[#aef452] rounded-full blur-3xl" />
           <div className="absolute bottom-10 right-10 w-40 h-40 bg-[#f2a921] rounded-full blur-3xl" />
@@ -170,7 +170,7 @@ const AboutTeamPage = () => {
                   className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-[#2a7d2f] group"
                 >
                   {/* Card Header */}
-                  <div className="bg-gradient-to-br from-[#2a7d2f]/10 to-[#aef452]/10 p-8 text-center relative">
+                  <div className="bg-linear-to-br from-[#2a7d2f]/10 to-[#aef452]/10 p-8 text-center relative">
                     <div className="text-7xl mb-4 transform group-hover:scale-110 transition-transform">
                       {member.avatar}
                     </div>
@@ -259,7 +259,7 @@ const AboutTeamPage = () => {
               {advisors.map((advisor, index) => (
                 <div
                   key={index}
-                  className="bg-gradient-to-br from-[#F6FFF9] to-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-[#2a7d2f]/20"
+                  className="bg-linear-to-br from-[#F6FFF9] to-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-[#2a7d2f]/20"
                 >
                   <div className="flex items-center gap-6">
                     <div className="text-6xl">{advisor.avatar}</div>
@@ -283,7 +283,7 @@ const AboutTeamPage = () => {
       </section>
 
       {/* Join Us Section */}
-      <section className="py-16 bg-gradient-to-br from-[#F6FFF9] to-[#aef452]/10">
+      <section className="py-16 bg-linear-to-br from-[#F6FFF9] to-[#aef452]/10">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold text-[#002E2E] mb-6">
@@ -334,7 +334,7 @@ const AboutTeamPage = () => {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className="text-center p-8 rounded-2xl bg-gradient-to-br from-[#F6FFF9] to-white shadow-lg hover:shadow-xl transition-all"
+                  className="text-center p-8 rounded-2xl bg-linear-to-br from-[#F6FFF9] to-white shadow-lg hover:shadow-xl transition-all"
                 >
                   <div className="text-5xl mb-4">{item.icon}</div>
                   <h3 className="text-xl font-bold text-[#002E2E] mb-3">
@@ -349,7 +349,7 @@ const AboutTeamPage = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 bg-gradient-to-r from-[#2a7d2f] to-[#1e5d22] text-white">
+      <section className="py-20 bg-linear-to-r from-[#2a7d2f] to-[#1e5d22] text-white">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl font-bold mb-6">

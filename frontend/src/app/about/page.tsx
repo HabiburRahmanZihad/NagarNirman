@@ -7,10 +7,10 @@ import { PUBLIC_ROUTES } from '@/constants/routes';
 
 const AboutPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F6FFF9] to-white">
+    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white">
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#2a7d2f]/5 to-[#aef452]/5" />
+        <div className="absolute inset-0 bg-linear-to-r from-[#2a7d2f]/5 to-[#aef452]/5" />
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold text-[#002E2E] mb-6 animate-fade-in">
@@ -42,7 +42,7 @@ const AboutPage = () => {
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-[#2a7d2f]/10 to-transparent hover:shadow-xl transition-all duration-300">
+              <div className="text-center p-8 rounded-2xl bg-linear-to-br from-[#2a7d2f]/10 to-transparent hover:shadow-xl transition-all duration-300">
                 <div className="text-5xl mb-4">🎯</div>
                 <h3 className="text-2xl font-bold text-[#002E2E] mb-3">Our Mission</h3>
                 <p className="text-[#6B7280]">
@@ -51,7 +51,7 @@ const AboutPage = () => {
                 </p>
               </div>
 
-              <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-[#aef452]/10 to-transparent hover:shadow-xl transition-all duration-300">
+              <div className="text-center p-8 rounded-2xl bg-linear-to-br from-[#aef452]/10 to-transparent hover:shadow-xl transition-all duration-300">
                 <div className="text-5xl mb-4">👁️</div>
                 <h3 className="text-2xl font-bold text-[#002E2E] mb-3">Our Vision</h3>
                 <p className="text-[#6B7280]">
@@ -60,7 +60,7 @@ const AboutPage = () => {
                 </p>
               </div>
 
-              <div className="text-center p-8 rounded-2xl bg-gradient-to-br from-[#f2a921]/10 to-transparent hover:shadow-xl transition-all duration-300">
+              <div className="text-center p-8 rounded-2xl bg-linear-to-br from-[#f2a921]/10 to-transparent hover:shadow-xl transition-all duration-300">
                 <div className="text-5xl mb-4">💎</div>
                 <h3 className="text-2xl font-bold text-[#002E2E] mb-3">Our Values</h3>
                 <p className="text-[#6B7280]">
@@ -144,7 +144,7 @@ const AboutPage = () => {
 
             <div className="relative">
               {/* Connection Line */}
-              <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-[#2a7d2f] via-[#aef452] to-[#2a7d2f] transform -translate-y-1/2" />
+              <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-linear-to-r from-[#2a7d2f] via-[#aef452] to-[#2a7d2f] transform -translate-y-1/2" />
 
               <div className="grid md:grid-cols-4 gap-8 relative">
                 {[
@@ -171,7 +171,7 @@ const AboutPage = () => {
       </section>
 
       {/* Impact Statistics */}
-      <section className="py-16 bg-gradient-to-r from-[#2a7d2f] to-[#1e5d22] text-white">
+      <section className="py-16 bg-linear-to-r from-[#2a7d2f] to-[#1e5d22] text-white">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-4xl font-bold text-center mb-12">Our Impact</h2>
