@@ -1,10 +1,11 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { FaUpload, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 import categoryOptions from "@/data/categoryOptions.json";
 import divisionData from "@/data/divisionsData.json";
 
@@ -23,12 +24,14 @@ type ReportFormData = {
 };
 
 export default function NewReportPage() {
-  const { register, handleSubmit, watch, reset, setValue } =
+  const router = useRouter();
+  const { register, handleSubmit, watch, reset, setValue, formState: { errors, isSubmitting } } =
     useForm<ReportFormData>();
   const [preview, setPreview] = useState<string | null>(null);
   const [districts, setDistricts] = useState<
     { name: string; latitude: number; longitude: number }[]
   >([]);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
   const selectedCategory = watch("category");
   const selectedDivision = watch("division");
@@ -46,88 +49,138 @@ export default function NewReportPage() {
       toast.error("Geolocation is not supported by your browser.");
       return;
     }
+
+    setIsLoadingLocation(true);
+    const loadingToast = toast.loading("Fetching your location...");
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
         setValue("latitude", latitude.toFixed(6));
         setValue("longitude", longitude.toFixed(6));
+        toast.dismiss(loadingToast);
         toast.success("Location fetched successfully!");
+        setIsLoadingLocation(false);
       },
-      () => {
-        toast.error("Unable to fetch your location.");
+      (error) => {
+        toast.dismiss(loadingToast);
+        toast.error("Unable to fetch your location. Please enable location services.");
+        console.error("Geolocation error:", error);
+        setIsLoadingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
       }
     );
   };
 
   const onSubmit = async (data: ReportFormData) => {
+    const submitToast = toast.loading("Submitting your report...");
+
     try {
       const token = localStorage.getItem("nn_auth_token");
-      if (!token) throw new Error("You must be logged in");
+      if (!token) {
+        toast.dismiss(submitToast);
+        toast.error("You must be logged in to submit a report");
+        router.push("/auth/login");
+        return;
+      }
 
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("description", data.description);
-      formData.append("problemType", data.subcategory || data.category);
-      formData.append("severity", data.severity);
-      formData.append(
-        "location",
-        JSON.stringify({
-          address: data.address,
-          division: data.division,
+      // Map category to backend problemType
+      const problemTypeMap: { [key: string]: string } = {
+        "Road & Infrastructure Issues": "road",
+        "Lighting & Electrical": "street light",
+        "Garbage & Sanitation": "waste management",
+        "Water Supply & Leakage": "water supply",
+        "Public Facilities": "public property",
+        "Environmental Hazards": "other",
+        "Safety Issues": "other",
+        "Health & Hygiene": "waste management",
+        "Transport": "road",
+        "Other (General/Custom)": "other"
+      };
+
+      const problemType = problemTypeMap[data.category] || "other";
+
+      // Prepare the request body (NOT FormData for now, use JSON)
+      const requestBody = {
+        title: data.title,
+        description: data.description,
+        problemType: problemType,
+        severity: data.severity,
+        location: {
+          address: `${data.address}, ${data.district}, ${data.division}`,
           district: data.district,
           coordinates:
             data.latitude && data.longitude
               ? [parseFloat(data.longitude), parseFloat(data.latitude)]
               : [],
-        })
-      );
-
-      if (data.image && data.image.length > 0) {
-        Array.from(data.image).forEach((file) => formData.append("images", file));
-      }
-
-      // Include user ID (replace with actual auth user ID)
-      const userIdFromAuth = localStorage.getItem("user_id") || "";
-      formData.append("createdBy", userIdFromAuth);
+        },
+        images: [], // For now, we'll handle images separately
+      };
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports`, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: formData,
+        body: JSON.stringify(requestBody),
       });
 
       const result = await res.json();
-      if (!res.ok) throw new Error(result.message || "Failed to submit report");
 
-      toast.success("Report submitted successfully!");
+      toast.dismiss(submitToast);
+
+      if (!res.ok) {
+        throw new Error(result.message || "Failed to submit report");
+      }
+
+      toast.success("Report submitted successfully! 🎉");
       reset();
       setPreview(null);
       setDistricts([]);
+
+      // Redirect to reports page after 1.5 seconds
+      setTimeout(() => {
+        router.push("/reports");
+      }, 1500);
+
     } catch (error: unknown) {
-      if (error instanceof Error) toast.error(error.message);
-      else toast.error("Something went wrong");
+      toast.dismiss(submitToast);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+      console.error("Report submission error:", error);
     }
   };
 
   return (
     <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-12 px-4 flex justify-center">
       <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-10">
-        <h1 className="text-3xl font-semibold text-center text-gray-800 mb-8">
-          Submit a new report
-        </h1>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-[#002E2E] mb-2">
+            Submit a New Report
+          </h1>
+          <p className="text-[#6B7280]">Help improve your community by reporting infrastructure issues</p>
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Category & Subcategory */}
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="block font-medium text-gray-700 mb-2">
-                Category
+                Category <span className="text-red-500">*</span>
               </label>
               <select
-                {...register("category", { required: true })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400"
+                {...register("category", { required: "Category is required" })}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
+                  errors.category ? "border-red-500" : "border-gray-300"
+                }`}
               >
                 <option value="">Select category</option>
                 {Object.keys(categoryOptions).map((cat) => (
@@ -136,16 +189,21 @@ export default function NewReportPage() {
                   </option>
                 ))}
               </select>
+              {errors.category && (
+                <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>
+              )}
             </div>
 
             <div>
               <label className="block font-medium text-gray-700 mb-2">
-                Subcategory
+                Subcategory <span className="text-red-500">*</span>
               </label>
               <select
-                {...register("subcategory", { required: true })}
+                {...register("subcategory", { required: "Subcategory is required" })}
                 disabled={!selectedCategory}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 disabled:bg-gray-100"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                  errors.subcategory ? "border-red-500" : "border-gray-300"
+                }`}
               >
                 <option value="">
                   {selectedCategory ? "Select subcategory" : "Select category first"}
@@ -159,31 +217,52 @@ export default function NewReportPage() {
                     )
                   )}
               </select>
+              {errors.subcategory && (
+                <p className="text-red-500 text-sm mt-1">{errors.subcategory.message}</p>
+              )}
             </div>
           </div>
 
           {/* Title & Severity */}
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="block font-medium text-gray-700 mb-2">Report Title</label>
+              <label className="block font-medium text-gray-700 mb-2">
+                Report Title <span className="text-red-500">*</span>
+              </label>
               <input
-                {...register("title", { required: true })}
-                placeholder="e.g. Street light not working"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400"
+                {...register("title", {
+                  required: "Title is required",
+                  minLength: { value: 10, message: "Title must be at least 10 characters" },
+                  maxLength: { value: 100, message: "Title must not exceed 100 characters" }
+                })}
+                placeholder="e.g. Street light not working on Main Road"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
+                  errors.title ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.title && (
+                <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+              )}
             </div>
             <div>
-              <label className="block font-medium text-gray-700 mb-2">Severity</label>
+              <label className="block font-medium text-gray-700 mb-2">
+                Severity <span className="text-red-500">*</span>
+              </label>
               <select
-                {...register("severity", { required: true })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400"
+                {...register("severity", { required: "Severity is required" })}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
+                  errors.severity ? "border-red-500" : "border-gray-300"
+                }`}
               >
                 <option value="">Select severity</option>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="urgent">Urgent</option>
+                <option value="low">🟢 Low - Minor issue</option>
+                <option value="medium">🟡 Medium - Moderate issue</option>
+                <option value="high">🟠 High - Serious issue</option>
+                <option value="urgent">🔴 Urgent - Critical issue</option>
               </select>
+              {errors.severity && (
+                <p className="text-red-500 text-sm mt-1">{errors.severity.message}</p>
+              )}
             </div>
           </div>
 
@@ -196,11 +275,16 @@ export default function NewReportPage() {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block font-medium text-gray-700 mb-2">Division</label>
+                <label className="block font-medium text-gray-700 mb-2">
+                  Division <span className="text-red-500">*</span>
+                </label>
                 <select
+                  {...register("division", { required: "Division is required" })}
                   value={selectedDivision}
                   onChange={handleDivisionChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
+                    errors.division ? "border-red-500" : "border-gray-300"
+                  }`}
                 >
                   <option value="">Select division</option>
                   {divisionData.map((div) => (
@@ -209,14 +293,21 @@ export default function NewReportPage() {
                     </option>
                   ))}
                 </select>
+                {errors.division && (
+                  <p className="text-red-500 text-sm mt-1">{errors.division.message}</p>
+                )}
               </div>
 
               <div>
-                <label className="block font-medium text-gray-700 mb-2">District</label>
+                <label className="block font-medium text-gray-700 mb-2">
+                  District <span className="text-red-500">*</span>
+                </label>
                 <select
-                  {...register("district", { required: true })}
+                  {...register("district", { required: "District is required" })}
                   disabled={!selectedDivision}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 disabled:bg-gray-100"
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                    errors.district ? "border-red-500" : "border-gray-300"
+                  }`}
                 >
                   <option value="">
                     {selectedDivision ? "Select district" : "Select division first"}
@@ -227,33 +318,52 @@ export default function NewReportPage() {
                     </option>
                   ))}
                 </select>
+                {errors.district && (
+                  <p className="text-red-500 text-sm mt-1">{errors.district.message}</p>
+                )}
               </div>
             </div>
 
             <div className="mt-6">
-              <label className="block font-medium text-gray-700 mb-2">Address</label>
+              <label className="block font-medium text-gray-700 mb-2">
+                Address <span className="text-red-500">*</span>
+              </label>
               <input
-                {...register("address", { required: true })}
-                placeholder="e.g. Dhanmondi 27, Dhaka"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400"
+                {...register("address", {
+                  required: "Address is required",
+                  minLength: { value: 10, message: "Address must be at least 10 characters" }
+                })}
+                placeholder="e.g. House 27, Road 5, Dhanmondi, Dhaka"
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
+                  errors.address ? "border-red-500" : "border-gray-300"
+                }`}
               />
+              {errors.address && (
+                <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
+              )}
             </div>
 
             <div className="grid md:grid-cols-2 gap-6 mt-6">
               <div>
-                <label className="block font-medium text-gray-700 mb-2">Latitude</label>
+                <label className="block font-medium text-gray-700 mb-2">
+                  Latitude <span className="text-gray-400 text-sm">(Optional)</span>
+                </label>
                 <input
                   {...register("latitude")}
-                  placeholder="Click 'Get Location'"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 focus:ring-2 focus:ring-yellow-400"
+                  placeholder="Auto-filled when you click 'Get Location'"
+                  readOnly
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
                 />
               </div>
               <div>
-                <label className="block font-medium text-gray-700 mb-2">Longitude</label>
+                <label className="block font-medium text-gray-700 mb-2">
+                  Longitude <span className="text-gray-400 text-sm">(Optional)</span>
+                </label>
                 <input
                   {...register("longitude")}
-                  placeholder="Click 'Get Location'"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 focus:ring-2 focus:ring-yellow-400"
+                  placeholder="Auto-filled when you click 'Get Location'"
+                  readOnly
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
                 />
               </div>
             </div>
@@ -262,22 +372,38 @@ export default function NewReportPage() {
               <button
                 type="button"
                 onClick={handleLocationFetch}
-                className="bg-yellow-400 hover:bg-yellow-500 transition font-semibold text-gray-900 px-6 py-2 rounded-lg shadow"
+                disabled={isLoadingLocation}
+                className="bg-[#2a7d2f] hover:bg-[#1e5d22] disabled:bg-gray-400 disabled:cursor-not-allowed transition font-semibold text-white px-6 py-2 rounded-lg shadow-md flex items-center gap-2"
               >
-                Get Current Location
+                <FaMapMarkerAlt />
+                {isLoadingLocation ? "Fetching..." : "Get Current Location"}
               </button>
             </div>
           </div>
 
           {/* Description */}
           <div>
-            <label className="block font-medium text-gray-700 mb-2">Description</label>
+            <label className="block font-medium text-gray-700 mb-2">
+              Description <span className="text-red-500">*</span>
+            </label>
             <textarea
-              {...register("description", { required: true })}
-              placeholder="Describe the issue clearly..."
-              rows={4}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-yellow-400"
+              {...register("description", {
+                required: "Description is required",
+                minLength: { value: 20, message: "Description must be at least 20 characters" },
+                maxLength: { value: 500, message: "Description must not exceed 500 characters" }
+              })}
+              placeholder="Describe the issue clearly... (minimum 20 characters)"
+              rows={5}
+              className={`w-full px-4 py-3 border rounded-lg resize-none focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
+                errors.description ? "border-red-500" : "border-gray-300"
+              }`}
             ></textarea>
+            {errors.description && (
+              <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+            )}
+            <p className="text-gray-500 text-xs mt-1">
+              {watch("description")?.length || 0}/500 characters
+            </p>
           </div>
 
           {/* Image Upload */}
@@ -300,10 +426,12 @@ export default function NewReportPage() {
 
               {preview && (
                 <div className="relative w-40 h-40 rounded-lg overflow-hidden border border-gray-200 shadow">
-                  <Image src={preview} alt="Preview" fill className="object-cover rounded-lg" />
+                  <Image src={preview} alt="Report preview" fill className="object-cover rounded-lg" />
                   <button
                     type="button"
                     onClick={() => setPreview(null)}
+                    title="Remove image"
+                    aria-label="Remove image"
                     className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
                   >
                     <FaTimes size={14} />
@@ -317,10 +445,14 @@ export default function NewReportPage() {
           <div className="text-center pt-4">
             <button
               type="submit"
-              className="bg-yellow-400 hover:bg-yellow-500 w-full transition font-semibold px-10 py-3 rounded-lg shadow-lg"
+              disabled={isSubmitting}
+              className="bg-[#2a7d2f] hover:bg-[#1e5d22] disabled:bg-gray-400 disabled:cursor-not-allowed w-full transition font-bold text-white px-10 py-4 rounded-lg shadow-lg text-lg"
             >
-              Submit Report
+              {isSubmitting ? "Submitting..." : "Submit Report"}
             </button>
+            <p className="text-gray-500 text-sm mt-3">
+              By submitting, you agree to our terms and conditions
+            </p>
           </div>
         </form>
       </div>
