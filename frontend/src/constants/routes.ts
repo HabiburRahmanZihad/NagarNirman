@@ -3,6 +3,7 @@
 export const PUBLIC_ROUTES = {
   HOME: '/',
   ABOUT: '/about',
+  ABOUT_TEAM: '/about-team',
   CONTACT: '/contact',
   REPORT: '/reports',
   REPORT_MAP: '/reports/map',

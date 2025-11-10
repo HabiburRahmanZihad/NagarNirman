@@ -68,9 +68,19 @@ const Navbar: React.FC = () => {
               </>
             )}
 
-            <Link href="/about" className="text-[#374151] hover:text-[#81d586] transition-colors">
-              About
-            </Link>
+            <div className="relative group">
+              <Link href="/about" className="text-[#374151] hover:text-[#81d586] transition-colors">
+                About
+              </Link>
+              <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <Link href="/about" className="block px-4 py-2 text-[#374151] hover:bg-[#F6FFF9] hover:text-[#2a7d2f] rounded-t-lg">
+                  About Us
+                </Link>
+                <Link href="/about-team" className="block px-4 py-2 text-[#374151] hover:bg-[#F6FFF9] hover:text-[#2a7d2f] rounded-b-lg">
+                  Meet the Team
+                </Link>
+              </div>
+            </div>
           </div>
 
           {/* Auth Buttons */}
