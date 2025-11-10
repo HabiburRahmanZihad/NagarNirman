@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Image from "next/image";
-import { FaUpload, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
+import { FaUpload, FaMapMarkerAlt, FaTimes, FaLock } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import categoryOptions from "@/data/categoryOptions.json";
 import divisionData from "@/data/divisionsData.json";
 
@@ -25,6 +26,7 @@ type ReportFormData = {
 
 export default function NewReportPage() {
   const router = useRouter();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const { register, handleSubmit, watch, reset, setValue, formState: { errors, isSubmitting } } =
     useForm<ReportFormData>();
   const [preview, setPreview] = useState<string | null>(null);
@@ -35,6 +37,19 @@ export default function NewReportPage() {
 
   const selectedCategory = watch("category");
   const selectedDivision = watch("division");
+
+  // Check if user is authenticated and has 'user' role
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        toast.error("Please login to submit a report");
+        router.push("/auth/login");
+      } else if (user?.role !== "user") {
+        toast.error("Only users can submit reports. Please register as a user.");
+        router.push("/");
+      }
+    }
+  }, [isAuthenticated, user, isLoading, router]);
 
   const handleDivisionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const div = e.target.value;
@@ -77,6 +92,13 @@ export default function NewReportPage() {
   };
 
   const onSubmit = async (data: ReportFormData) => {
+    // Double-check user role before submission
+    if (!user || user.role !== "user") {
+      toast.error("Only users can submit reports");
+      router.push("/");
+      return;
+    }
+
     const submitToast = toast.loading("Submitting your report...");
 
     try {
@@ -159,6 +181,67 @@ export default function NewReportPage() {
     }
   };
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-12 px-4 flex justify-center items-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#2a7d2f] mx-auto mb-4"></div>
+          <p className="text-[#6B7280] text-lg">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show access denied if not a user
+  if (!isAuthenticated || user?.role !== "user") {
+    return (
+      <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-12 px-4 flex justify-center items-center">
+        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-10 text-center">
+          <div className="mb-6">
+            <FaLock className="text-6xl text-red-500 mx-auto mb-4" />
+            <h1 className="text-3xl font-bold text-[#002E2E] mb-3">
+              Access Restricted
+            </h1>
+            <p className="text-[#6B7280] text-lg mb-6">
+              Only registered users can submit reports.
+              {user?.role && user.role !== "user" && (
+                <span className="block mt-2 text-red-600 font-semibold">
+                  You are logged in as {user.role}. Please use a user account to submit reports.
+                </span>
+              )}
+            </p>
+          </div>
+          <div className="flex gap-4 justify-center">
+            {!isAuthenticated ? (
+              <>
+                <button
+                  onClick={() => router.push("/auth/login")}
+                  className="bg-[#2a7d2f] hover:bg-[#1e5d22] text-white px-6 py-3 rounded-lg font-semibold transition"
+                >
+                  Login as User
+                </button>
+                <button
+                  onClick={() => router.push("/auth/register")}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-lg font-semibold transition"
+                >
+                  Register
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => router.push("/")}
+                className="bg-[#2a7d2f] hover:bg-[#1e5d22] text-white px-6 py-3 rounded-lg font-semibold transition"
+              >
+                Go to Homepage
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-12 px-4 flex justify-center">
       <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl p-10">
@@ -167,6 +250,9 @@ export default function NewReportPage() {
             Submit a New Report
           </h1>
           <p className="text-[#6B7280]">Help improve your community by reporting infrastructure issues</p>
+          <div className="mt-3 inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-lg text-sm">
+            <span className="font-semibold">✓ Verified User:</span> {user?.name}
+          </div>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
