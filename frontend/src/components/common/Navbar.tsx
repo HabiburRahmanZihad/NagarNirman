@@ -44,6 +44,9 @@ const Navbar: React.FC = () => {
                 <Link href="/reports/new" className="text-[#374151] hover:text-[#81d586] transition-colors">
                   Report Issue
                 </Link>
+                <Link href="/map-search" className="text-[#374151] hover:text-[#81d586] transition-colors">
+                  Map Search
+                </Link>
               </>
             )}
 
