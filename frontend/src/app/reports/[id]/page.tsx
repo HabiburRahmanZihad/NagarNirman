@@ -429,47 +429,6 @@ export default function ReportDetailsPage() {
               </div>
             </Card>
 
-            {/* Timeline/History */}
-            {report.history && report.history.length > 0 && (
-              <Card className="p-6">
-                <h3 className="text-lg font-bold text-[#002E2E] mb-4">Timeline</h3>
-                <div className="space-y-4">
-                  {report.history.map((item, index) => (
-                    <div key={index} className="flex gap-4">
-                      <div className="flex flex-col items-center">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          item.status === 'resolved' ? 'bg-green-100 text-green-600' :
-                          item.status === 'in-progress' ? 'bg-indigo-100 text-indigo-600' :
-                          item.status === 'approved' ? 'bg-blue-100 text-blue-600' :
-                          'bg-gray-100 text-gray-600'
-                        }`}>
-                          {getStatusInfo(item.status).icon}
-                        </div>
-                        {index < report.history.length - 1 && (
-                          <div className="w-0.5 h-full bg-gray-200 my-1" />
-                        )}
-                      </div>
-                      <div className="flex-1 pb-4">
-                        <div className="flex justify-between items-start mb-1">
-                          <span className="font-semibold text-[#002E2E] capitalize">
-                            {item.status.replace('-', ' ')}
-                          </span>
-                          <span className="text-xs text-[#6B7280]">
-                            {formatDate(item.date)}
-                          </span>
-                        </div>
-                        <p className="text-sm text-[#6B7280]">{item.note || 'Status updated'}</p>
-                        {item.updatedBy?.name && (
-                          <p className="text-xs text-[#6B7280] mt-1">
-                            by {item.updatedBy.name}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            )}
 
             {/* Comments Section */}
             <Card className="p-6">
