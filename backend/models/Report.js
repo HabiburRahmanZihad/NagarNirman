@@ -240,6 +240,75 @@ export const getReportById = async (reportId) => {
           },
         },
       },
+      // Unwind comments to populate user details
+      {
+        $unwind: {
+          path: '$comments',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'comments.user',
+          foreignField: '_id',
+          as: 'comments.userDetails',
+        },
+      },
+      {
+        $addFields: {
+          comments: {
+            $cond: {
+              if: { $gt: [{ $size: { $ifNull: ['$comments.userDetails', []] } }, 0] },
+              then: {
+                _id: '$comments._id',
+                user: {
+                  _id: { $arrayElemAt: ['$comments.userDetails._id', 0] },
+                  name: { $arrayElemAt: ['$comments.userDetails.name', 0] },
+                  role: { $arrayElemAt: ['$comments.userDetails.role', 0] },
+                  district: { $arrayElemAt: ['$comments.userDetails.district', 0] },
+                },
+                comment: '$comments.comment',
+                createdAt: '$comments.date',
+              },
+              else: '$comments',
+            },
+          },
+        },
+      },
+      // Group again to reconstruct comments array
+      {
+        $group: {
+          _id: '$_id',
+          title: { $first: '$title' },
+          description: { $first: '$description' },
+          problemType: { $first: '$problemType' },
+          severity: { $first: '$severity' },
+          status: { $first: '$status' },
+          location: { $first: '$location' },
+          images: { $first: '$images' },
+          upvotes: { $first: '$upvotes' },
+          createdBy: { $first: '$createdBy' },
+          assignedTo: { $first: '$assignedTo' },
+          assignedBy: { $first: '$assignedBy' },
+          createdAt: { $first: '$createdAt' },
+          updatedAt: { $first: '$updatedAt' },
+          history: { $first: '$history' },
+          comments: { $push: '$comments' },
+        },
+      },
+      // Filter out empty comments
+      {
+        $addFields: {
+          comments: {
+            $filter: {
+              input: '$comments',
+              as: 'c',
+              cond: { $ne: ['$$c', {}] },
+            },
+          },
+        },
+      },
       {
         $project: {
           createdByUser: 0,
