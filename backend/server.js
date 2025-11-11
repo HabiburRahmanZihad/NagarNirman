@@ -1,16 +1,30 @@
 // Backend server entry point
+// Load environment variables FIRST before any other imports
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load .env file with explicit path
+const result = dotenv.config({ path: join(__dirname, '.env') });
+
+if (result.error) {
+  console.error('❌ Error loading .env file:', result.error);
+} else {
+  console.log('✅ .env file loaded successfully');
+  console.log('📁 .env path:', join(__dirname, '.env'));
+}
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
-
-// Load environment variables
-dotenv.config();
 
 // Initialize Express app
 const app = express();
@@ -23,8 +37,9 @@ app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Increase payload limit to handle base64 images (50MB)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Routes
 app.use('/api/auth', authRoutes);

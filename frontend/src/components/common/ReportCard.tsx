@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { FaMapMarkerAlt, FaClock, FaThumbsUp, FaEye, FaExclamationCircle } from 'react-icons/fa';

@@ -29,7 +29,7 @@ export default function NewReportPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { register, handleSubmit, watch, reset, setValue, formState: { errors, isSubmitting } } =
     useForm<ReportFormData>();
-  const [preview, setPreview] = useState<string | null>(null);
+  const [previews, setPreviews] = useState<string[]>([]);
   const [districts, setDistricts] = useState<
     { name: string; latitude: number; longitude: number }[]
   >([]);
@@ -99,6 +99,18 @@ export default function NewReportPage() {
       return;
     }
 
+    // Validate coordinates
+    if (!data.latitude || !data.longitude) {
+      toast.error("Please fetch your location using the 'Get Current Location' button");
+      return;
+    }
+
+    // Validate images
+    if (!data.image || data.image.length === 0) {
+      toast.error("Please upload at least one image");
+      return;
+    }
+
     const submitToast = toast.loading("Submitting your report...");
 
     try {
@@ -126,22 +138,48 @@ export default function NewReportPage() {
 
       const problemType = problemTypeMap[data.category] || "other";
 
-      // Prepare the request body (NOT FormData for now, use JSON)
+      // Location data
+      const locationData = {
+        address: `${data.address}, ${data.district}, ${data.division}`,
+        district: data.district,
+        coordinates: [parseFloat(data.longitude!), parseFloat(data.latitude!)],
+      };
+
+      // Convert images to base64
+      let base64Images: string[] = [];
+      if (data.image && data.image.length > 0) {
+        toast.loading("Processing images...", { id: "image-processing" });
+
+        const imagePromises = Array.from(data.image).map((file) => {
+          return new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        });
+
+        base64Images = await Promise.all(imagePromises);
+        toast.dismiss("image-processing");
+      }
+
+      // Prepare request body
       const requestBody = {
         title: data.title,
         description: data.description,
         problemType: problemType,
         severity: data.severity,
-        location: {
-          address: `${data.address}, ${data.district}, ${data.division}`,
-          district: data.district,
-          coordinates:
-            data.latitude && data.longitude
-              ? [parseFloat(data.longitude), parseFloat(data.latitude)]
-              : [],
-        },
-        images: [], // For now, we'll handle images separately
+        location: locationData,
+        images: base64Images,
       };
+
+      // Debug log
+      console.log('=== Frontend Debug ===');
+      console.log('Form Data:', data);
+      console.log('Problem Type:', problemType);
+      console.log('Location Data:', locationData);
+      console.log('Images count:', base64Images.length);
+      console.log('=====================');
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports`, {
         method: "POST",
@@ -154,15 +192,19 @@ export default function NewReportPage() {
 
       const result = await res.json();
 
+      console.log('Server Response:', result);
+      console.log('Response Status:', res.status);
+
       toast.dismiss(submitToast);
 
       if (!res.ok) {
-        throw new Error(result.message || "Failed to submit report");
+        console.error('Error Response:', result);
+        throw new Error(result.message || result.error || "Failed to submit report");
       }
 
       toast.success("Report submitted successfully! 🎉");
       reset();
-      setPreview(null);
+      setPreviews([]);
       setDistricts([]);
 
       // Redirect to reports page after 1.5 seconds
@@ -432,25 +474,35 @@ export default function NewReportPage() {
             <div className="grid md:grid-cols-2 gap-6 mt-6">
               <div>
                 <label className="block font-medium text-gray-700 mb-2">
-                  Latitude <span className="text-gray-400 text-sm">(Optional)</span>
+                  Latitude <span className="text-red-500">*</span>
                 </label>
                 <input
-                  {...register("latitude")}
-                  placeholder="Auto-filled when you click 'Get Location'"
+                  {...register("latitude", { required: "Please fetch your location" })}
+                  placeholder="Click 'Get Current Location' button below"
                   readOnly
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
+                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed ${
+                    errors.latitude ? "border-red-500" : "border-gray-300"
+                  }`}
                 />
+                {errors.latitude && (
+                  <p className="text-red-500 text-sm mt-1">{errors.latitude.message}</p>
+                )}
               </div>
               <div>
                 <label className="block font-medium text-gray-700 mb-2">
-                  Longitude <span className="text-gray-400 text-sm">(Optional)</span>
+                  Longitude <span className="text-red-500">*</span>
                 </label>
                 <input
-                  {...register("longitude")}
-                  placeholder="Auto-filled when you click 'Get Location'"
+                  {...register("longitude", { required: "Please fetch your location" })}
+                  placeholder="Click 'Get Current Location' button below"
                   readOnly
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 cursor-not-allowed"
+                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed ${
+                    errors.longitude ? "border-red-500" : "border-gray-300"
+                  }`}
                 />
+                {errors.longitude && (
+                  <p className="text-red-500 text-sm mt-1">{errors.longitude.message}</p>
+                )}
               </div>
             </div>
 
@@ -464,6 +516,9 @@ export default function NewReportPage() {
                 <FaMapMarkerAlt />
                 {isLoadingLocation ? "Fetching..." : "Get Current Location"}
               </button>
+              <p className="text-red-500 text-sm mt-2">
+                * Location coordinates are required. Please click the button above to fetch.
+              </p>
             </div>
           </div>
 
@@ -494,34 +549,83 @@ export default function NewReportPage() {
 
           {/* Image Upload */}
           <div>
-            <label className="block font-medium text-gray-700 mb-3">Upload Image</label>
-            <div className="flex gap-6 items-center">
-              <label className="flex flex-col items-center justify-center w-40 h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition">
+            <label className="block font-medium text-gray-700 mb-3">
+              Upload Images <span className="text-red-500">* (Required - Maximum 5 images, 5MB each)</span>
+            </label>
+            <div className="space-y-4">
+              <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition ${
+                errors.image ? "border-red-500 bg-red-50" : "border-gray-300"
+              }`}>
                 <FaUpload className="text-gray-500 text-2xl mb-2" />
-                <p className="text-sm text-gray-500">Upload</p>
+                <p className="text-sm text-gray-500 font-semibold">Click to upload images (Required)</p>
+                <p className="text-xs text-gray-400 mt-1">PNG, JPG, GIF, WebP up to 5MB each</p>
                 <input
                   type="file"
-                  {...register("image")}
+                  {...register("image", {
+                    required: "At least one image is required",
+                    onChange: (e) => {
+                      const files = e.target.files;
+                      if (files && files.length > 0) {
+                        // Update previews
+                        const newPreviews: string[] = [];
+                        for (let i = 0; i < Math.min(files.length, 5); i++) {
+                          newPreviews.push(URL.createObjectURL(files[i]));
+                        }
+                        setPreviews(newPreviews);
+
+                        if (files.length > 5) {
+                          toast.error("Maximum 5 images allowed. First 5 will be uploaded.");
+                        }
+                      }
+                    }
+                  })}
                   className="hidden"
                   accept="image/*"
-                  onChange={(e) => {
-                    if (e.target.files?.[0]) setPreview(URL.createObjectURL(e.target.files[0]));
-                  }}
+                  multiple
                 />
               </label>
+              {errors.image && (
+                <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>
+              )}
 
-              {preview && (
-                <div className="relative w-40 h-40 rounded-lg overflow-hidden border border-gray-200 shadow">
-                  <Image src={preview} alt="Report preview" fill className="object-cover rounded-lg" />
-                  <button
-                    type="button"
-                    onClick={() => setPreview(null)}
-                    title="Remove image"
-                    aria-label="Remove image"
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
-                  >
-                    <FaTimes size={14} />
-                  </button>
+              {previews.length > 0 && (
+                <div>
+                  <p className="text-sm font-semibold text-green-600 mb-2">
+                    ✓ {previews.length} image(s) selected
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    {previews.map((preview, index) => (
+                      <div key={index} className="relative w-full h-32 rounded-lg overflow-hidden border-2 border-green-300 shadow">
+                        <Image src={preview} alt={`Preview ${index + 1}`} fill className="object-cover rounded-lg" />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            // Remove preview
+                            const newPreviews = previews.filter((_, i) => i !== index);
+                            setPreviews(newPreviews);
+
+                            // If all images removed, clear the file input
+                            if (newPreviews.length === 0) {
+                              setValue("image", undefined as any);
+                              // Force re-render by creating a new empty FileList
+                              const input = document.querySelector('input[type="file"][accept="image/*"]') as HTMLInputElement;
+                              if (input) {
+                                input.value = '';
+                              }
+                            }
+                          }}
+                          title="Remove image"
+                          aria-label="Remove image"
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition"
+                        >
+                          <FaTimes size={12} />
+                        </button>
+                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-60 text-white text-xs text-center py-1">
+                          Image {index + 1}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -529,6 +633,11 @@ export default function NewReportPage() {
 
           {/* Submit */}
           <div className="text-center pt-4">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+              <p className="text-yellow-800 text-sm font-semibold">
+                ⚠️ All fields are mandatory including images and location coordinates
+              </p>
+            </div>
             <button
               type="submit"
               disabled={isSubmitting}
