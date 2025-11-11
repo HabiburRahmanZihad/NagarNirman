@@ -21,6 +21,7 @@ import {
   FaUserTie,
   FaEnvelope,
   FaPhone,
+  FaComments,
 } from 'react-icons/fa';
 
 interface Report {
@@ -38,8 +39,13 @@ interface Report {
   images: string[];
   upvotes: string[];
   comments: Array<{
-    user: string;
-    text: string;
+    user: {
+      _id: string;
+      name: string;
+      role: string;
+      district: string;
+    };
+    comment: string;
     createdAt: string;
   }>;
   createdBy: {
@@ -79,6 +85,8 @@ export default function ReportDetailsPage() {
   const [report, setReport] = useState<Report | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpvoting, setIsUpvoting] = useState(false);
+  const [newComment, setNewComment] = useState('');
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   const reportId = params?.id as string;
 
@@ -107,6 +115,49 @@ export default function ReportDetailsPage() {
       fetchReportDetails();
     }
   }, [reportId]);
+
+  // Handle comment submission
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!isAuthenticated) {
+      toast.error('Please login to comment');
+      return;
+    }
+
+    if (!newComment.trim()) {
+      toast.error('Please enter a comment');
+      return;
+    }
+
+    setIsSubmittingComment(true);
+    try {
+      const token = localStorage.getItem('nn_auth_token');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports/${reportId}/comment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ comment: newComment }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        toast.success('Comment added successfully!');
+        setNewComment('');
+        fetchReportDetails(); // Refresh to show new comment
+      } else {
+        toast.error(data.message || 'Failed to add comment');
+      }
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      toast.error('Failed to add comment');
+    } finally {
+      setIsSubmittingComment(false);
+    }
+  };
 
   // Handle upvote
   const handleUpvote = async () => {
@@ -419,6 +470,115 @@ export default function ReportDetailsPage() {
                 </div>
               </Card>
             )}
+
+            {/* Comments Section */}
+            <Card className="p-6">
+              <h3 className="text-lg font-bold text-[#002E2E] mb-4 flex items-center gap-2">
+                <FaComments className="text-[#2a7d2f]" />
+                Comments ({report.comments?.length || 0})
+              </h3>
+
+              {/* Add Comment Form */}
+              {isAuthenticated && user?._id?.toString() !== report.createdBy?._id?.toString() ? (
+                <form onSubmit={handleCommentSubmit} className="mb-6">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#2a7d2f] text-white flex items-center justify-center font-bold shrink-0">
+                      {user?.name?.charAt(0).toUpperCase() || 'U'}
+                    </div>
+                    <div className="flex-1">
+                      <textarea
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        placeholder="Add a comment..."
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent resize-none"
+                        rows={3}
+                        disabled={isSubmittingComment}
+                      />
+                      <div className="flex justify-end mt-2">
+                        <button
+                          type="submit"
+                          disabled={isSubmittingComment || !newComment.trim()}
+                          className="px-4 py-2 bg-[#2a7d2f] text-white rounded-lg font-semibold hover:bg-[#1f5f23] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {isSubmittingComment ? 'Posting...' : 'Post Comment'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              ) : !isAuthenticated ? (
+                <div className="mb-6 p-4 bg-gray-50 rounded-lg text-center">
+                  <p className="text-[#6B7280] mb-2">Please login to add comments</p>
+                  <Link href="/auth/login">
+                    <Button variant="primary">Login</Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="mb-6 p-4 bg-blue-50 rounded-lg text-center border border-blue-200">
+                  <p className="text-[#002E2E] font-semibold">
+                    You cannot comment on your own report
+                  </p>
+                  <p className="text-[#6B7280] text-sm mt-1">
+                    Others can add comments to provide feedback or updates
+                  </p>
+                </div>
+              )}
+
+              {/* Comments List */}
+              <div className="space-y-4">
+                {report.comments && report.comments.length > 0 ? (
+                  report.comments.map((comment, index) => (
+                    <div key={index} className="flex gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0">
+                        {comment.user?.name?.charAt(0).toUpperCase() || 'U'}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center flex-wrap gap-2 mb-2">
+                          <span className="font-semibold text-[#002E2E]">
+                            {comment.user?.name || 'Anonymous'}
+                          </span>
+
+                          {/* Role Badge */}
+                          {comment.user?.role && (
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                              comment.user.role === 'authority' ? 'bg-blue-100 text-blue-800' :
+                              comment.user.role === 'problemSolver' ? 'bg-purple-100 text-purple-800' :
+                              comment.user.role === 'ngo' ? 'bg-green-100 text-green-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {comment.user.role === 'problemSolver' ? 'Problem Solver' :
+                               comment.user.role.charAt(0).toUpperCase() + comment.user.role.slice(1)}
+                            </span>
+                          )}
+
+                          {/* District Badge */}
+                          {comment.user?.district && (
+                            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+                              📍 {comment.user.district}
+                            </span>
+                          )}
+
+                          <span className="text-xs text-[#6B7280] ml-auto">
+                            {new Date(comment.createdAt).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        </div>
+                        <p className="text-[#6B7280] whitespace-pre-line">{comment.comment}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-[#6B7280]">No comments yet. Be the first to comment!</p>
+                  </div>
+                )}
+              </div>
+            </Card>
           </div>
 
           {/* Sidebar */}

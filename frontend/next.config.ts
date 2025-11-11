@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+    // Disable optimization to avoid private IP check issues
+    unoptimized: true,
   },
 };
 
