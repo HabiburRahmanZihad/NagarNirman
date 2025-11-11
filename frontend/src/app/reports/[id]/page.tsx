@@ -305,6 +305,39 @@ export default function ReportDetailsPage() {
               </div>
             </Card>
 
+            {/* Reporter Info */}
+            {report.createdBy && (
+              <Card className="p-6">
+                <h3 className="text-lg font-bold text-[#002E2E] mb-4 flex items-center gap-2">
+                  <FaUser className="text-[#2a7d2f]" />
+                  Reported By
+                </h3>
+                <div className="flex items-center gap-4 p-4 bg-linear-to-r from-[#F6FFF9] to-white rounded-lg border border-[#2a7d2f]/20">
+                  <div className="w-16 h-16 rounded-full bg-[#2a7d2f] text-white flex items-center justify-center font-bold text-2xl shrink-0">
+                    {report.createdBy.name?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-bold text-lg text-[#002E2E]">{report.createdBy.name || 'Anonymous'}</p>
+                    <p className="text-sm text-[#6B7280] mb-2">Citizen Reporter</p>
+                    <div className="space-y-1">
+                      {report.createdBy.email && (
+                        <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+                          <FaEnvelope className="text-[#2a7d2f]" />
+                          <span>{report.createdBy.email}</span>
+                        </div>
+                      )}
+                      {report.createdBy.phone && (
+                        <div className="flex items-center gap-2 text-sm text-[#6B7280]">
+                          <FaPhone className="text-[#2a7d2f]" />
+                          <span>{report.createdBy.phone}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            )}
+
             {/* Images */}
             {report.images && report.images.length > 0 && (
               <Card className="p-6">
@@ -374,10 +407,12 @@ export default function ReportDetailsPage() {
                             {formatDate(item.date)}
                           </span>
                         </div>
-                        <p className="text-sm text-[#6B7280]">{item.note}</p>
-                        <p className="text-xs text-[#6B7280] mt-1">
-                          by {item.updatedBy.name}
-                        </p>
+                        <p className="text-sm text-[#6B7280]">{item.note || 'Status updated'}</p>
+                        {item.updatedBy?.name && (
+                          <p className="text-xs text-[#6B7280] mt-1">
+                            by {item.updatedBy.name}
+                          </p>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -392,55 +427,28 @@ export default function ReportDetailsPage() {
             <Card className="p-6">
               <h3 className="text-lg font-bold text-[#002E2E] mb-4">Actions</h3>
               <div className="space-y-3">
-                <button
-                  onClick={handleUpvote}
-                  disabled={isUpvoting || !isAuthenticated}
-                  className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition ${
-                    isUpvoted
-                      ? 'bg-[#2a7d2f] text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  } disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  <FaThumbsUp />
-                  {isUpvoted ? 'Upvoted' : 'Upvote'} ({report.upvotes.length})
-                </button>
+                {/* Show upvote button only if user is not the report creator */}
+                {user?._id?.toString() !== report.createdBy?._id?.toString() ? (
+                  <button
+                    onClick={handleUpvote}
+                    disabled={isUpvoting || !isAuthenticated}
+                    className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition ${
+                      isUpvoted
+                        ? 'bg-[#2a7d2f] text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    <FaThumbsUp />
+                    {isUpvoted ? 'Upvoted' : 'Upvote'} ({report.upvotes.length})
+                  </button>
+                ) : (
+                  <div className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold bg-gray-100 text-gray-700">
+                    <FaThumbsUp />
+                    <span>Your Report • Upvotes: {report.upvotes.length}</span>
+                  </div>
+                )}
               </div>
             </Card>
-
-            {/* Reporter Info */}
-            {report.createdBy && (
-              <Card className="p-6">
-                <h3 className="text-lg font-bold text-[#002E2E] mb-4 flex items-center gap-2">
-                  <FaUser className="text-[#2a7d2f]" />
-                  Reported By
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-[#2a7d2f] text-white flex items-center justify-center font-bold text-lg">
-                      {report.createdBy.name?.charAt(0).toUpperCase() || 'U'}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-[#002E2E]">{report.createdBy.name || 'Anonymous'}</p>
-                      <p className="text-sm text-[#6B7280]">Citizen</p>
-                    </div>
-                  </div>
-                  <div className="pt-3 border-t border-gray-200 space-y-2">
-                    {report.createdBy.email && (
-                      <div className="flex items-center gap-2 text-sm text-[#6B7280]">
-                        <FaEnvelope className="text-[#2a7d2f]" />
-                        <span>{report.createdBy.email}</span>
-                      </div>
-                    )}
-                    {report.createdBy.phone && (
-                      <div className="flex items-center gap-2 text-sm text-[#6B7280]">
-                        <FaPhone className="text-[#2a7d2f]" />
-                        <span>{report.createdBy.phone}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </Card>
-            )}
 
             {/* Assignment Info */}
             {report.assignedTo && (
