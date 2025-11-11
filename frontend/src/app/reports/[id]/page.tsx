@@ -316,7 +316,10 @@ export default function ReportDetailsPage() {
                         src={image}
                         alt={`Report image ${index + 1}`}
                         fill
+                        sizes="(max-width: 768px) 50vw, 33vw"
                         className="object-cover"
+                        priority={index === 0}
+                        loading={index === 0 ? "eager" : "lazy"}
                       />
                     </div>
                   ))}

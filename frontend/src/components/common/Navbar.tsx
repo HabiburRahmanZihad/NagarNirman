@@ -21,7 +21,8 @@ const Navbar: React.FC = () => {
               alt="NagarNirman Logo"
               width={140}
               height={140}
-              className=""
+              className="w-auto h-auto"
+              priority
             />
           </Link>
 

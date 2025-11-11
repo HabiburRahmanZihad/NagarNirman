@@ -76,20 +76,100 @@ export const getReport = asyncHandler(async (req, res) => {
   }
 });
 
+// Helper function to upload image to ImgBB
+const uploadToImgBB = async (base64Image) => {
+  const apiKey = process.env.IMGBB_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('ImgBB API key not configured');
+  }
+
+  // Remove data:image/...;base64, prefix if present
+  const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
+
+  const formData = new URLSearchParams();
+  formData.append('key', apiKey);
+  formData.append('image', base64Data);
+
+  const response = await fetch('https://api.imgbb.com/1/upload', {
+    method: 'POST',
+    body: formData,
+  });
+
+  const result = await response.json();
+
+  if (!result.success) {
+    throw new Error(result.error?.message || 'Failed to upload image');
+  }
+
+  return result.data.url;
+};
+
 // @desc    Create new report
 // @route   POST /api/reports
 // @access  Private
 export const createNewReport = asyncHandler(async (req, res) => {
   const { title, description, problemType, severity, location, images } = req.body;
 
+  // Debug log
+  console.log('=== Report Creation Debug ===');
+  console.log('Title:', title);
+  console.log('Description:', description?.substring(0, 50));
+  console.log('Problem Type:', problemType);
+  console.log('Severity:', severity);
+  console.log('Location:', location);
+  console.log('Images count:', images?.length || 0);
+  console.log('User ID:', req.user?.id);
+  console.log('===========================');
+
   try {
+    // Parse location if it's a string
+    let parsedLocation = location;
+    if (typeof location === 'string') {
+      try {
+        parsedLocation = JSON.parse(location);
+      } catch (parseError) {
+        console.error('Location parse error:', parseError);
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid location data format',
+        });
+      }
+    }
+
+    // Validate required fields
+    if (!title || !description || !problemType || !severity || !parsedLocation) {
+      console.log('Validation failed:', {
+        hasTitle: !!title,
+        hasDescription: !!description,
+        hasProblemType: !!problemType,
+        hasSeverity: !!severity,
+        hasLocation: !!parsedLocation
+      });
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide all required fields',
+      });
+    }
+
+    // Upload images to ImgBB
+    let imageUrls = [];
+    if (images && Array.isArray(images) && images.length > 0) {
+      console.log(`Uploading ${images.length} images to ImgBB...`);
+
+      const uploadPromises = images.map(base64Image => uploadToImgBB(base64Image));
+      imageUrls = await Promise.all(uploadPromises);
+
+      console.log('Images uploaded successfully:', imageUrls);
+    }
+
     const report = await createReport({
       title,
       description,
       problemType,
       severity,
-      location,
-      images: images || [],
+      location: parsedLocation,
+      images: imageUrls,
       createdBy: req.user.id,
     });
 
@@ -99,9 +179,11 @@ export const createNewReport = asyncHandler(async (req, res) => {
       data: report,
     });
   } catch (error) {
+    console.error('Error creating report:', error);
     res.status(400).json({
       success: false,
-      message: error.message,
+      message: error.message || 'Error creating report',
+      error: error.toString(),
     });
   }
 });

@@ -4,8 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 
 const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer className="bg-[#002E2E] text-white mt-auto">
       <div className="container mx-auto px-4 py-8">
@@ -100,7 +98,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="border-t border-gray-700 mt-8 pt-6 text-center text-sm text-gray-300">
-          <p>&copy; {currentYear} NagarNirman. All rights reserved. | Aligned with SDG 11</p>
+          <p>&copy; 2025 NagarNirman. All rights reserved. | Aligned with SDG 11</p>
         </div>
       </div>
     </footer>
