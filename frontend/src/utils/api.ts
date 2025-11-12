@@ -87,10 +87,53 @@ export const taskAPI = {
   },
 
   complete: (taskId: string, proofURL: string) => {
-    return apiClient(API_ENDPOINTS.COMPLETE_TASK, {
+    return apiClient(API_ENDPOINTS.COMPLETE_TASK(taskId), {
       method: 'POST',
       body: JSON.stringify({ taskId, proofURL }),
       requiresAuth: true,
     });
+  },
+};
+
+// Map API functions
+export const mapAPI = {
+  getAllDivisions: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/map/divisions`);
+  },
+
+  getDivisionStats: (division: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/map/divisions/${encodeURIComponent(division)}`);
+  },
+
+  getDistrictStats: (district: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/map/districts/${encodeURIComponent(district)}`);
+  },
+};
+
+// Statistics API functions - Comprehensive statistics with all report states
+export const statisticsAPI = {
+  // Get complete map data with all divisions and districts
+  getCompleteMapData: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/map`);
+  },
+
+  // Get all division-level statistics
+  getAllDivisions: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/divisions`);
+  },
+
+  // Get district statistics for a specific division
+  getDivisionDistricts: (division: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/divisions/${encodeURIComponent(division)}/districts`);
+  },
+
+  // Get complete statistics
+  getCompleteStats: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/complete`);
+  },
+
+  // Get summary statistics
+  getSummary: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/summary`);
   },
 };

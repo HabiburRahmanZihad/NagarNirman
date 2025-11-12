@@ -1,7 +1,9 @@
 "use client";
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, Moon, Sun, MapPin, Activity, CheckCircle, Clock, Info, TrendingUp, AlertCircle, BarChart3, Users, Zap } from 'lucide-react';
+import { Search, X, MapPin, Activity, CheckCircle, Clock, Info, TrendingUp, BarChart3, Users } from 'lucide-react';
+import divisionsDataJson from '@/data/divisionsData.json';
+import { statisticsAPI } from '@/utils/api';
+import 'leaflet/dist/leaflet.css';
 
 // Type definitions
 interface District {
@@ -42,277 +44,42 @@ interface DynamicMapProps {
   showDistricts: boolean;
 }
 
+// Transform JSON data to match Division structure
+const transformDivisionsData = (): Division[] => {
+  const colors = [
+    '#3B82F6', // Blue
+    '#10B981', // Green
+    '#F59E0B', // Amber
+    '#8B5CF6', // Purple
+    '#EC4899', // Pink
+    '#14B8A6', // Teal
+    '#EF4444', // Red
+    '#06B6D4'  // Cyan
+  ];
+
+  return divisionsDataJson.map((divisionData, index) => ({
+    id: divisionData.division.toLowerCase().replace(/\s+/g, '-'),
+    name: `${divisionData.division} Division`,
+    lat: divisionData.latitude,
+    lng: divisionData.longitude,
+    color: colors[index % colors.length],
+    intensity: 0, // Will be calculated from reports
+    trend: '+0%',
+    districts: divisionData.districts.map((district) => ({
+      name: district.name,
+      total: 0, // Will be populated from actual report data
+      pending: 0,
+      completed: 0,
+      priority: 'low' as 'high' | 'medium' | 'low',
+      lat: district.latitude,
+      lng: district.longitude,
+      color: colors[index % colors.length]
+    }))
+  }));
+};
+
 // Enhanced data structure with district coordinates
-const DIVISIONS_DATA: Division[] = [
-  {
-    id: 'dhaka',
-    name: 'Dhaka Division',
-    lat: 23.8103,
-    lng: 90.4125,
-    color: '#3B82F6',
-    intensity: 85,
-    trend: '+12%',
-    districts: [
-      { 
-        name: 'Dhaka Metro', 
-        total: 245, 
-        pending: 89, 
-        completed: 156, 
-        priority: 'high',
-        lat: 23.8103,
-        lng: 90.4125,
-        color: '#2563EB'
-      },
-      { 
-        name: 'Gazipur', 
-        total: 78, 
-        pending: 34, 
-        completed: 44, 
-        priority: 'medium',
-        lat: 23.9999,
-        lng: 90.4203,
-        color: '#3B82F6'
-      },
-      { 
-        name: 'Narayanganj', 
-        total: 92, 
-        pending: 41, 
-        completed: 51, 
-        priority: 'medium',
-        lat: 23.6238,
-        lng: 90.5000,
-        color: '#3B82F6'
-      }
-    ]
-  },
-  {
-    id: 'chittagong',
-    name: 'Chittagong Division',
-    lat: 22.3569,
-    lng: 91.7832,
-    color: '#10B981',
-    intensity: 72,
-    trend: '+8%',
-    districts: [
-      { 
-        name: 'Chittagong City', 
-        total: 189, 
-        pending: 67, 
-        completed: 122, 
-        priority: 'high',
-        lat: 22.3569,
-        lng: 91.7832,
-        color: '#059669'
-      },
-      { 
-        name: "Cox's Bazar", 
-        total: 56, 
-        pending: 28, 
-        completed: 28, 
-        priority: 'low',
-        lat: 21.4272,
-        lng: 92.0058,
-        color: '#10B981'
-      },
-      { 
-        name: 'Comilla', 
-        total: 103, 
-        pending: 45, 
-        completed: 58, 
-        priority: 'medium',
-        lat: 23.4619,
-        lng: 91.1850,
-        color: '#10B981'
-      }
-    ]
-  },
-  {
-    id: 'khulna',
-    name: 'Khulna Division',
-    lat: 22.8456,
-    lng: 89.5403,
-    color: '#F59E0B',
-    intensity: 58,
-    trend: '+5%',
-    districts: [
-      { 
-        name: 'Khulna City', 
-        total: 134, 
-        pending: 52, 
-        completed: 82, 
-        priority: 'medium',
-        lat: 22.8456,
-        lng: 89.5403,
-        color: '#D97706'
-      },
-      { 
-        name: 'Jessore', 
-        total: 67, 
-        pending: 29, 
-        completed: 38, 
-        priority: 'low',
-        lat: 23.1707,
-        lng: 89.2124,
-        color: '#F59E0B'
-      }
-    ]
-  },
-  {
-    id: 'rajshahi',
-    name: 'Rajshahi Division',
-    lat: 24.3745,
-    lng: 88.6042,
-    color: '#8B5CF6',
-    intensity: 45,
-    trend: '+3%',
-    districts: [
-      { 
-        name: 'Rajshahi City', 
-        total: 98, 
-        pending: 38, 
-        completed: 60, 
-        priority: 'medium',
-        lat: 24.3745,
-        lng: 88.6042,
-        color: '#7C3AED'
-      },
-      { 
-        name: 'Bogra', 
-        total: 71, 
-        pending: 31, 
-        completed: 40, 
-        priority: 'low',
-        lat: 24.8510,
-        lng: 89.3697,
-        color: '#8B5CF6'
-      }
-    ]
-  },
-  {
-    id: 'sylhet',
-    name: 'Sylhet Division',
-    lat: 24.8949,
-    lng: 91.8687,
-    color: '#EC4899',
-    intensity: 39,
-    trend: '+2%',
-    districts: [
-      { 
-        name: 'Sylhet City', 
-        total: 87, 
-        pending: 35, 
-        completed: 52, 
-        priority: 'low',
-        lat: 24.8949,
-        lng: 91.8687,
-        color: '#DB2777'
-      },
-      { 
-        name: 'Moulvibazar', 
-        total: 43, 
-        pending: 19, 
-        completed: 24, 
-        priority: 'low',
-        lat: 24.4829,
-        lng: 91.7774,
-        color: '#EC4899'
-      }
-    ]
-  },
-  {
-    id: 'barisal',
-    name: 'Barisal Division',
-    lat: 22.7010,
-    lng: 90.3535,
-    color: '#14B8A6',
-    intensity: 34,
-    trend: '+4%',
-    districts: [
-      { 
-        name: 'Barisal City', 
-        total: 76, 
-        pending: 32, 
-        completed: 44, 
-        priority: 'medium',
-        lat: 22.7010,
-        lng: 90.3535,
-        color: '#0D9488'
-      },
-      { 
-        name: 'Patuakhali', 
-        total: 52, 
-        pending: 24, 
-        completed: 28, 
-        priority: 'low',
-        lat: 22.3592,
-        lng: 90.3295,
-        color: '#14B8A6'
-      }
-    ]
-  },
-  {
-    id: 'rangpur',
-    name: 'Rangpur Division',
-    lat: 25.7439,
-    lng: 89.2752,
-    color: '#EF4444',
-    intensity: 41,
-    trend: '+6%',
-    districts: [
-      { 
-        name: 'Rangpur City', 
-        total: 89, 
-        pending: 37, 
-        completed: 52, 
-        priority: 'medium',
-        lat: 25.7439,
-        lng: 89.2752,
-        color: '#DC2626'
-      },
-      { 
-        name: 'Dinajpur', 
-        total: 64, 
-        pending: 27, 
-        completed: 37, 
-        priority: 'low',
-        lat: 25.6279,
-        lng: 88.6332,
-        color: '#EF4444'
-      }
-    ]
-  },
-  {
-    id: 'mymensingh',
-    name: 'Mymensingh Division',
-    lat: 24.7471,
-    lng: 90.4203,
-    color: '#06B6D4',
-    intensity: 47,
-    trend: '+7%',
-    districts: [
-      { 
-        name: 'Mymensingh City', 
-        total: 95, 
-        pending: 41, 
-        completed: 54, 
-        priority: 'medium',
-        lat: 24.7471,
-        lng: 90.4203,
-        color: '#0891B2'
-      },
-      { 
-        name: 'Netrokona', 
-        total: 48, 
-        pending: 22, 
-        completed: 26, 
-        priority: 'low',
-        lat: 24.8850,
-        lng: 90.7290,
-        color: '#06B6D4'
-      }
-    ]
-  }
-];
+const DIVISIONS_DATA: Division[] = transformDivisionsData();
 
 // Helper function to add markers to map
 const addMarkersToMap = (
@@ -333,7 +100,7 @@ const addMarkersToMap = (
 
   divisions.forEach((division) => {
     const divisionMatchesSearch = division.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const districtMatchesSearch = division.districts.some(d => 
+    const districtMatchesSearch = division.districts.some(d =>
       d.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -436,12 +203,12 @@ const addMarkersToMap = (
               color: ${isDark ? '#6B7280' : '#9CA3AF'};
               margin-top: 4px;
             ">
-              Total: ${division.districts.reduce((a, d) => a + d.total, 0)} • 
+              Total: ${division.districts.reduce((a, d) => a + d.total, 0)} •
               Resolved: ${division.districts.reduce((a, d) => a + d.completed, 0)}
             </div>
           </div>
-        `, { 
-          permanent: false, 
+        `, {
+          permanent: false,
           direction: 'top',
           offset: [0, -10],
           className: 'custom-tooltip',
@@ -467,7 +234,7 @@ const addMarkersToMap = (
     // Show districts if they match search OR if showDistricts is true OR if there's a search query
     division.districts.forEach((district) => {
       const districtMatchesSearch = district.name.toLowerCase().includes(searchQuery.toLowerCase());
-      
+
       if (shouldShowAllMarkers || showDistricts || districtMatchesSearch) {
         // Only show district if it matches search when there's a search query
         if (searchQuery.length > 0 && !districtMatchesSearch && !division.name.toLowerCase().includes(searchQuery.toLowerCase())) {
@@ -554,8 +321,8 @@ const addMarkersToMap = (
                 Resolved: ${district.completed} • Pending: ${district.pending}
               </div>
             </div>
-          `, { 
-            permanent: false, 
+          `, {
+            permanent: false,
             direction: 'top',
             offset: [0, -15],
             className: 'custom-tooltip',
@@ -572,19 +339,20 @@ const addMarkersToMap = (
 };
 
 // Dynamic Leaflet component with proper instance management
-const DynamicMap: React.FC<DynamicMapProps> = ({ 
-  divisions, 
-  selectedItem, 
-  onDivisionClick, 
-  onDistrictClick, 
-  isDark, 
+const DynamicMap: React.FC<DynamicMapProps> = ({
+  divisions,
+  selectedItem,
+  onDivisionClick,
+  onDistrictClick,
+  isDark,
   searchQuery,
-  showDistricts 
+  showDistricts
 }) => {
   const [mounted, setMounted] = useState(false);
   const mapRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
   const circlesRef = useRef<any[]>([]);
+  const legendRef = useRef<any>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -624,10 +392,9 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       cleanupMap();
 
       const L = await import('leaflet');
-      await import('leaflet/dist/leaflet.css');
 
-      // Fix for default markers
-      delete L.Icon.Default.prototype._getIconUrl;
+      // Fix for default markers - using any to bypass TypeScript checks
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
         iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
@@ -645,7 +412,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       const mapInstance = L.map('map', {
         zoomControl: false,
         attributionControl: false
-      }).setView([23.685, 90.3563], 7);
+      }).setView([23.685, 90.3563], 8);
 
       mapRef.current = mapInstance;
 
@@ -662,21 +429,21 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
 
       // Add markers to the map
       const { markers, circles } = addMarkersToMap(
-        L, 
-        mapInstance, 
-        divisions, 
-        isDark, 
-        searchQuery, 
-        showDistricts, 
-        onDivisionClick, 
+        L,
+        mapInstance,
+        divisions,
+        isDark,
+        searchQuery,
+        showDistricts,
+        onDivisionClick,
         onDistrictClick
       );
-      
+
       markersRef.current = markers;
       circlesRef.current = circles;
 
       // Enhanced legend with glassmorphism
-      const legend = L.control({ position: 'bottomright' });
+      const legend = new L.Control({ position: 'bottomright' });
       legend.onAdd = function() {
         const div = L.DomUtil.create('div', 'info legend');
         div.style.cssText = `
@@ -688,10 +455,13 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
           border: 1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
           font-family: system-ui;
           min-width: 200px;
+          max-height: 500px;
+          overflow-y: auto;
         `;
+        const totalMapped = divisions.reduce((sum, d) => sum + d.intensity, 0);
         div.innerHTML = `
           <h4 style="
-            margin: 0 0 14px 0;
+            margin: 0 0 8px 0;
             font-weight: 700;
             font-size: 13px;
             color: ${isDark ? '#F9FAFB' : '#111827'};
@@ -700,51 +470,243 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
             font-size: 11px;
             opacity: 0.7;
           ">Division Status</h4>
-          ${divisions.slice(0, 5).map(d => `
-            <div style="
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              margin: 8px 0;
-              padding: 6px 0;
-              border-bottom: 1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'};
-            ">
-              <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            background: ${isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)'};
+            border-radius: 8px;
+            border: 1px solid ${isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)'};
+          ">
+            <span style="
+              font-size: 12px;
+              font-weight: 600;
+              color: ${isDark ? '#93C5FD' : '#3B82F6'};
+            ">Mapped Reports</span>
+            <span style="
+              font-size: 14px;
+              font-weight: 700;
+              color: ${isDark ? '#F9FAFB' : '#111827'};
+              background: ${isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)'};
+              padding: 3px 10px;
+              border-radius: 6px;
+            ">${totalMapped}</span>
+          </div>
+          ${divisions
+            .sort((a, b) => b.intensity - a.intensity) // Sort by highest reports
+            .map(d => {
+              // Calculate priority level based on intensity
+              let priorityLabel = 'Low';
+              let priorityColor = d.color;
+              if (d.intensity >= 10) {
+                priorityLabel = 'Urgent';
+                priorityColor = '#EF4444'; // Red
+              } else if (d.intensity >= 5) {
+                priorityLabel = 'High';
+                priorityColor = '#F59E0B'; // Orange
+              } else if (d.intensity >= 3) {
+                priorityLabel = 'Medium';
+                priorityColor = '#10B981'; // Green
+              }
+
+              return `
                 <div style="
-                  width: 10px;
-                  height: 10px;
-                  background: ${d.color};
-                  border-radius: 50%;
-                  box-shadow: 0 0 10px ${d.color}77;
-                "></div>
-                <span style="
-                  font-size: 12px;
-                  font-weight: 500;
-                  color: ${isDark ? '#E5E7EB' : '#374151'};
-                ">${d.name}</span>
-              </div>
-              <span style="
-                font-size: 11px;
-                font-weight: 600;
-                color: ${d.color};
-                background: ${d.color}22;
-                padding: 2px 8px;
-                border-radius: 6px;
-              ">${d.intensity}</span>
-            </div>
-          `).join('')}
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin: 8px 0;
+                  padding: 6px 0;
+                  border-bottom: 1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'};
+                ">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="
+                      width: 10px;
+                      height: 10px;
+                      background: ${d.color};
+                      border-radius: 50%;
+                      box-shadow: 0 0 10px ${d.color}77;
+                    "></div>
+                    <span style="
+                      font-size: 12px;
+                      font-weight: 500;
+                      color: ${isDark ? '#E5E7EB' : '#374151'};
+                    ">${d.name.replace(' Division', '')}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="
+                      font-size: 11px;
+                      font-weight: 600;
+                      color: ${priorityColor};
+                      background: ${priorityColor}22;
+                      padding: 2px 8px;
+                      border-radius: 6px;
+                    ">${priorityLabel}</span>
+                    <span style="
+                      font-size: 12px;
+                      font-weight: 700;
+                      color: ${isDark ? '#F9FAFB' : '#111827'};
+                      background: ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+                      padding: 2px 8px;
+                      border-radius: 6px;
+                    ">${d.intensity}</span>
+                  </div>
+                </div>
+              `;
+            }).join('')}
         `;
         return div;
       };
       legend.addTo(mapInstance);
+      legendRef.current = legend;
     };
 
     initMap();
 
     return () => {
+      if (legendRef.current && mapRef.current) {
+        mapRef.current.removeControl(legendRef.current);
+        legendRef.current = null;
+      }
       cleanupMap();
     };
   }, [mounted, isDark]); // Only depend on mounted and isDark
+
+  // Separate effect to update legend when divisions data changes
+  useEffect(() => {
+    if (!mounted || !mapRef.current || !legendRef.current || typeof window === 'undefined') return;
+
+    const updateLegend = async () => {
+      const L = await import('leaflet');
+
+      // Remove old legend
+      if (legendRef.current) {
+        mapRef.current.removeControl(legendRef.current);
+      }
+
+      // Create new legend with updated data
+      const legend = new L.Control({ position: 'bottomright' });
+      legend.onAdd = function() {
+        const div = L.DomUtil.create('div', 'info legend');
+        div.style.cssText = `
+          background: ${isDark ? 'rgba(17, 24, 39, 0.85)' : 'rgba(255, 255, 255, 0.85)'};
+          backdrop-filter: blur(20px) saturate(180%);
+          padding: 16px 20px;
+          border-radius: 16px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+          border: 1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+          font-family: system-ui;
+          min-width: 200px;
+          max-height: 500px;
+          overflow-y: auto;
+        `;
+        const totalMapped = divisions.reduce((sum, d) => sum + d.intensity, 0);
+        div.innerHTML = `
+          <h4 style="
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            font-size: 13px;
+            color: ${isDark ? '#F9FAFB' : '#111827'};
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+            font-size: 11px;
+            opacity: 0.7;
+          ">Division Status</h4>
+          <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            margin-bottom: 12px;
+            background: ${isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)'};
+            border-radius: 8px;
+            border: 1px solid ${isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)'};
+          ">
+            <span style="
+              font-size: 12px;
+              font-weight: 600;
+              color: ${isDark ? '#93C5FD' : '#3B82F6'};
+            ">Mapped Reports</span>
+            <span style="
+              font-size: 14px;
+              font-weight: 700;
+              color: ${isDark ? '#F9FAFB' : '#111827'};
+              background: ${isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)'};
+              padding: 3px 10px;
+              border-radius: 6px;
+            ">${totalMapped}</span>
+          </div>
+          ${divisions
+            .sort((a, b) => b.intensity - a.intensity) // Sort by highest reports
+            .map(d => {
+              // Calculate priority level based on intensity
+              let priorityLabel = 'Low';
+              let priorityColor = d.color;
+              if (d.intensity >= 10) {
+                priorityLabel = 'Urgent';
+                priorityColor = '#EF4444'; // Red
+              } else if (d.intensity >= 5) {
+                priorityLabel = 'High';
+                priorityColor = '#F59E0B'; // Orange
+              } else if (d.intensity >= 3) {
+                priorityLabel = 'Medium';
+                priorityColor = '#10B981'; // Green
+              }
+
+              return `
+                <div style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin: 8px 0;
+                  padding: 6px 0;
+                  border-bottom: 1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'};
+                ">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="
+                      width: 10px;
+                      height: 10px;
+                      background: ${d.color};
+                      border-radius: 50%;
+                      box-shadow: 0 0 10px ${d.color}77;
+                    "></div>
+                    <span style="
+                      font-size: 12px;
+                      font-weight: 500;
+                      color: ${isDark ? '#E5E7EB' : '#374151'};
+                    ">${d.name.replace(' Division', '')}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="
+                      font-size: 11px;
+                      font-weight: 600;
+                      color: ${priorityColor};
+                      background: ${priorityColor}22;
+                      padding: 2px 8px;
+                      border-radius: 6px;
+                    ">${priorityLabel}</span>
+                    <span style="
+                      font-size: 12px;
+                      font-weight: 700;
+                      color: ${isDark ? '#F9FAFB' : '#111827'};
+                      background: ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
+                      padding: 2px 8px;
+                      border-radius: 6px;
+                    ">${d.intensity}</span>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+        `;
+        return div;
+      };
+      legend.addTo(mapRef.current);
+      legendRef.current = legend;
+    };
+
+    updateLegend();
+  }, [divisions, isDark, mounted]); // Update when divisions data changes
 
   // Separate effect for markers and search query
   useEffect(() => {
@@ -752,7 +714,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
 
     const updateMarkers = async () => {
       const L = await import('leaflet');
-      
+
       // Clear existing markers and circles
       if (markersRef.current.length > 0) {
         markersRef.current.forEach((marker) => {
@@ -774,16 +736,16 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
 
       // Add updated markers
       const { markers, circles } = addMarkersToMap(
-        L, 
-        mapRef.current, 
-        divisions, 
-        isDark, 
-        searchQuery, 
-        showDistricts, 
-        onDivisionClick, 
+        L,
+        mapRef.current,
+        divisions,
+        isDark,
+        searchQuery,
+        showDistricts,
+        onDivisionClick,
         onDistrictClick
       );
-      
+
       markersRef.current = markers;
       circlesRef.current = circles;
     };
@@ -811,25 +773,27 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       let targetZoom = 9;
 
       // First try to find exact district match
-      divisions.forEach((division) => {
-        division.districts.forEach((district) => {
+      for (const division of divisions) {
+        for (const district of division.districts) {
           if (district.name.toLowerCase().includes(searchQuery.toLowerCase())) {
             matchedItem = { type: 'district', data: district, division };
             targetZoom = 12;
-            return;
+            break;
           }
-        });
-        
+        }
+
+        if (matchedItem) break;
+
         // If no district found, try division
-        if (!matchedItem && division.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+        if (division.name.toLowerCase().includes(searchQuery.toLowerCase())) {
           matchedItem = { type: 'division', data: division };
           targetZoom = 10;
-          return;
+          break;
         }
-      });
+      }
 
       if (matchedItem) {
-        const data = matchedItem.data as any;
+        const data = matchedItem.data as Division | District;
         mapRef.current.flyTo([data.lat, data.lng], targetZoom, {
           duration: 1.5,
           easeLinearity: 0.25
@@ -845,61 +809,233 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
   return <div id="map" className="w-full h-full z-0" />;
 };
 
-// 
+//
 export default function MapSearchPage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null);
-  const [isDark, setIsDark] = useState<boolean>(false);
+  const [isDark] = useState<boolean>(false); // Always light theme
   const [showDistricts, setShowDistricts] = useState<boolean>(false);
+  const [divisionsData, setDivisionsData] = useState<Division[]>(DIVISIONS_DATA);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [divisionStats, setDivisionStats] = useState<any>(null);
+
+  // Fetch all divisions stats on mount using comprehensive statistics API
+  useEffect(() => {
+    const fetchDivisionsStats = async () => {
+      try {
+        const response = await statisticsAPI.getCompleteMapData();
+        console.log('📊 Complete Map Data Response:', response);
+
+        if (response.success && response.data) {
+          // Merge API stats with static coordinate data
+          const updatedDivisions = DIVISIONS_DATA.map(division => {
+            // Extract division name without " Division" suffix
+            const divisionName = division.name.replace(' Division', '');
+            const stats = response.data[divisionName];
+
+            if (stats) {
+              // Map districts with real data
+              const updatedDistricts = division.districts.map(district => {
+                const districtStats = stats.districts?.find((d: any) =>
+                  d.name.toLowerCase() === district.name.toLowerCase()
+                );
+
+                if (districtStats) {
+                  return {
+                    ...district,
+                    total: districtStats.total || 0,
+                    pending: districtStats.pending || 0,
+                    completed: districtStats.completed || 0,
+                    priority: districtStats.priority || 'low' as 'high' | 'medium' | 'low'
+                  };
+                }
+                return district;
+              });
+
+              return {
+                ...division,
+                intensity: stats.total || 0,
+                trend: stats.trend || '+0%',
+                districts: updatedDistricts
+              };
+            }
+            return division;
+          });
+
+          console.log('✅ Updated Divisions Data:', updatedDivisions);
+          setDivisionsData(updatedDivisions);
+        }
+      } catch (error) {
+        console.error('❌ Error fetching divisions stats:', error);
+        // Use static data as fallback
+        setDivisionsData(DIVISIONS_DATA);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDivisionsStats();
+  }, []);
 
   const filteredDivisions = useMemo(() => {
-    if (!searchQuery) return DIVISIONS_DATA;
-    
-    return DIVISIONS_DATA.filter(division => 
+    if (!searchQuery) return divisionsData;
+
+    return divisionsData.filter(division =>
       division.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       division.districts.some(d => d.name.toLowerCase().includes(searchQuery.toLowerCase()))
     );
-  }, [searchQuery]);
+  }, [searchQuery, divisionsData]);
 
   const handleClearSearch = () => {
     setSearchQuery('');
     setShowDistricts(false);
     setSelectedItem(null);
+    setDivisionStats(null);
   };
 
-  const handleDivisionClick = useCallback((division: Division) => {
+  const handleDivisionClick = useCallback(async (division: Division) => {
     setSelectedItem({ type: 'division', data: division });
     setShowDistricts(true);
+
+    // Fetch real stats for this division using comprehensive statistics API
+    try {
+      const divisionName = division.name.replace(' Division', '');
+      const response = await statisticsAPI.getDivisionDistricts(divisionName);
+
+      console.log(`📍 Division Click - ${divisionName}:`, response);
+
+      if (response.success && response.data && response.data.length > 0) {
+        // Update division with real district stats from comprehensive API
+        const updatedDivision: Division = {
+          ...division,
+          districts: division.districts.map(district => {
+            const stats = response.data.find((s: any) =>
+              district.name.toLowerCase() === s.district?.toLowerCase()
+            );
+            if (stats) {
+              return {
+                ...district,
+                total: stats.total || 0,
+                pending: stats.pending || 0,
+                completed: stats.completed || 0,
+                priority: stats.priority || 'low' as 'high' | 'medium' | 'low',
+              };
+            }
+            // Keep existing data if no stats found
+            return {
+              ...district,
+              total: 0,
+              pending: 0,
+              completed: 0,
+              priority: 'low' as 'high' | 'medium' | 'low',
+            };
+          })
+        };
+        setDivisionStats(updatedDivision);
+        setSelectedItem({ type: 'division', data: updatedDivision });
+
+        // Also update the global divisionsData state to keep data in sync
+        setDivisionsData(prev => prev.map(d =>
+          d.id === division.id ? updatedDivision : d
+        ));
+      } else {
+        // No data in database, show zeros
+        const updatedDivision: Division = {
+          ...division,
+          districts: division.districts.map(district => ({
+            ...district,
+            total: 0,
+            pending: 0,
+            completed: 0,
+            priority: 'low' as 'high' | 'medium' | 'low',
+          }))
+        };
+        setSelectedItem({ type: 'division', data: updatedDivision });
+      }
+    } catch (error) {
+      console.error('Error fetching division stats:', error);
+      // On error, show zeros
+      const updatedDivision: Division = {
+        ...division,
+        districts: division.districts.map(district => ({
+          ...district,
+          total: 0,
+          pending: 0,
+          completed: 0,
+          priority: 'low' as 'high' | 'medium' | 'low',
+        }))
+      };
+      setSelectedItem({ type: 'division', data: updatedDivision });
+    }
   }, []);
 
   const handleDistrictClick = useCallback((district: District, division: Division) => {
-    setSelectedItem({ type: 'district', data: district, division });
+    // District data is already available from the division's districts array
+    // No need to make an additional API call
+    const updatedDistrict: District = {
+      ...district,
+      total: district.total || 0,
+      pending: district.pending || 0,
+      completed: district.completed || 0,
+      priority: district.priority || 'low',
+    };
+    setSelectedItem({ type: 'district', data: updatedDistrict, division });
   }, []);
 
   const handleCloseSidebar = () => {
     setSelectedItem(null);
     setShowDistricts(false);
+    setDivisionStats(null);
   };
 
-  const totalStats = useMemo(() => {
-    return DIVISIONS_DATA.reduce((acc, div) => {
-      div.districts.forEach(dist => {
-        acc.total += dist.total;
-        acc.pending += dist.pending;
-        acc.completed += dist.completed;
-      });
-      return acc;
-    }, { total: 0, pending: 0, completed: 0 });
+  // Use real summary statistics from API instead of calculated from divisions
+  const [summaryStats, setSummaryStats] = useState({
+    total: 0,
+    pending: 0,
+    inProgress: 0,
+    completed: 0,
+    completionRate: 0
+  });
+
+  // Fetch summary statistics
+  useEffect(() => {
+    const fetchSummaryStats = async () => {
+      try {
+        const response = await statisticsAPI.getSummary();
+        console.log('📈 Summary Stats Response:', response);
+
+        if (response.success && response.data) {
+          setSummaryStats({
+            total: response.data.totalReports || 0,
+            pending: response.data.totalPending || 0,
+            inProgress: response.data.totalInProgress || 0,
+            completed: response.data.totalResolved || 0,
+            completionRate: response.data.overallCompletionRate || 0
+          });
+        }
+      } catch (error) {
+        console.error('❌ Error fetching summary stats:', error);
+      }
+    };
+
+    fetchSummaryStats();
   }, []);
 
-  const completionRate = Math.round((totalStats.completed / totalStats.total) * 100);
+  // Keep totalStats for backward compatibility but use summaryStats as source
+  const totalStats = {
+    total: summaryStats.total,
+    pending: summaryStats.pending + summaryStats.inProgress, // Combine pending and in-progress
+    completed: summaryStats.completed
+  };
+
+  const completionRate = summaryStats.completionRate;
 
   // Function to create dummy data for searched locations not in database
   const getSearchedLocationData = (query: string): SelectedItem | null => {
     if (!query.trim()) return null;
 
     // Check if the query matches any existing division or district
-    const existingMatch = DIVISIONS_DATA.find(division => 
+    const existingMatch = DIVISIONS_DATA.find(division =>
       division.name.toLowerCase().includes(query.toLowerCase()) ||
       division.districts.some(d => d.name.toLowerCase().includes(query.toLowerCase()))
     );
@@ -943,33 +1079,20 @@ export default function MapSearchPage() {
 
   return (
     <div className={`container mx-auto min-h-screen transition-all duration-500 ${
-      isDark 
-        ? 'bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950' 
+      isDark
+        ? 'bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950'
         : 'bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50'
     }`}>
       {/* Animated background gradient overlay */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <motion.div
-          animate={{
-            background: [
-              'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)',
-              'radial-gradient(circle at 80% 50%, rgba(16, 185, 129, 0.1) 0%, transparent 50%)',
-              'radial-gradient(circle at 50% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%)',
-              'radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)',
-            ]
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-0"
-        />
+        <div className="absolute inset-0" />
       </div>
 
       {/* Premium Header */}
-      <motion.header 
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+      <header
         className={`relative backdrop-blur-xl ${
-          isDark 
-            ? 'bg-gray-900/80 border-gray-800/50' 
+          isDark
+            ? 'bg-gray-900/80 border-gray-800/50'
             : 'bg-white/80 border-gray-200/50'
         } border-b px-4 md:px-8 py-4 shadow-lg`}
       >
@@ -991,47 +1114,44 @@ export default function MapSearchPage() {
               </div>
             </div>
 
-            {/* Stats Cards */}
+            {/* Stats Cards - Using Real Summary Data */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full lg:w-auto">
               {[
-                { 
-                  label: 'Total Reports', 
-                  value: totalStats.total, 
-                  icon: Activity, 
+                {
+                  label: 'Total Reports',
+                  value: summaryStats.total,
+                  icon: Activity,
                   color: 'from-blue-500 to-blue-600',
                   bgDark: 'bg-blue-500/10',
                   bgLight: 'bg-blue-50'
                 },
-                { 
-                  label: 'In Progress', 
-                  value: totalStats.pending, 
-                  icon: Clock, 
+                {
+                  label: 'Pending',
+                  value: summaryStats.pending,
+                  icon: Clock,
                   color: 'from-orange-500 to-amber-500',
                   bgDark: 'bg-orange-500/10',
                   bgLight: 'bg-orange-50'
                 },
-                { 
-                  label: 'Resolved', 
-                  value: totalStats.completed, 
-                  icon: CheckCircle, 
+                {
+                  label: 'In Progress',
+                  value: summaryStats.inProgress,
+                  icon: Activity,
+                  color: 'from-yellow-500 to-orange-500',
+                  bgDark: 'bg-yellow-500/10',
+                  bgLight: 'bg-yellow-50'
+                },
+                {
+                  label: 'Resolved',
+                  value: summaryStats.completed,
+                  icon: CheckCircle,
                   color: 'from-green-500 to-emerald-600',
                   bgDark: 'bg-green-500/10',
                   bgLight: 'bg-green-50'
-                },
-                { 
-                  label: 'Efficiency', 
-                  value: `${completionRate}%`, 
-                  icon: TrendingUp, 
-                  color: 'from-purple-500 to-pink-600',
-                  bgDark: 'bg-purple-500/10',
-                  bgLight: 'bg-purple-50'
                 }
               ].map((stat, i) => (
-                <motion.div
+                <div
                   key={stat.label}
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: i * 0.1 }}
                   className={`${
                     isDark ? stat.bgDark : stat.bgLight
                   } backdrop-blur-sm rounded-xl p-3 border ${
@@ -1040,11 +1160,7 @@ export default function MapSearchPage() {
                 >
                   <div className="flex items-center justify-between mb-2">
                     <stat.icon className={`w-4 h-4 bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`} strokeWidth={2.5} />
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                      className={`w-2 h-2 rounded-full bg-gradient-to-r ${stat.color}`}
-                    />
+                    <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${stat.color}`} />
                   </div>
                   <p className={`text-xs font-medium mb-1 ${
                     isDark ? 'text-gray-400' : 'text-gray-600'
@@ -1054,25 +1170,20 @@ export default function MapSearchPage() {
                   <p className={`text-xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
                     {stat.value}
                   </p>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       {/* Main Content */}
       <div className="relative h-[calc(100vh-140px)]">
         {/* Premium Search Bar - Moved to right side */}
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="absolute top-6 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-[1000] flex gap-3"
-        >
+        <div className="absolute top-6 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-[1000] flex gap-3">
           <div className={`flex-1 relative backdrop-blur-xl ${
-            isDark 
-              ? 'bg-gray-900/90 border-gray-700/50' 
+            isDark
+              ? 'bg-gray-900/90 border-gray-700/50'
               : 'bg-white/90 border-gray-200/50'
           } rounded-2xl shadow-2xl border`}>
             <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
@@ -1084,73 +1195,31 @@ export default function MapSearchPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full pl-12 pr-12 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all ${
-                isDark 
-                  ? 'bg-transparent text-white placeholder-gray-500' 
+                isDark
+                  ? 'bg-transparent text-white placeholder-gray-500'
                   : 'bg-transparent text-gray-900 placeholder-gray-400'
               } font-medium`}
             />
-            <AnimatePresence>
-              {searchQuery && (
-                <motion.button
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  exit={{ scale: 0, rotate: 180 }}
-                  onClick={handleClearSearch}
-                  className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 rounded-lg ${
-                    isDark 
-                      ? 'text-gray-400 hover:text-white hover:bg-gray-800' 
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
-                  } transition-all`}
-                >
-                  <X className="w-4 h-4" />
-                </motion.button>
-              )}
-            </AnimatePresence>
+            {searchQuery && (
+              <button
+                onClick={handleClearSearch}
+                title="Clear search"
+                aria-label="Clear search"
+                className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 rounded-lg ${
+                  isDark
+                    ? 'text-gray-400 hover:text-white hover:bg-gray-800'
+                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                } transition-all`}
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
-
-          {/* Theme Toggle */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsDark(!isDark)}
-            className={`p-4 rounded-2xl shadow-2xl backdrop-blur-xl border ${
-              isDark 
-                ? 'bg-gray-900/90 border-gray-700/50 text-yellow-400' 
-                : 'bg-white/90 border-gray-200/50 text-gray-700'
-            } transition-all`}
-          >
-            <AnimatePresence mode="wait">
-              {isDark ? (
-                <motion.div
-                  key="sun"
-                  initial={{ rotate: -180, scale: 0 }}
-                  animate={{ rotate: 0, scale: 1 }}
-                  exit={{ rotate: 180, scale: 0 }}
-                >
-                  <Sun className="w-5 h-5" strokeWidth={2.5} />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="moon"
-                  initial={{ rotate: 180, scale: 0 }}
-                  animate={{ rotate: 0, scale: 1 }}
-                  exit={{ rotate: -180, scale: 0 }}
-                >
-                  <Moon className="w-5 h-5" strokeWidth={2.5} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.button>
-        </motion.div>
+        </div>
 
         {/* Map Container - Fixed blur issue */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="w-full h-full"
-        >
-          <DynamicMap 
+        <div className="w-full h-full">
+          <DynamicMap
             divisions={filteredDivisions}
             selectedItem={selectedItem}
             onDivisionClick={handleDivisionClick}
@@ -1159,30 +1228,22 @@ export default function MapSearchPage() {
             searchQuery={searchQuery}
             showDistricts={showDistricts || searchQuery.length > 0}
           />
-        </motion.div>
+        </div>
 
         {/* Premium Sidebar - Now on LEFT side */}
-        <AnimatePresence>
           {displayItem && (
             <>
               {/* Glassmorphic Overlay with reduced opacity */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.3 }}
-                exit={{ opacity: 0 }}
+              <div
                 onClick={handleCloseSidebar}
                 className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[999]"
               />
 
               {/* Sidebar Content - Now on LEFT */}
-              <motion.div
-                initial={{ x: '-100%', opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: '-100%', opacity: 0 }}
-                transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              <div
                 className={`absolute top-0 left-0 w-full md:w-[460px] h-full ${
-                  isDark 
-                    ? 'bg-gradient-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98' 
+                  isDark
+                    ? 'bg-gradient-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
                     : 'bg-gradient-to-b from-white/98 via-white/95 to-gray-50/98'
                 } backdrop-blur-2xl shadow-2xl z-[1000] overflow-hidden flex flex-col border-r ${
                   isDark ? 'border-gray-800/50' : 'border-gray-200/50'
@@ -1190,28 +1251,28 @@ export default function MapSearchPage() {
               >
                 {/* Sidebar Header with Gradient */}
                 <div className="relative p-6 pb-8">
-                  <div 
+                  <div
                     className="absolute inset-0 opacity-10"
                     style={{
                       background: `linear-gradient(135deg, ${
-                        displayItem.type === 'district' 
+                        displayItem.type === 'district'
                           ? (displayItem.division as Division)?.color || '#6B7280'
                           : (displayItem.data as Division).color
                       }44 0%, transparent 100%)`
                     }}
                   />
-                  
+
                   <div className="relative flex justify-between items-start mb-6">
                     <div className="flex items-center gap-3">
-                      <div 
+                      <div
                         className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl"
                         style={{
                           background: `linear-gradient(135deg, ${
-                            displayItem.type === 'district' 
+                            displayItem.type === 'district'
                               ? (displayItem.division as Division)?.color || '#6B7280'
                               : (displayItem.data as Division).color
                           } 0%, ${
-                            displayItem.type === 'district' 
+                            displayItem.type === 'district'
                               ? (displayItem.division as Division)?.color || '#6B7280'
                               : (displayItem.data as Division).color
                           }dd 100%)`
@@ -1229,82 +1290,79 @@ export default function MapSearchPage() {
                           <span className={`text-sm font-medium ${
                             isDark ? 'text-gray-400' : 'text-gray-600'
                           }`}>
-                            {displayItem.type === 'division' 
+                            {displayItem.type === 'division'
                               ? `${(displayItem.data as Division).districts.length} Districts`
                               : `District of ${(displayItem.division as Division)?.name || 'Unknown'}`
                             }
                           </span>
                           <span className="text-gray-400">•</span>
-                          <span 
+                          <span
                             className="text-sm font-semibold flex items-center gap-1"
-                            style={{ 
-                              color: displayItem.type === 'district' 
+                            style={{
+                              color: displayItem.type === 'district'
                                 ? (displayItem.division as Division)?.color || '#6B7280'
-                                : (displayItem.data as Division).color 
+                                : (displayItem.data as Division).color
                             }}
                           >
                             <TrendingUp className="w-3 h-3" />
-                            {displayItem.type === 'division' 
-                              ? (displayItem.data as Division).trend 
+                            {displayItem.type === 'division'
+                              ? (displayItem.data as Division).trend
                               : '+0%'
                             }
                           </span>
                         </div>
                       </div>
                     </div>
-                    <motion.button
-                      whileHover={{ scale: 1.1, rotate: 90 }}
-                      whileTap={{ scale: 0.9 }}
+                    <button
                       onClick={handleCloseSidebar}
+                      title="Close sidebar"
+                      aria-label="Close sidebar"
                       className={`p-2.5 rounded-xl ${
-                        isDark 
-                          ? 'hover:bg-gray-800/80 text-gray-400 hover:text-white' 
+                        isDark
+                          ? 'hover:bg-gray-800/80 text-gray-400 hover:text-white'
                           : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
                       } transition-all`}
                     >
                       <X className="w-5 h-5" strokeWidth={2.5} />
-                    </motion.button>
+                    </button>
                   </div>
 
                   {/* Stats Grid */}
                   <div className="relative grid grid-cols-3 gap-3">
                     {[
-                      { 
-                        label: 'Total', 
-                        value: displayItem.type === 'division' 
+                      {
+                        label: 'Total',
+                        value: displayItem.type === 'division'
                           ? (displayItem.data as Division).districts.reduce((a, d) => a + d.total, 0)
-                          : (displayItem.data as District).total, 
+                          : (displayItem.data as District).total,
                         icon: BarChart3,
                         gradient: 'from-blue-500 to-blue-600',
                         bgDark: 'bg-blue-500/10',
                         bgLight: 'bg-blue-50'
                       },
-                      { 
-                        label: 'Pending', 
-                        value: displayItem.type === 'division' 
+                      {
+                        label: 'Pending',
+                        value: displayItem.type === 'division'
                           ? (displayItem.data as Division).districts.reduce((a, d) => a + d.pending, 0)
-                          : (displayItem.data as District).pending, 
+                          : (displayItem.data as District).pending,
                         icon: Clock,
                         gradient: 'from-orange-500 to-amber-500',
                         bgDark: 'bg-orange-500/10',
                         bgLight: 'bg-orange-50'
                       },
-                      { 
-                        label: 'Resolved', 
-                        value: displayItem.type === 'division' 
+                      {
+                        label: 'Resolved',
+                        value: displayItem.type === 'division'
                           ? (displayItem.data as Division).districts.reduce((a, d) => a + d.completed, 0)
-                          : (displayItem.data as District).completed, 
+                          : (displayItem.data as District).completed,
                         icon: CheckCircle,
                         gradient: 'from-green-500 to-emerald-600',
                         bgDark: 'bg-green-500/10',
                         bgLight: 'bg-green-50'
                       }
                     ].map((stat, i) => (
-                      <motion.div
+                      <div
                         key={stat.label}
-                        initial={{ scale: 0, y: 20 }}
-                        animate={{ scale: 1, y: 0 }}
-                        transition={{ delay: i * 0.1, type: 'spring', stiffness: 200 }}
                         className={`p-4 rounded-xl ${
                           isDark ? stat.bgDark : stat.bgLight
                         } border ${
@@ -1320,7 +1378,7 @@ export default function MapSearchPage() {
                         <p className={`text-2xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
                           {stat.value}
                         </p>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -1350,36 +1408,28 @@ export default function MapSearchPage() {
                     {/* Districts List */}
                     <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3 custom-scrollbar">
                       {(displayItem.data as Division).districts.map((district, index) => {
-                        const completionPercent = Math.round((district.completed / district.total) * 100);
+                        const completionPercent = district.total > 0
+                          ? Math.round((district.completed / district.total) * 100)
+                          : 0;
                         const priorityColors = {
                           high: { bg: 'bg-red-500/10', text: 'text-red-500', border: 'border-red-500/20' },
                           medium: { bg: 'bg-yellow-500/10', text: 'text-yellow-500', border: 'border-yellow-500/20' },
                           low: { bg: 'bg-green-500/10', text: 'text-green-500', border: 'border-green-500/20' }
                         };
-                        const priority = priorityColors[district.priority];
+                        const priority = priorityColors[district.priority] || priorityColors.low;
 
                         return (
-                          <motion.div
+                          <div
                             key={district.name}
-                            initial={{ x: -50, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ delay: index * 0.08, type: 'spring', stiffness: 200 }}
-                            whileHover={{ 
-                              scale: 1.02, 
-                              y: -2,
-                              boxShadow: isDark 
-                                ? '0 20px 40px rgba(0,0,0,0.4)' 
-                                : '0 20px 40px rgba(0,0,0,0.1)'
-                            }}
                             className={`group relative p-5 rounded-2xl border ${
-                              isDark 
-                                ? 'bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/80' 
+                              isDark
+                                ? 'bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/80'
                                 : 'bg-white/80 border-gray-200/50 hover:bg-white'
                             } backdrop-blur-sm transition-all cursor-pointer overflow-hidden`}
                             onClick={() => handleDistrictClick(district, displayItem.data as Division)}
                           >
                             {/* Gradient overlay on hover */}
-                            <div 
+                            <div
                               className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity"
                               style={{
                                 background: `linear-gradient(135deg, ${(displayItem.data as Division).color} 0%, transparent 100%)`
@@ -1412,7 +1462,7 @@ export default function MapSearchPage() {
                                   </div>
                                 </div>
                               </div>
-                              
+
                               {/* Stats Row */}
                               <div className="grid grid-cols-3 gap-3 mb-4">
                                 <div className={`text-center p-2 rounded-lg ${
@@ -1472,36 +1522,26 @@ export default function MapSearchPage() {
                               <div className={`relative w-full h-2 rounded-full overflow-hidden ${
                                 isDark ? 'bg-gray-900/50' : 'bg-gray-200'
                               }`}>
-                                <motion.div
-                                  initial={{ width: 0 }}
-                                  animate={{ width: `${completionPercent}%` }}
-                                  transition={{ 
-                                    delay: index * 0.08 + 0.3, 
-                                    duration: 1, 
-                                    ease: "easeOut" 
-                                  }}
-                                  className="absolute left-0 top-0 h-full rounded-full"
+                                <div
+                                  className="absolute left-0 top-0 h-full rounded-full transition-all duration-1000"
                                   style={{
+                                    width: `${completionPercent}%`,
                                     background: `linear-gradient(90deg, ${(displayItem.data as Division).color} 0%, ${(displayItem.data as Division).color}cc 100%)`
                                   }}
                                 />
                               </div>
 
                               {/* View Details Link */}
-                              <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="mt-4 flex items-center justify-between"
-                              >
+                              <div className="mt-4 flex items-center justify-between">
                                 <span className={`text-xs ${
                                   isDark ? 'text-gray-500' : 'text-gray-500'
                                 }`}>
                                   Click to view details
                                 </span>
-                                <button 
+                                <button
                                   className={`text-xs font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all ${
-                                    isDark 
-                                      ? 'text-blue-400 hover:bg-blue-500/10' 
+                                    isDark
+                                      ? 'text-blue-400 hover:bg-blue-500/10'
                                       : 'text-blue-600 hover:bg-blue-50'
                                   }`}
                                   style={{ color: (displayItem.data as Division).color }}
@@ -1511,9 +1551,9 @@ export default function MapSearchPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
                                   </svg>
                                 </button>
-                              </motion.div>
+                              </div>
                             </div>
-                          </motion.div>
+                          </div>
                         );
                       })}
                     </div>
@@ -1521,12 +1561,9 @@ export default function MapSearchPage() {
                 ) : (
                   /* District Details View */
                   <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={`p-6 rounded-2xl border ${
-                        isDark 
-                          ? 'bg-gray-800/50 border-gray-700/50' 
+                    <div className={`p-6 rounded-2xl border ${
+                        isDark
+                          ? 'bg-gray-800/50 border-gray-700/50'
                           : 'bg-white/80 border-gray-200/50'
                       } backdrop-blur-sm`}
                     >
@@ -1535,17 +1572,19 @@ export default function MapSearchPage() {
                       }`}>
                         District Performance
                       </h3>
-                      
+
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
                           <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                             Report Resolution Rate
                           </span>
                           <span className="font-bold" style={{ color: (displayItem.division as Division)?.color || '#6B7280' }}>
-                            {Math.round(((displayItem.data as District).completed / (displayItem.data as District).total) * 100)}%
+                            {(displayItem.data as District).total > 0
+                              ? Math.round(((displayItem.data as District).completed / (displayItem.data as District).total) * 100)
+                              : 0}%
                           </span>
                         </div>
-                        
+
                         <div className="flex justify-between items-center">
                           <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                             Average Resolution Time
@@ -1554,7 +1593,7 @@ export default function MapSearchPage() {
                             {(displayItem.data as District).total > 0 ? '3.2 days' : 'No data'}
                           </span>
                         </div>
-                        
+
                         <div className="flex justify-between items-center">
                           <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                             Citizen Satisfaction
@@ -1578,7 +1617,7 @@ export default function MapSearchPage() {
                                 <div key={i} className={`flex items-center gap-3 text-sm ${
                                   isDark ? 'text-gray-400' : 'text-gray-600'
                                 }`}>
-                                  <div 
+                                  <div
                                     className="w-2 h-2 rounded-full"
                                     style={{ backgroundColor: (displayItem.division as Division)?.color || '#6B7280' }}
                                   />
@@ -1589,7 +1628,7 @@ export default function MapSearchPage() {
                           </div>
                         </div>
                       )}
-                    </motion.div>
+                    </div>
                   </div>
                 )}
 
@@ -1614,7 +1653,7 @@ export default function MapSearchPage() {
                       <p className={`text-xs ${
                         isDark ? 'text-gray-500' : 'text-gray-600'
                       }`}>
-                        {displayItem.type === 'division' 
+                        {displayItem.type === 'division'
                           ? 'Click on any district to view detailed performance metrics and recent activities.'
                           : 'Real-time data synced with municipal reporting systems. Updated every 15 minutes.'
                         }
@@ -1622,10 +1661,9 @@ export default function MapSearchPage() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </>
           )}
-        </AnimatePresence>
       </div>
 
       {/* Custom Scrollbar Styles */}
