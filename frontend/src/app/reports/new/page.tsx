@@ -57,6 +57,27 @@ export default function NewReportPage() {
     const divisionObj = divisionData.find((d) => d.division === div);
     setDistricts(divisionObj?.districts || []);
     setValue("district", "");
+    // Show a helpful message when division is selected
+    if (div) {
+      toast.success(`Division selected: ${div}`);
+    }
+  };
+
+  const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const districtName = e.target.value;
+    setValue("district", districtName);
+
+    // Auto-fill coordinates if district has them
+    if (districtName && selectedDivision) {
+      const district = districts.find(d => d.name === districtName);
+      if (district && district.latitude && district.longitude) {
+        setValue("latitude", district.latitude.toString());
+        setValue("longitude", district.longitude.toString());
+        toast.success(`District selected: ${districtName}. Coordinates auto-filled!`);
+      } else {
+        toast.success(`District selected: ${districtName}. Please fetch your exact location.`);
+      }
+    }
   };
 
   const handleLocationFetch = () => {
@@ -96,6 +117,18 @@ export default function NewReportPage() {
     if (!user || user.role !== "user") {
       toast.error("Only users can submit reports");
       router.push("/");
+      return;
+    }
+
+    // Validate division (CRITICAL - prevents unmapped reports)
+    if (!data.division || data.division.trim() === "") {
+      toast.error("Division is required! Please select your division.");
+      return;
+    }
+
+    // Validate district
+    if (!data.district || data.district.trim() === "") {
+      toast.error("District is required! Please select your district.");
       return;
     }
 
@@ -142,6 +175,7 @@ export default function NewReportPage() {
       const locationData = {
         address: `${data.address}, ${data.district}, ${data.division}`,
         district: data.district,
+        division: data.division, // Add division as separate field
         coordinates: [parseFloat(data.longitude!), parseFloat(data.latitude!)],
       };
 
@@ -297,6 +331,21 @@ export default function NewReportPage() {
           </div>
         </div>
 
+        {/* Important Notice Banner */}
+        <div className="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
+          <div className="flex items-start">
+            <FaMapMarkerAlt className="text-blue-500 mt-1 mr-3 shrink-0" />
+            <div>
+              <h3 className="font-semibold text-blue-900 mb-1">
+                📍 Location Information Required
+              </h3>
+              <p className="text-blue-800 text-sm">
+                <strong>Division and District are mandatory fields.</strong> Please ensure you select both to help us route your report to the correct authorities. Reports without complete location data cannot be properly mapped and processed.
+              </p>
+            </div>
+          </div>
+        </div>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Category & Subcategory */}
           <div className="grid md:grid-cols-2 gap-6">
@@ -403,15 +452,16 @@ export default function NewReportPage() {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block font-medium text-gray-700 mb-2">
-                  Division <span className="text-red-500">*</span>
+                <label className="block font-semibold text-gray-800 mb-2 text-base">
+                  Division <span className="text-red-500 text-lg">*</span>
+                  <span className="text-xs font-normal text-gray-500 ml-2">(Required for mapping)</span>
                 </label>
                 <select
                   {...register("division", { required: "Division is required" })}
                   value={selectedDivision}
                   onChange={handleDivisionChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
-                    errors.division ? "border-red-500" : "border-gray-300"
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition font-medium ${
+                    errors.division ? "border-red-500 bg-red-50" : selectedDivision ? "border-green-500 bg-green-50" : "border-gray-300"
                   }`}
                 >
                   <option value="">Select division</option>
@@ -422,19 +472,24 @@ export default function NewReportPage() {
                   ))}
                 </select>
                 {errors.division && (
-                  <p className="text-red-500 text-sm mt-1">{errors.division.message}</p>
+                  <p className="text-red-500 text-sm mt-1 font-semibold">⚠️ {errors.division.message}</p>
+                )}
+                {selectedDivision && !errors.division && (
+                  <p className="text-green-600 text-sm mt-1 font-medium">✓ Division selected</p>
                 )}
               </div>
 
               <div>
-                <label className="block font-medium text-gray-700 mb-2">
-                  District <span className="text-red-500">*</span>
+                <label className="block font-semibold text-gray-800 mb-2 text-base">
+                  District <span className="text-red-500 text-lg">*</span>
+                  <span className="text-xs font-normal text-gray-500 ml-2">(Required for mapping)</span>
                 </label>
                 <select
                   {...register("district", { required: "District is required" })}
+                  onChange={handleDistrictChange}
                   disabled={!selectedDivision}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                    errors.district ? "border-red-500" : "border-gray-300"
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition font-medium disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                    errors.district ? "border-red-500 bg-red-50" : watch("district") ? "border-green-500 bg-green-50" : "border-gray-300"
                   }`}
                 >
                   <option value="">
@@ -447,7 +502,10 @@ export default function NewReportPage() {
                   ))}
                 </select>
                 {errors.district && (
-                  <p className="text-red-500 text-sm mt-1">{errors.district.message}</p>
+                  <p className="text-red-500 text-sm mt-1 font-semibold">⚠️ {errors.district.message}</p>
+                )}
+                {watch("district") && !errors.district && (
+                  <p className="text-green-600 text-sm mt-1 font-medium">✓ District selected</p>
                 )}
               </div>
             </div>
