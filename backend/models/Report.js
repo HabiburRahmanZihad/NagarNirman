@@ -72,6 +72,7 @@ export const createReport = async (reportData) => {
     location: {
       address: location.address,
       district: location.district,
+      division: location.division || null, // Add division field
       coordinates: location.coordinates || [], // [longitude, latitude]
     },
     upvotes: [],
@@ -494,4 +495,197 @@ export const assignReportTo = async (reportId, userId) => {
   );
 
   return result;
+};
+
+// Get report statistics by division
+export const getReportStatsByDivision = async (division) => {
+  const stats = await getReportsCollection()
+    .aggregate([
+      {
+        $match: {
+          'location.division': { $regex: new RegExp(division, 'i') }
+        }
+      },
+      {
+        $group: {
+          _id: '$location.district',
+          total: { $sum: 1 },
+          pending: {
+            $sum: {
+              $cond: [{ $in: ['$status', ['pending', 'approved']] }, 1, 0]
+            }
+          },
+          inProgress: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'in-progress'] }, 1, 0]
+            }
+          },
+          completed: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'resolved'] }, 1, 0]
+            }
+          },
+          rejected: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'rejected'] }, 1, 0]
+            }
+          },
+          high: {
+            $sum: {
+              $cond: [{ $eq: ['$severity', 'high'] }, 1, 0]
+            }
+          },
+          urgent: {
+            $sum: {
+              $cond: [{ $eq: ['$severity', 'urgent'] }, 1, 0]
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          district: '$_id',
+          total: 1,
+          pending: 1,
+          inProgress: 1,
+          completed: 1,
+          rejected: 1,
+          priority: {
+            $cond: [
+              { $gte: ['$urgent', 1] }, 'urgent',
+              {
+                $cond: [
+                  { $gte: ['$high', 1] }, 'high',
+                  {
+                    $cond: [
+                      { $gte: ['$pending', '$completed'] }, 'medium',
+                      'low'
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        $sort: { total: -1 }
+      }
+    ])
+    .toArray();
+
+  return stats;
+};
+
+// Get report statistics by district
+export const getReportStatsByDistrict = async (district) => {
+  const stats = await getReportsCollection()
+    .aggregate([
+      {
+        $match: {
+          'location.district': { $regex: new RegExp(district, 'i') }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          pending: {
+            $sum: {
+              $cond: [{ $in: ['$status', ['pending', 'approved']] }, 1, 0]
+            }
+          },
+          inProgress: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'in-progress'] }, 1, 0]
+            }
+          },
+          completed: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'resolved'] }, 1, 0]
+            }
+          },
+          rejected: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'rejected'] }, 1, 0]
+            }
+          },
+          problemTypes: {
+            $push: '$problemType'
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          district: district,
+          total: 1,
+          pending: 1,
+          inProgress: 1,
+          completed: 1,
+          rejected: 1,
+          problemTypes: 1
+        }
+      }
+    ])
+    .toArray();
+
+  return stats.length > 0 ? stats[0] : {
+    district,
+    total: 0,
+    pending: 0,
+    inProgress: 0,
+    completed: 0,
+    rejected: 0,
+    problemTypes: []
+  };
+};
+
+// Get all divisions with statistics
+export const getAllDivisionsStats = async () => {
+  const stats = await getReportsCollection()
+    .aggregate([
+      {
+        $group: {
+          _id: '$location.division',
+          total: { $sum: 1 },
+          pending: {
+            $sum: {
+              $cond: [{ $in: ['$status', ['pending', 'approved']] }, 1, 0]
+            }
+          },
+          inProgress: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'in-progress'] }, 1, 0]
+            }
+          },
+          completed: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'resolved'] }, 1, 0]
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          division: '$_id',
+          total: 1,
+          pending: 1,
+          inProgress: 1,
+          completed: 1,
+          intensity: '$total',
+          trend: {
+            $concat: ['+', { $toString: { $round: [{ $multiply: [{ $divide: ['$completed', '$total'] }, 100] }, 0] } }, '%']
+          }
+        }
+      },
+      {
+        $sort: { total: -1 }
+      }
+    ])
+    .toArray();
+
+  return stats;
 };
