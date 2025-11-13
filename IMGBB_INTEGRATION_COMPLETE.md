@@ -154,13 +154,13 @@ Body:
    ```javascript
    // Validate image
    validateImage(profileImage, 5); // 5MB max
-   
+
    // Upload to ImgBB
    const upload = await uploadToImgBB(profileImage, 'user_profile');
-   
+
    // Get URL
    const imageUrl = upload.url; // https://i.ibb.co/xxx/image.jpg
-   
+
    // Save to database
    await createApplication({ profileImage: imageUrl, ... });
    ```
@@ -247,7 +247,7 @@ The system handles various error scenarios:
      status: 'approved',
      reviewNote: 'Great qualifications!'
    });
-   
+
    // Update user role
    await updateUser(userId, {
      role: 'problemSolver',
@@ -264,7 +264,7 @@ The system handles various error scenarios:
      reviewedAt: new Date(),
      reviewNote: 'Great qualifications!'
    }
-   
+
    // users collection
    {
      role: 'problemSolver', // Changed from 'user'
@@ -293,7 +293,7 @@ The system handles various error scenarios:
      reviewedAt: new Date(),
      reviewNote: 'Insufficient experience'
    }
-   
+
    // User role remains unchanged
    {
      role: 'user', // Still 'user'
@@ -337,7 +337,7 @@ The system handles various error scenarios:
 **Solution:** Add `IMGBB_API_KEY` to `.env` file
 
 #### 2. Images not displaying
-**Solution:** 
+**Solution:**
 - Check ImgBB URL is valid
 - Verify image was uploaded successfully
 - Check browser console for errors

@@ -166,7 +166,7 @@ export const problemSolverAPI = {
     if (filters?.limit) params.append('limit', filters.limit.toString());
 
     const queryString = params.toString();
-    const url = queryString 
+    const url = queryString
       ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/applications/all?${queryString}`
       : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/applications/all`;
 

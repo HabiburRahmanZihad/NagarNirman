@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb';
 import { getDB } from '../config/db.js';
 
 // Get problem solver applications collection
-export const getProblemSolverApplicationsCollection = () => 
+export const getProblemSolverApplicationsCollection = () =>
   getDB().collection('problemSolverApplications');
 
 // Create new application
@@ -28,9 +28,9 @@ export const createApplication = async (applicationData) => {
   } = applicationData;
 
   // Validate required fields
-  if (!userId || !fullName || !email || !phone || !dateOfBirth || !gender || 
-      !division || !district || !address || !profession || !skills || 
-      !motivation || !nidOrIdDoc) {
+  if (!userId || !fullName || !email || !phone || !dateOfBirth || !gender ||
+    !division || !district || !address || !profession || !skills ||
+    !motivation || !nidOrIdDoc) {
     throw new Error('Please provide all required fields');
   }
 

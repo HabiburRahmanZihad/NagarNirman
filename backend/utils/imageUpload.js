@@ -10,7 +10,7 @@ import fetch from 'node-fetch';
 export const uploadToImgBB = async (base64Image, imageName = 'image') => {
   try {
     const apiKey = process.env.IMGBB_API_KEY;
-    
+
     if (!apiKey) {
       throw new Error('ImgBB API key is not configured');
     }
@@ -62,7 +62,7 @@ export const uploadToImgBB = async (base64Image, imageName = 'image') => {
  */
 export const uploadMultipleToImgBB = async (base64Images, prefix = 'image') => {
   try {
-    const uploadPromises = base64Images.map((image, index) => 
+    const uploadPromises = base64Images.map((image, index) =>
       uploadToImgBB(image, `${prefix}_${index + 1}`)
     );
 
@@ -97,7 +97,7 @@ export const validateImage = (base64Image, maxSizeMB = 5) => {
 
     // Check if it's a valid base64 image
     const validImagePrefixes = ['data:image/jpeg', 'data:image/jpg', 'data:image/png'];
-    const hasValidPrefix = validImagePrefixes.some(prefix => 
+    const hasValidPrefix = validImagePrefixes.some(prefix =>
       base64Image.startsWith(prefix)
     );
 

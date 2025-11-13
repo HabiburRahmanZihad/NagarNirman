@@ -133,7 +133,7 @@ export default function ApplyProblemSolver() {
     const userDataStr = localStorage.getItem('nn_user');
     if (userDataStr) {
       const userData = JSON.parse(userDataStr);
-      
+
       // Check if user role is 'user'
       if (userData.role !== 'user') {
         toast.error('Only regular users can apply to become problem solvers');
@@ -219,22 +219,22 @@ export default function ApplyProblemSolver() {
 
       // Import the API function
       const { problemSolverAPI } = await import('@/utils/api');
-      
+
       const result = await problemSolverAPI.applyAsProblemSolver(submissionData);
 
       // Clear draft
       localStorage.removeItem('problem-solver-draft');
-      
+
       toast.success('Application submitted successfully! Your application is pending review by authorities.');
-      
+
       // Reset form
       reset();
-      
+
       // Redirect after success
       setTimeout(() => {
         router.push('/dashboard/user');
       }, 2500);
-      
+
     } catch (error: any) {
       console.error('Submission error:', error);
       toast.error(error.message || 'Failed to submit application. Please try again.');
@@ -282,7 +282,7 @@ export default function ApplyProblemSolver() {
 
   const buttonVariants = {
     initial: { scale: 1 },
-    hover: { 
+    hover: {
       scale: 1.02,
       transition: { duration: 0.2 }
     },
@@ -315,7 +315,7 @@ export default function ApplyProblemSolver() {
 
   return (
     <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-8 px-4 sm:px-6 lg:px-8">
-      <Toaster 
+      <Toaster
         position="top-right"
         toastOptions={{
           duration: 4000,
@@ -331,7 +331,7 @@ export default function ApplyProblemSolver() {
           },
         }}
       />
-      
+
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -346,7 +346,7 @@ export default function ApplyProblemSolver() {
           <p className="text-gray-600 mb-4">
             Help your community by verifying and resolving public problem reports
           </p>
-          
+
           {/* Progress Indicator */}
           <div className="flex justify-center mb-6">
             <div className="flex items-center space-x-4">
@@ -383,7 +383,7 @@ export default function ApplyProblemSolver() {
                   className="space-y-6"
                 >
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">Personal Information</h2>
-                  
+
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Full Name */}
                     <div className="space-y-2">
@@ -611,7 +611,7 @@ export default function ApplyProblemSolver() {
                   className="space-y-6"
                 >
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">Background & Skills</h2>
-                  
+
                   {/* Organization - Full Width */}
                   <div className="space-y-2">
                     <label htmlFor="organization" className="flex items-center text-sm font-medium text-gray-700">
@@ -720,9 +720,9 @@ export default function ApplyProblemSolver() {
                       />
                       {profileImagePreview && (
                         <div className="mt-2">
-                          <img 
-                            src={profileImagePreview} 
-                            alt="Profile preview" 
+                          <img
+                            src={profileImagePreview}
+                            alt="Profile preview"
                             className="w-20 h-20 rounded-full object-cover border-2 border-[#2a7d2f]"
                           />
                         </div>

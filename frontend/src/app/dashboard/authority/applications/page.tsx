@@ -82,7 +82,7 @@ export default function ProblemSolverApplications() {
     try {
       const { problemSolverAPI } = await import('@/utils/api');
       const filters: any = { page: pagination.page, limit: 10 };
-      
+
       if (filterStatus !== 'all') {
         filters.status = filterStatus;
       }
@@ -103,7 +103,7 @@ export default function ProblemSolverApplications() {
     try {
       const { problemSolverAPI } = await import('@/utils/api');
       await problemSolverAPI.reviewApplication(appId, status, reviewNote);
-      
+
       toast.success(`Application ${status} successfully!`);
       setShowModal(false);
       setSelectedApp(null);
@@ -163,7 +163,7 @@ export default function ProblemSolverApplications() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <Toaster position="top-right" />
-      
+
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -369,9 +369,9 @@ export default function ProblemSolverApplications() {
                   {selectedApp.profileImage && (
                     <div>
                       <p className="text-sm font-medium text-gray-700 mb-2">Profile Photo</p>
-                      <img 
-                        src={selectedApp.profileImage} 
-                        alt="Profile" 
+                      <img
+                        src={selectedApp.profileImage}
+                        alt="Profile"
                         className="w-32 h-32 rounded-lg object-cover border-2 border-gray-300"
                       />
                     </div>
@@ -379,15 +379,15 @@ export default function ProblemSolverApplications() {
                   {selectedApp.nidOrIdDoc && (
                     <div>
                       <p className="text-sm font-medium text-gray-700 mb-2">ID Document</p>
-                      <a 
-                        href={selectedApp.nidOrIdDoc} 
-                        target="_blank" 
+                      <a
+                        href={selectedApp.nidOrIdDoc}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="inline-block"
                       >
-                        <img 
-                          src={selectedApp.nidOrIdDoc} 
-                          alt="ID Document" 
+                        <img
+                          src={selectedApp.nidOrIdDoc}
+                          alt="ID Document"
                           className="w-32 h-32 rounded-lg object-cover border-2 border-gray-300 hover:border-[#2a7d2f] transition-colors cursor-pointer"
                         />
                       </a>
