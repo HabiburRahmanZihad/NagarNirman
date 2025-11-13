@@ -338,7 +338,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
       try {
         // Import the upload function
         const { uploadToImgBB } = await import('../utils/imageUpload.js');
-        
+
         // Upload to ImgBB
         const uploadResult = await uploadToImgBB(profilePicture, `profile_${userId}`);
         updateData.profilePicture = uploadResult.url;

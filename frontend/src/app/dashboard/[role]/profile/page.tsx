@@ -38,7 +38,7 @@ const ProfilePage = () => {
         district: user.district || '',
         address: user.address || '',
       });
-      
+
       // Load profile picture from database if exists
       if (user.profilePicture) {
         setProfilePicture(user.profilePicture);
@@ -101,7 +101,7 @@ const ProfilePage = () => {
       };
 
       const response = await userAPI.updateProfile(updateData);
-      
+
       if (response.success) {
         // Dismiss uploading toast
         if (selectedFile) {
@@ -112,10 +112,10 @@ const ProfilePage = () => {
         const updatedUser = { ...user, ...response.data };
         localStorage.setItem('nn_user', JSON.stringify(updatedUser));
         updateAuthUser(updatedUser);
-        
+
         // Reset selected file after successful upload
         setSelectedFile(null);
-        
+
         toast.success('Profile updated successfully!');
       }
     } catch (error: any) {
