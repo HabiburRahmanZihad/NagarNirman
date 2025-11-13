@@ -140,7 +140,7 @@ const addMarkersToMap = (
             transform: translate(-50%, -50%);
             width: 20px;
             height: 20px;
-            background: linear-l(135deg, ${division.color} 0%, ${division.color}dd 100%);
+            background: linear-gradient(135deg, ${division.color} 0%, ${division.color}dd 100%);
             border: 3px solid white;
             border-radius: 50%;
             box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 4px ${division.color}33;
@@ -251,7 +251,7 @@ const addMarkersToMap = (
               transform: translate(-50%, -50%);
               width: 16px;
               height: 16px;
-              background: linear-l(135deg, ${district.color} 0%, ${district.color}dd 100%);
+              background: linear-gradient(135deg, ${district.color} 0%, ${district.color}dd 100%);
               border: 2px solid white;
               border-radius: 50% 50% 50% 0;
               transform: translate(-50%, -50%) rotate(-45deg);
@@ -803,7 +803,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
   }, [searchQuery, divisions]);
 
   if (!mounted) return (
-    <div className="w-full h-full bg-l-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 animate-pulse" />
+    <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 animate-pulse" />
   );
 
   return <div id="map" className="w-full h-full z-0" />;
@@ -1080,10 +1080,10 @@ export default function MapSearchPage() {
   return (
     <div className={`container mx-auto min-h-screen transition-all duration-500 ${
       isDark
-        ? 'bg-linear-to-br from-gray-950 via-gray-900 to-gray-950'
-        : 'bg-linear-to-br from-gray-50 via-blue-50/30 to-gray-50'
-     }`}>
-      {/* Animated background l overlay */}
+        ? 'bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950'
+        : 'bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50'
+    }`}>
+      {/* Animated background gradient overlay */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0" />
       </div>
@@ -1159,15 +1159,15 @@ export default function MapSearchPage() {
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <stat.icon className={`w-4 h-4 bg-l-to-r ${stat.color} bg-clip-text text-transparent`} strokeWidth={2.5} />
-                    <div className={`w-2 h-2 rounded-full bg-l-to-r ${stat.color}`} />
+                    <stat.icon className={`w-4 h-4 bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`} strokeWidth={2.5} />
+                    <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${stat.color}`} />
                   </div>
                   <p className={`text-xs font-medium mb-1 ${
                     isDark ? 'text-gray-400' : 'text-gray-600'
                   }`}>
                     {stat.label}
                   </p>
-                  <p className={`text-xl font-bold bg-l-to-r ${stat.color} bg-clip-text text-transparent`}>
+                  <p className={`text-xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
                     {stat.value}
                   </p>
                 </div>
@@ -1180,7 +1180,7 @@ export default function MapSearchPage() {
       {/* Main Content */}
       <div className="relative h-[calc(100vh-140px)]">
         {/* Premium Search Bar - Moved to right side */}
-        <div className="absolute top-6 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-1000 flex gap-3">
+        <div className="absolute top-6 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-[1000] flex gap-3">
           <div className={`flex-1 relative backdrop-blur-xl ${
             isDark
               ? 'bg-gray-900/90 border-gray-700/50'
@@ -1236,25 +1236,25 @@ export default function MapSearchPage() {
               {/* Glassmorphic Overlay with reduced opacity */}
               <div
                 onClick={handleCloseSidebar}
-                className="absolute inset-0 bg-black/40 backdrop-blur-sm z-999"
+                className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[999]"
               />
 
               {/* Sidebar Content - Now on LEFT */}
               <div
                 className={`absolute top-0 left-0 w-full md:w-[460px] h-full ${
                   isDark
-                    ? 'bg-l-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
-                    : 'bg-l-to-b from-white/98 via-white/95 to-gray-50/98'
-                } backdrop-blur-2xl shadow-2xl z-1000 overflow-hidden flex flex-col border-r ${
+                    ? 'bg-gradient-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
+                    : 'bg-gradient-to-b from-white/98 via-white/95 to-gray-50/98'
+                } backdrop-blur-2xl shadow-2xl z-[1000] overflow-hidden flex flex-col border-r ${
                   isDark ? 'border-gray-800/50' : 'border-gray-200/50'
                 }`}
               >
-                {/* Sidebar Header with l */}
+                {/* Sidebar Header with Gradient */}
                 <div className="relative p-6 pb-8">
                   <div
                     className="absolute inset-0 opacity-10"
                     style={{
-                      background: `linear-l(135deg, ${
+                      background: `linear-gradient(135deg, ${
                         displayItem.type === 'district'
                           ? (displayItem.division as Division)?.color || '#6B7280'
                           : (displayItem.data as Division).color
@@ -1267,7 +1267,7 @@ export default function MapSearchPage() {
                       <div
                         className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl"
                         style={{
-                          background: `linear-l(135deg, ${
+                          background: `linear-gradient(135deg, ${
                             displayItem.type === 'district'
                               ? (displayItem.division as Division)?.color || '#6B7280'
                               : (displayItem.data as Division).color
@@ -1336,7 +1336,7 @@ export default function MapSearchPage() {
                           ? (displayItem.data as Division).districts.reduce((a, d) => a + d.total, 0)
                           : (displayItem.data as District).total,
                         icon: BarChart3,
-                        l: 'from-blue-500 to-blue-600',
+                        gradient: 'from-blue-500 to-blue-600',
                         bgDark: 'bg-blue-500/10',
                         bgLight: 'bg-blue-50'
                       },
@@ -1346,7 +1346,7 @@ export default function MapSearchPage() {
                           ? (displayItem.data as Division).districts.reduce((a, d) => a + d.pending, 0)
                           : (displayItem.data as District).pending,
                         icon: Clock,
-                        l: 'from-orange-500 to-amber-500',
+                        gradient: 'from-orange-500 to-amber-500',
                         bgDark: 'bg-orange-500/10',
                         bgLight: 'bg-orange-50'
                       },
@@ -1356,7 +1356,7 @@ export default function MapSearchPage() {
                           ? (displayItem.data as Division).districts.reduce((a, d) => a + d.completed, 0)
                           : (displayItem.data as District).completed,
                         icon: CheckCircle,
-                        l: 'from-green-500 to-emerald-600',
+                        gradient: 'from-green-500 to-emerald-600',
                         bgDark: 'bg-green-500/10',
                         bgLight: 'bg-green-50'
                       }
@@ -1369,13 +1369,13 @@ export default function MapSearchPage() {
                           isDark ? 'border-gray-800/50' : 'border-gray-200/30'
                         } backdrop-blur-sm`}
                       >
-                        <stat.icon className={`w-4 h-4 mb-2 bg-l-to-r ${stat.l} bg-clip-text text-transparent`} strokeWidth={2.5} />
+                        <stat.icon className={`w-4 h-4 mb-2 bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`} strokeWidth={2.5} />
                         <p className={`text-xs font-medium mb-1 ${
                           isDark ? 'text-gray-400' : 'text-gray-600'
                         }`}>
                           {stat.label}
                         </p>
-                        <p className={`text-2xl font-bold bg-l-to-r ${stat.l} bg-clip-text text-transparent`}>
+                        <p className={`text-2xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
                           {stat.value}
                         </p>
                       </div>
@@ -1428,11 +1428,11 @@ export default function MapSearchPage() {
                             } backdrop-blur-sm transition-all cursor-pointer overflow-hidden`}
                             onClick={() => handleDistrictClick(district, displayItem.data as Division)}
                           >
-                            {/* l overlay on hover */}
+                            {/* Gradient overlay on hover */}
                             <div
                               className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity"
                               style={{
-                                background: `linear-l(135deg, ${(displayItem.data as Division).color} 0%, transparent 100%)`
+                                background: `linear-gradient(135deg, ${(displayItem.data as Division).color} 0%, transparent 100%)`
                               }}
                             />
 
@@ -1526,7 +1526,7 @@ export default function MapSearchPage() {
                                   className="absolute left-0 top-0 h-full rounded-full transition-all duration-1000"
                                   style={{
                                     width: `${completionPercent}%`,
-                                    background: `linear-l(90deg, ${(displayItem.data as Division).color} 0%, ${(displayItem.data as Division).color}cc 100%)`
+                                    background: `linear-gradient(90deg, ${(displayItem.data as Division).color} 0%, ${(displayItem.data as Division).color}cc 100%)`
                                   }}
                                 />
                               </div>
