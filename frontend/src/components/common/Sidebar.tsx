@@ -109,9 +109,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             {user && (
               <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-semibold">
-                    {user.name?.charAt(0).toUpperCase()}
-                  </div>
+                  {user.profilePicture ? (
+                    <img 
+                      src={user.profilePicture} 
+                      alt={user.name}
+                      className="w-10 h-10 rounded-full object-cover border-2 border-primary"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-semibold">
+                      {user.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{user.name}</p>
                     <p className="text-xs text-gray-500 capitalize">{user.role}</p>

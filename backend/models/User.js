@@ -81,6 +81,7 @@ export const createUser = async (userData) => {
     approved: role === 'user' || role === 'authority',
     isActive: true,
     avatar: avatar || '',
+    profilePicture: '',
     createdAt: new Date(),
     updatedAt: new Date(),
   };

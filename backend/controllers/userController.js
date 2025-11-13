@@ -324,28 +324,29 @@ export const getLeaderboard = asyncHandler(async (req, res) => {
 export const updateProfile = asyncHandler(async (req, res) => {
   try {
     const userId = req.user.id;
-    const { name, email, phone, division, district, address } = req.body;
+    const { phone, division, district, address, profilePicture } = req.body;
 
     // Build update object with only provided fields
     const updateData = {};
-    if (name) updateData.name = name;
-    if (email) updateData.email = email;
-    if (phone) updateData.phone = phone;
+    if (phone !== undefined) updateData.phone = phone;
     if (division) updateData.division = division;
     if (district) updateData.district = district;
-    if (address) updateData.address = address;
+    if (address !== undefined) updateData.address = address;
 
-    // Check if email is being changed and is already in use
-    if (email) {
-      const existingUser = await getUsersCollection().findOne({
-        email,
-        _id: { $ne: new ObjectId(userId) }
-      });
-
-      if (existingUser) {
+    // Handle profile picture upload if provided
+    if (profilePicture) {
+      try {
+        // Import the upload function
+        const { uploadToImgBB } = await import('../utils/imageUpload.js');
+        
+        // Upload to ImgBB
+        const uploadResult = await uploadToImgBB(profilePicture, `profile_${userId}`);
+        updateData.profilePicture = uploadResult.url;
+      } catch (uploadError) {
+        console.error('Profile picture upload error:', uploadError);
         return res.status(400).json({
           success: false,
-          message: 'Email already in use',
+          message: 'Failed to upload profile picture: ' + uploadError.message,
         });
       }
     }

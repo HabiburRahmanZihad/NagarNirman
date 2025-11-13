@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { userAPI } from '@/utils/api';
 import DashboardLayout from '@/components/common/DashboardLayout';
@@ -9,8 +9,6 @@ import toast from 'react-hot-toast';
 import divisionsData from '@/data/divisionsData.json';
 
 interface ProfileData {
-  name: string;
-  email: string;
   phone: string;
   division: string;
   district: string;
@@ -21,25 +19,30 @@ const ProfilePage = () => {
   const { user, updateUser: updateAuthUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [profileData, setProfileData] = useState<ProfileData>({
-    name: '',
-    email: '',
     phone: '',
     division: '',
     district: '',
     address: '',
   });
   const [districts, setDistricts] = useState<string[]>([]);
+  const [profilePicture, setProfilePicture] = useState<string>('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (user) {
       setProfileData({
-        name: user.name || '',
-        email: user.email || '',
         phone: user.phone || '',
         division: user.division || '',
         district: user.district || '',
         address: user.address || '',
       });
+      
+      // Load profile picture from database if exists
+      if (user.profilePicture) {
+        setProfilePicture(user.profilePicture);
+      }
 
       // Set districts based on division
       if (user.division) {
@@ -61,22 +64,62 @@ const ProfilePage = () => {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File size must be less than 5MB');
+        return;
+      }
+      if (!file.type.startsWith('image/')) {
+        toast.error('Please select an image file');
+        return;
+      }
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePicture(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await userAPI.updateProfile(profileData);
+      // Show uploading toast if image is selected
+      if (selectedFile) {
+        toast.loading('Uploading image...', { id: 'upload' });
+      }
+
+      // Prepare update data
+      const updateData = {
+        ...profileData,
+        ...(selectedFile && { profilePicture: profilePicture }), // Include base64 image if selected
+      };
+
+      const response = await userAPI.updateProfile(updateData);
       
       if (response.success) {
+        // Dismiss uploading toast
+        if (selectedFile) {
+          toast.dismiss('upload');
+        }
+
         // Update auth context with new user data
         const updatedUser = { ...user, ...response.data };
         localStorage.setItem('nn_user', JSON.stringify(updatedUser));
         updateAuthUser(updatedUser);
         
+        // Reset selected file after successful upload
+        setSelectedFile(null);
+        
         toast.success('Profile updated successfully!');
       }
     } catch (error: any) {
+      toast.dismiss('upload');
       toast.error(error.message || 'Failed to update profile');
     } finally {
       setLoading(false);
@@ -98,31 +141,90 @@ const ProfilePage = () => {
 
         <Card>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Profile Picture Section */}
+            <div>
+              <h2 className="text-xl font-semibold mb-4 text-gray-900">Profile Picture</h2>
+              <div className="flex items-center space-x-6">
+                <div className="relative">
+                  <div className={`w-32 h-32 rounded-full bg-gray-200 overflow-hidden border-4 shadow-lg ${selectedFile ? 'border-primary' : 'border-white'}`}>
+                    {profilePicture ? (
+                      <img
+                        src={profilePicture}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-primary text-white text-4xl font-bold">
+                        {user?.name?.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  {selectedFile && (
+                    <div className="absolute -bottom-2 -right-2 bg-primary text-white rounded-full px-3 py-1 text-xs font-medium">
+                      New
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                    aria-label="Upload profile picture"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    Choose Photo
+                  </Button>
+                  <p className="text-sm text-gray-500 mt-2">
+                    JPG, PNG or GIF. Max size 5MB.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* User Info Section */}
             <div>
               <h2 className="text-xl font-semibold mb-4 text-gray-900">Personal Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={user?.name || ''}
+                    disabled
+                    aria-label="Full Name (Read-only)"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Name cannot be changed</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={user?.email || ''}
+                    disabled
+                    aria-label="Email Address (Read-only)"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+                </div>
                 <Input
-                  label="Full Name"
-                  name="name"
-                  value={profileData.name}
-                  onChange={handleChange}
-                  required
-                />
-                <Input
-                  label="Email"
-                  name="email"
-                  type="email"
-                  value={profileData.email}
-                  onChange={handleChange}
-                  required
-                />
-                <Input
-                  label="Phone"
+                  label="Phone Number"
                   name="phone"
                   type="tel"
                   value={profileData.phone}
                   onChange={handleChange}
+                  placeholder="+880 1XXX-XXXXXX"
                 />
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">

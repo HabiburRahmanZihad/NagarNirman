@@ -16,6 +16,7 @@ export interface User {
   phone?: string;
   division?: string;
   address?: string;
+  profilePicture?: string;
   points?: number;
   approved?: boolean; // for NGO/problemSolver applications
   createdAt?: Date;
