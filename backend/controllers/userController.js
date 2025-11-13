@@ -318,6 +318,60 @@ export const getLeaderboard = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Update user profile (own profile)
+// @route   PUT /api/users/profile
+// @access  Private
+export const updateProfile = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { name, email, phone, division, district, address } = req.body;
+
+    // Build update object with only provided fields
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (phone) updateData.phone = phone;
+    if (division) updateData.division = division;
+    if (district) updateData.district = district;
+    if (address) updateData.address = address;
+
+    // Check if email is being changed and is already in use
+    if (email) {
+      const existingUser = await getUsersCollection().findOne({
+        email,
+        _id: { $ne: new ObjectId(userId) }
+      });
+
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email already in use',
+        });
+      }
+    }
+
+    const updatedUser = await updateUser(userId, updateData);
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: updatedUser,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 // @desc    Update user status (activate/deactivate)
 // @route   PATCH /api/users/:id/status
 // @access  Private (Authority)

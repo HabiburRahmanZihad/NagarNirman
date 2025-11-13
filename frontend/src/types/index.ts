@@ -13,6 +13,9 @@ export interface User {
   password?: string; // Only in forms, not in responses
   role: UserRole;
   district: string;
+  phone?: string;
+  division?: string;
+  address?: string;
   points?: number;
   approved?: boolean; // for NGO/problemSolver applications
   createdAt?: Date;

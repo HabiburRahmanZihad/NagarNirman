@@ -31,7 +31,6 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${urbanist.variable} font-sans antialiased min-h-screen flex flex-col`}
-        suppressHydrationWarning
       >
         <AuthProvider>
           <Toaster position="top-right" />

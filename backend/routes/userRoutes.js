@@ -7,6 +7,7 @@ import {
   approveUser,
   getUserStats,
   getLeaderboard,
+  updateProfile,
   updateUserStatus,
   getMyApplication,
   getAllApplications,
@@ -23,6 +24,7 @@ router.get('/leaderboard', getLeaderboard);
 // Protected routes
 router.post('/apply-problem-solver', protect, applyProblemSolver);
 router.get('/my-application', protect, getMyApplication);
+router.put('/profile', protect, updateProfile);
 router.get('/:id/stats', protect, getUserStats);
 router.get('/:id', protect, getUser);
 

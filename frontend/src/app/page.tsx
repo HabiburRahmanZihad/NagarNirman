@@ -42,11 +42,16 @@ export default function Home() {
             <>
               <Link href="/reports/new">
                 <Button variant="primary" size="lg">
-                  Reports an Issue
+                  Report an Issue
+                </Button>
+              </Link>
+              <Link href="/map-search">
+                <Button variant="secondary" size="lg">
+                  Explore Map
                 </Button>
               </Link>
               <Link href="/reports">
-                <Button variant="secondary" size="lg">
+                <Button variant="outline" size="lg">
                   View All Reports
                 </Button>
               </Link>
@@ -56,6 +61,11 @@ export default function Home() {
               <Link href="/auth/register">
                 <Button variant="primary" size="lg">
                   Get Started
+                </Button>
+              </Link>
+              <Link href="/map-search">
+                <Button variant="secondary" size="lg">
+                  Explore Map
                 </Button>
               </Link>
               <Link href="/reports">

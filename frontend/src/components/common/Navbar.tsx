@@ -32,48 +32,27 @@ const Navbar: React.FC = () => {
               Home
             </Link>
 
+            {isAuthenticated && (
+              <Link
+                href={
+                  user?.role === 'user' ? '/dashboard/user' :
+                  user?.role === 'authority' ? '/dashboard/authority' :
+                  user?.role === 'problemSolver' || user?.role === 'ngo' ? '/dashboard/solver' :
+                  '/dashboard'
+                }
+                className="text-[#374151] hover:text-[#81d586] transition-colors"
+              >
+                Dashboard
+              </Link>
+            )}
+
             <Link href="/reports" className="text-[#374151] hover:text-[#81d586] transition-colors">
-              Report
+              All Reports
             </Link>
 
-            {isAuthenticated && user?.role === 'user' && (
-              <>
-                <Link href="/dashboard/user" className="text-[#374151] hover:text-[#81d586] transition-colors">
-                  Dashboard
-                </Link>
-                <Link href="/reports/new" className="text-[#374151] hover:text-[#81d586] transition-colors">
-                  Report Issue
-                </Link>
-                <Link href="/map-search" className="text-[#374151] hover:text-[#81d586] transition-colors">
-                  Map Search
-                </Link>
-                <Link href="/join-as-a-Problem-Solver" className="text-[#374151] hover:text-[#81d586] transition-colors">
-                  Join as Problem Solver
-                </Link>
-              </>
-            )}
-
-            {isAuthenticated && user?.role === 'authority' && (
-              <>
-                <Link href="/dashboard/authority" className="text-[#374151] hover:text-[#81d586] transition-colors">
-                  Dashboard
-                </Link>
-                <Link href="/dashboard/authority/manage" className="text-[#374151] hover:text-[#81d586] transition-colors">
-                  Manage
-                </Link>
-              </>
-            )}
-
-            {isAuthenticated && (user?.role === 'problemSolver' || user?.role === 'ngo') && (
-              <>
-                <Link href="/dashboard/solver" className="text-[#374151] hover:text-[#81d586] transition-colors">
-                  Dashboard
-                </Link>
-                <Link href="/dashboard/solver/tasks" className="text-[#374151] hover:text-[#81d586] transition-colors">
-                  My Tasks
-                </Link>
-              </>
-            )}
+            <Link href="/map-search" className="text-[#374151] hover:text-[#81d586] transition-colors">
+              Map Search
+            </Link>
 
             <div className="relative group">
               <Link href="/about" className="text-[#374151] hover:text-[#81d586] transition-colors">

@@ -138,6 +138,32 @@ export const statisticsAPI = {
   },
 };
 
+// User Profile API functions
+export const userAPI = {
+  // Get user profile
+  getProfile: (userId: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}`, {
+      requiresAuth: true,
+    });
+  },
+
+  // Update user profile
+  updateProfile: (data: any) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/profile`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+      requiresAuth: true,
+    });
+  },
+
+  // Get user statistics
+  getUserStats: (userId: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}/stats`, {
+      requiresAuth: true,
+    });
+  },
+};
+
 // Problem Solver Application API functions
 export const problemSolverAPI = {
   // Submit application
