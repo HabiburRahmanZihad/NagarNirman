@@ -9,6 +9,14 @@ import {
 } from '../models/User.js';
 import { findReports } from '../models/Report.js';
 import { findTasks } from '../models/Task.js';
+import {
+  createApplication,
+  getApplicationById,
+  getApplicationByUserId,
+  getApplications,
+  updateApplicationStatus,
+} from '../models/ProblemSolverApplication.js';
+import { uploadToImgBB, validateImage } from '../utils/imageUpload.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
 // @desc    Get all users
@@ -72,7 +80,7 @@ export const getUser = asyncHandler(async (req, res) => {
 
 // @desc    Apply to become problem solver
 // @route   POST /api/users/apply-problem-solver
-// @access  Private
+// @access  Private (User only)
 export const applyProblemSolver = asyncHandler(async (req, res) => {
   try {
     const user = await getUserById(req.user.id);
@@ -84,23 +92,87 @@ export const applyProblemSolver = asyncHandler(async (req, res) => {
       });
     }
 
-    if (user.role === 'problemSolver' || user.role === 'ngo') {
+    // Only users with 'user' role can apply
+    if (user.role !== 'user') {
       return res.status(400).json({
         success: false,
-        message: 'User is already a problem solver',
+        message: 'Only regular users can apply to become problem solvers',
       });
     }
 
-    // Update user role to problemSolver and set approved to false
-    const updatedUser = await updateUser(req.user.id, {
-      role: 'problemSolver',
-      approved: false,
+    const {
+      fullName,
+      email,
+      phone,
+      dateOfBirth,
+      gender,
+      division,
+      district,
+      address,
+      profession,
+      organization,
+      skills,
+      motivation,
+      experience,
+      profileImage,
+      nidOrIdDoc,
+    } = req.body;
+
+    // Upload images to ImgBB
+    let profileImageUrl = null;
+    let nidOrIdDocUrl = null;
+
+    try {
+      // Upload profile image if provided
+      if (profileImage) {
+        validateImage(profileImage, 5); // 5MB max
+        const profileUpload = await uploadToImgBB(profileImage, `${fullName}_profile`);
+        profileImageUrl = profileUpload.url;
+      }
+
+      // Upload NID/ID document (required)
+      if (!nidOrIdDoc) {
+        return res.status(400).json({
+          success: false,
+          message: 'ID document is required',
+        });
+      }
+
+      validateImage(nidOrIdDoc, 5); // 5MB max
+      const nidUpload = await uploadToImgBB(nidOrIdDoc, `${fullName}_nid`);
+      nidOrIdDocUrl = nidUpload.url;
+
+    } catch (uploadError) {
+      return res.status(400).json({
+        success: false,
+        message: `Image upload failed: ${uploadError.message}`,
+      });
+    }
+
+    // Create application with image URLs
+    const application = await createApplication({
+      userId: req.user.id,
+      fullName,
+      email,
+      phone,
+      dateOfBirth,
+      gender,
+      division,
+      district,
+      address,
+      profession,
+      organization,
+      skills,
+      motivation,
+      experience,
+      profileImage: profileImageUrl,
+      nidOrIdDoc: nidOrIdDocUrl,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
-      message: 'Application submitted successfully. Awaiting approval.',
-      data: updatedUser,
+      message: 'Application submitted successfully. Awaiting approval from authorities.',
+      data: application,
     });
   } catch (error) {
     res.status(400).json({
@@ -273,6 +345,154 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
       success: true,
       message: `User ${isActive ? 'activated' : 'deactivated'} successfully`,
       data: user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Get user's problem solver application
+// @route   GET /api/users/my-application
+// @access  Private
+export const getMyApplication = asyncHandler(async (req, res) => {
+  try {
+    const application = await getApplicationByUserId(req.user.id);
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: 'No application found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: application,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Get all problem solver applications
+// @route   GET /api/users/applications
+// @access  Private (Authority)
+export const getAllApplications = asyncHandler(async (req, res) => {
+  const {
+    page = 1,
+    limit = 10,
+    status,
+    division,
+    district,
+    sortBy = 'appliedAt',
+    order = 'desc',
+  } = req.query;
+
+  try {
+    const filters = {};
+    if (status) filters.status = status;
+    if (division) filters.division = division;
+    if (district) filters.district = district;
+
+    const options = {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      sortBy,
+      sortOrder: order === 'desc' ? -1 : 1,
+    };
+
+    const result = await getApplications(filters, options);
+
+    res.status(200).json({
+      success: true,
+      count: result.applications.length,
+      pagination: result.pagination,
+      data: result.applications,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Get single application by ID
+// @route   GET /api/users/applications/:id
+// @access  Private (Authority)
+export const getApplicationDetails = asyncHandler(async (req, res) => {
+  try {
+    const application = await getApplicationById(req.params.id);
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: 'Application not found',
+      });
+    }
+
+    // Get user details
+    const user = await getUserById(application.userId.toString());
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ...application,
+        userInfo: {
+          name: user.name,
+          currentRole: user.role,
+          points: user.points,
+          isActive: user.isActive,
+        },
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Review problem solver application (approve/reject)
+// @route   PATCH /api/users/applications/:id/review
+// @access  Private (Authority)
+export const reviewApplication = asyncHandler(async (req, res) => {
+  const { status, reviewNote } = req.body;
+
+  if (!status || !['approved', 'rejected'].includes(status)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Please provide valid status (approved or rejected)',
+    });
+  }
+
+  try {
+    // Update application status
+    const application = await updateApplicationStatus(
+      req.params.id,
+      { status, reviewNote },
+      req.user.id
+    );
+
+    // If approved, update user role to problemSolver
+    if (status === 'approved') {
+      await updateUser(application.userId.toString(), {
+        role: 'problemSolver',
+        approved: true,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Application ${status} successfully`,
+      data: application,
     });
   } catch (error) {
     res.status(400).json({

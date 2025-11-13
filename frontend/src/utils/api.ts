@@ -137,3 +137,55 @@ export const statisticsAPI = {
     return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/summary`);
   },
 };
+
+// Problem Solver Application API functions
+export const problemSolverAPI = {
+  // Submit application
+  applyAsProblemSolver: (data: any) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/apply-problem-solver`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      requiresAuth: true,
+    });
+  },
+
+  // Get user's own application
+  getMyApplication: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/my-application`, {
+      requiresAuth: true,
+    });
+  },
+
+  // Get all applications (Authority only)
+  getAllApplications: (filters?: { status?: string; division?: string; district?: string; page?: number; limit?: number }) => {
+    const params = new URLSearchParams();
+    if (filters?.status) params.append('status', filters.status);
+    if (filters?.division) params.append('division', filters.division);
+    if (filters?.district) params.append('district', filters.district);
+    if (filters?.page) params.append('page', filters.page.toString());
+    if (filters?.limit) params.append('limit', filters.limit.toString());
+
+    const queryString = params.toString();
+    const url = queryString 
+      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/applications/all?${queryString}`
+      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/applications/all`;
+
+    return apiClient(url, { requiresAuth: true });
+  },
+
+  // Get application details (Authority only)
+  getApplicationById: (id: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/applications/${id}`, {
+      requiresAuth: true,
+    });
+  },
+
+  // Review application (Authority only)
+  reviewApplication: (id: string, status: 'approved' | 'rejected', reviewNote?: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/applications/${id}/review`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status, reviewNote }),
+      requiresAuth: true,
+    });
+  },
+};

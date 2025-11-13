@@ -125,17 +125,30 @@ export default function ApplyProblemSolver() {
     // Check authentication and get user info
     const authToken = localStorage.getItem('nn_auth_token');
     if (!authToken) {
-      router.push('/login');
+      router.push('/auth/login');
       return;
     }
 
-    // In real app, decode JWT or fetch user info from API
-    const mockUserInfo: UserInfo = {
-      email: 'citizen@example.com',
-      name: 'John Doe'
-    };
-    setUserInfo(mockUserInfo);
-    setValue('email', mockUserInfo.email);
+    // Get user info from localStorage
+    const userDataStr = localStorage.getItem('nn_user');
+    if (userDataStr) {
+      const userData = JSON.parse(userDataStr);
+      
+      // Check if user role is 'user'
+      if (userData.role !== 'user') {
+        toast.error('Only regular users can apply to become problem solvers');
+        router.push('/dashboard');
+        return;
+      }
+
+      const userInfo: UserInfo = {
+        email: userData.email,
+        name: userData.name
+      };
+      setUserInfo(userInfo);
+      setValue('email', userInfo.email);
+      setValue('fullName', userInfo.name);
+    }
 
     // Load draft from localStorage
     const draft = localStorage.getItem('problem-solver-draft');
@@ -196,48 +209,35 @@ export default function ApplyProblemSolver() {
         district: data.district,
         address: data.address,
         profession: data.profession,
-        organization: data.organization || '',
+        organization: data.organization || null,
         skills: data.skills.map(skill => skill.value),
         motivation: data.motivation,
-        experience: data.experience || '',
+        experience: data.experience || null,
         profileImage: data.profileImage?.[0] ? await fileToBase64(data.profileImage[0]) : null,
         nidOrIdDoc: data.nidOrIdDoc?.[0] ? await fileToBase64(data.nidOrIdDoc[0]) : null,
-        agree: data.agree,
-        appliedAt: new Date().toISOString(),
       };
 
-      console.log(submissionData);
-
-
-      const response = await fetch('/api/problem-solvers', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(submissionData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Submission failed');
-      }
-
-      const result = await response.json();
+      // Import the API function
+      const { problemSolverAPI } = await import('@/utils/api');
+      
+      const result = await problemSolverAPI.applyAsProblemSolver(submissionData);
 
       // Clear draft
       localStorage.removeItem('problem-solver-draft');
       
-      toast.success('Application submitted successfully!');
+      toast.success('Application submitted successfully! Your application is pending review by authorities.');
       
       // Reset form
       reset();
       
       // Redirect after success
       setTimeout(() => {
-        router.push('/dashboard?role=solver');
-      }, 2000);
+        router.push('/dashboard/user');
+      }, 2500);
       
-    } catch (error) {
-      toast.error('Failed to submit application. Please try again.');
+    } catch (error: any) {
+      console.error('Submission error:', error);
+      toast.error(error.message || 'Failed to submit application. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
