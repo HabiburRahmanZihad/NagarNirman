@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
@@ -21,7 +22,7 @@ interface Report {
     coordinates: [number, number];
   };
   upvotes: string[];
-  comments: any[];
+  comments: unknown[];
   createdBy: string;
   assignedTo: string | null;
   history: {
@@ -62,38 +63,38 @@ interface ProblemSolver {
 }
 
 // Multiple dummy users for testing
-const dummyUsers = [
-  // {
-  //   _id: "69112fcd36bb614c42ffc6a1",
-  //   name: "Habibur Rahman",
-  //   email: "habib@zihad.com",
-  //   password: "$2a$10$/rDOIFGsvdw766f60h1AJesssSKph91qy0twANDHjmKSTEyzHrPMi",
-  //   role: "authority",
-  //   division: "Chittagong",
-  //   district: "Chandpur",
-  //   points: 1000,
-  //   approved: true,
-  //   isActive: true,
-  //   avatar: "",
-  //   createdAt: "2025-11-10T00:20:29.651+00:00",
-  //   updatedAt: "2025-11-10T00:20:29.651+00:00"
-  // },
-  {
-    _id: "69112fcd36bb614c42ffc6a66",
-    name: "Rahim Khan",
-    email: "rahim@khan.com",
-    password: "$2a$10$/rDOIFGsvdw766f60h1AJesssSKph91qy0twANDHjmKSTEyzHrPMi",
-    role: "authority",
-    division: "Dhaka",
-    district: "Narayanganj",
-    points: 1000,
-    approved: true,
-    isActive: true,
-    avatar: "",
-    createdAt: "2025-11-10T00:20:29.651+00:00",
-    updatedAt: "2025-11-10T00:20:29.651+00:00"
-  }
-];
+// const dummyUsers = [
+//   // {
+//   //   _id: "69112fcd36bb614c42ffc6a1",
+//   //   name: "Habibur Rahman",
+//   //   email: "habib@zihad.com",
+//   //   password: "$2a$10$/rDOIFGsvdw766f60h1AJesssSKph91qy0twANDHjmKSTEyzHrPMi",
+//   //   role: "authority",
+//   //   division: "Chittagong",
+//   //   district: "Chandpur",
+//   //   points: 1000,
+//   //   approved: true,
+//   //   isActive: true,
+//   //   avatar: "",
+//   //   createdAt: "2025-11-10T00:20:29.651+00:00",
+//   //   updatedAt: "2025-11-10T00:20:29.651+00:00"
+//   // },
+//   {
+//     _id: "69112fcd36bb614c42ffc6a66",
+//     name: "Rahim Khan",
+//     email: "rahim@khan.com",
+//     password: "$2a$10$/rDOIFGsvdw766f60h1AJesssSKph91qy0twANDHjmKSTEyzHrPMi",
+//     role: "authority",
+//     division: "Dhaka",
+//     district: "Narayanganj",
+//     points: 1000,
+//     approved: true,
+//     isActive: true,
+//     avatar: "",
+//     createdAt: "2025-11-10T00:20:29.651+00:00",
+//     updatedAt: "2025-11-10T00:20:29.651+00:00"
+//   }
+// ];
 
 // All reports data
 const allReports: Report[] = [
@@ -428,8 +429,9 @@ const allProblemSolvers: ProblemSolver[] = [
 ];
 
 const AssignTaskPage = () => {
-  const { user: authUser } = useAuth();
-  const [currentUser, setCurrentUser] = useState(authUser || dummyUsers[0]);
+  const router = useRouter();
+  const { user: authUser, isLoading, isAuthenticated } = useAuth();
+  const [currentUser, setCurrentUser] = useState(authUser);
   const [reports, setReports] = useState<Report[]>([]);
   const [problemSolvers, setProblemSolvers] = useState<ProblemSolver[]>([]);
   const [filters, setFilters] = useState({
@@ -444,6 +446,17 @@ const AssignTaskPage = () => {
   const [assigning, setAssigning] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'rating' | 'points' | 'completedTasks' | 'successRate'>('rating');
+
+  // Check if user is authenticated and has 'authority' role
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        router.push("/auth/login");
+      } else if (authUser?.role !== "authority") {
+        router.push("/");
+      }
+    }
+  }, [isAuthenticated, authUser, isLoading, router]);
 
   // Update current user when auth user changes
   useEffect(() => {
