@@ -46,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         ...commonLinks,
         // { href: '/reports', icon: '📋', label: 'All Reports' },
         { href: '/dashboard/authority/applications', icon: '📄', label: 'Applications' },
-        { href: '/dashboard/authority/users', icon: '👥', label: 'Manage Users' },
+        { href: '/dashboard/authority/manage-users', icon: '👥', label: 'Manage Users' },
         { href: '/dashboard/authority/statistics', icon: '📈', label: 'Statistics' },
         { href: '/dashboard/authority/assign-task', icon: '🛠️', label: 'Assign Task' },
       ];
