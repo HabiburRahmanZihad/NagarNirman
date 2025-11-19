@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { userAPI } from '@/utils/api';
-import DashboardLayout from '@/components/common/DashboardLayout';
 import { Button, Card, Input } from '@/components/common';
 import toast from 'react-hot-toast';
 import divisionsData from '@/data/divisionsData.json';
@@ -132,7 +131,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <DashboardLayout>
+    <>
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
@@ -331,7 +330,7 @@ const ProfilePage = () => {
           </div>
         </Card>
       </div>
-    </DashboardLayout>
+    </>
   );
 };
 

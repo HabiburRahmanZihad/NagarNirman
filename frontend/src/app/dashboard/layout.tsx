@@ -18,7 +18,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Top Bar */}
-        <header className="bg-white border-b border-gray-200 px-6 py-4 lg:pl-6 sticky top-0">
+        <header className="bg-white border-b border-gray-200 px-6 py-4 lg:pl-6 sticky top-0 z-50">
           <div className="flex items-center justify-between">
             {/* Mobile Menu Button */}
             <button
