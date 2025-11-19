@@ -28,6 +28,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const commonLinks: SidebarLink[] = [
       { href: `/dashboard/${role}`, icon: '📊', label: 'Dashboard' },
       { href: `/dashboard/${role}/profile`, icon: '👤', label: 'My Profile' },
+      { href: `/dashboard/${role}/map-search`, icon: '🗺️', label: 'Map Search' },
+      { href: `/dashboard/${role}/all-reports`, icon: '🔍', label: 'Browse Reports' },
     ];
 
     if (role === 'user') {
@@ -35,7 +37,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         ...commonLinks,
         { href: '/dashboard/user/reports/new', icon: '📝', label: 'Report Issue' },
         { href: '/dashboard/user/my-reports', icon: '📋', label: 'My Reports' },
-        { href: '/dashboard/user/map-search', icon: '🗺️', label: 'Map Search' },
         { href: '/dashboard/user/join-as-a-Problem-Solver', icon: '💡', label: 'Become Solver' },
       ];
     }
@@ -43,7 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     if (role === 'authority') {
       return [
         ...commonLinks,
-        { href: '/reports', icon: '📋', label: 'All Reports' },
+        // { href: '/reports', icon: '📋', label: 'All Reports' },
         { href: '/dashboard/authority/applications', icon: '📄', label: 'Applications' },
         { href: '/dashboard/authority/users', icon: '👥', label: 'Manage Users' },
         { href: '/dashboard/authority/statistics', icon: '📈', label: 'Statistics' },
@@ -55,8 +56,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       return [
         ...commonLinks,
         { href: '/dashboard/solver/tasks', icon: '📋', label: 'My Tasks' },
-        { href: '/reports', icon: '🔍', label: 'Browse Reports' },
-        { href: '/map-search', icon: '🗺️', label: 'Map Search' },
       ];
     }
 

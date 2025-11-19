@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
                 href={
                   user?.role === 'user' ? '/dashboard/user' :
                   user?.role === 'authority' ? '/dashboard/authority' :
-                  user?.role === 'problemSolver' || user?.role === 'ngo' ? '/dashboard/solver' :
+                  user?.role === 'problemSolver' || user?.role === 'ngo' ? '/dashboard/problemSolver' :
                   '/dashboard'
                 }
                 className="text-[#374151] hover:text-[#81d586] transition-colors"
