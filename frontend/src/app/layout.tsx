@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
-import Navbar from "@/components/common/Navbar";
-import Footer from "@/components/common/Footer";
 import { Toaster } from "react-hot-toast";
+import ClientLayout from "@/components/common/ClientLayout";
 
 const urbanist = Urbanist({
   subsets: ["latin"],
@@ -34,11 +33,9 @@ export default function RootLayout({
       >
         <AuthProvider>
           <Toaster position="top-right" />
-          <Navbar />
-          <main className="flex-1">
-              {children}
-          </main>
-          <Footer />
+          <ClientLayout>
+            {children}
+          </ClientLayout>
         </AuthProvider>
       </body>
     </html>

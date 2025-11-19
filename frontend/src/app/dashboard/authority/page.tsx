@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import DashboardLayout from '@/components/common/DashboardLayout';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
 import { reportAPI, problemSolverAPI, statisticsAPI } from '@/utils/api';
@@ -82,11 +81,9 @@ export default function AuthorityDashboard() {
 
   if (isLoading || !user) {
     return (
-      <DashboardLayout>
         <div className="flex items-center justify-center h-64">
           <p className="text-gray-600">Loading...</p>
         </div>
-      </DashboardLayout>
     );
   }
 
@@ -126,7 +123,7 @@ export default function AuthorityDashboard() {
   ];
 
   return (
-    <DashboardLayout>
+    <>
       <div className="space-y-6">
         {/* Welcome Section */}
         <div className="flex items-center justify-between">
@@ -329,6 +326,6 @@ export default function AuthorityDashboard() {
           </Card>
         )}
       </div>
-    </DashboardLayout>
+    </>
   );
 }

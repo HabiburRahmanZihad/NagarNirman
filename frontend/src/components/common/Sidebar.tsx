@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import Image from 'next/image';
 
 interface SidebarLink {
   href: string;
@@ -27,22 +28,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const commonLinks: SidebarLink[] = [
       { href: `/dashboard/${role}`, icon: '📊', label: 'Dashboard' },
       { href: `/dashboard/${role}/profile`, icon: '👤', label: 'My Profile' },
+      { href: `/dashboard/${role}/map-search`, icon: '🗺️', label: 'Map Search' },
+      { href: `/dashboard/${role}/all-reports`, icon: '🔍', label: 'Browse Reports' },
     ];
 
     if (role === 'user') {
       return [
         ...commonLinks,
-        { href: '/reports/new', icon: '📝', label: 'Report Issue' },
+        { href: '/dashboard/user/reports/new', icon: '📝', label: 'Report Issue' },
         { href: '/dashboard/user/my-reports', icon: '📋', label: 'My Reports' },
-        { href: '/map-search', icon: '🗺️', label: 'Map Search' },
-        { href: '/join-as-a-Problem-Solver', icon: '💡', label: 'Become Solver' },
+        { href: '/dashboard/user/join-as-a-Problem-Solver', icon: '💡', label: 'Become Solver' },
       ];
     }
 
     if (role === 'authority') {
       return [
         ...commonLinks,
-        { href: '/reports', icon: '📋', label: 'All Reports' },
+        // { href: '/reports', icon: '📋', label: 'All Reports' },
         { href: '/dashboard/authority/applications', icon: '📄', label: 'Applications' },
         { href: '/dashboard/authority/users', icon: '👥', label: 'Manage Users' },
         { href: '/dashboard/authority/statistics', icon: '📈', label: 'Statistics' },
@@ -54,8 +56,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       return [
         ...commonLinks,
         { href: '/dashboard/solver/tasks', icon: '📋', label: 'My Tasks' },
-        { href: '/reports', icon: '🔍', label: 'Browse Reports' },
-        { href: '/map-search', icon: '🗺️', label: 'Map Search' },
       ];
     }
 
@@ -91,10 +91,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           {/* Header */}
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-              <Link href="/" className="flex items-center space-x-2">
-                <span className="text-2xl font-bold text-primary">NN</span>
-                <span className="text-lg font-semibold">NagarNirman</span>
-              </Link>
+          {/* Logo */}
+          <Link href="/">
+            <Image
+              src="/logo/logo.png"
+              alt="NagarNirman Logo"
+              width={150}
+              height={150}
+              priority
+            />
+          </Link>
               <button
                 onClick={onClose}
                 className="lg:hidden text-gray-500 hover:text-gray-700"
