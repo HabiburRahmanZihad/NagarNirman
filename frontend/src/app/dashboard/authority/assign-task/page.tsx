@@ -521,11 +521,11 @@ const AssignTaskPage = () => {
         const solverCount = solversResponse.success ? solversResponse.users?.length || 0 : 0;
 
         if (reportCount === 0 && solverCount === 0) {
-          toast(`No reports or solvers found in ${userDivision} division`, { icon: 'ℹ️' });
+          toast.error(`No reports or solvers found in ${userDivision} division`);
         } else if (reportCount === 0) {
-          toast(`${solverCount} solvers available, but no reports found in ${userDivision}`, { icon: 'ℹ️' });
+          toast.error(`${solverCount} solvers available, but no reports found in ${userDivision}`);
         } else if (solverCount === 0) {
-          toast(`${reportCount} reports found, but no approved solvers in ${userDivision}`, { icon: '⚠️' });
+          toast.error(`${reportCount} reports found, but no approved solvers in ${userDivision}`);
         } else {
           toast.success(`Loaded ${reportCount} reports and ${solverCount} solvers from ${userDivision}`);
         }
@@ -1382,7 +1382,7 @@ const AssignTaskPage = () => {
                       return;
                     }
                     const solver = getAvailableSolvers(selectedReport).find(s => s._id === selectedSolver);
-                    if (solver && window.confirm(`Assign this task to ${solver.name}${solver.organization ? ` from ${solver.organization}` : ''}?`)) {
+                    if (solver) {
                       assignTask(selectedReport._id, selectedSolver);
                     }
                   }}
