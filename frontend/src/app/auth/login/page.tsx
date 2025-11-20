@@ -65,7 +65,7 @@ export default function LoginPage() {
             break;
           case 'problemSolver':
           case 'ngo':
-            router.push('/dashboard/solver');
+            router.push('/dashboard/problemSolver');
             break;
           default:
             router.push('/dashboard/user');

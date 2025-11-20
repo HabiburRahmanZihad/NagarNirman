@@ -245,6 +245,7 @@ export default function ManageUsersPage() {
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
         filters={filters}
+        userDivision={authUser?.division}
       />
 
       <UsersTable

@@ -161,7 +161,7 @@ export default function SolverDashboard() {
                 Quick Actions
               </h2>
               <div className="space-y-3">
-                <Link href="/dashboard/solver/tasks">
+                <Link href="/dashboard/problemSolver/tasks">
                   <Button variant="primary" className="w-full justify-start">
                     <span className="mr-2">📋</span> My Tasks
                   </Button>

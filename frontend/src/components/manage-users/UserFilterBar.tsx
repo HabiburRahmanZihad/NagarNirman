@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Filter, X, Users, MapPin, Shield } from "lucide-react";
+import divisionsData from '@/data/divisionsData.json';
 
 interface UserFilterBarProps {
   onSearch: (term: string) => void;
@@ -12,9 +13,10 @@ interface UserFilterBarProps {
     district: string;
     status: string;
   };
+  userDivision?: string;
 }
 
-export default function UserFilterBar({ onSearch, onFilterChange, filters }: UserFilterBarProps) {
+export default function UserFilterBar({ onSearch, onFilterChange, filters, userDivision }: UserFilterBarProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [localFilters, setLocalFilters] = useState(filters);
   const [activeFilters, setActiveFilters] = useState(0);
@@ -40,7 +42,10 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters }: Use
     onFilterChange(newFilters);
   };
 
-  const districts = ["Dhaka", "Chittagong", "Rajshahi", "Khulna", "Barisal", "Sylhet", "Rangpur", "Pirojpur"];
+  // Get districts from user's division
+  const districts = userDivision
+    ? (divisionsData.find(d => d.division === userDivision)?.districts.map(d => d.name) || [])
+    : [];
   const roles = [
     { value: "user", label: "User" },
     { value: "problemSolver", label: "Problem Solver" },
@@ -125,7 +130,7 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters }: Use
               onChange={(e) => handleFilterChange('district', e.target.value)}
               className="pl-10 pr-8 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent bg-gray-50 focus:bg-white transition-all duration-200 appearance-none"
             >
-              <option value="">All Districts</option>
+              <option value="">{userDivision ? `All Districts in ${userDivision}` : 'All Districts'}</option>
               {districts.map(district => (
                 <option key={district} value={district}>{district}</option>
               ))}

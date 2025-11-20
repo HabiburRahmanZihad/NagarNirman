@@ -349,7 +349,7 @@ export default function MyApplicationStatus() {
             {application.status === 'approved' && (
               <div className="border-t pt-6 text-center">
                 <button
-                  onClick={() => router.push('/dashboard/solver')}
+                  onClick={() => router.push('/dashboard/problemSolver')}
                   className="bg-[#2a7d2f] text-white px-8 py-3 rounded-lg hover:bg-[#236b27] transition-colors"
                 >
                   Go to Problem Solver Dashboard

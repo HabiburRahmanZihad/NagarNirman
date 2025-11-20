@@ -56,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     if (role === 'problemSolver' || role === 'ngo') {
       return [
         ...commonLinks,
-        { href: '/dashboard/solver/tasks', icon: '📋', label: 'My Tasks' },
+        { href: '/dashboard/problemSolver/tasks', icon: '📋', label: 'My Tasks' },
       ];
     }
 

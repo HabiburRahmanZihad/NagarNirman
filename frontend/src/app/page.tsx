@@ -267,27 +267,27 @@ export default function Home() {
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/dashboard/solver" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/problemSolver" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> Solver Dashboard
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/solver/tasks" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/problemSolver/tasks" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> My Tasks
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/solver/completed" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/problemSolver/completed" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> Completed Tasks
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/solver/leaderboard" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/problemSolver/leaderboard" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> Leaderboard
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/solver/rewards" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/problemSolver/rewards" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> My Rewards
                 </Link>
               </li>
