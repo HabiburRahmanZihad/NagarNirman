@@ -53,7 +53,7 @@ export default function SolversPage() {
     }
   }, [authUser]);
 
-  const fetchSolvers = async () => {
+  const fetchSolvers = async (showToast = true) => {
     try {
       setLoading(true);
       const response = await userAPI.getSolvers({
@@ -64,7 +64,9 @@ export default function SolversPage() {
       if (response.success) {
         const solversList = response.users || [];
         setSolvers(solversList);
-        toast.success(`Loaded ${solversList.length} solvers from ${authUser?.division}`);
+        if (showToast) {
+          toast.success(`Loaded ${solversList.length} solvers from ${authUser?.division}`);
+        }
       } else {
         toast.error(response.message || 'Failed to load solvers');
       }
@@ -74,6 +76,10 @@ export default function SolversPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRefresh = () => {
+    fetchSolvers(true);
   };
 
   const getInitials = (name: string) => {

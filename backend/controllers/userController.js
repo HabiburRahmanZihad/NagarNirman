@@ -585,12 +585,26 @@ export const reviewApplication = asyncHandler(async (req, res) => {
       req.user.id
     );
 
-    // If approved, update user role to problemSolver
+    // If approved, update user with application data
     if (status === 'approved') {
-      await updateUser(application.userId.toString(), {
+      const updateData = {
+        name: application.fullName, // Update name from application
         role: 'problemSolver',
         approved: true,
-      });
+        isActive: true, // Ensure user is active
+        phone: application.phone,
+        organization: application.organization,
+        expertise: application.skills, // Map skills to expertise
+        profilePicture: application.profileImage || '',
+        address: application.address,
+        // Keep division and district from application
+        division: application.division,
+        district: application.district,
+      };
+
+      console.log('Updating user with data:', updateData);
+      const updatedUser = await updateUser(application.userId.toString(), updateData);
+      console.log('User updated successfully:', updatedUser);
     }
 
     res.status(200).json({
@@ -656,6 +670,8 @@ export const getSolvers = asyncHandler(async (req, res) => {
     if (division) filter.division = division;
     if (district) filter.district = district;
 
+    console.log('getSolvers filter:', filter);
+
     const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
 
     const result = await findUsers(filter, {
@@ -664,12 +680,15 @@ export const getSolvers = asyncHandler(async (req, res) => {
       sort,
     });
 
+    console.log(`Found ${result.users.length} solvers`);
+
     res.status(200).json({
       success: true,
       users: result.users,
       pagination: result.pagination,
     });
   } catch (error) {
+    console.error('getSolvers error:', error);
     res.status(400).json({
       success: false,
       message: error.message,

@@ -58,30 +58,46 @@ export default function ProblemSolverApplications() {
     pages: 1,
     total: 0,
   });
+  const [userDivision, setUserDivision] = useState<string>('');
 
   useEffect(() => {
-    checkAuth();
-    fetchApplications();
-  }, [filterStatus, pagination.page]);
+    const division = checkAuth();
+    if (division) {
+      setUserDivision(division);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userDivision) {
+      fetchApplications();
+    }
+  }, [filterStatus, pagination.page, userDivision]);
 
   const checkAuth = () => {
     const userDataStr = localStorage.getItem('nn_user');
     if (!userDataStr) {
       router.push('/auth/login');
-      return;
+      return null;
     }
 
     const userData = JSON.parse(userDataStr);
     if (userData.role !== 'authority') {
       toast.error('Unauthorized access');
       router.push('/dashboard');
+      return null;
     }
+
+    return userData.division;
   };
 
   const fetchApplications = async () => {
     try {
       const { problemSolverAPI } = await import('@/utils/api');
-      const filters: any = { page: pagination.page, limit: 10 };
+      const filters: any = {
+        page: pagination.page,
+        limit: 10,
+        division: userDivision // Filter by authority's division
+      };
 
       if (filterStatus !== 'all') {
         filters.status = filterStatus;
@@ -172,6 +188,11 @@ export default function ProblemSolverApplications() {
           </h1>
           <p className="text-gray-600">
             Review and manage applications from citizens who want to become problem solvers
+            {userDivision && (
+              <span className="inline-flex items-center ml-2 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                📍 {userDivision} Division
+              </span>
+            )}
           </p>
         </div>
 

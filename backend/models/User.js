@@ -140,6 +140,10 @@ export const updateUser = async (userId, updateData) => {
     { returnDocument: 'after', projection: { password: 0 } }
   );
 
+  if (!result) {
+    throw new Error('User not found');
+  }
+
   return result;
 };
 

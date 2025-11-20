@@ -95,7 +95,7 @@ export default function AssignSolversPage() {
 
   const fetchReports = async () => {
     try {
-      const response = await reportAPI.getReports({
+      const response = await reportAPI.getAll({
         division: authUser?.division,
         status: 'pending'
       });

@@ -16,7 +16,7 @@ interface Report {
   images: string[];
   problemType: string;
   severity: 'low' | 'medium' | 'high';
-  status: 'pending' | 'inProgress' | 'resolved' | 'closed';
+  status: 'pending' | 'in-progress' | 'resolved' | 'closed';
   location: {
     address: string;
     district: string;
@@ -471,20 +471,20 @@ const AssignTaskPage = () => {
 
   // Auto-set filters based on user's location
   useEffect(() => {
-    if (isAuthorityUser && userDistrict && userDivision) {
+    if (isAuthorityUser && userDivision) {
       setFilters({
         division: userDivision,
-        district: userDistrict,
+        district: '', // Show all districts by default
         status: 'pending',
         severity: ''
       });
     }
-  }, [isAuthorityUser, userDistrict, userDivision]);
+  }, [isAuthorityUser, userDivision]);
 
-  // Load data based on user's district from API
+  // Load data based on user's division from API
   useEffect(() => {
     const loadData = async () => {
-      if (!isAuthorityUser || !userDivision || !userDistrict) {
+      if (!isAuthorityUser || !userDivision) {
         setLoading(false);
         return;
       }
@@ -534,12 +534,12 @@ const AssignTaskPage = () => {
         toast.error('Failed to load data. Please try again.');
         // Fallback to dummy data for development
         const filteredReports = allReports.filter(report =>
-          report.location.district === userDistrict
+          report.location.division === userDivision
         );
         setReports(filteredReports);
 
         const filteredSolvers = allProblemSolvers.filter(solver =>
-          solver.district === userDistrict && solver.approved === true
+          solver.division === userDivision && solver.approved === true
         );
         setProblemSolvers(filteredSolvers);
       } finally {
@@ -548,7 +548,7 @@ const AssignTaskPage = () => {
     };
 
     loadData();
-  }, [isAuthorityUser, userDistrict, userDivision]);
+  }, [isAuthorityUser, userDivision]);
 
   // Get available districts based on selected division from divisionsData
   const availableDistricts = filters.division
@@ -613,12 +613,12 @@ const AssignTaskPage = () => {
           r._id === reportId
             ? {
                 ...r,
-                status: 'inProgress',
+                status: 'in-progress',
                 assignedTo: solver._id, // Store user _id for consistency
                 history: [
                   ...r.history,
                   {
-                    status: 'inProgress',
+                    status: 'in-progress',
                     note: `Task assigned: ${report.title}`,
                     updatedBy: currentUser?.name || 'Authority',
                     date: new Date().toISOString()
@@ -677,7 +677,7 @@ const AssignTaskPage = () => {
             : report
         ));
 
-        const statusLabel = newStatus === 'inProgress' ? 'In Progress' :
+        const statusLabel = newStatus === 'in-progress' ? 'In Progress' :
                            newStatus === 'resolved' ? 'Resolved' :
                            newStatus === 'closed' ? 'Closed' : 'Pending';
         toast.success(`Status updated to ${statusLabel}`);
@@ -696,7 +696,7 @@ const AssignTaskPage = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'inProgress': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'in-progress': return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'resolved': return 'bg-green-100 text-green-800 border-green-200';
       case 'closed': return 'bg-gray-100 text-gray-800 border-gray-200';
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -826,7 +826,7 @@ const AssignTaskPage = () => {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">In Progress</p>
                 <p className="text-2xl font-bold text-blue-600">
-                  {reports.filter(r => r.status === 'inProgress').length}
+                  {reports.filter(r => r.status === 'in-progress').length}
                 </p>
               </div>
             </div>
@@ -924,7 +924,7 @@ const AssignTaskPage = () => {
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors"
               >
                 <option value="pending">Pending</option>
-                <option value="inProgress">In Progress</option>
+                <option value="in-progress">In Progress</option>
                 <option value="resolved">Resolved</option>
                 <option value="closed">Closed</option>
               </select>
@@ -949,18 +949,18 @@ const AssignTaskPage = () => {
         </div>
 
         {/* Assigned Tasks Section */}
-        {filteredReports.filter(r => r.status === 'inProgress' || r.status === 'resolved').length > 0 && (
+        {filteredReports.filter(r => r.status === 'in-progress' || r.status === 'resolved').length > 0 && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-[#002E2E]">Assigned Tasks & Updates</h2>
               <span className="text-sm text-gray-500">
-                {filteredReports.filter(r => r.status === 'inProgress' || r.status === 'resolved').length} active assignments
+                {filteredReports.filter(r => r.status === 'in-progress' || r.status === 'resolved').length} active assignments
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredReports
-                .filter(r => r.status === 'inProgress' || r.status === 'resolved')
+                .filter(r => r.status === 'in-progress' || r.status === 'resolved')
                 .map(report => {
                   const assignedSolver = problemSolvers.find(s => s._id === report.assignedTo);
                   return (
@@ -993,7 +993,7 @@ const AssignTaskPage = () => {
 
                       <div className="flex items-center justify-between">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
-                          {report.status === 'inProgress' ? 'In Progress' : report.status === 'resolved' ? 'Resolved' : report.status}
+                          {report.status === 'in-progress' ? 'In Progress' : report.status === 'resolved' ? 'Resolved' : report.status}
                         </span>
                         <span className="text-xs text-gray-500">
                           Updated {new Date(report.updatedAt).toLocaleDateString()}
