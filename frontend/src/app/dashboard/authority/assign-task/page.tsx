@@ -7,6 +7,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { reportAPI, problemSolverAPI, taskAPI } from '@/utils/api';
+import divisionsData from '@/data/divisionsData.json';
 
 interface Report {
   _id: string;
@@ -494,21 +495,19 @@ const AssignTaskPage = () => {
       setLoading(true);
 
       try {
-        // Fetch reports from authority's division
+        // Fetch reports from authority's entire division (all districts)
         const reportsResponse = await reportAPI.getAll({
-          division: userDivision,
-          district: userDistrict
+          division: userDivision
         });
 
         if (reportsResponse.success && reportsResponse.data) {
           setReports(reportsResponse.data);
         }
 
-        // Fetch approved problem solvers from authority's division/district
+        // Fetch approved problem solvers from authority's entire division (all districts)
         const solversResponse = await problemSolverAPI.getAllApplications({
           status: 'approved',
-          division: userDivision,
-          district: userDistrict
+          division: userDivision
         });
 
         if (solversResponse.success && solversResponse.data) {
@@ -539,17 +538,13 @@ const AssignTaskPage = () => {
     loadData();
   }, [isAuthorityUser, userDistrict, userDivision]);
 
-  // Get available districts based on selected division
+  // Get available districts based on selected division from divisionsData
   const availableDistricts = filters.division
-    ? Array.from(new Set(
-        reports
-          .filter(report => report.location.division === filters.division)
-          .map(report => report.location.district)
-      ))
+    ? (divisionsData.find(d => d.division === filters.division)?.districts.map(d => d.name) || [])
     : [];
 
-  // Get unique divisions that have reports
-  const divisions = Array.from(new Set(reports.map(report => report.location.division)));
+  // Get all divisions from divisionsData instead of only those with reports
+  const divisions = divisionsData.map(d => d.division);
 
   // Sort problem solvers based on selected criteria
   const getSortedSolvers = (solvers: ProblemSolver[]) => {
@@ -703,9 +698,9 @@ const AssignTaskPage = () => {
 
   // Get available problem solvers for the selected report's location
   const getAvailableSolvers = (report: Report) => {
+    // Show all solvers from the same division, prioritizing those from the same district
     const solvers = problemSolvers.filter(solver =>
-      solver.division === report.location.division &&
-      solver.district === report.location.district
+      solver.division === report.location.division
     );
     return getSortedSolvers(solvers);
   };
@@ -877,10 +872,14 @@ const AssignTaskPage = () => {
               <select
                 value={filters.district}
                 onChange={(e) => setFilters({ ...filters, district: e.target.value })}
-                disabled={isAuthorityUser || !filters.division}
+                disabled={!filters.division}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
               >
-                <option value="">All Districts</option>
+                <option value="">
+                  {isAuthorityUser && userDivision
+                    ? `All Districts in ${userDivision}`
+                    : 'All Districts'}
+                </option>
                 {availableDistricts.map(district => (
                   <option key={district} value={district}>{district}</option>
                 ))}
@@ -889,7 +888,7 @@ const AssignTaskPage = () => {
                 <p className="text-xs text-gray-500 mt-1">Select a division first</p>
               )}
               {isAuthorityUser && (
-                <p className="text-xs text-gray-500 mt-1">Automatically set to your district: {userDistrict}</p>
+                <p className="text-xs text-gray-500 mt-1">Filter by specific district within {userDivision} division</p>
               )}
             </div>
             <div>
@@ -997,7 +996,7 @@ const AssignTaskPage = () => {
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold text-[#002E2E]">
-                Pending Tasks {isAuthorityUser && userDistrict && `in ${userDistrict}`}
+                Pending Tasks {isAuthorityUser && userDivision && `in ${userDivision} Division`}
               </h2>
               <span className="text-sm text-gray-500">
                 {filteredReports.filter(r => r.status === 'pending').length} pending tasks
@@ -1130,8 +1129,8 @@ const AssignTaskPage = () => {
                 </div>
                 <p className="text-gray-500 text-lg">No tasks found</p>
                 <p className="text-gray-400 mt-1">
-                  {isAuthorityUser && userDistrict
-                    ? `No infrastructure issues reported in ${userDistrict} district with current filters`
+                  {isAuthorityUser && userDivision
+                    ? `No infrastructure issues reported in ${userDivision} division with current filters`
                     : 'Try adjusting your filters or check back later'
                   }
                 </p>
@@ -1220,7 +1219,7 @@ const AssignTaskPage = () => {
               {/* Available Problem Solvers */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Available Problem Solvers in {selectedReport.location.district}
+                  Available Problem Solvers in {selectedReport.location.division} Division
                   <span className="text-gray-500 ml-2">(Sorted by {sortBy.replace(/([A-Z])/g, ' $1').toLowerCase()})</span>
                 </label>
 
@@ -1229,8 +1228,8 @@ const AssignTaskPage = () => {
                     <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                     </svg>
-                    <p className="text-gray-500">No problem solvers available in this district</p>
-                    <p className="text-sm text-gray-400 mt-1">Problem solvers will be shown when available in {selectedReport.location.district}</p>
+                    <p className="text-gray-500">No problem solvers available in this division</p>
+                    <p className="text-sm text-gray-400 mt-1">Problem solvers will be shown when available in {selectedReport.location.division} division</p>
                   </div>
                 ) : (
                   <div className="space-y-3 max-h-96 overflow-y-auto">
