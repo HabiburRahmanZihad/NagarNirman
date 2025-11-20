@@ -155,7 +155,7 @@ export default function SuperAdminDashboard() {
           <QuickAction
             title="All Reports"
             icon="📋"
-            onClick={() => router.push('/reports')}
+            onClick={() => router.push('/dashboard/superAdmin/all-reports')}
             color="bg-blue-500"
           />
           <QuickAction
