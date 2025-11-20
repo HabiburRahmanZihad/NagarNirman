@@ -8,7 +8,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "problem-solver" | "admin";
+  role: "user" | "problemSolver" | "ngo" | "authority";
   district: string;
   points: number;
   approved: boolean;
@@ -29,24 +29,31 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
   const [isSaving, setIsSaving] = useState(false);
 
   const roles = [
-    { 
-      value: "user", 
-      label: "User", 
-      icon: User, 
+    {
+      value: "user",
+      label: "User",
+      icon: User,
       description: "Basic user permissions",
-      features: ["View content", "Submit requests", "Basic interactions"]
+      features: ["View content", "Submit reports", "Basic interactions"]
     },
-    { 
-      value: "problem-solver", 
-      label: "Problem Solver", 
-      icon: HelpCircle, 
+    {
+      value: "problemSolver",
+      label: "Problem Solver",
+      icon: HelpCircle,
       description: "Can solve problems and earn points",
       features: ["All User features", "Solve problems", "Earn points", "Get rewards"]
     },
-    { 
-      value: "admin", 
-      label: "Administrator", 
-      icon: Shield, 
+    {
+      value: "ngo",
+      label: "NGO",
+      icon: Shield,
+      description: "NGO organization account",
+      features: ["All User features", "Solve problems", "Manage team", "Organization profile"]
+    },
+    {
+      value: "authority",
+      label: "Authority",
+      icon: Shield,
       description: "Full administrative access",
       features: ["All Problem Solver features", "Manage users", "System configuration", "Full access"]
     }
@@ -66,8 +73,9 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'from-red-500 to-red-600';
-      case 'problem-solver': return 'from-blue-500 to-blue-600';
+      case 'authority': return 'from-red-500 to-red-600';
+      case 'problemSolver': return 'from-blue-500 to-blue-600';
+      case 'ngo': return 'from-purple-500 to-purple-600';
       default: return 'from-gray-500 to-gray-600';
     }
   };
@@ -98,19 +106,20 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              aria-label="Close modal"
             >
               <X size={24} />
             </button>
           </div>
 
           {/* User Info */}
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+          <div className="p-6 border-b border-gray-200 bg-linear-to-r from-gray-50 to-gray-100">
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#2a7d2f] to-[#1e5c22] rounded-2xl flex items-center justify-center text-white font-semibold text-xl shadow-lg">
+                <div className="w-16 h-16 bg-linear-to-br from-[#2a7d2f] to-[#1e5c22] rounded-2xl flex items-center justify-center text-white font-semibold text-xl shadow-lg">
                   {user.name.charAt(0)}
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-r from-yellow-400 to-yellow-500 border-2 border-white rounded-full flex items-center justify-center">
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-linear-to-r from-yellow-400 to-yellow-500 border-2 border-white rounded-full flex items-center justify-center">
                   <Shield size={12} className="text-white" />
                 </div>
               </div>
@@ -118,8 +127,9 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                 <div className="flex items-center space-x-3">
                   <h3 className="text-xl font-bold text-gray-900">{user.name}</h3>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    currentRole === 'admin' ? 'bg-red-100 text-red-700' :
-                    currentRole === 'problem-solver' ? 'bg-blue-100 text-blue-700' :
+                    currentRole === 'authority' ? 'bg-red-100 text-red-700' :
+                    currentRole === 'problemSolver' ? 'bg-blue-100 text-blue-700' :
+                    currentRole === 'ngo' ? 'bg-purple-100 text-purple-700' :
                     'bg-gray-100 text-gray-700'
                   }`}>
                     {currentRole}
@@ -139,7 +149,7 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                 const IconComponent = role.icon;
                 const isSelected = selectedRole === role.value;
                 const isCurrent = currentRole === role.value;
-                
+
                 return (
                   <motion.label
                     key={role.value}
@@ -154,17 +164,18 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                     <input
                       type="radio"
                       name="role"
+                      aria-label={`Select ${role.label} role`}
                       value={role.value}
                       checked={isSelected}
                       onChange={(e) => setSelectedRole(e.target.value)}
                       className="sr-only"
                     />
-                    
+
                     <div className="flex items-start space-x-4">
-                      <div className={`p-3 rounded-xl bg-gradient-to-r ${getRoleColor(role.value)}`}>
+                      <div className={`p-3 rounded-xl bg-linear-to-r ${getRoleColor(role.value)}`}>
                         <IconComponent size={24} className="text-white" />
                       </div>
-                      
+
                       <div className="flex-1">
                         <div className="flex items-center space-x-3">
                           <span className="font-semibold text-gray-900 text-lg">{role.label}</span>
@@ -180,7 +191,7 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                           )}
                         </div>
                         <p className="text-gray-600 mt-1">{role.description}</p>
-                        
+
                         <div className="mt-3 flex flex-wrap gap-2">
                           {role.features.map((feature, index) => (
                             <span key={index} className="inline-flex items-center px-2 py-1 bg-white rounded-lg text-xs text-gray-700 border border-gray-200">
@@ -210,7 +221,7 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
               whileTap={{ scale: selectedRole !== currentRole && !isSaving ? 0.95 : 1 }}
               onClick={handleSave}
               disabled={selectedRole === currentRole || isSaving}
-              className="px-8 py-3 bg-gradient-to-r from-[#2a7d2f] to-[#1e5c22] text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-[#2a7d2f] to-[#1e5c22] text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
             >
               {isSaving ? (
                 <>

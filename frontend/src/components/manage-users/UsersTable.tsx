@@ -11,24 +11,29 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "problem-solver" | "admin";
+  role: "user" | "problemSolver" | "ngo" | "authority" | "superAdmin";
+  division: string;
   district: string;
   points: number;
   approved: boolean;
   isActive: boolean;
-  avatar: string;
+  avatar?: string;
+  profilePicture?: string;
   createdAt: string;
 }
 
 interface UsersTableProps {
   users: User[];
-  onRoleChange: (userId: string, newRole: string) => void;
-  onStatusToggle: (userId: string, isActive: boolean) => void;
-  onDeleteUser: (userId: string) => void;
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
+  onRoleChange?: (userId: string, newRole: string) => void;
+  onStatusToggle?: (userId: string, isActive: boolean) => void;
+  onDeleteUser?: (userId: string) => void;
+  onApprove?: (userId: string) => void;
+  onDelete?: (userId: string) => void;
+  currentPage?: number;
+  totalPages?: number;
+  onPageChange?: (page: number) => void;
   isLoading?: boolean;
+  isSuperAdmin?: boolean;
 }
 
 export default function UsersTable({
@@ -36,10 +41,13 @@ export default function UsersTable({
   onRoleChange,
   onStatusToggle,
   onDeleteUser,
+  onApprove,
+  onDelete,
   currentPage,
   totalPages,
   onPageChange,
-  isLoading = false
+  isLoading = false,
+  isSuperAdmin = false
 }: UsersTableProps) {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showRoleModal, setShowRoleModal] = useState(false);
@@ -65,17 +73,29 @@ export default function UsersTable({
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'bg-red-500/10 text-red-700 border border-red-200';
-      case 'problem-solver': return 'bg-blue-500/10 text-blue-700 border border-blue-200';
+      case 'authority': return 'bg-red-500/10 text-red-700 border border-red-200';
+      case 'problemSolver': return 'bg-blue-500/10 text-blue-700 border border-blue-200';
+      case 'ngo': return 'bg-purple-500/10 text-purple-700 border border-purple-200';
       default: return 'bg-gray-500/10 text-gray-700 border border-gray-200';
     }
   };
 
   const getRoleIcon = (role: string) => {
     switch (role) {
-      case 'admin': return '👑';
-      case 'problem-solver': return '💡';
+      case 'authority': return '👑';
+      case 'problemSolver': return '💡';
+      case 'ngo': return '🏢';
       default: return '👤';
+    }
+  };
+
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case 'authority': return 'Authority';
+      case 'problemSolver': return 'Problem Solver';
+      case 'ngo': return 'NGO';
+      case 'user': return 'User';
+      default: return role;
     }
   };
 
@@ -102,7 +122,7 @@ export default function UsersTable({
         className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
       >
         {/* Table Header */}
-        {/* <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+        {/* <div className="px-6 py-4 bg-linear-to-r from-gray-50 to-gray-100 border-b border-gray-200">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-[#2a7d2f] rounded-lg">
               <Users className="text-white" size={20} />
@@ -117,7 +137,7 @@ export default function UsersTable({
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gradient-to-r from-gray-900 to-black text-white">
+              <tr className="bg-linear-to-r from-gray-900 to-black text-white">
                 <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">User</th>
                 <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">Role</th>
                 <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">District</th>
@@ -134,12 +154,12 @@ export default function UsersTable({
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 transition-all duration-200 group"
+                  className="hover:bg-linear-to-r hover:from-gray-50 hover:to-gray-100 transition-all duration-200 group"
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-4">
                       <div className="relative">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#2a7d2f] to-[#1e5c22] rounded-2xl flex items-center justify-center text-white font-semibold text-lg shadow-lg">
+                        <div className="w-12 h-12 bg-linear-to-br from-[#2a7d2f] to-[#1e5c22] rounded-2xl flex items-center justify-center text-white font-semibold text-lg shadow-lg">
                           {user.name.charAt(0)}
                         </div>
                         {user.isActive && (
@@ -158,7 +178,7 @@ export default function UsersTable({
                     <div className="flex items-center space-x-2">
                       <span className="text-lg">{getRoleIcon(user.role)}</span>
                       <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
-                        {user.role.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                        {getRoleLabel(user.role)}
                       </span>
                     </div>
                   </td>
@@ -249,7 +269,7 @@ export default function UsersTable({
                 >
                   Previous
                 </motion.button>
-                
+
                 <div className="flex space-x-1">
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                     <motion.button
@@ -267,7 +287,7 @@ export default function UsersTable({
                     </motion.button>
                   ))}
                 </div>
-                
+
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -289,7 +309,9 @@ export default function UsersTable({
           currentRole={selectedUser.role}
           onClose={() => setShowRoleModal(false)}
           onSave={(newRole) => {
-            onRoleChange(selectedUser._id, newRole);
+            if (onRoleChange) {
+              onRoleChange(selectedUser._id, newRole);
+            }
             setShowRoleModal(false);
           }}
         />
@@ -300,7 +322,11 @@ export default function UsersTable({
           user={selectedUser}
           onClose={() => setShowDeleteModal(false)}
           onConfirm={() => {
-            onDeleteUser(selectedUser._id);
+            if (onDeleteUser) {
+              onDeleteUser(selectedUser._id);
+            } else if (onDelete) {
+              onDelete(selectedUser._id);
+            }
             setShowDeleteModal(false);
           }}
         />

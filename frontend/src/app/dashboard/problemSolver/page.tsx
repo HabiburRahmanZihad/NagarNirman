@@ -161,7 +161,7 @@ export default function SolverDashboard() {
                 Quick Actions
               </h2>
               <div className="space-y-3">
-                <Link href="/dashboard/solver/tasks">
+                <Link href="/dashboard/problemSolver/tasks">
                   <Button variant="primary" className="w-full justify-start">
                     <span className="mr-2">📋</span> My Tasks
                   </Button>
@@ -176,11 +176,16 @@ export default function SolverDashboard() {
                     <span className="mr-2">🗺️</span> Map Search
                   </Button>
                 </Link>
+                <Link href="/dashboard/problemSolver/statistics">
+                  <Button variant="outline" className="w-full justify-start">
+                    <span className="mr-2">📈</span> Statistics
+                  </Button>
+                </Link>
               </div>
             </Card>
 
             {/* Leaderboard Info */}
-            <Card className="mt-6 bg-gradient-to-br from-purple-50 to-blue-50">
+            <Card className="mt-6 bg-linear-to-br from-purple-50 to-blue-50">
               <div className="text-center">
                 <span className="text-4xl mb-3 block">🏆</span>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -260,7 +265,7 @@ export default function SolverDashboard() {
         </div>
 
         {/* Info Banner */}
-        <Card className="bg-gradient-to-r from-green-50 to-blue-50">
+        <Card className="bg-linear-to-r from-green-50 to-blue-50">
           <div className="flex items-start gap-4">
             <span className="text-4xl">💡</span>
             <div>

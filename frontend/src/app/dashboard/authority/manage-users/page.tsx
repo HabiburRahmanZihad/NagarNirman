@@ -2,25 +2,32 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import UsersTable from "@/components/manage-users/UsersTable";
 import UserFilterBar from "@/components/manage-users/UserFilterBar";
 import toast from "react-hot-toast";
 import { Users } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { userAPI } from "@/utils/api";
 
 interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "problem-solver" | "admin";
+  role: "user" | "problemSolver" | "ngo" | "authority";
+  division: string;
   district: string;
   points: number;
   approved: boolean;
   isActive: boolean;
-  avatar: string;
+  avatar?: string;
+  profilePicture?: string;
   createdAt: string;
 }
 
 export default function ManageUsersPage() {
+  const router = useRouter();
+  const { user: authUser, isLoading: authLoading, isAuthenticated } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -33,98 +40,51 @@ export default function ManageUsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const usersPerPage = 10;
 
-  // Load dummy data
+  // Check authentication
+  useEffect(() => {
+    if (!authLoading) {
+      if (!isAuthenticated) {
+        router.push("/auth/login");
+      } else if (authUser?.role !== "authority") {
+        router.push("/");
+      }
+    }
+  }, [isAuthenticated, authUser, authLoading, router]);
+
+  // Load users from API
   useEffect(() => {
     const loadUsers = async () => {
+      if (!authUser?.division) return;
+
       setIsLoading(true);
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const dummyUsers: User[] = [
-        {
-          _id: "690ede0fb7e5eabc30d43087",
-          name: "Pori Moni",
-          email: "pori@moni.com",
-          role: "user",
-          district: "Pirojpur",
-          points: 0,
-          approved: true,
-          isActive: true,
-          avatar: "",
-          createdAt: "2025-11-08T06:07:11.148Z"
-        },
-        {
-          _id: "690ede0fb7e5eabc30d43088",
-          name: "Shakib Khan",
-          email: "shakib@khan.com",
-          role: "problem-solver",
-          district: "Dhaka",
-          points: 150,
-          approved: true,
-          isActive: true,
-          avatar: "",
-          createdAt: "2025-10-15T12:30:45.148Z"
-        },
-        {
-          _id: "690ede0fb7e5eabc30d43089",
-          name: "Joya Ahsan",
-          email: "joya@ahsan.com",
-          role: "admin",
-          district: "Chittagong",
-          points: 300,
-          approved: true,
-          isActive: false,
-          avatar: "",
-          createdAt: "2025-09-22T08:15:33.148Z"
-        },
-        {
-          _id: "690ede0fb7e5eabc30d43090",
-          name: "Anisur Rahman",
-          email: "anis@rahman.com",
-          role: "user",
-          district: "Rajshahi",
-          points: 75,
-          approved: true,
-          isActive: true,
-          avatar: "",
-          createdAt: "2025-11-01T14:20:15.148Z"
-        },
-        {
-          _id: "690ede0fb7e5eabc30d43091",
-          name: "Tania Ahmed",
-          email: "tania@ahmed.com",
-          role: "problem-solver",
-          district: "Sylhet",
-          points: 220,
-          approved: true,
-          isActive: true,
-          avatar: "",
-          createdAt: "2025-10-28T09:45:22.148Z"
-        },
-        {
-          _id: "690ede0fb7e5eabc30d43092",
-          name: "Rafiq Islam",
-          email: "rafiq@islam.com",
-          role: "user",
-          district: "Khulna",
-          points: 45,
-          approved: true,
-          isActive: false,
-          avatar: "",
-          createdAt: "2025-11-05T16:30:18.148Z"
+      try {
+        // Fetch users from authority's division only
+        const response = await userAPI.getAllUsers({
+          division: authUser.division,
+          limit: 100 // Get all users from this division
+        });
+
+        if (response.success && response.data) {
+          setUsers(response.data);
+          setFilteredUsers(response.data);
+          toast.success(`Loaded ${response.data.length} users from ${authUser.division}`);
         }
-      ];
-      setUsers(dummyUsers);
-      setFilteredUsers(dummyUsers);
-      setIsLoading(false);
+      } catch (error: any) {
+        console.error('Error loading users:', error);
+        toast.error('Failed to load users. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    loadUsers();
-  }, []);
+    if (authUser?.division) {
+      loadUsers();
+    }
+  }, [authUser]);
 
   // Filter and search users
   useEffect(() => {
-    let result = users.filter(user => 
+    let result = users.filter(user =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.district.toLowerCase().includes(searchTerm.toLowerCase())
@@ -156,72 +116,85 @@ export default function ManageUsersPage() {
 
   const updateUserRole = async (userId: string, newRole: string) => {
     try {
-      // Placeholder API call
-      console.log(`PUT /api/users/${userId}/role`, { role: newRole });
-      
-      setUsers(users.map(user => 
-        user._id === userId ? { ...user, role: newRole as any } : user
-      ));
-      
-      toast.success(`Role updated to ${newRole} successfully!`, {
-        style: {
-          background: '#2a7d2f',
-          color: 'white',
-        },
-        iconTheme: {
-          primary: 'white',
-          secondary: '#2a7d2f',
-        },
-      });
-    } catch (error) {
-      toast.error('Failed to update role. Please try again.');
+      const response = await userAPI.updateUserRole(userId, newRole);
+
+      if (response.success) {
+        setUsers(users.map(user =>
+          user._id === userId ? { ...user, role: newRole as any } : user
+        ));
+
+        toast.success(`Role updated to ${newRole} successfully!`, {
+          style: {
+            background: '#2a7d2f',
+            color: 'white',
+          },
+          iconTheme: {
+            primary: 'white',
+            secondary: '#2a7d2f',
+          },
+        });
+      } else {
+        throw new Error(response.message || 'Failed to update role');
+      }
+    } catch (error: any) {
+      console.error('Error updating role:', error);
+      toast.error(error.message || 'Failed to update role. Please try again.');
     }
   };
 
   const toggleUserStatus = async (userId: string, isActive: boolean) => {
     try {
-      // Placeholder API call
-      console.log(`PUT /api/users/${userId}/status`, { isActive });
-      
-      setUsers(users.map(user => 
-        user._id === userId ? { ...user, isActive } : user
-      ));
-      
-      toast.success(`User ${isActive ? 'activated' : 'deactivated'} successfully!`, {
-        style: {
-          background: isActive ? '#2a7d2f' : '#f59e0b',
-          color: 'white',
-        },
-        iconTheme: {
-          primary: 'white',
-          secondary: isActive ? '#2a7d2f' : '#f59e0b',
-        },
-      });
-    } catch (error) {
-      toast.error('Failed to update status. Please try again.');
+      const response = await userAPI.updateUserStatus(userId, isActive);
+
+      if (response.success) {
+        setUsers(users.map(user =>
+          user._id === userId ? { ...user, isActive } : user
+        ));
+
+        toast.success(`User ${isActive ? 'activated' : 'deactivated'} successfully!`, {
+          style: {
+            background: isActive ? '#2a7d2f' : '#f59e0b',
+            color: 'white',
+          },
+          iconTheme: {
+            primary: 'white',
+            secondary: isActive ? '#2a7d2f' : '#f59e0b',
+          },
+        });
+      } else {
+        throw new Error(response.message || 'Failed to update status');
+      }
+    } catch (error: any) {
+      console.error('Error updating status:', error);
+      toast.error(error.message || 'Failed to update status. Please try again.');
     }
   };
 
   const deleteUser = async (userId: string) => {
     try {
-      // Placeholder API call
-      console.log(`DELETE /api/users/${userId}`);
-      
       const userToDelete = users.find(user => user._id === userId);
-      setUsers(users.filter(user => user._id !== userId));
-      
-      toast.success(`User "${userToDelete?.name}" deleted successfully!`, {
-        style: {
-          background: '#dc2626',
-          color: 'white',
-        },
-        iconTheme: {
-          primary: 'white',
-          secondary: '#dc2626',
-        },
-      });
-    } catch (error) {
-      toast.error('Failed to delete user. Please try again.');
+
+      const response = await userAPI.deleteUser(userId);
+
+      if (response.success) {
+        setUsers(users.filter(user => user._id !== userId));
+
+        toast.success(`User "${userToDelete?.name}" deleted successfully!`, {
+          style: {
+            background: '#dc2626',
+            color: 'white',
+          },
+          iconTheme: {
+            primary: 'white',
+            secondary: '#dc2626',
+          },
+        });
+      } else {
+        throw new Error(response.message || 'Failed to delete user');
+      }
+    } catch (error: any) {
+      console.error('Error deleting user:', error);
+      toast.error(error.message || 'Failed to delete user. Please try again.');
     }
   };
 
@@ -235,25 +208,44 @@ export default function ManageUsersPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Manage Users</h1>
-          <p className="text-gray-600 mt-1">Manage and monitor all user accounts</p>
+          <p className="text-gray-600 mt-1">
+            Manage and monitor user accounts in {authUser?.division || 'your'} division
+          </p>
+          {authUser?.division && (
+            <div className="mt-2 flex items-center space-x-2">
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">
+                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd" />
+                </svg>
+                Division: {authUser.division}
+              </div>
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
+                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                </svg>
+                District: {authUser.district}
+              </div>
+            </div>
+          )}
         </div>
-        <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+        <div className="px-6 py-4 bg-linear-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-[#2a7d2f] rounded-lg">
               <Users className="text-white" size={20} />
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-900">User Management</h3>
-              <p className="text-sm text-gray-600">{users.length} users found</p>
+              <p className="text-sm text-gray-600">{users.length} users in {authUser?.division}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <UserFilterBar 
+      <UserFilterBar
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
         filters={filters}
+        userDivision={authUser?.division}
       />
 
       <UsersTable

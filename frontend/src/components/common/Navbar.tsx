@@ -35,9 +35,10 @@ const Navbar: React.FC = () => {
             {isAuthenticated && (
               <Link
                 href={
-                  user?.role === 'user' ? '/dashboard/user' :
+                  user?.role === 'superAdmin' ? '/dashboard/superAdmin' :
                   user?.role === 'authority' ? '/dashboard/authority' :
                   user?.role === 'problemSolver' || user?.role === 'ngo' ? '/dashboard/problemSolver' :
+                  user?.role === 'user' ? '/dashboard/user' :
                   '/dashboard'
                 }
                 className="text-[#374151] hover:text-[#81d586] transition-colors"

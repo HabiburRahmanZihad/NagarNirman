@@ -121,7 +121,7 @@ export default function AllReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F6FFF9] to-white py-8">
+    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-8">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">

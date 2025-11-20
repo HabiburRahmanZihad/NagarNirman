@@ -12,22 +12,6 @@ export const COLORS = {
   textBody: '#374151',
 } as const;
 
-export const DISTRICTS = [
-  'Dhaka', 'Chittagong', 'Rajshahi', 'Khulna', 'Barisal', 'Sylhet',
-  'Rangpur', 'Mymensingh', 'Comilla', 'Gazipur', 'Narayanganj',
-  'Tangail', 'Jamalpur', 'Sherpur', 'Netrokona', 'Kishoreganj',
-  'Narsingdi', 'Manikganj', 'Munshiganj', 'Faridpur', 'Gopalganj',
-  'Madaripur', 'Shariatpur', 'Rajbari', 'Pabna', 'Sirajganj',
-  'Bogra', 'Natore', 'Naogaon', 'Joypurhat', 'Chapai Nawabganj',
-  'Cox\'s Bazar', 'Rangamati', 'Bandarban', 'Khagrachari', 'Feni',
-  'Lakshmipur', 'Noakhali', 'Brahmanbaria', 'Chandpur', 'Jessore',
-  'Kushtia', 'Magura', 'Meherpur', 'Narail', 'Chuadanga', 'Jhenaidah',
-  'Satkhira', 'Bagerhat', 'Pirojpur', 'Jhalokati', 'Patuakhali',
-  'Barguna', 'Bhola', 'Dinajpur', 'Thakurgaon', 'Panchagarh',
-  'Nilphamari', 'Lalmonirhat', 'Kurigram', 'Gaibandha', 'Habiganj',
-  'Moulvibazar', 'Sunamganj'
-] as const;
-
 export const PROBLEM_TYPES = [
   {
     value: 'road_infrastructure',

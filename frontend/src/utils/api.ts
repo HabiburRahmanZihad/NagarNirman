@@ -31,20 +31,33 @@ export const apiClient = async <T = any>(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'An error occurred');
+      const error = new Error(errorData.message || 'An error occurred');
+      (error as any).status = response.status;
+      (error as any).data = errorData;
+
+      // Don't log expected 404 errors (like "No application found")
+      if (response.status !== 404) {
+        console.error('API Error:', error);
+      }
+
+      throw error;
     }
 
     return await response.json();
   } catch (error) {
-    console.error('API Error:', error);
+    // Only log unexpected errors
+    if (!(error as any).status) {
+      console.error('Network Error:', error);
+    }
     throw error;
   }
 };
 
 // Report API functions
 export const reportAPI = {
-  getAll: (filters?: { district?: string; status?: string }) => {
+  getAll: (filters?: { division?: string; district?: string; status?: string }) => {
     const params = new URLSearchParams();
+    if (filters?.division) params.append('division', filters.division);
     if (filters?.district) params.append('district', filters.district);
     if (filters?.status) params.append('status', filters.status);
 
@@ -78,10 +91,10 @@ export const reportAPI = {
 
 // Task API functions
 export const taskAPI = {
-  assign: (reportId: string, assignedTo: string) => {
+  assign: (data: { title: string; description: string; report: string; assignedTo: string; priority?: string; deadline?: string }) => {
     return apiClient(API_ENDPOINTS.ASSIGN_TASK, {
       method: 'POST',
-      body: JSON.stringify({ reportId, assignedTo }),
+      body: JSON.stringify(data),
       requiresAuth: true,
     });
   },
@@ -90,6 +103,31 @@ export const taskAPI = {
     return apiClient(API_ENDPOINTS.COMPLETE_TASK(taskId), {
       method: 'POST',
       body: JSON.stringify({ taskId, proofURL }),
+      requiresAuth: true,
+    });
+  },
+
+  getAll: (filters?: { status?: string; priority?: string; page?: number; limit?: number }) => {
+    const params = new URLSearchParams();
+    if (filters?.status) params.append('status', filters.status);
+    if (filters?.priority) params.append('priority', filters.priority);
+    if (filters?.page) params.append('page', filters.page.toString());
+    if (filters?.limit) params.append('limit', filters.limit.toString());
+
+    const queryString = params.toString();
+    const url = queryString ? `${API_ENDPOINTS.TASKS}?${queryString}` : API_ENDPOINTS.TASKS;
+
+    return apiClient(url, { requiresAuth: true });
+  },
+
+  getMyTasks: () => {
+    return apiClient(API_ENDPOINTS.MY_TASKS, { requiresAuth: true });
+  },
+
+  updateStatus: (taskId: string, status: string) => {
+    return apiClient(API_ENDPOINTS.UPDATE_TASK_STATUS(taskId), {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
       requiresAuth: true,
     });
   },
@@ -112,29 +150,50 @@ export const mapAPI = {
 
 // Statistics API functions - Comprehensive statistics with all report states
 export const statisticsAPI = {
+  // Get SuperAdmin dashboard statistics
+  getAdminDashboard: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/admin-dashboard`, { requiresAuth: true });
+  },
+
+  // Get comprehensive analytics data
+  getAnalytics: async (filters?: { division?: string; startDate?: string; endDate?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.division) params.append('division', filters.division);
+    if (filters?.startDate) params.append('startDate', filters.startDate);
+    if (filters?.endDate) params.append('endDate', filters.endDate);
+
+    const queryString = params.toString();
+    const url = queryString
+      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/analytics?${queryString}`
+      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/analytics`;
+
+    const response: any = await apiClient(url, { requiresAuth: true });
+    return response.data || response; // Extract data property if it exists
+  },
+
   // Get complete map data with all divisions and districts
   getCompleteMapData: () => {
-    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/map`);
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/map`, { requiresAuth: false });
   },
 
   // Get all division-level statistics
   getAllDivisions: () => {
-    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/divisions`);
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/divisions`, { requiresAuth: false });
   },
 
   // Get district statistics for a specific division
   getDivisionDistricts: (division: string) => {
-    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/divisions/${encodeURIComponent(division)}/districts`);
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/divisions/${encodeURIComponent(division)}/districts`, { requiresAuth: false });
   },
 
   // Get complete statistics
   getCompleteStats: () => {
-    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/complete`);
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/complete`, { requiresAuth: false });
   },
 
   // Get summary statistics
   getSummary: () => {
-    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/summary`);
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/summary`, { requiresAuth: false });
   },
 };
 
@@ -161,6 +220,66 @@ export const userAPI = {
     return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}/stats`, {
       requiresAuth: true,
     });
+  },
+
+  // Get all users (Authority only)
+  getAllUsers: (filters?: { role?: string; division?: string; district?: string; approved?: boolean; page?: number; limit?: number }) => {
+    const params = new URLSearchParams();
+    if (filters?.role) params.append('role', filters.role);
+    if (filters?.division) params.append('division', filters.division);
+    if (filters?.district) params.append('district', filters.district);
+    if (filters?.approved !== undefined) params.append('approved', filters.approved.toString());
+    if (filters?.page) params.append('page', filters.page.toString());
+    if (filters?.limit) params.append('limit', filters.limit.toString());
+
+    const queryString = params.toString();
+    const url = queryString
+      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users?${queryString}`
+      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users`;
+
+    return apiClient(url, { requiresAuth: true });
+  },
+
+  // Update user role (Authority only)
+  updateUserRole: (userId: string, role: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
+      requiresAuth: true,
+    });
+  },
+
+  // Update user status (Authority only)
+  updateUserStatus: (userId: string, isActive: boolean) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ isActive }),
+      requiresAuth: true,
+    });
+  },
+
+  // Delete user (Authority only)
+  deleteUser: (userId: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}`, {
+      method: 'DELETE',
+      requiresAuth: true,
+    });
+  },
+
+  // Get all NGOs and Problem Solvers (Authority only)
+  getSolvers: (filters?: { division?: string; district?: string; page?: number; limit?: number }) => {
+    const params = new URLSearchParams();
+    if (filters?.division) params.append('division', filters.division);
+    if (filters?.district) params.append('district', filters.district);
+    if (filters?.page) params.append('page', filters.page.toString());
+    if (filters?.limit) params.append('limit', filters.limit.toString());
+
+    const queryString = params.toString();
+    const url = queryString
+      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/solvers?${queryString}`
+      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/solvers`;
+
+    return apiClient(url, { requiresAuth: true });
   },
 };
 
@@ -211,6 +330,15 @@ export const problemSolverAPI = {
     return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/applications/${id}/review`, {
       method: 'PATCH',
       body: JSON.stringify({ status, reviewNote }),
+      requiresAuth: true,
+    });
+  },
+
+  // Update user role (SuperAdmin only)
+  updateRole: (userId: string, newRole: 'user' | 'authority' | 'problemSolver' | 'ngo') => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role: newRole }),
       requiresAuth: true,
     });
   },

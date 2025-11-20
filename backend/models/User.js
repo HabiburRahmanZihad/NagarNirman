@@ -25,7 +25,7 @@ export const isValidEmail = (email) => {
 
 // Validate role
 export const isValidRole = (role) => {
-  const validRoles = ['user', 'authority', 'problemSolver', 'ngo'];
+  const validRoles = ['user', 'authority', 'problemSolver', 'ngo', 'superAdmin'];
   return validRoles.includes(role);
 };
 
@@ -36,6 +36,7 @@ export const createUser = async (userData) => {
     email,
     password,
     role = 'user',
+    division,
     district,
     avatar,
   } = userData;
@@ -76,6 +77,7 @@ export const createUser = async (userData) => {
     email: email.toLowerCase(),
     password: hashedPassword,
     role,
+    division: division || '',
     district,
     points: 0,
     approved: role === 'user' || role === 'authority',
@@ -137,6 +139,10 @@ export const updateUser = async (userId, updateData) => {
     { $set: updateData },
     { returnDocument: 'after', projection: { password: 0 } }
   );
+
+  if (!result) {
+    throw new Error('User not found');
+  }
 
   return result;
 };

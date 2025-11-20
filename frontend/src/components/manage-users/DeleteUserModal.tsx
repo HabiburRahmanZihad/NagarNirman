@@ -8,7 +8,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "problem-solver" | "admin";
+  role: "user" | "problemSolver" | "ngo" | "authority";
   district: string;
   points: number;
   approved: boolean;
@@ -36,8 +36,9 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'bg-red-500/20 text-red-700 border-red-200';
-      case 'problem-solver': return 'bg-blue-500/20 text-blue-700 border-blue-200';
+      case 'authority': return 'bg-red-500/20 text-red-700 border-red-200';
+      case 'problemSolver': return 'bg-blue-500/20 text-blue-700 border-blue-200';
+      case 'ngo': return 'bg-purple-500/20 text-purple-700 border-purple-200';
       default: return 'bg-gray-500/20 text-gray-700 border-gray-200';
     }
   };
@@ -60,7 +61,7 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center space-x-4 p-6 border-b border-gray-200 bg-gradient-to-r from-red-50 to-red-100">
+          <div className="flex items-center space-x-4 p-6 border-b border-gray-200 bg-linear-to-r from-red-50 to-red-100">
             <div className="p-3 bg-red-500 rounded-xl">
               <AlertTriangle className="text-white" size={24} />
             </div>
@@ -71,6 +72,7 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
             <button
               onClick={onClose}
               className="p-2 hover:bg-red-200 rounded-xl transition-colors"
+              aria-label="Close modal"
             >
               <X size={20} />
             </button>
@@ -96,7 +98,7 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
             {/* User Summary */}
             <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#2a7d2f] to-[#1e5c22] rounded-xl flex items-center justify-center text-white font-semibold">
+                <div className="w-12 h-12 bg-linear-to-br from-[#2a7d2f] to-[#1e5c22] rounded-xl flex items-center justify-center text-white font-semibold">
                   {user.name.charAt(0)}
                 </div>
                 <div className="flex-1">
@@ -109,7 +111,7 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
                   <p className="text-gray-600 text-sm">{user.email}</p>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
                 <div className="text-center p-2 bg-white rounded-lg border border-gray-200">
                   <div className="font-bold text-[#2a7d2f]">{user.points}</div>
@@ -159,7 +161,7 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
               whileTap={{ scale: !isDeleting ? 0.95 : 1 }}
               onClick={handleConfirm}
               disabled={isDeleting}
-              className="px-8 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-red-600 to-red-700 text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
             >
               {isDeleting ? (
                 <>

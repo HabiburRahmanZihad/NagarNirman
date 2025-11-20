@@ -45,17 +45,29 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       return [
         ...commonLinks,
         // { href: '/reports', icon: '📋', label: 'All Reports' },
+        { href: '/dashboard/authority/assign-task', icon: '🛠️', label: 'Assign Task' },
+        { href: '/dashboard/authority/solvers', icon: '💡', label: 'Solvers & NGOs' },
         { href: '/dashboard/authority/applications', icon: '📄', label: 'Applications' },
         { href: '/dashboard/authority/manage-users', icon: '👥', label: 'Manage Users' },
-        { href: '/dashboard/authority/statistics', icon: '📈', label: 'Statistics' },
-        { href: '/dashboard/authority/assign-task', icon: '🛠️', label: 'Assign Task' },
       ];
     }
 
     if (role === 'problemSolver' || role === 'ngo') {
       return [
         ...commonLinks,
-        { href: '/dashboard/solver/tasks', icon: '📋', label: 'My Tasks' },
+        { href: '/dashboard/problemSolver/tasks', icon: '📋', label: 'My Tasks' },
+        { href: '/dashboard/problemSolver/statistics', icon: '📈', label: 'Statistics' },
+      ];
+    }
+
+    if (role === 'superAdmin') {
+      return [
+        { href: '/dashboard/superAdmin', icon: '🛡️', label: 'SuperAdmin Panel' },
+        { href: '/dashboard/superAdmin/users', icon: '👥', label: 'All Users' },
+        { href: '/dashboard/superAdmin/applications', icon: '📄', label: 'Applications' },
+        { href: '/reports', icon: '📋', label: 'All Reports' },
+        { href: '/dashboard/problemSolver/statistics', icon: '📊', label: 'Statistics' },
+        { href: '/map-search', icon: '🗺️', label: 'Map Search' },
       ];
     }
 

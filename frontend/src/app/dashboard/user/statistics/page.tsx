@@ -14,7 +14,7 @@ const StatisticsAccessDenied = () => {
     if (user) {
       toast.error('Statistics page is only available for NGO and Problem Solvers');
       const timer = setTimeout(() => {
-        router.push('/dashboard/authority');
+        router.push('/dashboard/user');
       }, 3000);
       return () => clearTimeout(timer);
     }

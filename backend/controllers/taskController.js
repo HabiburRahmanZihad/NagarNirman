@@ -130,8 +130,8 @@ export const assignTask = asyncHandler(async (req, res) => {
       deadline,
     });
 
-    // Update report status to in-progress
-    await updateReportStatus(report, 'in-progress', `Task assigned: ${title}`, req.user.id);
+    // Update report status to approved when task is assigned
+    await updateReportStatus(report, 'approved', `Task assigned: ${title}`, req.user.id);
 
     res.status(201).json({
       success: true,
@@ -205,8 +205,8 @@ export const completeTask = asyncHandler(async (req, res) => {
       });
     }
 
-    // Check if task is assigned to current user
-    if (task.assignedTo.toString() !== req.user.id) {
+    // Check if task is assigned to current user or user is superAdmin
+    if (task.assignedTo.toString() !== req.user.id && req.user.role !== 'superAdmin') {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to complete this task',

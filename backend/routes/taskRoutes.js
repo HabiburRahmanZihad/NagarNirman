@@ -21,9 +21,9 @@ router.patch('/:id/status', protect, changeTaskStatus);
 // Problem solver routes
 router.post('/:id/complete', protect, authorize('problemSolver', 'ngo'), checkApproved, completeTask);
 
-// Authority only routes
-router.get('/', protect, authorize('authority'), getTasks);
-router.post('/assign', protect, authorize('authority'), assignTask);
-router.post('/:id/reward', protect, authorize('authority'), grantReward);
+// Authority and SuperAdmin routes
+router.get('/', protect, authorize('authority', 'superAdmin'), getTasks);
+router.post('/assign', protect, authorize('authority', 'superAdmin'), assignTask);
+router.post('/:id/reward', protect, authorize('authority', 'superAdmin'), grantReward);
 
 export default router;
