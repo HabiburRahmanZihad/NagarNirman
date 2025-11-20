@@ -23,6 +23,7 @@ export const getReports = asyncHandler(async (req, res) => {
     status,
     severity,
     problemType,
+    division,
     district,
     sortBy = 'createdAt',
     order = 'desc',
@@ -32,6 +33,7 @@ export const getReports = asyncHandler(async (req, res) => {
   if (status) filter.status = status;
   if (severity) filter.severity = severity;
   if (problemType) filter.problemType = problemType;
+  if (division) filter['location.division'] = division;
   if (district) filter['location.district'] = district;
 
   const sort = { [sortBy]: order === 'desc' ? -1 : 1 };

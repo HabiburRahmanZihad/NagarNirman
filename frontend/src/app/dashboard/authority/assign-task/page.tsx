@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
+import { reportAPI, problemSolverAPI, taskAPI } from '@/utils/api';
 
 interface Report {
   _id: string;
@@ -482,43 +483,61 @@ const AssignTaskPage = () => {
     }
   }, [isAuthorityUser, userDistrict, userDivision]);
 
-  // Load data based on user's district
+  // Load data based on user's district from API
   useEffect(() => {
     const loadData = async () => {
+      if (!isAuthorityUser || !userDivision || !userDistrict) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
       try {
-        // Filter reports based on user's district
-        let filteredReports = allReports;
-        if (isAuthorityUser && userDistrict) {
-          filteredReports = allReports.filter(report => 
-            report.location.district === userDistrict
-          );
-        }
-        setReports(filteredReports);
+        // Fetch reports from authority's division
+        const reportsResponse = await reportAPI.getAll({
+          division: userDivision,
+          district: userDistrict
+        });
         
-        // Filter problem solvers based on user's district
-        let filteredSolvers = allProblemSolvers.filter(solver => solver.status === 'approved');
-        if (isAuthorityUser && userDistrict) {
-          filteredSolvers = filteredSolvers.filter(solver => 
-            solver.district === userDistrict
-          );
+        if (reportsResponse.success && reportsResponse.data) {
+          setReports(reportsResponse.data);
         }
         
-        // Sort problem solvers by rating
-        const sortedSolvers = filteredSolvers.sort((a, b) => b.rating - a.rating);
-        setProblemSolvers(sortedSolvers);
+        // Fetch approved problem solvers from authority's division/district
+        const solversResponse = await problemSolverAPI.getAllApplications({
+          status: 'approved',
+          division: userDivision,
+          district: userDistrict
+        });
+        
+        if (solversResponse.success && solversResponse.data) {
+          // Sort by rating initially
+          const sortedSolvers = [...solversResponse.data].sort((a, b) => b.rating - a.rating);
+          setProblemSolvers(sortedSolvers);
+        }
+        
+        toast.success(`Loaded tasks from ${userDistrict}, ${userDivision}`);
       } catch (error) {
         console.error('Error loading data:', error);
+        toast.error('Failed to load data. Please try again.');
+        // Fallback to dummy data for development
+        const filteredReports = allReports.filter(report => 
+          report.location.district === userDistrict
+        );
+        setReports(filteredReports);
+        
+        const filteredSolvers = allProblemSolvers.filter(solver => 
+          solver.status === 'approved' && solver.district === userDistrict
+        );
+        setProblemSolvers(filteredSolvers);
       } finally {
         setLoading(false);
       }
     };
 
     loadData();
-  }, [isAuthorityUser, userDistrict, currentUser]);
+  }, [isAuthorityUser, userDistrict, userDivision]);
 
   // Get available districts based on selected division
   const availableDistricts = filters.division 
@@ -571,56 +590,44 @@ const AssignTaskPage = () => {
         return;
       }
 
-      // TODO: Uncomment when backend is ready
-      /*
-      // API call to save task in database
-      const response = await fetch('/api/tasks/assign', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          reportId,
-          solverId,
-          assignedBy: currentUser?._id || 'admin',
-          division: report.location.division,
-          district: report.location.district
-        }),
+      // API call to assign task
+      const response = await taskAPI.assign({
+        title: report.title,
+        description: report.description,
+        report: reportId,
+        assignedTo: solver.userId, // Use userId, not application ID
+        priority: report.severity === 'high' ? 'high' : report.severity === 'medium' ? 'medium' : 'low',
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to assign task');
+      if (response.success) {
+        // Update local state
+        setReports(prev => prev.map(r => 
+          r._id === reportId 
+            ? { 
+                ...r, 
+                status: 'inProgress',
+                assignedTo: solverId,
+                history: [
+                  ...r.history,
+                  {
+                    status: 'inProgress',
+                    note: `Assigned to ${solver.fullName} (${solver.organization})`,
+                    updatedBy: currentUser?.name || 'admin',
+                    date: new Date().toISOString()
+                  }
+                ],
+                updatedAt: new Date().toISOString()
+              }
+            : r
+        ));
+
+        toast.success(`Task assigned to ${solver.fullName} successfully!`);
+      } else {
+        throw new Error(response.message || 'Failed to assign task');
       }
-      */
-
-      // Simulate API call success
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Update local state
-      setReports(prev => prev.map(report => 
-        report._id === reportId 
-          ? { 
-              ...report, 
-              status: 'inProgress',
-              assignedTo: solverId,
-              history: [
-                ...report.history,
-                {
-                  status: 'inProgress',
-                  note: `Assigned to ${solver.fullName} (${solver.organization})`,
-                  updatedBy: currentUser?.name || 'admin',
-                  date: new Date().toISOString()
-                }
-              ],
-              updatedAt: new Date().toISOString()
-            }
-          : report
-      ));
-
-      toast.success(`Task assigned to ${solver.fullName} successfully!`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error assigning task:', error);
-      toast.error('Failed to assign task. Please try again.');
+      toast.error(error.message || 'Failed to assign task. Please try again.');
     } finally {
       setAssigning(false);
       setSelectedReport(null);
@@ -632,52 +639,37 @@ const AssignTaskPage = () => {
     setUpdatingStatus(reportId);
     
     try {
-      // TODO: Uncomment when backend is ready
-      /*
-      // API call to update status in database
-      const response = await fetch(`/api/reports/${reportId}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          status: newStatus,
-          updatedBy: currentUser?._id || 'admin'
-        }),
-      });
+      // API call to update report status
+      const response = await reportAPI.updateStatus(reportId, newStatus);
 
-      if (!response.ok) {
-        throw new Error('Failed to update status');
+      if (response.success) {
+        // Update local state
+        setReports(prev => prev.map(report => 
+          report._id === reportId 
+            ? { 
+                ...report, 
+                status: newStatus,
+                history: [
+                  ...report.history,
+                  {
+                    status: newStatus,
+                    note: `Status updated to ${newStatus}`,
+                    updatedBy: currentUser?.name || 'admin',
+                    date: new Date().toISOString()
+                  }
+                ],
+                updatedAt: new Date().toISOString()
+              }
+            : report
+        ));
+
+        toast.success(`Status updated to ${newStatus}`);
+      } else {
+        throw new Error(response.message || 'Failed to update status');
       }
-      */
-
-      // Simulate API call success
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      // Update local state
-      setReports(prev => prev.map(report => 
-        report._id === reportId 
-          ? { 
-              ...report, 
-              status: newStatus,
-              history: [
-                ...report.history,
-                {
-                  status: newStatus,
-                  note: `Status updated to ${newStatus}`,
-                  updatedBy: currentUser?.name || 'admin',
-                  date: new Date().toISOString()
-                }
-              ],
-              updatedAt: new Date().toISOString()
-            }
-          : report
-      ));
-
-      toast.success(`Status updated to ${newStatus}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating status:', error);
-      toast.error('Failed to update status. Please try again.');
+      toast.error(error.message || 'Failed to update status. Please try again.');
     } finally {
       setUpdatingStatus(null);
     }
@@ -747,7 +739,7 @@ const AssignTaskPage = () => {
           </nav>
           
           <div className="flex justify-between items-start">
-            <div>
+            <div className="flex-1">
               <h1 className="text-3xl font-bold text-[#002E2E]">Task Assignment Center</h1>
               <p className="text-gray-600 mt-2">
                 {isAuthorityUser && userDistrict 
@@ -772,9 +764,21 @@ const AssignTaskPage = () => {
                 </div>
               )}
             </div>
-            <div className="text-right">
-              <div className="text-2xl font-bold text-[#81d586]">{filteredReports.length}</div>
-              <div className="text-sm text-gray-500">Tasks Found</div>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-[#81d586] text-white rounded-lg hover:bg-[#65b869] transition-colors flex items-center space-x-2"
+                title="Refresh data"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>Refresh</span>
+              </button>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-[#81d586]">{filteredReports.length}</div>
+                <div className="text-sm text-gray-500">Tasks Found</div>
+              </div>
             </div>
           </div>
         </div>
@@ -912,24 +916,91 @@ const AssignTaskPage = () => {
                 onChange={(e) => setFilters({ ...filters, severity: e.target.value })}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors"
               >
-                <option value="">All Severity</option>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
+                <option value="">Select severity</option>
+                <option value="low">🟢 Low - Minor issue</option>
+                <option value="medium">🟡 Medium - Moderate issue</option>
+                <option value="high">🟠 High - Serious issue</option>
+                <option value="urgent">🔴 Urgent - Critical issue</option>
               </select>
             </div>
           </div>
         </div>
+
+        {/* Assigned Tasks Section */}
+        {filteredReports.filter(r => r.status === 'inProgress' || r.status === 'resolved').length > 0 && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-[#002E2E]">Assigned Tasks & Updates</h2>
+              <span className="text-sm text-gray-500">
+                {filteredReports.filter(r => r.status === 'inProgress' || r.status === 'resolved').length} active assignments
+              </span>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredReports
+                .filter(r => r.status === 'inProgress' || r.status === 'resolved')
+                .map(report => {
+                  const assignedSolver = problemSolvers.find(s => s.userId === report.assignedTo || s._id === report.assignedTo);
+                  return (
+                    <div key={report._id} className="border border-gray-200 rounded-lg p-4 hover:border-[#81d586] transition-colors">
+                      <div className="flex items-start space-x-3 mb-3">
+                        {report.images.length > 0 && (
+                          <img 
+                            src={report.images[0]} 
+                            alt={report.title}
+                            className="w-16 h-16 rounded-lg object-cover"
+                          />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-gray-900 truncate">{report.title}</h3>
+                          <p className="text-xs text-gray-500 mt-1">{report.location.address}</p>
+                        </div>
+                      </div>
+                      
+                      {assignedSolver && (
+                        <div className="flex items-center space-x-2 mb-3 p-2 bg-gray-50 rounded">
+                          <div className="w-8 h-8 bg-[#81d586] rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                            {assignedSolver.fullName.split(' ').map(n => n[0]).join('')}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{assignedSolver.fullName}</p>
+                            <p className="text-xs text-gray-500">{assignedSolver.organization}</p>
+                          </div>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center justify-between">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
+                          {report.status === 'inProgress' ? 'In Progress' : report.status === 'resolved' ? 'Resolved' : report.status}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          Updated {new Date(report.updatedAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      
+                      {report.history.length > 1 && (
+                        <div className="mt-3 pt-3 border-t border-gray-100">
+                          <p className="text-xs text-gray-600">
+                            <span className="font-medium">Last update:</span> {report.history[report.history.length - 1].note}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        )}
 
         {/* Reports Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold text-[#002E2E]">
-                Infrastructure Issues {isAuthorityUser && userDistrict && `in ${userDistrict}`}
+                Pending Tasks {isAuthorityUser && userDistrict && `in ${userDistrict}`}
               </h2>
               <span className="text-sm text-gray-500">
-                {filteredReports.length} tasks found
+                {filteredReports.filter(r => r.status === 'pending').length} pending tasks
               </span>
             </div>
           </div>

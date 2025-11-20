@@ -43,8 +43,9 @@ export const apiClient = async <T = any>(
 
 // Report API functions
 export const reportAPI = {
-  getAll: (filters?: { district?: string; status?: string }) => {
+  getAll: (filters?: { division?: string; district?: string; status?: string }) => {
     const params = new URLSearchParams();
+    if (filters?.division) params.append('division', filters.division);
     if (filters?.district) params.append('district', filters.district);
     if (filters?.status) params.append('status', filters.status);
 
@@ -78,10 +79,10 @@ export const reportAPI = {
 
 // Task API functions
 export const taskAPI = {
-  assign: (reportId: string, assignedTo: string) => {
+  assign: (data: { title: string; description: string; report: string; assignedTo: string; priority?: string; deadline?: string }) => {
     return apiClient(API_ENDPOINTS.ASSIGN_TASK, {
       method: 'POST',
-      body: JSON.stringify({ reportId, assignedTo }),
+      body: JSON.stringify(data),
       requiresAuth: true,
     });
   },
@@ -90,6 +91,31 @@ export const taskAPI = {
     return apiClient(API_ENDPOINTS.COMPLETE_TASK(taskId), {
       method: 'POST',
       body: JSON.stringify({ taskId, proofURL }),
+      requiresAuth: true,
+    });
+  },
+
+  getAll: (filters?: { status?: string; priority?: string; page?: number; limit?: number }) => {
+    const params = new URLSearchParams();
+    if (filters?.status) params.append('status', filters.status);
+    if (filters?.priority) params.append('priority', filters.priority);
+    if (filters?.page) params.append('page', filters.page.toString());
+    if (filters?.limit) params.append('limit', filters.limit.toString());
+
+    const queryString = params.toString();
+    const url = queryString ? `${API_ENDPOINTS.TASKS}?${queryString}` : API_ENDPOINTS.TASKS;
+
+    return apiClient(url, { requiresAuth: true });
+  },
+
+  getMyTasks: () => {
+    return apiClient(API_ENDPOINTS.MY_TASKS, { requiresAuth: true });
+  },
+
+  updateStatus: (taskId: string, status: string) => {
+    return apiClient(API_ENDPOINTS.UPDATE_TASK_STATUS(taskId), {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
       requiresAuth: true,
     });
   },
