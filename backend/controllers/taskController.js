@@ -130,8 +130,8 @@ export const assignTask = asyncHandler(async (req, res) => {
       deadline,
     });
 
-    // Update report status to in-progress
-    await updateReportStatus(report, 'in-progress', `Task assigned: ${title}`, req.user.id);
+    // Update report status to approved when task is assigned
+    await updateReportStatus(report, 'approved', `Task assigned: ${title}`, req.user.id);
 
     res.status(201).json({
       success: true,

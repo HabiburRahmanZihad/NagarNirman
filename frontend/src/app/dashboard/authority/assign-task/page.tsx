@@ -16,7 +16,7 @@ interface Report {
   images: string[];
   problemType: string;
   severity: 'low' | 'medium' | 'high';
-  status: 'pending' | 'in-progress' | 'resolved' | 'closed';
+  status: 'pending' | 'approved' | 'in-progress' | 'resolved' | 'closed';
   location: {
     address: string;
     district: string;
@@ -607,18 +607,18 @@ const AssignTaskPage = () => {
       });
 
       if (response.success) {
-        // Backend automatically updates report status to 'in-progress'
+        // Backend automatically updates report status to 'approved'
         // Update local state to reflect the change
         setReports(prev => prev.map(r =>
           r._id === reportId
             ? {
                 ...r,
-                status: 'in-progress',
+                status: 'approved',
                 assignedTo: solver._id, // Store user _id for consistency
                 history: [
                   ...r.history,
                   {
-                    status: 'in-progress',
+                    status: 'approved',
                     note: `Task assigned: ${report.title}`,
                     updatedBy: currentUser?.name || 'Authority',
                     date: new Date().toISOString()
@@ -677,7 +677,8 @@ const AssignTaskPage = () => {
             : report
         ));
 
-        const statusLabel = newStatus === 'in-progress' ? 'In Progress' :
+        const statusLabel = newStatus === 'approved' ? 'Approved' :
+                           newStatus === 'in-progress' ? 'In Progress' :
                            newStatus === 'resolved' ? 'Resolved' :
                            newStatus === 'closed' ? 'Closed' : 'Pending';
         toast.success(`Status updated to ${statusLabel}`);
@@ -696,6 +697,7 @@ const AssignTaskPage = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'approved': return 'bg-cyan-100 text-cyan-800 border-cyan-200';
       case 'in-progress': return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'resolved': return 'bg-green-100 text-green-800 border-green-200';
       case 'closed': return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -759,12 +761,6 @@ const AssignTaskPage = () => {
           <div className="flex justify-between items-start">
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-[#002E2E]">Task Assignment Center</h1>
-              <p className="text-gray-600 mt-2">
-                {isAuthorityUser && userDistrict
-                  ? `Managing infrastructure issues in ${userDistrict} district`
-                  : 'Assign and monitor infrastructure issues across Bangladesh'
-                }
-              </p>
               {isAuthorityUser && userDistrict && userDivision && (
                 <div className="mt-2 flex items-center space-x-2">
                   <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">
@@ -924,6 +920,7 @@ const AssignTaskPage = () => {
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors"
               >
                 <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
                 <option value="in-progress">In Progress</option>
                 <option value="resolved">Resolved</option>
                 <option value="closed">Closed</option>
@@ -949,18 +946,18 @@ const AssignTaskPage = () => {
         </div>
 
         {/* Assigned Tasks Section */}
-        {filteredReports.filter(r => r.status === 'in-progress' || r.status === 'resolved').length > 0 && (
+        {filteredReports.filter(r => r.status === 'approved' || r.status === 'in-progress' || r.status === 'resolved').length > 0 && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold text-[#002E2E]">Assigned Tasks & Updates</h2>
               <span className="text-sm text-gray-500">
-                {filteredReports.filter(r => r.status === 'in-progress' || r.status === 'resolved').length} active assignments
+                {filteredReports.filter(r => r.status === 'approved' || r.status === 'in-progress' || r.status === 'resolved').length} active assignments
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredReports
-                .filter(r => r.status === 'in-progress' || r.status === 'resolved')
+                .filter(r => r.status === 'approved' || r.status === 'in-progress' || r.status === 'resolved')
                 .map(report => {
                   const assignedSolver = problemSolvers.find(s => s._id === report.assignedTo);
                   return (
@@ -993,7 +990,7 @@ const AssignTaskPage = () => {
 
                       <div className="flex items-center justify-between">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
-                          {report.status === 'in-progress' ? 'In Progress' : report.status === 'resolved' ? 'Resolved' : report.status}
+                          {report.status === 'approved' ? 'Approved' : report.status === 'in-progress' ? 'In Progress' : report.status === 'resolved' ? 'Resolved' : report.status}
                         </span>
                         <span className="text-xs text-gray-500">
                           Updated {new Date(report.updatedAt).toLocaleDateString()}
