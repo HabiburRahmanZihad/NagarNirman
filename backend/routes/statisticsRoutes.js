@@ -5,8 +5,10 @@ import {
   getAllDivisionStatistics,
   getDivisionDistrictStatistics,
   getCompleteStats,
-  getSummaryStatistics
+  getSummaryStatistics,
+  getAnalytics
 } from '../controllers/statisticsController.js';
+import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -34,5 +36,10 @@ router.get('/complete', getCompleteStats);
 // @desc    Get summary statistics
 // @access  Public
 router.get('/summary', getSummaryStatistics);
+
+// @route   GET /api/statistics/analytics
+// @desc    Get comprehensive analytics data
+// @access  Private (Authority)
+router.get('/analytics', protect, getAnalytics);
 
 export default router;

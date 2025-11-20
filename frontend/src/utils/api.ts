@@ -138,29 +138,45 @@ export const mapAPI = {
 
 // Statistics API functions - Comprehensive statistics with all report states
 export const statisticsAPI = {
+  // Get comprehensive analytics data
+  getAnalytics: async (filters?: { division?: string; startDate?: string; endDate?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.division) params.append('division', filters.division);
+    if (filters?.startDate) params.append('startDate', filters.startDate);
+    if (filters?.endDate) params.append('endDate', filters.endDate);
+
+    const queryString = params.toString();
+    const url = queryString
+      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/analytics?${queryString}`
+      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/analytics`;
+
+    const response: any = await apiClient(url, { requiresAuth: true });
+    return response.data || response; // Extract data property if it exists
+  },
+
   // Get complete map data with all divisions and districts
   getCompleteMapData: () => {
-    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/map`);
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/map`, { requiresAuth: false });
   },
 
   // Get all division-level statistics
   getAllDivisions: () => {
-    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/divisions`);
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/divisions`, { requiresAuth: false });
   },
 
   // Get district statistics for a specific division
   getDivisionDistricts: (division: string) => {
-    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/divisions/${encodeURIComponent(division)}/districts`);
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/divisions/${encodeURIComponent(division)}/districts`, { requiresAuth: false });
   },
 
   // Get complete statistics
   getCompleteStats: () => {
-    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/complete`);
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/complete`, { requiresAuth: false });
   },
 
   // Get summary statistics
   getSummary: () => {
-    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/summary`);
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/summary`, { requiresAuth: false });
   },
 };
 

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
-import { reportAPI, problemSolverAPI, statisticsAPI } from '@/utils/api';
+import { reportAPI, problemSolverAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
 
 interface Stats {
@@ -234,11 +234,6 @@ export default function AuthorityDashboard() {
                 <Link href="/dashboard/authority/manage-users">
                   <Button variant="outline" className="w-full justify-start">
                     <span className="mr-2">👥</span> Manage Users
-                  </Button>
-                </Link>
-                <Link href="/dashboard/authority/statistics">
-                  <Button variant="outline" className="w-full justify-start">
-                    <span className="mr-2">📈</span> Statistics
                   </Button>
                 </Link>
               </div>

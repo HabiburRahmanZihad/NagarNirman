@@ -176,6 +176,11 @@ export default function SolverDashboard() {
                     <span className="mr-2">🗺️</span> Map Search
                   </Button>
                 </Link>
+                <Link href="/dashboard/problemSolver/statistics">
+                  <Button variant="outline" className="w-full justify-start">
+                    <span className="mr-2">📈</span> Statistics
+                  </Button>
+                </Link>
               </div>
             </Card>
 
