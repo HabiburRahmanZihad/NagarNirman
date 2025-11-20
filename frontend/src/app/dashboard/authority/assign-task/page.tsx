@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
-import { reportAPI, problemSolverAPI, taskAPI } from '@/utils/api';
+import { reportAPI, problemSolverAPI, taskAPI, userAPI } from '@/utils/api';
 import divisionsData from '@/data/divisionsData.json';
 
 interface Report {
@@ -39,29 +39,23 @@ interface Report {
 
 interface ProblemSolver {
   _id: string;
-  userId: string;
-  fullName: string;
+  name: string;
   email: string;
-  phone: string;
+  phone?: string;
+  role: 'problemSolver' | 'ngo';
   division: string;
-  district: string;
-  address: string;
-  profession: string;
-  organization: string;
-  skills: string[];
-  motivation: string;
-  experience: string;
-  profileImage: string | null;
-  status: 'pending' | 'approved' | 'rejected';
-  reviewedBy: string | null;
-  reviewedAt: string | null;
-  reviewNote: string | null;
-  appliedAt: string;
-  rating: number;
-  completedTasks: number;
-  successRate: number;
-  points: number;
-  avgResolutionTime: number;
+  district?: string;
+  address?: string;
+  organization?: string;
+  expertise?: string[];
+  profilePicture?: string;
+  approved: boolean;
+  isActive: boolean;
+  rating?: number;
+  completedTasks?: number;
+  successRate?: number;
+  points?: number;
+  createdAt: string;
 }
 
 // Multiple dummy users for testing
@@ -267,8 +261,10 @@ const allReports: Report[] = [
   }
 ];
 
-// All problem solvers data
-const allProblemSolvers: ProblemSolver[] = [
+// All problem solvers data (empty - will use API data)
+const allProblemSolvers: ProblemSolver[] = [];
+/*
+const allProblemSolversOld: any[] = [
   // Chandpur problem solvers
   {
     _id: "691833a1faef057a765604bd",
@@ -429,6 +425,7 @@ const allProblemSolvers: ProblemSolver[] = [
     avgResolutionTime: 21
   }
 ];
+*/
 
 const AssignTaskPage = () => {
   const router = useRouter();
@@ -505,18 +502,33 @@ const AssignTaskPage = () => {
         }
 
         // Fetch approved problem solvers from authority's entire division (all districts)
-        const solversResponse = await problemSolverAPI.getAllApplications({
-          status: 'approved',
-          division: userDivision
+        const solversResponse = await userAPI.getSolvers({
+          division: userDivision,
+          limit: 100
         });
 
-        if (solversResponse.success && solversResponse.data) {
-          // Sort by rating initially
-          const sortedSolvers = [...solversResponse.data].sort((a, b) => b.rating - a.rating);
+        if (solversResponse.success && solversResponse.users) {
+          // Sort by rating initially (if rating exists, otherwise by name)
+          const sortedSolvers = [...solversResponse.users].sort((a, b) => {
+            const ratingA = a.rating || 0;
+            const ratingB = b.rating || 0;
+            return ratingB - ratingA;
+          });
           setProblemSolvers(sortedSolvers);
         }
 
-        toast.success(`Loaded tasks from ${userDistrict}, ${userDivision}`);
+        const reportCount = reportsResponse.success ? reportsResponse.data?.length || 0 : 0;
+        const solverCount = solversResponse.success ? solversResponse.users?.length || 0 : 0;
+
+        if (reportCount === 0 && solverCount === 0) {
+          toast(`No reports or solvers found in ${userDivision} division`, { icon: 'ℹ️' });
+        } else if (reportCount === 0) {
+          toast(`${solverCount} solvers available, but no reports found in ${userDivision}`, { icon: 'ℹ️' });
+        } else if (solverCount === 0) {
+          toast(`${reportCount} reports found, but no approved solvers in ${userDivision}`, { icon: '⚠️' });
+        } else {
+          toast.success(`Loaded ${reportCount} reports and ${solverCount} solvers from ${userDivision}`);
+        }
       } catch (error) {
         console.error('Error loading data:', error);
         toast.error('Failed to load data. Please try again.');
@@ -527,7 +539,7 @@ const AssignTaskPage = () => {
         setReports(filteredReports);
 
         const filteredSolvers = allProblemSolvers.filter(solver =>
-          solver.status === 'approved' && solver.district === userDistrict
+          solver.district === userDistrict && solver.approved === true
         );
         setProblemSolvers(filteredSolvers);
       } finally {
@@ -551,15 +563,15 @@ const AssignTaskPage = () => {
     return [...solvers].sort((a, b) => {
       switch (sortBy) {
         case 'rating':
-          return b.rating - a.rating;
+          return (b.rating || 0) - (a.rating || 0);
         case 'points':
-          return b.points - a.points;
+          return (b.points || 0) - (a.points || 0);
         case 'completedTasks':
-          return b.completedTasks - a.completedTasks;
+          return (b.completedTasks || 0) - (a.completedTasks || 0);
         case 'successRate':
-          return b.successRate - a.successRate;
+          return (b.successRate || 0) - (a.successRate || 0);
         default:
-          return b.rating - a.rating;
+          return (b.rating || 0) - (a.rating || 0);
       }
     });
   };
@@ -590,24 +602,25 @@ const AssignTaskPage = () => {
         title: report.title,
         description: report.description,
         report: reportId,
-        assignedTo: solver.userId, // Use userId, not application ID
+        assignedTo: solver._id, // Use user _id
         priority: report.severity === 'high' ? 'high' : report.severity === 'medium' ? 'medium' : 'low',
       });
 
       if (response.success) {
-        // Update local state
+        // Backend automatically updates report status to 'in-progress'
+        // Update local state to reflect the change
         setReports(prev => prev.map(r =>
           r._id === reportId
             ? {
                 ...r,
                 status: 'inProgress',
-                assignedTo: solverId,
+                assignedTo: solver._id, // Store user _id for consistency
                 history: [
                   ...r.history,
                   {
                     status: 'inProgress',
-                    note: `Assigned to ${solver.fullName} (${solver.organization})`,
-                    updatedBy: currentUser?.name || 'admin',
+                    note: `Task assigned: ${report.title}`,
+                    updatedBy: currentUser?.name || 'Authority',
                     date: new Date().toISOString()
                   }
                 ],
@@ -616,17 +629,23 @@ const AssignTaskPage = () => {
             : r
         ));
 
-        toast.success(`Task assigned to ${solver.fullName} successfully!`);
+        toast.success(`✅ Task successfully assigned to ${solver.name}${solver.organization ? ` from ${solver.organization}` : ''}!`, {
+          duration: 5000,
+        });
+
+        // Close modal after successful assignment
+        setTimeout(() => {
+          setSelectedReport(null);
+          setSelectedSolver('');
+        }, 1000);
       } else {
         throw new Error(response.message || 'Failed to assign task');
       }
     } catch (error: any) {
       console.error('Error assigning task:', error);
-      toast.error(error.message || 'Failed to assign task. Please try again.');
-    } finally {
+      const errorMessage = error.message || 'Failed to assign task. Please try again.';
+      toast.error(errorMessage);
       setAssigning(false);
-      setSelectedReport(null);
-      setSelectedSolver('');
     }
   };
 
@@ -649,7 +668,7 @@ const AssignTaskPage = () => {
                   {
                     status: newStatus,
                     note: `Status updated to ${newStatus}`,
-                    updatedBy: currentUser?.name || 'admin',
+                    updatedBy: currentUser?.name || 'Authority',
                     date: new Date().toISOString()
                   }
                 ],
@@ -658,13 +677,17 @@ const AssignTaskPage = () => {
             : report
         ));
 
-        toast.success(`Status updated to ${newStatus}`);
+        const statusLabel = newStatus === 'inProgress' ? 'In Progress' :
+                           newStatus === 'resolved' ? 'Resolved' :
+                           newStatus === 'closed' ? 'Closed' : 'Pending';
+        toast.success(`Status updated to ${statusLabel}`);
       } else {
         throw new Error(response.message || 'Failed to update status');
       }
     } catch (error: any) {
       console.error('Error updating status:', error);
-      toast.error(error.message || 'Failed to update status. Please try again.');
+      const errorMessage = error.message || 'Failed to update status. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setUpdatingStatus(null);
     }
@@ -939,7 +962,7 @@ const AssignTaskPage = () => {
               {filteredReports
                 .filter(r => r.status === 'inProgress' || r.status === 'resolved')
                 .map(report => {
-                  const assignedSolver = problemSolvers.find(s => s.userId === report.assignedTo || s._id === report.assignedTo);
+                  const assignedSolver = problemSolvers.find(s => s._id === report.assignedTo);
                   return (
                     <div key={report._id} className="border border-gray-200 rounded-lg p-4 hover:border-[#81d586] transition-colors">
                       <div className="flex items-start space-x-3 mb-3">
@@ -959,11 +982,11 @@ const AssignTaskPage = () => {
                       {assignedSolver && (
                         <div className="flex items-center space-x-2 mb-3 p-2 bg-gray-50 rounded">
                           <div className="w-8 h-8 bg-[#81d586] rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                            {assignedSolver.fullName.split(' ').map(n => n[0]).join('')}
+                            {assignedSolver.name.split(' ').map(n => n[0]).join('')}
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-gray-900">{assignedSolver.fullName}</p>
-                            <p className="text-xs text-gray-500">{assignedSolver.organization}</p>
+                            <p className="text-sm font-medium text-gray-900">{assignedSolver.name}</p>
+                            <p className="text-xs text-gray-500">{assignedSolver.organization || assignedSolver.role}</p>
                           </div>
                         </div>
                       )}
@@ -1041,7 +1064,7 @@ const AssignTaskPage = () => {
                             <img
                               src={report.images[0]}
                               alt={report.title}
-                              className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                              className="w-12 h-12 rounded-lg object-cover shrink-0"
                             />
                           )}
                           <div className="flex-1 min-w-0">
@@ -1105,14 +1128,23 @@ const AssignTaskPage = () => {
                             value={report.status}
                             onChange={(e) => updateTaskStatus(report._id, e.target.value as Report['status'])}
                             disabled={updatingStatus === report._id}
-                            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent disabled:opacity-50"
+                            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent disabled:opacity-50 transition-colors"
                           >
-                            <option value="pending">Pending</option>
                             <option value="inProgress">In Progress</option>
                             <option value="resolved">Resolved</option>
                             <option value="closed">Closed</option>
                           </select>
                         )}
+
+                        <button
+                          onClick={() => {
+                            window.open(`/reports/${report._id}`, '_blank');
+                          }}
+                          className="px-3 py-2 text-[#81d586] hover:text-[#65b869] font-medium transition-colors"
+                          title="View Report Details"
+                        >
+                          View
+                        </button>
                       </td>
                     </tr>
                   );
@@ -1246,7 +1278,7 @@ const AssignTaskPage = () => {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4 flex-1">
                             {/* Rank Badge */}
-                            <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                            <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${
                               index === 0 ? 'bg-yellow-500' :
                               index === 1 ? 'bg-gray-400' :
                               index === 2 ? 'bg-orange-500' : 'bg-[#81d586]'
@@ -1255,63 +1287,67 @@ const AssignTaskPage = () => {
                             </div>
 
                             {/* Profile */}
-                            <div className="w-12 h-12 bg-[#81d586] rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
-                              {solver.fullName.split(' ').map(n => n[0]).join('')}
+                            <div className="w-12 h-12 bg-[#81d586] rounded-full flex items-center justify-center text-white font-semibold text-lg shrink-0">
+                              {solver.name.split(' ').map(n => n[0]).join('')}
                             </div>
 
                             {/* Details */}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center space-x-2 mb-1">
-                                <h4 className="font-semibold text-gray-900 text-lg">{solver.fullName}</h4>
+                                <h4 className="font-semibold text-gray-900 text-lg">{solver.name}</h4>
                                 <div className="flex items-center space-x-1">
-                                  <svg className={`w-4 h-4 ${getRatingColor(solver.rating)}`} fill="currentColor" viewBox="0 0 20 20">
+                                  <svg className={`w-4 h-4 ${getRatingColor(solver.rating || 0)}`} fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                   </svg>
-                                  <span className={`font-bold ${getRatingColor(solver.rating)}`}>
-                                    {solver.rating}
+                                  <span className={`font-bold ${getRatingColor(solver.rating || 0)}`}>
+                                    {(solver.rating || 0).toFixed(1)}
                                   </span>
                                 </div>
                               </div>
-                              <p className="text-sm text-gray-600 mb-2">{solver.organization} • {solver.profession}</p>
+                              <p className="text-sm text-gray-600 mb-2">{solver.organization || solver.role} • {solver.district || solver.division}</p>
 
                               {/* Performance Stats */}
                               <div className="grid grid-cols-4 gap-4 text-xs">
                                 <div className="text-center">
-                                  <div className="font-bold text-gray-900">{solver.completedTasks}</div>
+                                  <div className="font-bold text-gray-900">{solver.completedTasks || 0}</div>
                                   <div className="text-gray-500">Tasks</div>
                                 </div>
                                 <div className="text-center">
-                                  <div className="font-bold text-green-600">{solver.successRate}%</div>
+                                  <div className="font-bold text-green-600">{solver.successRate || 0}%</div>
                                   <div className="text-gray-500">Success</div>
                                 </div>
                                 <div className="text-center">
-                                  <div className="font-bold text-blue-600">{solver.points}</div>
+                                  <div className="font-bold text-blue-600">{solver.points || 0}</div>
                                   <div className="text-gray-500">Points</div>
                                 </div>
                                 <div className="text-center">
-                                  <div className="font-bold text-purple-600">{solver.avgResolutionTime}h</div>
-                                  <div className="text-gray-500">Avg. Time</div>
+                                  <div className="font-bold text-purple-600">
+                                    {solver.role === 'ngo' ? 'NGO' : 'Solver'}
+                                  </div>
+                                  <div className="text-gray-500">Type</div>
                                 </div>
                               </div>
 
                               {/* Skills */}
-                              <div className="flex flex-wrap gap-1 mt-2">
-                                {solver.skills.slice(0, 3).map((skill, idx) => (
-                                  <span key={idx} className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
-                                    {skill}
-                                  </span>
-                                ))}
-                                {solver.skills.length > 3 && (
-                                  <span className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
-                                    +{solver.skills.length - 3} more
-                                  </span>
-                                )}
-                              </div>
+                              {solver.expertise && solver.expertise.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-2">
+                                  {solver.expertise.slice(0, 3).map((skill, idx) => (
+                                    <span key={idx} className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
+                                      {skill}
+                                    </span>
+                                  ))}
+                                  {solver.expertise.length > 3 && (
+                                    <span className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
+                                      +{solver.expertise.length - 3} more
+                                    </span>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </div>
 
                           {/* Selection Indicator */}
-                          <div className="flex-shrink-0 ml-4">
+                          <div className="shrink-0 ml-4">
                             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
                               selectedSolver === solver._id
                                 ? 'bg-[#81d586] border-[#81d586]'
@@ -1343,17 +1379,31 @@ const AssignTaskPage = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={() => assignTask(selectedReport._id, selectedSolver)}
+                  onClick={() => {
+                    if (!selectedSolver) {
+                      toast.error('Please select a problem solver');
+                      return;
+                    }
+                    const solver = getAvailableSolvers(selectedReport).find(s => s._id === selectedSolver);
+                    if (solver && window.confirm(`Assign this task to ${solver.name}${solver.organization ? ` from ${solver.organization}` : ''}?`)) {
+                      assignTask(selectedReport._id, selectedSolver);
+                    }
+                  }}
                   disabled={!selectedSolver || assigning || getAvailableSolvers(selectedReport).length === 0}
-                  className="px-6 py-2 bg-[#81d586] text-white rounded-lg hover:bg-[#65b869] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center"
+                  className="px-6 py-2 bg-[#81d586] text-white rounded-lg hover:bg-[#65b869] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center space-x-2"
                 >
                   {assigning ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Assigning...
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Assigning Task...</span>
                     </>
                   ) : (
-                    'Assign Task'
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>Assign Task</span>
+                    </>
                   )}
                 </button>
               </div>

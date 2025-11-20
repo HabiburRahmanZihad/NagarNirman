@@ -57,14 +57,20 @@ export default function SolversPage() {
     try {
       setLoading(true);
       const response = await userAPI.getSolvers({
-        division: authUser?.division
+        division: authUser?.division,
+        limit: 100
       });
 
-      setSolvers(response.users || []);
-      toast.success(`Loaded ${response.users?.length || 0} solvers from ${authUser?.division}`);
-    } catch (error) {
+      if (response.success) {
+        const solversList = response.users || [];
+        setSolvers(solversList);
+        toast.success(`Loaded ${solversList.length} solvers from ${authUser?.division}`);
+      } else {
+        toast.error(response.message || 'Failed to load solvers');
+      }
+    } catch (error: any) {
       console.error('Error fetching solvers:', error);
-      toast.error('Failed to load problem solvers and NGOs');
+      toast.error(error.message || 'Failed to load problem solvers and NGOs');
     } finally {
       setLoading(false);
     }
