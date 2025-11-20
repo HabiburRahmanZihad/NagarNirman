@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
-import { reportAPI, problemSolverAPI, statisticsAPI } from '@/utils/api';
+import { reportAPI, problemSolverAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
 
 interface Stats {
@@ -211,6 +211,16 @@ export default function AuthorityDashboard() {
                     <span className="mr-2">📋</span> All Reports
                   </Button>
                 </Link>
+                <Link href="/dashboard/authority/assign-task">
+                  <Button variant="primary" className="w-full justify-start">
+                    <span className="mr-2">📝</span> Assign Tasks
+                  </Button>
+                </Link>
+                <Link href="/dashboard/authority/solvers">
+                  <Button variant="secondary" className="w-full justify-start">
+                    <span className="mr-2">💡</span> Problem Solvers & NGOs
+                  </Button>
+                </Link>
                 <Link href="/dashboard/authority/applications">
                   <Button variant="secondary" className="w-full justify-start">
                     <span className="mr-2">📄</span> Applications
@@ -221,14 +231,9 @@ export default function AuthorityDashboard() {
                     )}
                   </Button>
                 </Link>
-                <Link href="/dashboard/authority/users">
+                <Link href="/dashboard/authority/manage-users">
                   <Button variant="outline" className="w-full justify-start">
                     <span className="mr-2">👥</span> Manage Users
-                  </Button>
-                </Link>
-                <Link href="/dashboard/authority/statistics">
-                  <Button variant="outline" className="w-full justify-start">
-                    <span className="mr-2">📈</span> Statistics
                   </Button>
                 </Link>
               </div>

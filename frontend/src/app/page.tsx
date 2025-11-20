@@ -10,7 +10,7 @@ export default function Home() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white">
+    <div className="min-h-screen bg-linear-to-b from-green-50 to-white">
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="flex justify-center mb-8">
@@ -19,7 +19,7 @@ export default function Home() {
             alt="NagarNirman Logo"
             width={220}
             height={220}
-            className="w-auto h-auto"
+            style={{ width: 'auto', height: 'auto' }}
             priority
           />
         </div>
@@ -267,27 +267,27 @@ export default function Home() {
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/dashboard/solver" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/problemSolver" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> Solver Dashboard
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/solver/tasks" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/problemSolver/tasks" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> My Tasks
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/solver/completed" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/problemSolver/completed" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> Completed Tasks
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/solver/leaderboard" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/problemSolver/leaderboard" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> Leaderboard
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/solver/rewards" className="text-[#81d586] hover:underline flex items-center gap-2">
+                <Link href="/dashboard/problemSolver/rewards" className="text-[#81d586] hover:underline flex items-center gap-2">
                   <span>→</span> My Rewards
                 </Link>
               </li>

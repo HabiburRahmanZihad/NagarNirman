@@ -210,10 +210,274 @@ export const getSummaryStatistics = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Get comprehensive analytics data for dashboard
+ * @route   GET /api/statistics/analytics
+ * @access  Private (Authority)
+ */
+export const getAnalytics = async (req, res) => {
+  try {
+    // Check if user is NGO, Problem Solver, or SuperAdmin
+    if (req.user.role !== 'ngo' && req.user.role !== 'problemSolver' && req.user.role !== 'superAdmin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Statistics are only available for NGO, Problem Solvers, and SuperAdmin.'
+      });
+    }
+
+    const { division, startDate, endDate } = req.query;
+    const db = getDB();
+
+    // Build date filter
+    const dateFilter = {};
+    if (startDate || endDate) {
+      dateFilter.createdAt = {};
+      if (startDate) dateFilter.createdAt.$gte = new Date(startDate);
+      if (endDate) dateFilter.createdAt.$lte = new Date(endDate);
+    }
+
+    // Build division filter
+    const divisionFilter = division && division !== 'all' ? { 'location.division': division } : {};
+
+    const filter = { ...dateFilter, ...divisionFilter };
+
+    // Get all reports with filter
+    const reports = await db.collection('reports').find(filter).toArray();
+    const tasks = await db.collection('tasks').find({}).toArray();
+    const users = await db.collection('users').find({
+      role: { $in: ['problemSolver', 'ngo'] },
+      approved: true,
+      isActive: true
+    }).toArray();
+
+    // Calculate basic metrics
+    const totalReports = reports.length;
+    const completedReports = reports.filter(r => r.status === 'resolved').length;
+    const ongoingReports = reports.filter(r => ['approved', 'in-progress'].includes(r.status)).length;
+    const pendingReports = reports.filter(r => r.status === 'pending').length;
+    const rejectedReports = reports.filter(r => r.status === 'rejected').length;
+
+    // Calculate completion rate
+    const completionRate = totalReports > 0
+      ? Math.round((completedReports / totalReports) * 100)
+      : 0;
+
+    // Calculate average resolution time (in hours)
+    let averageResolutionTime = 0;
+    const resolvedReports = reports.filter(r => r.status === 'resolved');
+    if (resolvedReports.length > 0) {
+      const totalTime = resolvedReports.reduce((sum, report) => {
+        const created = new Date(report.createdAt);
+        const updated = new Date(report.updatedAt);
+        const hours = (updated - created) / (1000 * 60 * 60);
+        return sum + hours;
+      }, 0);
+      averageResolutionTime = Math.round(totalTime / resolvedReports.length);
+    }
+
+    // Category statistics
+    const categoryStats = reports.reduce((acc, report) => {
+      const type = report.problemType || 'other';
+      if (!acc[type]) {
+        acc[type] = { category: type, count: 0 };
+      }
+      acc[type].count++;
+      return acc;
+    }, {});
+
+    // Status statistics
+    const statusStats = [
+      { status: 'Pending', count: pendingReports, color: '#fbbf24' },
+      { status: 'Approved', count: reports.filter(r => r.status === 'approved').length, color: '#06b6d4' },
+      { status: 'In Progress', count: reports.filter(r => r.status === 'in-progress').length, color: '#3b82f6' },
+      { status: 'Resolved', count: completedReports, color: '#10b981' },
+      { status: 'Rejected', count: rejectedReports, color: '#ef4444' }
+    ];
+
+    // Monthly statistics (last 12 months)
+    const monthlyStats = [];
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const nextMonth = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+
+      const monthReports = reports.filter(r => {
+        const reportDate = new Date(r.createdAt);
+        return reportDate >= monthDate && reportDate < nextMonth;
+      });
+
+      monthlyStats.push({
+        month: monthDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+        reports: monthReports.length,
+        resolved: monthReports.filter(r => r.status === 'resolved').length,
+        pending: monthReports.filter(r => r.status === 'pending').length
+      });
+    }
+
+    // District statistics
+    const districtStats = reports.reduce((acc, report) => {
+      const district = report.location?.district || 'Unknown';
+      const division = report.location?.division || 'Unknown';
+
+      if (!acc[district]) {
+        acc[district] = {
+          district,
+          division,
+          total: 0,
+          pending: 0,
+          resolved: 0,
+          ongoing: 0
+        };
+      }
+
+      acc[district].total++;
+      if (report.status === 'pending') acc[district].pending++;
+      if (report.status === 'resolved') acc[district].resolved++;
+      if (['approved', 'in-progress'].includes(report.status)) acc[district].ongoing++;
+
+      return acc;
+    }, {});
+
+    // Solver performance statistics
+    const solverStats = await Promise.all(
+      users.map(async (user) => {
+        const userTasks = tasks.filter(t => t.assignedTo.toString() === user._id.toString());
+        const completedTasks = userTasks.filter(t => t.status === 'completed').length;
+        const totalTasks = userTasks.length;
+
+        // Calculate success rate
+        const successRate = totalTasks > 0
+          ? Math.round((completedTasks / totalTasks) * 100)
+          : 0;
+
+        // Calculate average resolution time
+        let avgResolutionTime = 0;
+        const completedTasksWithTime = userTasks.filter(t => t.status === 'completed' && t.completedAt);
+        if (completedTasksWithTime.length > 0) {
+          const totalTime = completedTasksWithTime.reduce((sum, task) => {
+            const created = new Date(task.createdAt);
+            const completed = new Date(task.completedAt);
+            const hours = (completed - created) / (1000 * 60 * 60);
+            return sum + hours;
+          }, 0);
+          avgResolutionTime = Math.round(totalTime / completedTasksWithTime.length);
+        }
+
+        return {
+          solverId: user._id,
+          name: user.name,
+          completedTasks,
+          totalTasks,
+          successRate,
+          avgResolutionTime,
+          rating: user.rating || 0,
+          organization: user.organization || null
+        };
+      })
+    );
+
+    // Sort by completed tasks and take top 10
+    const topSolvers = solverStats
+      .filter(s => s.totalTasks > 0)
+      .sort((a, b) => b.completedTasks - a.completedTasks)
+      .slice(0, 10);
+
+    // Response data
+    const analyticsData = {
+      totalReports,
+      completedReports,
+      ongoingReports,
+      pendingReports,
+      averageResolutionTime,
+      completionRate,
+      categoryStats: Object.values(categoryStats),
+      statusStats,
+      monthlyStats,
+      districtStats: Object.values(districtStats),
+      solverPerformance: topSolvers,
+      lastUpdated: new Date().toISOString()
+    };
+
+    res.status(200).json({
+      success: true,
+      data: analyticsData
+    });
+  } catch (error) {
+    console.error('Error getting analytics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching analytics data',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * @desc    Get SuperAdmin dashboard statistics
+ * @route   GET /api/statistics/admin-dashboard
+ * @access  Private (SuperAdmin only)
+ */
+export const getAdminDashboardStats = async (req, res) => {
+  try {
+    const db = getDB();
+
+    // Get all collections
+    const usersCollection = db.collection('users');
+    const reportsCollection = db.collection('reports');
+    const applicationsCollection = db.collection('problemSolverApplications');
+
+    // Fetch all stats in parallel
+    const [
+      totalUsers,
+      totalReports,
+      authorities,
+      problemSolvers,
+      ngos,
+      pendingApplications,
+      recentReports
+    ] = await Promise.all([
+      usersCollection.countDocuments(),
+      reportsCollection.countDocuments(),
+      usersCollection.countDocuments({ role: 'authority' }),
+      usersCollection.countDocuments({ role: 'problemSolver' }),
+      usersCollection.countDocuments({ role: 'ngo' }),
+      applicationsCollection.countDocuments({ status: 'pending' }),
+      reportsCollection.find()
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .toArray()
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        stats: {
+          totalUsers,
+          totalReports,
+          authorities,
+          problemSolvers,
+          ngos,
+          pendingApplications
+        },
+        recentReports
+      }
+    });
+  } catch (error) {
+    console.error('Error getting admin dashboard stats:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching admin dashboard statistics',
+      error: error.message
+    });
+  }
+};
+
 export default {
   getMapStatistics,
   getAllDivisionStatistics,
   getDivisionDistrictStatistics,
   getCompleteStats,
-  getSummaryStatistics
+  getSummaryStatistics,
+  getAnalytics,
+  getAdminDashboardStats
 };

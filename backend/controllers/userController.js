@@ -21,12 +21,14 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 
 // @desc    Get all users
 // @route   GET /api/users
-// @access  Private (Authority)
+// @access  Private (Authority, SuperAdmin)
 export const getUsers = asyncHandler(async (req, res) => {
   const {
     page = 1,
     limit = 10,
     role,
+    division,
+    district,
     approved,
     sortBy = 'createdAt',
     order = 'desc',
@@ -34,15 +36,20 @@ export const getUsers = asyncHandler(async (req, res) => {
 
   const filter = {};
   if (role) filter.role = role;
+  if (division) filter.division = division;
+  if (district) filter.district = district;
   if (approved !== undefined) filter.approved = approved === 'true';
 
   const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
 
-  const result = await findUsers(filter, {
+  // SuperAdmin can get all users without pagination limit
+  const options = {
     page: parseInt(page),
-    limit: parseInt(limit),
+    limit: req.user.role === 'superAdmin' ? 1000 : parseInt(limit),
     sort,
-  });
+  };
+
+  const result = await findUsers(filter, options);
 
   res.status(200).json({
     success: true,
@@ -536,12 +543,26 @@ export const reviewApplication = asyncHandler(async (req, res) => {
       req.user.id
     );
 
-    // If approved, update user role to problemSolver
+    // If approved, update user with application data
     if (status === 'approved') {
-      await updateUser(application.userId.toString(), {
+      const updateData = {
+        name: application.fullName, // Update name from application
         role: 'problemSolver',
         approved: true,
-      });
+        isActive: true, // Ensure user is active
+        phone: application.phone,
+        organization: application.organization,
+        expertise: application.skills, // Map skills to expertise
+        profilePicture: application.profileImage || '',
+        address: application.address,
+        // Keep division and district from application
+        division: application.division,
+        district: application.district,
+      };
+
+      console.log('Updating user with data:', updateData);
+      const updatedUser = await updateUser(application.userId.toString(), updateData);
+      console.log('User updated successfully:', updatedUser);
     }
 
     res.status(200).json({
@@ -550,6 +571,160 @@ export const reviewApplication = asyncHandler(async (req, res) => {
       data: application,
     });
   } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Delete user
+// @route   DELETE /api/users/:id
+// @access  Private (Authority)
+export const deleteUser = asyncHandler(async (req, res) => {
+  try {
+    const usersCollection = await getUsersCollection();
+    const result = await usersCollection.deleteOne({ _id: new ObjectId(req.params.id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'User deleted successfully',
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Get all NGOs and Problem Solvers
+// @route   GET /api/users/solvers
+// @access  Private (Authority)
+export const getSolvers = asyncHandler(async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 50,
+      division,
+      district,
+      sortBy = 'createdAt',
+      order = 'desc',
+    } = req.query;
+
+    const filter = {
+      role: { $in: ['problemSolver', 'ngo'] },
+      approved: true,
+      isActive: true,
+    };
+
+    if (division) filter.division = division;
+    if (district) filter.district = district;
+
+    console.log('getSolvers filter:', filter);
+
+    const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
+
+    const result = await findUsers(filter, {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      sort,
+    });
+
+    console.log(`Found ${result.users.length} solvers`);
+
+    res.status(200).json({
+      success: true,
+      users: result.users,
+      pagination: result.pagination,
+    });
+  } catch (error) {
+    console.error('getSolvers error:', error);
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Update user role (superAdmin and Authority)
+// @route   PATCH /api/users/:id/role
+// @access  Private (SuperAdmin, Authority)
+export const updateUserRole = asyncHandler(async (req, res) => {
+  try {
+    const { role } = req.body;
+    const userId = req.params.id;
+
+    // Check if requester is superAdmin or authority
+    if (req.user.role !== 'superAdmin' && req.user.role !== 'authority') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Only superAdmin and Authority can change user roles.',
+      });
+    }
+
+    // Validate role
+    const validRoles = ['user', 'authority', 'problemSolver', 'ngo'];
+    if (!validRoles.includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid role. Must be one of: ${validRoles.join(', ')}`,
+      });
+    }
+
+    // Get user to update
+    const userToUpdate = await getUserById(userId);
+    if (!userToUpdate) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    // Prevent changing superAdmin roles
+    if (userToUpdate.role === 'superAdmin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Cannot change role of superAdmin users',
+      });
+    }
+
+    // Update user role
+    const usersCollection = await getUsersCollection();
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $set: {
+          role,
+          updatedAt: new Date(),
+        }
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Failed to update user role',
+      });
+    }
+
+    // Get updated user
+    const updatedUser = await getUserById(userId);
+
+    res.status(200).json({
+      success: true,
+      message: `User role updated to ${role} successfully`,
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error('updateUserRole error:', error);
     res.status(400).json({
       success: false,
       message: error.message,

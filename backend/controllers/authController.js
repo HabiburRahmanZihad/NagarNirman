@@ -22,7 +22,7 @@ const generateToken = (id) => {
 // @route   POST /api/auth/register
 // @access  Public
 export const register = asyncHandler(async (req, res) => {
-  const { name, email, password, district, role, avatar } = req.body;
+  const { name, email, password, division, district, role, avatar } = req.body;
 
   try {
     // Create user (will throw error if validation fails or user exists)
@@ -30,6 +30,7 @@ export const register = asyncHandler(async (req, res) => {
       name,
       email,
       password,
+      division,
       district,
       role: role || 'user',
       avatar,

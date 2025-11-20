@@ -35,7 +35,7 @@ const StatusBarChart = ({ data }: StatusBarChartProps) => {
       whileHover={{ y: -5 }}
       className="relative group"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-[#f59e0b] to-[#2563eb] rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
+      <div className="absolute inset-0 bg-linear-to-br from-[#f59e0b] to-[#2563eb] rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
       <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-gray-900">
