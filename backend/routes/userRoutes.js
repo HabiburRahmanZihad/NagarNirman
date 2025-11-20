@@ -31,10 +31,10 @@ router.put('/profile', protect, updateProfile);
 
 // Authority and SuperAdmin routes (must be before /:id routes)
 router.get('/', protect, authorize('authority', 'superAdmin'), getUsers);
-router.get('/solvers', protect, authorize('authority'), getSolvers);
+router.get('/solvers', protect, authorize('authority', 'superAdmin'), getSolvers);
 router.get('/:id/stats', protect, getUserStats);
 router.get('/:id', protect, getUser);
-router.patch('/:id/approve', protect, authorize('authority'), approveUser);
+router.patch('/:id/approve', protect, authorize('authority', 'superAdmin'), approveUser);
 router.patch('/:id/role', protect, authorize('authority', 'superAdmin'), updateUserRole);
 router.patch('/:id/status', protect, authorize('authority', 'superAdmin'), updateUserStatus);
 router.delete('/:id', protect, authorize('authority', 'superAdmin'), deleteUser);
