@@ -632,3 +632,47 @@ export const deleteUser = asyncHandler(async (req, res) => {
     });
   }
 });
+
+// @desc    Get all NGOs and Problem Solvers
+// @route   GET /api/users/solvers
+// @access  Private (Authority)
+export const getSolvers = asyncHandler(async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 50,
+      division,
+      district,
+      sortBy = 'createdAt',
+      order = 'desc',
+    } = req.query;
+
+    const filter = {
+      role: { $in: ['problemSolver', 'ngo'] },
+      approved: true,
+      isActive: true,
+    };
+
+    if (division) filter.division = division;
+    if (district) filter.district = district;
+
+    const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
+
+    const result = await findUsers(filter, {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      sort,
+    });
+
+    res.status(200).json({
+      success: true,
+      users: result.users,
+      pagination: result.pagination,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});

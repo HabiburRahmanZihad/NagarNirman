@@ -80,17 +80,11 @@ export default function AssignSolversPage() {
   const fetchSolvers = async () => {
     try {
       setLoading(true);
-      const response = await userAPI.getAllUsers({
-        division: authUser?.division,
-        approved: true
+      const response = await userAPI.getSolvers({
+        division: authUser?.division
       });
 
-      // Filter only problemSolver and ngo roles
-      const filteredSolvers = response.users.filter(
-        (u: User) => u.role === 'problemSolver' || u.role === 'ngo'
-      );
-
-      setSolvers(filteredSolvers);
+      setSolvers(response.users || []);
     } catch (error) {
       console.error('Error fetching solvers:', error);
       toast.error('Failed to load problem solvers and NGOs');

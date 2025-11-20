@@ -15,6 +15,7 @@ import {
   getAllApplications,
   getApplicationDetails,
   reviewApplication,
+  getSolvers,
 } from '../controllers/userController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -27,11 +28,12 @@ router.get('/leaderboard', getLeaderboard);
 router.post('/apply-problem-solver', protect, applyProblemSolver);
 router.get('/my-application', protect, getMyApplication);
 router.put('/profile', protect, updateProfile);
+
+// Authority only routes (must be before /:id routes)
+router.get('/', protect, authorize('authority'), getUsers);
+router.get('/solvers', protect, authorize('authority'), getSolvers);
 router.get('/:id/stats', protect, getUserStats);
 router.get('/:id', protect, getUser);
-
-// Authority only routes
-router.get('/', protect, authorize('authority'), getUsers);
 router.patch('/:id/approve', protect, authorize('authority'), approveUser);
 router.patch('/:id/role', protect, authorize('authority'), updateUserRole);
 router.patch('/:id/status', protect, authorize('authority'), updateUserStatus);

@@ -232,6 +232,22 @@ export const userAPI = {
       requiresAuth: true,
     });
   },
+
+  // Get all NGOs and Problem Solvers (Authority only)
+  getSolvers: (filters?: { division?: string; district?: string; page?: number; limit?: number }) => {
+    const params = new URLSearchParams();
+    if (filters?.division) params.append('division', filters.division);
+    if (filters?.district) params.append('district', filters.district);
+    if (filters?.page) params.append('page', filters.page.toString());
+    if (filters?.limit) params.append('limit', filters.limit.toString());
+
+    const queryString = params.toString();
+    const url = queryString
+      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/solvers?${queryString}`
+      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/solvers`;
+
+    return apiClient(url, { requiresAuth: true });
+  },
 };
 
 // Problem Solver Application API functions

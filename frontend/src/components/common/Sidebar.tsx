@@ -45,10 +45,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       return [
         ...commonLinks,
         // { href: '/reports', icon: '📋', label: 'All Reports' },
+        { href: '/dashboard/authority/assign-task', icon: '🛠️', label: 'Assign Task' },
+        { href: '/dashboard/authority/solvers', icon: '💡', label: 'Solvers & NGOs' },
         { href: '/dashboard/authority/applications', icon: '📄', label: 'Applications' },
         { href: '/dashboard/authority/manage-users', icon: '👥', label: 'Manage Users' },
         { href: '/dashboard/authority/statistics', icon: '📈', label: 'Statistics' },
-        { href: '/dashboard/authority/assign-task', icon: '🛠️', label: 'Assign Task' },
       ];
     }
 

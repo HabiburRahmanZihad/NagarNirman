@@ -211,6 +211,16 @@ export default function AuthorityDashboard() {
                     <span className="mr-2">📋</span> All Reports
                   </Button>
                 </Link>
+                <Link href="/dashboard/authority/assign-task">
+                  <Button variant="primary" className="w-full justify-start">
+                    <span className="mr-2">📝</span> Assign Tasks
+                  </Button>
+                </Link>
+                <Link href="/dashboard/authority/solvers">
+                  <Button variant="secondary" className="w-full justify-start">
+                    <span className="mr-2">💡</span> Problem Solvers & NGOs
+                  </Button>
+                </Link>
                 <Link href="/dashboard/authority/applications">
                   <Button variant="secondary" className="w-full justify-start">
                     <span className="mr-2">📄</span> Applications
@@ -221,7 +231,7 @@ export default function AuthorityDashboard() {
                     )}
                   </Button>
                 </Link>
-                <Link href="/dashboard/authority/users">
+                <Link href="/dashboard/authority/manage-users">
                   <Button variant="outline" className="w-full justify-start">
                     <span className="mr-2">👥</span> Manage Users
                   </Button>
