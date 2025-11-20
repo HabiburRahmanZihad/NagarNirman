@@ -75,7 +75,7 @@ const ReportExportPanel = ({ onExport }: ReportExportPanelProps) => {
       transition={{ duration: 0.5, delay: 0.5 }}
       className="relative group"
     >
-      <div className="absolute inset-0 bg-gradient-to-r from-[#2a7d2f] to-[#3a9d40] rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
+      <div className="absolute inset-0 bg-linear-to-r from-[#2a7d2f] to-[#3a9d40] rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
       <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-3">
           <Download className="w-6 h-6 text-[#2a7d2f]" />

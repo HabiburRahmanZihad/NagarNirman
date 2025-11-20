@@ -21,7 +21,7 @@ const StatisticsAccessDenied = () => {
   }, [router, user]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-red-50/30 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-red-50/30 flex items-center justify-center p-6">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
           <div className="flex justify-center mb-6">

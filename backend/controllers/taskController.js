@@ -205,8 +205,8 @@ export const completeTask = asyncHandler(async (req, res) => {
       });
     }
 
-    // Check if task is assigned to current user
-    if (task.assignedTo.toString() !== req.user.id) {
+    // Check if task is assigned to current user or user is superAdmin
+    if (task.assignedTo.toString() !== req.user.id && req.user.role !== 'superAdmin') {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to complete this task',

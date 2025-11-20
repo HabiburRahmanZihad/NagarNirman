@@ -217,11 +217,11 @@ export const getSummaryStatistics = async (req, res) => {
  */
 export const getAnalytics = async (req, res) => {
   try {
-    // Check if user is NGO or Problem Solver
-    if (req.user.role !== 'ngo' && req.user.role !== 'problemSolver') {
+    // Check if user is NGO, Problem Solver, or SuperAdmin
+    if (req.user.role !== 'ngo' && req.user.role !== 'problemSolver' && req.user.role !== 'superAdmin') {
       return res.status(403).json({
         success: false,
-        message: 'Access denied. Statistics are only available for NGO and Problem Solvers.'
+        message: 'Access denied. Statistics are only available for NGO, Problem Solvers, and SuperAdmin.'
       });
     }
 
@@ -412,11 +412,72 @@ export const getAnalytics = async (req, res) => {
   }
 };
 
+/**
+ * @desc    Get SuperAdmin dashboard statistics
+ * @route   GET /api/statistics/admin-dashboard
+ * @access  Private (SuperAdmin only)
+ */
+export const getAdminDashboardStats = async (req, res) => {
+  try {
+    const db = getDB();
+
+    // Get all collections
+    const usersCollection = db.collection('users');
+    const reportsCollection = db.collection('reports');
+    const applicationsCollection = db.collection('problemSolverApplications');
+
+    // Fetch all stats in parallel
+    const [
+      totalUsers,
+      totalReports,
+      authorities,
+      problemSolvers,
+      ngos,
+      pendingApplications,
+      recentReports
+    ] = await Promise.all([
+      usersCollection.countDocuments(),
+      reportsCollection.countDocuments(),
+      usersCollection.countDocuments({ role: 'authority' }),
+      usersCollection.countDocuments({ role: 'problemSolver' }),
+      usersCollection.countDocuments({ role: 'ngo' }),
+      applicationsCollection.countDocuments({ status: 'pending' }),
+      reportsCollection.find()
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .toArray()
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        stats: {
+          totalUsers,
+          totalReports,
+          authorities,
+          problemSolvers,
+          ngos,
+          pendingApplications
+        },
+        recentReports
+      }
+    });
+  } catch (error) {
+    console.error('Error getting admin dashboard stats:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching admin dashboard statistics',
+      error: error.message
+    });
+  }
+};
+
 export default {
   getMapStatistics,
   getAllDivisionStatistics,
   getDivisionDistrictStatistics,
   getCompleteStats,
   getSummaryStatistics,
-  getAnalytics
+  getAnalytics,
+  getAdminDashboardStats
 };

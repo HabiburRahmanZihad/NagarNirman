@@ -21,7 +21,7 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 
 // @desc    Get all users
 // @route   GET /api/users
-// @access  Private (Authority)
+// @access  Private (Authority, SuperAdmin)
 export const getUsers = asyncHandler(async (req, res) => {
   const {
     page = 1,
@@ -42,11 +42,14 @@ export const getUsers = asyncHandler(async (req, res) => {
 
   const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
 
-  const result = await findUsers(filter, {
+  // SuperAdmin can get all users without pagination limit
+  const options = {
     page: parseInt(page),
-    limit: parseInt(limit),
+    limit: req.user.role === 'superAdmin' ? 1000 : parseInt(limit),
     sort,
-  });
+  };
+
+  const result = await findUsers(filter, options);
 
   res.status(200).json({
     success: true,
@@ -377,51 +380,6 @@ export const updateProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Update user role
-// @route   PATCH /api/users/:id/role
-// @access  Private (Authority)
-export const updateUserRole = asyncHandler(async (req, res) => {
-  const { role } = req.body;
-
-  if (!role) {
-    return res.status(400).json({
-      success: false,
-      message: 'Please specify user role',
-    });
-  }
-
-  // Validate role
-  const validRoles = ['user', 'authority', 'problemSolver', 'ngo'];
-  if (!validRoles.includes(role)) {
-    return res.status(400).json({
-      success: false,
-      message: 'Invalid role specified',
-    });
-  }
-
-  try {
-    const user = await updateUser(req.params.id, { role });
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: `User role updated to ${role} successfully`,
-      data: user,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-});
-
 // @desc    Update user status (activate/deactivate)
 // @route   PATCH /api/users/:id/status
 // @access  Private (Authority)
@@ -689,6 +647,84 @@ export const getSolvers = asyncHandler(async (req, res) => {
     });
   } catch (error) {
     console.error('getSolvers error:', error);
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Update user role (superAdmin and Authority)
+// @route   PATCH /api/users/:id/role
+// @access  Private (SuperAdmin, Authority)
+export const updateUserRole = asyncHandler(async (req, res) => {
+  try {
+    const { role } = req.body;
+    const userId = req.params.id;
+
+    // Check if requester is superAdmin or authority
+    if (req.user.role !== 'superAdmin' && req.user.role !== 'authority') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied. Only superAdmin and Authority can change user roles.',
+      });
+    }
+
+    // Validate role
+    const validRoles = ['user', 'authority', 'problemSolver', 'ngo'];
+    if (!validRoles.includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid role. Must be one of: ${validRoles.join(', ')}`,
+      });
+    }
+
+    // Get user to update
+    const userToUpdate = await getUserById(userId);
+    if (!userToUpdate) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    // Prevent changing superAdmin roles
+    if (userToUpdate.role === 'superAdmin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Cannot change role of superAdmin users',
+      });
+    }
+
+    // Update user role
+    const usersCollection = await getUsersCollection();
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $set: {
+          role,
+          updatedAt: new Date(),
+        }
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Failed to update user role',
+      });
+    }
+
+    // Get updated user
+    const updatedUser = await getUserById(userId);
+
+    res.status(200).json({
+      success: true,
+      message: `User role updated to ${role} successfully`,
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error('updateUserRole error:', error);
     res.status(400).json({
       success: false,
       message: error.message,

@@ -61,7 +61,7 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center space-x-4 p-6 border-b border-gray-200 bg-gradient-to-r from-red-50 to-red-100">
+          <div className="flex items-center space-x-4 p-6 border-b border-gray-200 bg-linear-to-r from-red-50 to-red-100">
             <div className="p-3 bg-red-500 rounded-xl">
               <AlertTriangle className="text-white" size={24} />
             </div>
@@ -72,6 +72,7 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
             <button
               onClick={onClose}
               className="p-2 hover:bg-red-200 rounded-xl transition-colors"
+              aria-label="Close modal"
             >
               <X size={20} />
             </button>
@@ -97,7 +98,7 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
             {/* User Summary */}
             <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#2a7d2f] to-[#1e5c22] rounded-xl flex items-center justify-center text-white font-semibold">
+                <div className="w-12 h-12 bg-linear-to-br from-[#2a7d2f] to-[#1e5c22] rounded-xl flex items-center justify-center text-white font-semibold">
                   {user.name.charAt(0)}
                 </div>
                 <div className="flex-1">
@@ -160,7 +161,7 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
               whileTap={{ scale: !isDeleting ? 0.95 : 1 }}
               onClick={handleConfirm}
               disabled={isDeleting}
-              className="px-8 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-red-600 to-red-700 text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
             >
               {isDeleting ? (
                 <>

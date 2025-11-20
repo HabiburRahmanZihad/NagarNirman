@@ -866,6 +866,7 @@ const AssignTaskPage = () => {
                 Division
               </label>
               <select
+                aria-label="Filter by division"
                 value={filters.division}
                 onChange={(e) => setFilters({
                   ...filters,
@@ -889,6 +890,7 @@ const AssignTaskPage = () => {
                 District
               </label>
               <select
+                aria-label="Filter by district"
                 value={filters.district}
                 onChange={(e) => setFilters({ ...filters, district: e.target.value })}
                 disabled={!filters.division}
@@ -915,6 +917,7 @@ const AssignTaskPage = () => {
                 Status
               </label>
               <select
+                aria-label="Filter by status"
                 value={filters.status}
                 onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors"
@@ -931,6 +934,7 @@ const AssignTaskPage = () => {
                 Severity
               </label>
               <select
+                aria-label="Filter by severity"
                 value={filters.severity}
                 onChange={(e) => setFilters({ ...filters, severity: e.target.value })}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors"
@@ -1122,6 +1126,7 @@ const AssignTaskPage = () => {
 
                         {report.status !== 'pending' && (
                           <select
+                            aria-label="Update task status"
                             value={report.status}
                             onChange={(e) => updateTaskStatus(report._id, e.target.value as Report['status'])}
                             disabled={updatingStatus === report._id}
@@ -1177,6 +1182,7 @@ const AssignTaskPage = () => {
                   Assign Task
                 </h3>
                 <button
+                  aria-label="Close modal"
                   onClick={() => {
                     setSelectedReport(null);
                     setSelectedSolver('');

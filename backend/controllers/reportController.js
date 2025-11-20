@@ -204,8 +204,8 @@ export const updateExistingReport = asyncHandler(async (req, res) => {
       });
     }
 
-    // Check if user is owner
-    if (report.createdBy.toString() !== req.user.id) {
+    // Check if user is owner or superAdmin
+    if (report.createdBy.toString() !== req.user.id && req.user.role !== 'superAdmin') {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to update this report',
@@ -284,8 +284,8 @@ export const removeReport = asyncHandler(async (req, res) => {
       });
     }
 
-    // Check if user is owner
-    if (report.createdBy.toString() !== req.user.id) {
+    // Check if user is owner or superAdmin
+    if (report.createdBy.toString() !== req.user.id && req.user.role !== 'superAdmin') {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to delete this report',

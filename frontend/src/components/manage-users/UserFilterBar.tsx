@@ -6,20 +6,41 @@ import { Search, Filter, X, Users, MapPin, Shield } from "lucide-react";
 import divisionsData from '@/data/divisionsData.json';
 
 interface UserFilterBarProps {
-  onSearch: (term: string) => void;
-  onFilterChange: (filters: any) => void;
+  searchTerm?: string;
+  setSearchTerm?: (term: string) => void;
   filters: {
     role: string;
+    division?: string;
     district: string;
     status: string;
   };
+  setFilters?: (filters: any) => void;
+  onSearch?: (term: string) => void;
+  onFilterChange?: (filters: any) => void;
+  divisions?: string[];
+  districts?: string[];
   userDivision?: string;
+  isSuperAdmin?: boolean;
 }
 
-export default function UserFilterBar({ onSearch, onFilterChange, filters, userDivision }: UserFilterBarProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+export default function UserFilterBar({
+  searchTerm: externalSearchTerm,
+  setSearchTerm: externalSetSearchTerm,
+  onSearch,
+  onFilterChange,
+  filters,
+  setFilters: externalSetFilters,
+  divisions: externalDivisions,
+  districts: externalDistricts,
+  userDivision,
+  isSuperAdmin = false
+}: UserFilterBarProps) {
+  const [internalSearchTerm, setInternalSearchTerm] = useState("");
   const [localFilters, setLocalFilters] = useState(filters);
   const [activeFilters, setActiveFilters] = useState(0);
+
+  const searchTerm = externalSearchTerm !== undefined ? externalSearchTerm : internalSearchTerm;
+  const setSearchTerm = externalSetSearchTerm || setInternalSearchTerm;
 
   // Calculate active filters count
   useEffect(() => {
@@ -29,23 +50,30 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters, userD
 
   // Debounce search
   useEffect(() => {
-    const timer = setTimeout(() => {
-      onSearch(searchTerm);
-    }, 300);
+    if (onSearch) {
+      const timer = setTimeout(() => {
+        onSearch(searchTerm);
+      }, 300);
 
-    return () => clearTimeout(timer);
+      return () => clearTimeout(timer);
+    }
   }, [searchTerm, onSearch]);
 
   const handleFilterChange = (key: string, value: string) => {
     const newFilters = { ...localFilters, [key]: value };
     setLocalFilters(newFilters);
-    onFilterChange(newFilters);
+    if (externalSetFilters) {
+      externalSetFilters(newFilters);
+    } else if (onFilterChange) {
+      onFilterChange(newFilters);
+    }
   };
 
-  // Get districts from user's division
-  const districts = userDivision
+  // Get districts and divisions
+  const divisions = externalDivisions || divisionsData.map(d => d.division);
+  const districts = externalDistricts || (userDivision
     ? (divisionsData.find(d => d.division === userDivision)?.districts.map(d => d.name) || [])
-    : [];
+    : []);
   const roles = [
     { value: "user", label: "User" },
     { value: "problemSolver", label: "Problem Solver" },
@@ -55,16 +83,24 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters, userD
   const statusOptions = ["active", "inactive"];
 
   const clearAllFilters = () => {
-    const clearedFilters = { role: "", district: "", status: "" };
+    const clearedFilters = { role: "", division: "", district: "", status: "" };
     setLocalFilters(clearedFilters);
-    onFilterChange(clearedFilters);
+    if (externalSetFilters) {
+      externalSetFilters(clearedFilters);
+    } else if (onFilterChange) {
+      onFilterChange(clearedFilters);
+    }
     setSearchTerm("");
   };
 
   const removeFilter = (key: string) => {
     const newFilters = { ...localFilters, [key]: "" };
     setLocalFilters(newFilters);
-    onFilterChange(newFilters);
+    if (externalSetFilters) {
+      externalSetFilters(newFilters);
+    } else if (onFilterChange) {
+      onFilterChange(newFilters);
+    }
   };
 
   return (
@@ -110,6 +146,7 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters, userD
               value={localFilters.role}
               onChange={(e) => handleFilterChange('role', e.target.value)}
               className="pl-10 pr-8 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent bg-gray-50 focus:bg-white transition-all duration-200 appearance-none"
+              aria-label="Filter by role"
             >
               <option value="">All Roles</option>
               {roles.map(role => (
@@ -120,6 +157,26 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters, userD
             </select>
           </div>
 
+          {/* Division Filter (SuperAdmin only) */}
+          {isSuperAdmin && (
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <MapPin size={16} className="text-gray-400" />
+              </div>
+              <select
+                value={localFilters.division || ""}
+                onChange={(e) => handleFilterChange('division', e.target.value)}
+                className="pl-10 pr-8 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent bg-gray-50 focus:bg-white transition-all duration-200 appearance-none"
+                aria-label="Filter by division"
+              >
+                <option value="">All Divisions</option>
+                {divisions.map(division => (
+                  <option key={division} value={division}>{division}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           {/* District Filter */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -129,6 +186,7 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters, userD
               value={localFilters.district}
               onChange={(e) => handleFilterChange('district', e.target.value)}
               className="pl-10 pr-8 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent bg-gray-50 focus:bg-white transition-all duration-200 appearance-none"
+              aria-label="Filter by district"
             >
               <option value="">{userDivision ? `All Districts in ${userDivision}` : 'All Districts'}</option>
               {districts.map(district => (
@@ -142,6 +200,7 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters, userD
             value={localFilters.status}
             onChange={(e) => handleFilterChange('status', e.target.value)}
             className="px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent bg-gray-50 focus:bg-white transition-all duration-200"
+            aria-label="Filter by status"
           >
             <option value="">All Status</option>
             {statusOptions.map(status => (
@@ -185,6 +244,23 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters, userD
                 <button
                   onClick={() => removeFilter('role')}
                   className="ml-1 hover:text-blue-600"
+                  aria-label="Remove role filter"
+                >
+                  <X size={12} />
+                </button>
+              </motion.span>
+            )}
+            {localFilters.division && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 border border-indigo-200"
+              >
+                Division: {localFilters.division}
+                <button
+                  onClick={() => removeFilter('division')}
+                  className="ml-1 hover:text-indigo-600"
+                  aria-label="Remove division filter"
                 >
                   <X size={12} />
                 </button>
@@ -200,6 +276,7 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters, userD
                 <button
                   onClick={() => removeFilter('district')}
                   className="ml-1 hover:text-green-600"
+                  aria-label="Remove district filter"
                 >
                   <X size={12} />
                 </button>
@@ -215,6 +292,7 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters, userD
                 <button
                   onClick={() => removeFilter('status')}
                   className="ml-1 hover:text-purple-600"
+                  aria-label="Remove status filter"
                 >
                   <X size={12} />
                 </button>

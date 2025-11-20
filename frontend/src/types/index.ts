@@ -1,6 +1,6 @@
 // Type definitions for NagarNirman
 
-export type UserRole = 'user' | 'authority' | 'problemSolver' | 'ngo';
+export type UserRole = 'user' | 'authority' | 'problemSolver' | 'ngo' | 'superAdmin';
 
 export type ReportStatus = 'pending' | 'inProgress' | 'resolved';
 

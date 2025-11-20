@@ -27,7 +27,7 @@ router.post('/:id/comment', protect, addComment);
 router.post('/:id/upvote', protect, upvoteReport);
 router.get('/user/:userId', protect, getUserReports);
 
-// Authority only routes
-router.patch('/:id/status', protect, authorize('authority'), changeReportStatus);
+// Authority and SuperAdmin routes
+router.patch('/:id/status', protect, authorize('authority', 'superAdmin'), changeReportStatus);
 
 export default router;

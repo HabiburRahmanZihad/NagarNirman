@@ -10,7 +10,7 @@ export default function Home() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white">
+    <div className="min-h-screen bg-linear-to-b from-green-50 to-white">
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="flex justify-center mb-8">
@@ -19,7 +19,7 @@ export default function Home() {
             alt="NagarNirman Logo"
             width={220}
             height={220}
-            className="w-auto h-auto"
+            style={{ width: 'auto', height: 'auto' }}
             priority
           />
         </div>

@@ -60,6 +60,9 @@ export default function LoginPage() {
       if (result.success && result.user) {
         // Redirect based on role
         switch (result.user.role) {
+          case 'superAdmin':
+            router.push('/dashboard/superAdmin');
+            break;
           case 'authority':
             router.push('/dashboard/authority');
             break;

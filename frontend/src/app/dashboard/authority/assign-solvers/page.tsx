@@ -122,9 +122,10 @@ export default function AssignSolversPage() {
     try {
       setAssigning(true);
       await taskAPI.assign({
-        reportId: selectedReport,
-        assignedTo: selectedSolver._id,
-        notes: assignmentNotes
+        title: 'Task Assignment',
+        description: assignmentNotes || 'No additional notes',
+        report: selectedReport,
+        assignedTo: selectedSolver._id
       });
 
       toast.success(`Task assigned to ${selectedSolver.name} successfully!`);
@@ -191,7 +192,7 @@ export default function AssignSolversPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -241,10 +242,11 @@ export default function AssignSolversPage() {
 
             {/* Role Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="filter-type" className="block text-sm font-medium text-gray-700 mb-2">
                 Filter by Type
               </label>
               <select
+                id="filter-type"
                 value={filterRole}
                 onChange={(e) => setFilterRole(e.target.value as any)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -286,7 +288,7 @@ export default function AssignSolversPage() {
                         className="w-12 h-12 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold">
+                      <div className="w-12 h-12 rounded-full bg-linear-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold">
                         {getInitials(solver.name)}
                       </div>
                     )}
@@ -414,6 +416,7 @@ export default function AssignSolversPage() {
                     <button
                       onClick={() => setShowAssignModal(false)}
                       className="text-gray-400 hover:text-gray-600"
+                      aria-label="Close modal"
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -28,8 +28,8 @@ export default function ToggleStatusSwitch({ isActive, onToggle }: ToggleStatusS
       disabled={loading}
       className={`relative inline-flex h-7 w-14 items-center rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#2a7d2f] focus:ring-offset-2 shadow-inner ${
         isActive 
-          ? 'bg-gradient-to-r from-[#2a7d2f] to-[#1e5c22]' 
-          : 'bg-gradient-to-r from-gray-400 to-gray-500'
+          ? 'bg-linear-to-r from-[#2a7d2f] to-[#1e5c22]' 
+          : 'bg-linear-to-r from-gray-400 to-gray-500'
       } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
       <motion.span

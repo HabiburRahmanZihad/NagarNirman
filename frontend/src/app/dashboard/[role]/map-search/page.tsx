@@ -803,7 +803,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
   }, [searchQuery, divisions]);
 
   if (!mounted) return (
-    <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 animate-pulse" />
+    <div className="w-full h-full bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 animate-pulse" />
   );
 
   return <div id="map" className="w-full h-full z-0" />;
@@ -1080,8 +1080,8 @@ export default function MapSearchPage() {
   return (
     <div className={`container mx-auto min-h-screen transition-all duration-500 ${
       isDark
-        ? 'bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950'
-        : 'bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50'
+        ? 'bg-linear-to-br from-gray-950 via-gray-900 to-gray-950'
+        : 'bg-linear-to-br from-gray-50 via-blue-50/30 to-gray-50'
     }`}>
       {/* Animated background gradient overlay */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -1159,15 +1159,15 @@ export default function MapSearchPage() {
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <stat.icon className={`w-4 h-4 bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`} strokeWidth={2.5} />
-                    <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${stat.color}`} />
+                    <stat.icon className={`w-4 h-4 bg-linear-to-r ${stat.color} bg-clip-text text-transparent`} strokeWidth={2.5} />
+                    <div className={`w-2 h-2 rounded-full bg-linear-to-r ${stat.color}`} />
                   </div>
                   <p className={`text-xs font-medium mb-1 ${
                     isDark ? 'text-gray-400' : 'text-gray-600'
                   }`}>
                     {stat.label}
                   </p>
-                  <p className={`text-xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
+                  <p className={`text-xl font-bold bg-linear-to-r ${stat.color} bg-clip-text text-transparent`}>
                     {stat.value}
                   </p>
                 </div>
@@ -1243,8 +1243,8 @@ export default function MapSearchPage() {
               <div
                 className={`absolute top-0 left-0 w-full md:w-[460px] h-full ${
                   isDark
-                    ? 'bg-gradient-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
-                    : 'bg-gradient-to-b from-white/98 via-white/95 to-gray-50/98'
+                    ? 'bg-linear-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
+                    : 'bg-linear-to-b from-white/98 via-white/95 to-gray-50/98'
                 } backdrop-blur-2xl shadow-2xl z-[1000] overflow-hidden flex flex-col border-r ${
                   isDark ? 'border-gray-800/50' : 'border-gray-200/50'
                 }`}
@@ -1369,13 +1369,13 @@ export default function MapSearchPage() {
                           isDark ? 'border-gray-800/50' : 'border-gray-200/30'
                         } backdrop-blur-sm`}
                       >
-                        <stat.icon className={`w-4 h-4 mb-2 bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`} strokeWidth={2.5} />
+                        <stat.icon className={`w-4 h-4 mb-2 bg-linear-to-r ${stat.gradient} bg-clip-text text-transparent`} strokeWidth={2.5} />
                         <p className={`text-xs font-medium mb-1 ${
                           isDark ? 'text-gray-400' : 'text-gray-600'
                         }`}>
                           {stat.label}
                         </p>
-                        <p className={`text-2xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
+                        <p className={`text-2xl font-bold bg-linear-to-r ${stat.gradient} bg-clip-text text-transparent`}>
                           {stat.value}
                         </p>
                       </div>

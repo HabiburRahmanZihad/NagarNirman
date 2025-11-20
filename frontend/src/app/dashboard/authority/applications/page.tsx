@@ -202,6 +202,7 @@ export default function ProblemSolverApplications() {
             <FaFilter className="text-gray-500" />
             <label className="text-sm font-medium text-gray-700">Status:</label>
             <select
+              aria-label="Filter by status"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"

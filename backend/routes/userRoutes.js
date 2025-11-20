@@ -29,19 +29,19 @@ router.post('/apply-problem-solver', protect, applyProblemSolver);
 router.get('/my-application', protect, getMyApplication);
 router.put('/profile', protect, updateProfile);
 
-// Authority only routes (must be before /:id routes)
-router.get('/', protect, authorize('authority'), getUsers);
+// Authority and SuperAdmin routes (must be before /:id routes)
+router.get('/', protect, authorize('authority', 'superAdmin'), getUsers);
 router.get('/solvers', protect, authorize('authority'), getSolvers);
 router.get('/:id/stats', protect, getUserStats);
 router.get('/:id', protect, getUser);
 router.patch('/:id/approve', protect, authorize('authority'), approveUser);
-router.patch('/:id/role', protect, authorize('authority'), updateUserRole);
-router.patch('/:id/status', protect, authorize('authority'), updateUserStatus);
-router.delete('/:id', protect, authorize('authority'), deleteUser);
+router.patch('/:id/role', protect, authorize('authority', 'superAdmin'), updateUserRole);
+router.patch('/:id/status', protect, authorize('authority', 'superAdmin'), updateUserStatus);
+router.delete('/:id', protect, authorize('authority', 'superAdmin'), deleteUser);
 
-// Problem Solver Application routes (Authority only)
-router.get('/applications/all', protect, authorize('authority'), getAllApplications);
-router.get('/applications/:id', protect, authorize('authority'), getApplicationDetails);
-router.patch('/applications/:id/review', protect, authorize('authority'), reviewApplication);
+// Problem Solver Application routes (Authority and SuperAdmin)
+router.get('/applications/all', protect, authorize('authority', 'superAdmin'), getAllApplications);
+router.get('/applications/:id', protect, authorize('authority', 'superAdmin'), getApplicationDetails);
+router.patch('/applications/:id/review', protect, authorize('authority', 'superAdmin'), reviewApplication);
 
 export default router;

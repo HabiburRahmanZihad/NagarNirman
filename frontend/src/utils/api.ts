@@ -31,12 +31,24 @@ export const apiClient = async <T = any>(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'An error occurred');
+      const error = new Error(errorData.message || 'An error occurred');
+      (error as any).status = response.status;
+      (error as any).data = errorData;
+
+      // Don't log expected 404 errors (like "No application found")
+      if (response.status !== 404) {
+        console.error('API Error:', error);
+      }
+
+      throw error;
     }
 
     return await response.json();
   } catch (error) {
-    console.error('API Error:', error);
+    // Only log unexpected errors
+    if (!(error as any).status) {
+      console.error('Network Error:', error);
+    }
     throw error;
   }
 };
@@ -138,6 +150,11 @@ export const mapAPI = {
 
 // Statistics API functions - Comprehensive statistics with all report states
 export const statisticsAPI = {
+  // Get SuperAdmin dashboard statistics
+  getAdminDashboard: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/admin-dashboard`, { requiresAuth: true });
+  },
+
   // Get comprehensive analytics data
   getAnalytics: async (filters?: { division?: string; startDate?: string; endDate?: string }) => {
     const params = new URLSearchParams();
@@ -313,6 +330,15 @@ export const problemSolverAPI = {
     return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/applications/${id}/review`, {
       method: 'PATCH',
       body: JSON.stringify({ status, reviewNote }),
+      requiresAuth: true,
+    });
+  },
+
+  // Update user role (SuperAdmin only)
+  updateRole: (userId: string, newRole: 'user' | 'authority' | 'problemSolver' | 'ngo') => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role: newRole }),
       requiresAuth: true,
     });
   },

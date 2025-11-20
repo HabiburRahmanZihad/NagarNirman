@@ -40,13 +40,13 @@ interface AnalyticsData {
 }
 
 const LoadingSkeleton = () => (
-  <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30 p-6">
+  <div className="min-h-screen bg-linear-to-br from-gray-50 to-green-50/30 p-6">
     <div className="max-w-7xl mx-auto">
       <div className="animate-pulse mb-8">
         <div className="h-12 bg-gray-200 rounded-xl w-64 mb-4"></div>
         <div className="h-4 bg-gray-200 rounded w-96"></div>
       </div>
-      
+
       <div className="bg-white/80 rounded-2xl p-6 mb-8 animate-pulse">
         <div className="h-6 bg-gray-200 rounded w-32 mb-4"></div>
         <div className="flex gap-4">
@@ -62,7 +62,7 @@ const LoadingSkeleton = () => (
             <div className="h-4 bg-gray-200 rounded w-24 mb-4"></div>
             <div className="h-8 bg-gray-200 rounded w-16 mb-4"></div>
             <div className="h-2 bg-gray-200 rounded-full"></div>
-            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer"></div>
+            <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/50 to-transparent animate-shimmer"></div>
           </div>
         ))}
       </div>
@@ -102,10 +102,10 @@ const AnalyticsPage = () => {
   const [divisionFilter, setDivisionFilter] = useState('all');
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
-  // Check if user has access to statistics page (only NGO and Problem Solver)
+  // Check if user has access to statistics page (NGO, Problem Solver, and SuperAdmin)
   useEffect(() => {
-    if (user && user.role !== 'ngo' && user.role !== 'problemSolver') {
-      toast.error('Access denied. Statistics are only available for NGO and Problem Solvers.');
+    if (user && user.role !== 'ngo' && user.role !== 'problemSolver' && user.role !== 'superAdmin') {
+      toast.error('Access denied. Statistics are only available for NGO, Problem Solvers, and SuperAdmin.');
       router.push(`/dashboard/${user.role === 'authority' ? 'authority' : 'user'}`);
     }
   }, [user, router]);
@@ -158,12 +158,12 @@ const AnalyticsPage = () => {
       }
 
       const data = await statisticsAPI.getAnalytics(filters);
-      
+
       // Validate data exists
       if (!data) {
         throw new Error('No data received from API');
       }
-      
+
       // Transform data to match component expectations with null checks
       const transformedData = {
         ...data,
@@ -196,7 +196,7 @@ const AnalyticsPage = () => {
         // Ensure solver performance exists
         solverPerformance: data.solverPerformance || []
       };
-      
+
       setAnalyticsData(transformedData as any);
       setLastUpdated(new Date());
       if (showRefresh) {
@@ -205,7 +205,7 @@ const AnalyticsPage = () => {
     } catch (error: any) {
       console.error('Failed to load analytics:', error);
       toast.error(error.message || 'Failed to load analytics data');
-      
+
       // Redirect to login if unauthorized
       if (error.message === 'Not authorized, token failed' || error.message === 'Not authorized, no token') {
         router.push('/auth/login');
@@ -237,7 +237,7 @@ const AnalyticsPage = () => {
 
   if (!analyticsData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30 p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-green-50/30 p-6 flex items-center justify-center">
         <div className="text-center">
           <div className="text-red-600 text-lg mb-4">Failed to load analytics data</div>
           <button
@@ -252,7 +252,7 @@ const AnalyticsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30 p-6">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-green-50/30 p-6">
       <div className="max-w-7xl mx-auto">
 <motion.div
   initial={{ opacity: 0, y: -20 }}
@@ -263,10 +263,10 @@ const AnalyticsPage = () => {
   <div className="flex items-center justify-between">
     <div>
       <div className="flex items-center gap-3 mb-2">
-        <div className="p-2 bg-gradient-to-r from-[#f2a921] to-[#2a7d2f] rounded-lg">
+        <div className="p-2 bg-linear-to-r from-[#f2a921] to-[#2a7d2f] rounded-lg">
           <BarChart3 className="w-6 h-6 text-white" />
         </div>
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-[#1f2937] via-[#f2a921] to-[#2a7d2f] bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold bg-linear-to-r from-[#1f2937] via-[#f2a921] to-[#2a7d2f] bg-clip-text text-transparent">
           Performance Analytics
         </h1>
       </div>
@@ -279,7 +279,7 @@ const AnalyticsPage = () => {
       className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20"
     >
       <div className="text-right">
-        <div className="text-2xl font-bold bg-gradient-to-r from-[#f2a921] to-[#2a7d2f] bg-clip-text text-transparent">
+        <div className="text-2xl font-bold bg-linear-to-r from-[#f2a921] to-[#2a7d2f] bg-clip-text text-transparent">
           Live Dashboard
         </div>
         <div className="flex items-center gap-2 justify-end">
@@ -302,7 +302,7 @@ const AnalyticsPage = () => {
           <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
             <div className="flex items-center gap-4 flex-wrap">
               <h3 className="text-lg font-semibold text-gray-900">Filters:</h3>
-              
+
               <div className="flex bg-gray-100 rounded-xl p-1">
                 {[
                   { value: '1month', label: '1 Month' },
@@ -413,7 +413,7 @@ const AnalyticsPage = () => {
                     >
                       <td className="py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-gradient-to-br from-[#2a7d2f] to-[#3a9d40] rounded-full flex items-center justify-center text-white font-bold text-sm">
+                          <div className="w-8 h-8 bg-linear-to-br from-[#2a7d2f] to-[#3a9d40] rounded-full flex items-center justify-center text-white font-bold text-sm">
                             {solver.name.charAt(0)}
                           </div>
                           <div>
@@ -433,8 +433,8 @@ const AnalyticsPage = () => {
                       <td className="py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-20 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="h-2 rounded-full bg-gradient-to-r from-[#2a7d2f] to-[#3a9d40]"
+                            <div
+                              className="h-2 rounded-full bg-linear-to-r from-[#2a7d2f] to-[#3a9d40]"
                               style={{ width: `${solver.successRate}%` }}
                             ></div>
                           </div>

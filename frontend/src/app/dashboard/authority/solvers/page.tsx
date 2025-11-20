@@ -287,6 +287,7 @@ export default function SolversPage() {
                 Filter by Type
               </label>
               <select
+                aria-label="Filter by role"
                 value={filterRole}
                 onChange={(e) => setFilterRole(e.target.value as any)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -303,6 +304,7 @@ export default function SolversPage() {
                 Filter by District
               </label>
               <select
+                aria-label="Filter by district"
                 value={filterDistrict}
                 onChange={(e) => setFilterDistrict(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -392,7 +394,7 @@ export default function SolversPage() {
                         className="w-14 h-14 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold text-lg">
+                      <div className="w-14 h-14 rounded-full bg-linear-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold text-lg">
                         {getInitials(solver.name)}
                       </div>
                     )}

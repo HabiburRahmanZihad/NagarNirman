@@ -106,19 +106,20 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              aria-label="Close modal"
             >
               <X size={24} />
             </button>
           </div>
 
           {/* User Info */}
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+          <div className="p-6 border-b border-gray-200 bg-linear-to-r from-gray-50 to-gray-100">
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#2a7d2f] to-[#1e5c22] rounded-2xl flex items-center justify-center text-white font-semibold text-xl shadow-lg">
+                <div className="w-16 h-16 bg-linear-to-br from-[#2a7d2f] to-[#1e5c22] rounded-2xl flex items-center justify-center text-white font-semibold text-xl shadow-lg">
                   {user.name.charAt(0)}
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-r from-yellow-400 to-yellow-500 border-2 border-white rounded-full flex items-center justify-center">
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-linear-to-r from-yellow-400 to-yellow-500 border-2 border-white rounded-full flex items-center justify-center">
                   <Shield size={12} className="text-white" />
                 </div>
               </div>
@@ -163,6 +164,7 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                     <input
                       type="radio"
                       name="role"
+                      aria-label={`Select ${role.label} role`}
                       value={role.value}
                       checked={isSelected}
                       onChange={(e) => setSelectedRole(e.target.value)}
@@ -170,7 +172,7 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                     />
 
                     <div className="flex items-start space-x-4">
-                      <div className={`p-3 rounded-xl bg-gradient-to-r ${getRoleColor(role.value)}`}>
+                      <div className={`p-3 rounded-xl bg-linear-to-r ${getRoleColor(role.value)}`}>
                         <IconComponent size={24} className="text-white" />
                       </div>
 
@@ -219,7 +221,7 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
               whileTap={{ scale: selectedRole !== currentRole && !isSaving ? 0.95 : 1 }}
               onClick={handleSave}
               disabled={selectedRole === currentRole || isSaving}
-              className="px-8 py-3 bg-gradient-to-r from-[#2a7d2f] to-[#1e5c22] text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-[#2a7d2f] to-[#1e5c22] text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
             >
               {isSaving ? (
                 <>

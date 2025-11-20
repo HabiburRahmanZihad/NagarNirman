@@ -6,9 +6,10 @@ import {
   getDivisionDistrictStatistics,
   getCompleteStats,
   getSummaryStatistics,
-  getAnalytics
+  getAnalytics,
+  getAdminDashboardStats
 } from '../controllers/statisticsController.js';
-import { protect } from '../middleware/auth.js';
+import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -41,5 +42,10 @@ router.get('/summary', getSummaryStatistics);
 // @desc    Get comprehensive analytics data
 // @access  Private (Authority)
 router.get('/analytics', protect, getAnalytics);
+
+// @route   GET /api/statistics/admin-dashboard
+// @desc    Get SuperAdmin dashboard statistics
+// @access  Private (SuperAdmin only)
+router.get('/admin-dashboard', protect, authorize('superAdmin'), getAdminDashboardStats);
 
 export default router;
