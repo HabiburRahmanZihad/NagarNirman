@@ -8,7 +8,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "problem-solver" | "admin";
+  role: "user" | "problemSolver" | "ngo" | "authority";
   district: string;
   points: number;
   approved: boolean;
@@ -36,8 +36,9 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'bg-red-500/20 text-red-700 border-red-200';
-      case 'problem-solver': return 'bg-blue-500/20 text-blue-700 border-blue-200';
+      case 'authority': return 'bg-red-500/20 text-red-700 border-red-200';
+      case 'problemSolver': return 'bg-blue-500/20 text-blue-700 border-blue-200';
+      case 'ngo': return 'bg-purple-500/20 text-purple-700 border-purple-200';
       default: return 'bg-gray-500/20 text-gray-700 border-gray-200';
     }
   };
@@ -109,7 +110,7 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
                   <p className="text-gray-600 text-sm">{user.email}</p>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4 mt-3 text-sm">
                 <div className="text-center p-2 bg-white rounded-lg border border-gray-200">
                   <div className="font-bold text-[#2a7d2f]">{user.points}</div>

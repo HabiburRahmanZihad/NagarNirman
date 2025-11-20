@@ -41,7 +41,12 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters }: Use
   };
 
   const districts = ["Dhaka", "Chittagong", "Rajshahi", "Khulna", "Barisal", "Sylhet", "Rangpur", "Pirojpur"];
-  const roles = ["user", "problem-solver", "admin"];
+  const roles = [
+    { value: "user", label: "User" },
+    { value: "problemSolver", label: "Problem Solver" },
+    { value: "ngo", label: "NGO" },
+    { value: "authority", label: "Authority" }
+  ];
   const statusOptions = ["active", "inactive"];
 
   const clearAllFilters = () => {
@@ -103,8 +108,8 @@ export default function UserFilterBar({ onSearch, onFilterChange, filters }: Use
             >
               <option value="">All Roles</option>
               {roles.map(role => (
-                <option key={role} value={role}>
-                  {role.charAt(0).toUpperCase() + role.slice(1).replace('-', ' ')}
+                <option key={role.value} value={role.value}>
+                  {role.label}
                 </option>
               ))}
             </select>
