@@ -8,7 +8,7 @@ import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
 import Card from '@/components/common/Card';
 import { isValidEmail } from '@/utils/helpers';
-import { DISTRICTS } from '@/constants';
+import divisionsData from '@/data/divisionsData.json';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -18,8 +18,10 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    division: '',
     district: '',
   });
+  const [districts, setDistricts] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
@@ -29,6 +31,23 @@ export default function RegisterPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handleDivisionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedDivision = e.target.value;
+    setFormData(prev => ({ ...prev, division: selectedDivision, district: '' }));
+
+    // Update districts based on selected division
+    const divisionData = divisionsData.find(d => d.division === selectedDivision);
+    if (divisionData) {
+      setDistricts(divisionData.districts.map(d => d.name));
+    } else {
+      setDistricts([]);
+    }
+
+    if (errors.division) {
+      setErrors(prev => ({ ...prev, division: '' }));
     }
   };
 
@@ -55,6 +74,10 @@ export default function RegisterPage() {
 
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
+    }
+
+    if (!formData.division) {
+      newErrors.division = 'Please select your division';
     }
 
     if (!formData.district) {
@@ -127,6 +150,32 @@ export default function RegisterPage() {
             />
 
             <div>
+              <label htmlFor="division" className="block text-sm font-medium text-[#002E2E] mb-2">
+                Division
+              </label>
+              <select
+                id="division"
+                name="division"
+                value={formData.division}
+                onChange={handleDivisionChange}
+                className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent ${
+                  errors.division ? 'border-red-500' : ''
+                }`}
+                required
+              >
+                <option value="">Select your division</option>
+                {divisionsData.map(division => (
+                  <option key={division.division} value={division.division}>
+                    {division.division}
+                  </option>
+                ))}
+              </select>
+              {errors.division && (
+                <p className="mt-1 text-sm text-red-500">{errors.division}</p>
+              )}
+            </div>
+
+            <div>
               <label htmlFor="district" className="block text-sm font-medium text-[#002E2E] mb-2">
                 District
               </label>
@@ -135,13 +184,14 @@ export default function RegisterPage() {
                 name="district"
                 value={formData.district}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent ${
+                disabled={!formData.division}
+                className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
                   errors.district ? 'border-red-500' : ''
                 }`}
                 required
               >
                 <option value="">Select your district</option>
-                {DISTRICTS.map(district => (
+                {districts.map(district => (
                   <option key={district} value={district}>
                     {district}
                   </option>

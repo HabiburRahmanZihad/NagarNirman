@@ -76,6 +76,7 @@ export interface RegisterData {
   name: string;
   email: string;
   password: string;
+  division: string;
   district: string;
   role?: UserRole;
 }

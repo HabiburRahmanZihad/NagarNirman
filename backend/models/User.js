@@ -36,6 +36,7 @@ export const createUser = async (userData) => {
     email,
     password,
     role = 'user',
+    division,
     district,
     avatar,
   } = userData;
@@ -76,6 +77,7 @@ export const createUser = async (userData) => {
     email: email.toLowerCase(),
     password: hashedPassword,
     role,
+    division: division || '',
     district,
     points: 0,
     approved: role === 'user' || role === 'authority',
