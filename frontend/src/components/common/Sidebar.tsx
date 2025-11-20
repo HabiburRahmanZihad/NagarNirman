@@ -56,6 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       return [
         ...commonLinks,
         { href: '/dashboard/problemSolver/tasks', icon: '📋', label: 'My Tasks' },
+        { href: '/dashboard/problemSolver/leaderboard', icon: '🏆', label: 'Leaderboard & Rewards' },
         { href: '/dashboard/problemSolver/statistics', icon: '📈', label: 'Statistics' },
       ];
     }
