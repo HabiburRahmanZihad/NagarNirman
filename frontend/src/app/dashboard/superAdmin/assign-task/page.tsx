@@ -111,7 +111,7 @@ export default function SuperAdminAssignTaskPage() {
         let filtered = response.data;
 
         if (reportFilter.severity) {
-          filtered = filtered.filter(r => r.severity === reportFilter.severity);
+          filtered = filtered.filter((r: Report) => r.severity === reportFilter.severity);
         }
 
         setReports(filtered);
@@ -236,7 +236,7 @@ export default function SuperAdminAssignTaskPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 p-6">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-purple-50 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -254,7 +254,7 @@ export default function SuperAdminAssignTaskPage() {
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-xl shadow-lg">
+              <div className="bg-linear-to-br from-green-500 to-green-600 p-3 rounded-xl shadow-lg">
                 <span className="text-3xl">✅</span>
               </div>
               <div>
@@ -330,6 +330,7 @@ export default function SuperAdminAssignTaskPage() {
             {/* Report Filters */}
             <div className="mb-4 flex gap-3">
               <select
+                aria-label="Filter by severity"
                 value={reportFilter.severity}
                 onChange={(e) => setReportFilter({ ...reportFilter, severity: e.target.value })}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
@@ -341,6 +342,7 @@ export default function SuperAdminAssignTaskPage() {
               </select>
 
               <select
+                aria-label="Filter by status"
                 value={reportFilter.status}
                 onChange={(e) => setReportFilter({ ...reportFilter, status: e.target.value })}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
@@ -445,6 +447,7 @@ export default function SuperAdminAssignTaskPage() {
               />
 
               <select
+                aria-label="Filter by solver type"
                 value={solverFilter.role}
                 onChange={(e) => setSolverFilter({ ...solverFilter, role: e.target.value as any })}
                 className="px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -474,7 +477,7 @@ export default function SuperAdminAssignTaskPage() {
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
+                        <div className="w-12 h-12 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
                           {solver.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -513,7 +516,7 @@ export default function SuperAdminAssignTaskPage() {
                         e.stopPropagation();
                         setSelectedSolver(solver._id);
                       }}
-                      className="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 text-sm font-bold shadow-md hover:shadow-lg transition-all"
+                      className="w-full px-4 py-2 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 text-sm font-bold shadow-md hover:shadow-lg transition-all"
                     >
                       Select This Solver →
                     </button>
@@ -540,7 +543,7 @@ export default function SuperAdminAssignTaskPage() {
 
             {/* Summary */}
             <div className="space-y-4 mb-6">
-              <div className="p-5 bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-300 rounded-xl">
+              <div className="p-5 bg-linear-to-r from-green-50 to-blue-50 border-2 border-green-300 rounded-xl">
                 <p className="text-sm font-semibold text-gray-700 mb-2">📋 Report to be Assigned:</p>
                 <h3 className="text-xl font-bold text-gray-900 mb-1">{selectedReport.title}</h3>
                 <p className="text-sm text-gray-600 mb-2">{selectedReport.description}</p>
@@ -556,7 +559,7 @@ export default function SuperAdminAssignTaskPage() {
                 </div>
               </div>
 
-              <div className="p-5 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-300 rounded-xl">
+              <div className="p-5 bg-linear-to-r from-blue-50 to-purple-50 border-2 border-blue-300 rounded-xl">
                 <p className="text-sm font-semibold text-gray-700 mb-2">👤 Assigned To:</p>
                 {solvers.find(s => s._id === selectedSolver) && (
                   <>
@@ -595,7 +598,7 @@ export default function SuperAdminAssignTaskPage() {
               <button
                 onClick={handleAssignTask}
                 disabled={assigning}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-lg hover:from-green-700 hover:to-blue-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed font-bold text-lg shadow-lg hover:shadow-xl transition-all"
+                className="flex-1 px-6 py-3 bg-linear-to-r from-green-600 to-blue-600 text-white rounded-lg hover:from-green-700 hover:to-blue-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed font-bold text-lg shadow-lg hover:shadow-xl transition-all"
               >
                 {assigning ? (
                   <span className="flex items-center justify-center gap-2">
