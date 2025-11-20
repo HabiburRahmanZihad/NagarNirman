@@ -314,7 +314,7 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 ## Troubleshooting
 
 ### Issue: Reports not loading
-**Solution:** 
+**Solution:**
 - Check if user has division and district set
 - Verify API endpoint is accessible
 - Check browser console for errors
