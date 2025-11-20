@@ -188,6 +188,50 @@ export const userAPI = {
       requiresAuth: true,
     });
   },
+
+  // Get all users (Authority only)
+  getAllUsers: (filters?: { role?: string; division?: string; district?: string; approved?: boolean; page?: number; limit?: number }) => {
+    const params = new URLSearchParams();
+    if (filters?.role) params.append('role', filters.role);
+    if (filters?.division) params.append('division', filters.division);
+    if (filters?.district) params.append('district', filters.district);
+    if (filters?.approved !== undefined) params.append('approved', filters.approved.toString());
+    if (filters?.page) params.append('page', filters.page.toString());
+    if (filters?.limit) params.append('limit', filters.limit.toString());
+
+    const queryString = params.toString();
+    const url = queryString
+      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users?${queryString}`
+      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users`;
+
+    return apiClient(url, { requiresAuth: true });
+  },
+
+  // Update user role (Authority only)
+  updateUserRole: (userId: string, role: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
+      requiresAuth: true,
+    });
+  },
+
+  // Update user status (Authority only)
+  updateUserStatus: (userId: string, isActive: boolean) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ isActive }),
+      requiresAuth: true,
+    });
+  },
+
+  // Delete user (Authority only)
+  deleteUser: (userId: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}`, {
+      method: 'DELETE',
+      requiresAuth: true,
+    });
+  },
 };
 
 // Problem Solver Application API functions

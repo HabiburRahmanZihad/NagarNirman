@@ -27,6 +27,8 @@ export const getUsers = asyncHandler(async (req, res) => {
     page = 1,
     limit = 10,
     role,
+    division,
+    district,
     approved,
     sortBy = 'createdAt',
     order = 'desc',
@@ -34,6 +36,8 @@ export const getUsers = asyncHandler(async (req, res) => {
 
   const filter = {};
   if (role) filter.role = role;
+  if (division) filter.division = division;
+  if (district) filter.district = district;
   if (approved !== undefined) filter.approved = approved === 'true';
 
   const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
@@ -373,6 +377,51 @@ export const updateProfile = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Update user role
+// @route   PATCH /api/users/:id/role
+// @access  Private (Authority)
+export const updateUserRole = asyncHandler(async (req, res) => {
+  const { role } = req.body;
+
+  if (!role) {
+    return res.status(400).json({
+      success: false,
+      message: 'Please specify user role',
+    });
+  }
+
+  // Validate role
+  const validRoles = ['user', 'authority', 'problemSolver', 'ngo'];
+  if (!validRoles.includes(role)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid role specified',
+    });
+  }
+
+  try {
+    const user = await updateUser(req.params.id, { role });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `User role updated to ${role} successfully`,
+      data: user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 // @desc    Update user status (activate/deactivate)
 // @route   PATCH /api/users/:id/status
 // @access  Private (Authority)
@@ -548,6 +597,33 @@ export const reviewApplication = asyncHandler(async (req, res) => {
       success: true,
       message: `Application ${status} successfully`,
       data: application,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Delete user
+// @route   DELETE /api/users/:id
+// @access  Private (Authority)
+export const deleteUser = asyncHandler(async (req, res) => {
+  try {
+    const usersCollection = await getUsersCollection();
+    const result = await usersCollection.deleteOne({ _id: new ObjectId(req.params.id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'User deleted successfully',
     });
   } catch (error) {
     res.status(400).json({

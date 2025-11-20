@@ -8,7 +8,9 @@ import {
   getUserStats,
   getLeaderboard,
   updateProfile,
+  updateUserRole,
   updateUserStatus,
+  deleteUser,
   getMyApplication,
   getAllApplications,
   getApplicationDetails,
@@ -31,7 +33,9 @@ router.get('/:id', protect, getUser);
 // Authority only routes
 router.get('/', protect, authorize('authority'), getUsers);
 router.patch('/:id/approve', protect, authorize('authority'), approveUser);
+router.patch('/:id/role', protect, authorize('authority'), updateUserRole);
 router.patch('/:id/status', protect, authorize('authority'), updateUserStatus);
+router.delete('/:id', protect, authorize('authority'), deleteUser);
 
 // Problem Solver Application routes (Authority only)
 router.get('/applications/all', protect, authorize('authority'), getAllApplications);

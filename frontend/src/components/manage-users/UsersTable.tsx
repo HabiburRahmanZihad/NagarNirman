@@ -11,12 +11,14 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "problem-solver" | "admin";
+  role: "user" | "problemSolver" | "ngo" | "authority";
+  division: string;
   district: string;
   points: number;
   approved: boolean;
   isActive: boolean;
-  avatar: string;
+  avatar?: string;
+  profilePicture?: string;
   createdAt: string;
 }
 
@@ -65,17 +67,29 @@ export default function UsersTable({
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'bg-red-500/10 text-red-700 border border-red-200';
-      case 'problem-solver': return 'bg-blue-500/10 text-blue-700 border border-blue-200';
+      case 'authority': return 'bg-red-500/10 text-red-700 border border-red-200';
+      case 'problemSolver': return 'bg-blue-500/10 text-blue-700 border border-blue-200';
+      case 'ngo': return 'bg-purple-500/10 text-purple-700 border border-purple-200';
       default: return 'bg-gray-500/10 text-gray-700 border border-gray-200';
     }
   };
 
   const getRoleIcon = (role: string) => {
     switch (role) {
-      case 'admin': return '👑';
-      case 'problem-solver': return '💡';
+      case 'authority': return '👑';
+      case 'problemSolver': return '💡';
+      case 'ngo': return '🏢';
       default: return '👤';
+    }
+  };
+
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case 'authority': return 'Authority';
+      case 'problemSolver': return 'Problem Solver';
+      case 'ngo': return 'NGO';
+      case 'user': return 'User';
+      default: return role;
     }
   };
 
@@ -158,7 +172,7 @@ export default function UsersTable({
                     <div className="flex items-center space-x-2">
                       <span className="text-lg">{getRoleIcon(user.role)}</span>
                       <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
-                        {user.role.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                        {getRoleLabel(user.role)}
                       </span>
                     </div>
                   </td>
@@ -249,7 +263,7 @@ export default function UsersTable({
                 >
                   Previous
                 </motion.button>
-                
+
                 <div className="flex space-x-1">
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                     <motion.button
@@ -267,7 +281,7 @@ export default function UsersTable({
                     </motion.button>
                   ))}
                 </div>
-                
+
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
