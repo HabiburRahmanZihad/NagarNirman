@@ -56,9 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       return [
         ...commonLinks,
         { href: '/dashboard/problemSolver/tasks', icon: '📋', label: 'My Tasks' },
-<<<<<<< HEAD
         { href: '/dashboard/problemSolver/leaderboard', icon: '🏆', label: 'Leaderboard & Rewards' },
-=======
         { href: '/dashboard/problemSolver/statistics', icon: '📈', label: 'Statistics' },
       ];
     }
@@ -71,7 +69,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { href: '/reports', icon: '📋', label: 'All Reports' },
         { href: '/dashboard/problemSolver/statistics', icon: '📊', label: 'Statistics' },
         { href: '/map-search', icon: '🗺️', label: 'Map Search' },
->>>>>>> 2685659c2d08e4a6e9a0386ab936d8737868d084
       ];
     }
 

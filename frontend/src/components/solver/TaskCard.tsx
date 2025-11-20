@@ -33,22 +33,25 @@ const severityConfig = {
     color: "text-green-600", 
     bgColor: "bg-green-100", 
     borderColor: "border-green-200",
-    icon: AlertTriangle,
-    gradient: "from-green-400 to-green-500"
+    headerBg: "from-green-400 to-green-500",
+    headerColor: "from-green-500 to-green-600",
+    lightBg: "bg-green-50"
   },
   medium: { 
     color: "text-yellow-600", 
     bgColor: "bg-yellow-100", 
     borderColor: "border-yellow-200",
-    icon: AlertTriangle,
-    gradient: "from-yellow-400 to-yellow-500"
+    headerBg: "from-yellow-400 to-yellow-500",
+    headerColor: "from-yellow-500 to-yellow-600",
+    lightBg: "bg-yellow-50"
   },
   high: { 
     color: "text-red-600", 
     bgColor: "bg-red-100", 
     borderColor: "border-red-200",
-    icon: AlertTriangle,
-    gradient: "from-red-400 to-red-500"
+    headerBg: "from-red-400 to-red-500",
+    headerColor: "from-red-500 to-red-600",
+    lightBg: "bg-red-50"
   }
 };
 
@@ -56,23 +59,20 @@ const statusConfig = {
   pending: { 
     color: "text-yellow-600", 
     bgColor: "bg-yellow-100", 
-    label: "Ready", 
+    label: "Pending", 
     icon: Clock,
-    gradient: "from-yellow-400 to-yellow-500"
   },
   ongoing: { 
     color: "text-blue-600", 
     bgColor: "bg-blue-100", 
     label: "In Progress", 
     icon: Zap,
-    gradient: "from-blue-400 to-blue-500"
   },
   completed: { 
     color: "text-green-600", 
     bgColor: "bg-green-100", 
     label: "Completed", 
     icon: CheckCircle,
-    gradient: "from-green-400 to-green-500"
   }
 };
 
@@ -102,23 +102,22 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
 
   return (
     <motion.div
-      whileHover={{ y: -8, scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className="group bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-2xl transition-all duration-300"
+      whileHover={{ y: -4 }}
+      className="group bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300"
     >
-      {/* Header Gradient Bar */}
-      <div className={`h-2 bg-gradient-to-r ${severityConfig[task.severity].gradient}`}></div>
+      {/* Header Gradient Bar - Same color as details page */}
+      <div className={`h-1.5 bg-gradient-to-r ${severityConfig[task.severity].headerBg}`}></div>
       
       <div className="p-5">
         {/* Header with Status and Severity */}
         <div className="flex justify-between items-start mb-4">
-          <div className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-semibold ${statusConfig[task.status].bgColor} ${statusConfig[task.status].color} border ${statusConfig[task.status].gradient.replace('from-', 'border-').replace('to-', 'border-')} border-opacity-20`}>
-            <StatusIcon className="w-4 h-4 mr-1.5" />
+          <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusConfig[task.status].bgColor} ${statusConfig[task.status].color}`}>
+            <StatusIcon className="w-3 h-3 mr-1.5" />
             {statusConfig[task.status].label}
           </div>
           
-          <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${severityConfig[task.severity].bgColor} ${severityConfig[task.severity].color} border ${severityConfig[task.severity].borderColor}`}>
-            <SeverityIcon className="w-3 h-3 mr-1" />
+          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${severityConfig[task.severity].bgColor} ${severityConfig[task.severity].color}`}>
+            <AlertTriangle className="w-3 h-3 mr-1" />
             {task.severity.charAt(0).toUpperCase() + task.severity.slice(1)}
           </div>
         </div>
@@ -136,17 +135,13 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
         {/* Location and Date */}
         <div className="space-y-2 mb-4">
           <div className="flex items-center text-sm text-gray-600">
-            <div className="p-1.5 bg-green-50 rounded-lg mr-2">
-              <MapPin className="w-4 h-4 text-green-600" />
-            </div>
+            <MapPin className="w-4 h-4 text-green-600 mr-2 flex-shrink-0" />
             <span className="font-medium">{task.location.district}</span>
             <span className="text-gray-400 mx-1">•</span>
             <span className="text-gray-500">{task.location.division}</span>
           </div>
           <div className="flex items-center text-sm text-gray-600">
-            <div className="p-1.5 bg-blue-50 rounded-lg mr-2">
-              <Calendar className="w-4 h-4 text-blue-600" />
-            </div>
+            <Calendar className="w-4 h-4 text-blue-600 mr-2 flex-shrink-0" />
             <span>Assigned {formatDate(task.assignedDate)}</span>
             <span className="text-gray-400 mx-2">•</span>
             <span className="text-gray-500">{getTimeAgo(task.assignedDate)}</span>
@@ -160,12 +155,12 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
               <span>Progress</span>
               <span>65%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-1.5">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: '65%' }}
                 transition={{ duration: 1, delay: 0.5 }}
-                className="bg-gradient-to-r from-blue-400 to-blue-500 h-2 rounded-full"
+                className="bg-gradient-to-r from-blue-400 to-blue-500 h-1.5 rounded-full"
               />
             </div>
           </div>
@@ -174,28 +169,22 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
         {/* Footer with Points and Action */}
         <div className="flex justify-between items-center pt-3 border-t border-gray-100">
           <div className="flex items-center space-x-2">
-            <div className="relative">
-              <div className="absolute inset-0 bg-yellow-400 blur-sm opacity-50 rounded-full"></div>
-              <div className="relative flex items-center space-x-1 bg-gradient-to-br from-yellow-400 to-yellow-500 px-3 py-1.5 rounded-full text-white font-bold text-sm">
-                <Star className="w-4 h-4" />
-                <span>{task.rewardPoints}</span>
-              </div>
+            <div className="flex items-center space-x-1 bg-gradient-to-br from-yellow-400 to-yellow-500 px-2.5 py-1 rounded-full text-white font-bold text-sm">
+              <Star className="w-3 h-3" />
+              <span>{task.rewardPoints}</span>
             </div>
             <span className="text-xs text-gray-500 font-medium">points</span>
           </div>
           
           <Link 
-            href={`/dashboard/solver/tasks/${task._id}`}
-            className="group flex items-center space-x-2 px-4 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold"
+            href={`/dashboard/problemSolver/tasks/${task._id}`}
+            className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium text-sm"
           >
-            <span>View Mission</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <span>View Details</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </Link>
         </div>
       </div>
-
-      {/* Hover Effect Glow */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 opacity-0 group-hover:opacity-5 transition-opacity duration-300 pointer-events-none" />
     </motion.div>
   );
 }
