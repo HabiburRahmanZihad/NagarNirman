@@ -151,12 +151,18 @@ export default function SuperAdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           <QuickAction
             title="All Reports"
             icon="📋"
             onClick={() => router.push('/dashboard/superAdmin/all-reports')}
             color="bg-blue-500"
+          />
+          <QuickAction
+            title="Assign Task"
+            icon="✏️"
+            onClick={() => router.push('/dashboard/superAdmin/assign-task')}
+            color="bg-indigo-500"
           />
           <QuickAction
             title="Manage All Users"

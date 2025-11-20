@@ -66,6 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { href: '/dashboard/superAdmin/users', icon: '👥', label: 'All Users' },
         { href: '/dashboard/superAdmin/applications', icon: '📄', label: 'Applications' },
         { href: '/dashboard/superAdmin/all-reports', icon: '📋', label: 'All Reports' },
+        { href: '/dashboard/superAdmin/assign-task', icon: '✏️', label: 'Assign Task' },
         { href: '/dashboard/problemSolver/statistics', icon: '📊', label: 'Statistics' },
         { href: '/dashboard/superAdmin/map-search', icon: '🗺️', label: 'Map Search' },
       ];
