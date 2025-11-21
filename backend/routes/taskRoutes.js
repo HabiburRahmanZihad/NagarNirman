@@ -15,6 +15,7 @@ import {
   getPendingReviewTasks,
   approveTaskSubmission,
   rejectTaskSubmission,
+  syncCompletedTasksWithReports,
 } from '../controllers/taskController.js';
 import { protect, authorize, checkApproved } from '../middleware/auth.js';
 
@@ -41,5 +42,6 @@ router.post('/:id/reward', protect, authorize('authority', 'superAdmin'), grantR
 
 // SuperAdmin only routes
 router.get('/statistics/solvers', protect, authorize('superAdmin'), getSolverStatistics);
+router.post('/sync-reports', protect, authorize('superAdmin'), syncCompletedTasksWithReports);
 
 export default router;

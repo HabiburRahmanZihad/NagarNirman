@@ -131,10 +131,11 @@ export default function TaskReviewPage() {
           rating: reviewData.rating,
           feedback: reviewData.feedback,
         });
-        toast.success(`✅ Task approved! ${reviewData.points} points awarded to ${selectedTask.solver.name}`);
+        const solverName = selectedTask.solver?.name || 'the solver';
+        toast.success(`✅ Task approved! ${reviewData.points} points awarded to ${solverName}`);
         addNotification({
           title: 'Task Approved',
-          message: `You approved "${selectedTask.title}" and awarded ${reviewData.points} points to ${selectedTask.solver.name}`,
+          message: `You approved "${selectedTask.title}" and awarded ${reviewData.points} points to ${solverName}`,
           type: 'success',
         });
       } else {

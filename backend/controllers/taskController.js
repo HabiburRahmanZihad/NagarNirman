@@ -439,6 +439,24 @@ export const acceptTaskAssignment = asyncHandler(async (req, res) => {
 
     const updatedTask = await acceptTask(req.params.id);
 
+    // Update report status to in-progress when task is accepted
+    try {
+      if (task.report) {
+        const reportId = typeof task.report === 'object' ? task.report._id : task.report;
+        const userId = req.user?._id || req.user?.id;
+        if (reportId && userId) {
+          await updateReportStatus(
+            reportId.toString(),
+            'in-progress',
+            `Task accepted by ${req.user.name || 'solver'}`,
+            userId.toString()
+          );
+        }
+      }
+    } catch (reportError) {
+      console.error('Failed to update report status on accept:', reportError);
+    }
+
     res.status(200).json({
       success: true,
       message: 'Task accepted successfully',
@@ -474,6 +492,24 @@ export const startWorkingOnTask = asyncHandler(async (req, res) => {
     }
 
     const updatedTask = await startTask(req.params.id);
+
+    // Ensure report status is in-progress when work starts
+    try {
+      if (task.report) {
+        const reportId = typeof task.report === 'object' ? task.report._id : task.report;
+        const userId = req.user?._id || req.user?.id;
+        if (reportId && userId) {
+          await updateReportStatus(
+            reportId.toString(),
+            'in-progress',
+            `Work started by ${req.user.name || 'solver'}`,
+            userId.toString()
+          );
+        }
+      }
+    } catch (reportError) {
+      console.error('Failed to update report status on start:', reportError);
+    }
 
     res.status(200).json({
       success: true,
@@ -520,6 +556,24 @@ export const submitTaskProofHandler = asyncHandler(async (req, res) => {
 
     const updatedTask = await submitProof(req.params.id, { images, description });
 
+    // Update report status when proof is submitted
+    try {
+      if (task.report) {
+        const reportId = typeof task.report === 'object' ? task.report._id : task.report;
+        const userId = req.user?._id || req.user?.id;
+        if (reportId && userId) {
+          await updateReportStatus(
+            reportId.toString(),
+            'in-progress',
+            `Proof submitted by ${req.user.name || 'solver'}, awaiting authority review`,
+            userId.toString()
+          );
+        }
+      }
+    } catch (reportError) {
+      console.error('Failed to update report status on proof submit:', reportError);
+    }
+
     res.status(200).json({
       success: true,
       message: 'Proof submitted successfully. Waiting for review.',
@@ -560,7 +614,7 @@ export const getPendingReviewTasks = asyncHandler(async (req, res) => {
 
         // Check if solver is already populated (object) or needs fetching (ObjectId)
         let solverData = task.solver;
-        if (!task.solver || !task.solver.name) {
+        if (task.assignedTo && (!task.solver || !task.solver.name)) {
           const solver = await getUserById(task.assignedTo.toString());
           solverData = solver ? {
             _id: solver._id,
@@ -622,32 +676,119 @@ export const approveTaskSubmission = asyncHandler(async (req, res) => {
       awardPoints = pointsMap[task.priority] || 30;
     }
 
+    // Approve the task
     const updatedTask = await approveTask(req.params.id, {
       points: awardPoints,
       rating,
       feedback,
     });
 
-    // Award points to solver
-    await incrementUserPoints(task.assignedTo.toString(), awardPoints);
+    // Award points to solver (non-blocking, continue even if fails)
+    try {
+      if (task.assignedTo) {
+        await incrementUserPoints(task.assignedTo.toString(), awardPoints);
+      }
+    } catch (pointError) {
+      console.error('Failed to award points:', pointError);
+    }
 
-    // Update report status to resolved
-    await updateReportStatus(
-      task.report.toString(),
-      'resolved',
-      `Task completed and approved. Reward: ${awardPoints} points`,
-      req.user.id
-    );
+    // Update report status to resolved (non-blocking, continue even if fails)
+    try {
+      if (task.report) {
+        const reportId = typeof task.report === 'object' ? task.report._id : task.report;
+        const userId = req.user?._id || req.user?.id;
+
+        console.log('🔄 Updating report status to resolved:', {
+          reportId: reportId?.toString(),
+          userId: userId?.toString(),
+          taskId: task._id
+        });
+
+        if (userId && reportId) {
+          const result = await updateReportStatus(
+            reportId.toString(),
+            'resolved',
+            `Task completed and approved. Reward: ${awardPoints} points`,
+            userId.toString()
+          );
+          console.log('✅ Report status updated successfully:', result);
+        } else {
+          console.warn('⚠️ Missing userId or reportId:', { userId, reportId });
+        }
+      } else {
+        console.warn('⚠️ No report linked to this task');
+      }
+    } catch (reportError) {
+      console.error('❌ Failed to update report status:', reportError);
+    }
+
+    // Always return success response
+    return res.status(200).json({
+      success: true,
+      message: 'Task approved successfully. Points awarded to solver.',
+      data: updatedTask || task,
+    });
+  } catch (error) {
+    console.error('Approve task error:', error);
+    return res.status(400).json({
+      success: false,
+      message: error.message || 'Failed to approve task',
+    });
+  }
+});
+
+// @desc    Sync completed tasks with report status (utility endpoint)
+// @route   POST /api/tasks/sync-reports
+// @access  Private (SuperAdmin)
+export const syncCompletedTasksWithReports = asyncHandler(async (req, res) => {
+  try {
+    // Get all completed tasks
+    const completedTasks = await getTasksCollection()
+      .find({ status: 'completed' })
+      .toArray();
+
+    console.log(`Found ${completedTasks.length} completed tasks to sync`);
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const task of completedTasks) {
+      try {
+        if (task.report) {
+          const reportId = typeof task.report === 'object' ? task.report._id : task.report;
+          const userId = task.assignedBy || task.assignedTo;
+
+          if (reportId && userId) {
+            await updateReportStatus(
+              reportId.toString(),
+              'resolved',
+              `Task completed (synced from completed task)`,
+              userId.toString()
+            );
+            successCount++;
+            console.log(`✅ Synced report ${reportId} for task ${task._id}`);
+          }
+        }
+      } catch (error) {
+        errorCount++;
+        console.error(`❌ Failed to sync task ${task._id}:`, error.message);
+      }
+    }
 
     res.status(200).json({
       success: true,
-      message: 'Task approved successfully. Points awarded to solver.',
-      data: updatedTask,
+      message: `Synced ${successCount} reports successfully, ${errorCount} failed`,
+      data: {
+        total: completedTasks.length,
+        synced: successCount,
+        failed: errorCount
+      }
     });
   } catch (error) {
-    res.status(400).json({
+    console.error('Sync error:', error);
+    res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message
     });
   }
 });
@@ -683,6 +824,24 @@ export const rejectTaskSubmission = asyncHandler(async (req, res) => {
     }
 
     const updatedTask = await rejectTask(req.params.id, rejectionReason);
+
+    // Keep report in-progress when task is rejected (needs resubmission)
+    try {
+      if (task.report) {
+        const reportId = typeof task.report === 'object' ? task.report._id : task.report;
+        const userId = req.user?._id || req.user?.id;
+        if (reportId && userId) {
+          await updateReportStatus(
+            reportId.toString(),
+            'in-progress',
+            `Task rejected by ${req.user.name || 'authority'}. Reason: ${rejectionReason}`,
+            userId.toString()
+          );
+        }
+      }
+    } catch (reportError) {
+      console.error('Failed to update report status on rejection:', reportError);
+    }
 
     res.status(200).json({
       success: true,

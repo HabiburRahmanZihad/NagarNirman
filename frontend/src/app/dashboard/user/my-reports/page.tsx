@@ -46,24 +46,38 @@ export default function MyReportsPage() {
 
     setIsLoading(true);
     try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const token = localStorage.getItem('nn_auth_token');
       const userId = localStorage.getItem('user_id') || (user as any)._id || (user as any).id;
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports/user/${userId}`, {
+
+      const res = await fetch(`${apiUrl}/api/reports/user/${userId}`, {
+        method: 'GET',
         headers: {
-          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          ...(token && { Authorization: `Bearer ${token}` }),
         },
+        cache: 'no-store'
       });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
       const data = await res.json();
 
-      if (data.success) {
+      if (data.success && data.data) {
         setReports(data.data);
         setFilteredReports(data.data);
       } else {
-        toast.error('Failed to load your reports');
+        toast.error('No reports found');
+        setReports([]);
+        setFilteredReports([]);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching reports:', error);
-      toast.error('Failed to load your reports');
+      toast.error(error.message || 'Failed to load your reports. Please check your connection.');
+      setReports([]);
+      setFilteredReports([]);
     } finally {
       setIsLoading(false);
     }
