@@ -20,6 +20,7 @@ import {
   Search,
   Download,
   BarChart3,
+  PlusCircle,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -132,6 +133,11 @@ export default function SolverStatisticsPage() {
 
   const getRoleBadge = (role: string) => {
     return role === 'ngo' ? 'NGO' : 'Problem Solver';
+  };
+
+  const handleAssignTask = (solver: SolverStats) => {
+    // Navigate to assign task page with solver pre-selected via query params
+    router.push(`/dashboard/superAdmin/assign-task?solverId=${solver._id}&solverName=${encodeURIComponent(solver.name)}`);
   };
 
   if (authLoading || loading) {
@@ -391,6 +397,7 @@ export default function SolverStatisticsPage() {
                     <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Completed</th>
                     <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Points</th>
                     <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Status</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -459,6 +466,20 @@ export default function SolverStatisticsPage() {
                             <Clock className="w-3 h-3" />
                             Busy
                           </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {solver.isFree ? (
+                          <button
+                            onClick={() => handleAssignTask(solver)}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:from-green-600 hover:to-blue-600 transition-all shadow-md hover:shadow-lg font-medium text-sm"
+                            title="Assign a task to this solver"
+                          >
+                            <PlusCircle className="w-4 h-4" />
+                            Assign Task
+                          </button>
+                        ) : (
+                          <span className="text-gray-400 text-sm font-medium">Occupied</span>
                         )}
                       </td>
                     </motion.tr>
