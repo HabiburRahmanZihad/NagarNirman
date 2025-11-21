@@ -101,6 +101,12 @@ export const API_ENDPOINTS = {
   COMPLETE_TASK: (id: string) => `${API_BASE_URL}/api/tasks/${id}/complete`,
   GRANT_REWARD: (id: string) => `${API_BASE_URL}/api/tasks/${id}/reward`,
   SOLVER_STATISTICS: `${API_BASE_URL}/api/tasks/statistics/solvers`,
+  ACCEPT_TASK: (id: string) => `${API_BASE_URL}/api/tasks/${id}/accept`,
+  START_TASK: (id: string) => `${API_BASE_URL}/api/tasks/${id}/start`,
+  SUBMIT_PROOF: (id: string) => `${API_BASE_URL}/api/tasks/${id}/submit-proof`,
+  PENDING_REVIEW_TASKS: `${API_BASE_URL}/api/tasks/review/pending`,
+  APPROVE_TASK: (id: string) => `${API_BASE_URL}/api/tasks/${id}/approve`,
+  REJECT_TASK: (id: string) => `${API_BASE_URL}/api/tasks/${id}/reject`,
 } as const;
 
 export const STORAGE_KEYS = {

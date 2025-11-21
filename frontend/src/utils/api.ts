@@ -135,6 +135,54 @@ export const taskAPI = {
   getSolverStatistics: () => {
     return apiClient(API_ENDPOINTS.SOLVER_STATISTICS, { requiresAuth: true });
   },
+
+  acceptTask: (taskId: string) => {
+    return apiClient(API_ENDPOINTS.ACCEPT_TASK(taskId), {
+      method: 'POST',
+      requiresAuth: true,
+    });
+  },
+
+  startTask: (taskId: string) => {
+    return apiClient(API_ENDPOINTS.START_TASK(taskId), {
+      method: 'POST',
+      requiresAuth: true,
+    });
+  },
+
+  submitProof: (taskId: string, data: { images: string[]; description: string }) => {
+    return apiClient(API_ENDPOINTS.SUBMIT_PROOF(taskId), {
+      method: 'POST',
+      body: JSON.stringify(data),
+      requiresAuth: true,
+    });
+  },
+
+  getPendingReview: (page: number = 1, limit: number = 10) => {
+    return apiClient(`${API_ENDPOINTS.PENDING_REVIEW_TASKS}?page=${page}&limit=${limit}`, {
+      requiresAuth: true,
+    });
+  },
+
+  approveTask: (taskId: string, data: { points?: number; rating?: number; feedback?: string }) => {
+    return apiClient(API_ENDPOINTS.APPROVE_TASK(taskId), {
+      method: 'POST',
+      body: JSON.stringify(data),
+      requiresAuth: true,
+    });
+  },
+
+  rejectTask: (taskId: string, rejectionReason: string) => {
+    return apiClient(API_ENDPOINTS.REJECT_TASK(taskId), {
+      method: 'POST',
+      body: JSON.stringify({ rejectionReason }),
+      requiresAuth: true,
+    });
+  },
+
+  getById: (taskId: string) => {
+    return apiClient(API_ENDPOINTS.TASK_BY_ID(taskId), { requiresAuth: true });
+  },
 };
 
 // Map API functions

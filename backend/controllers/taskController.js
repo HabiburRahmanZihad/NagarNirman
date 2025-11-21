@@ -10,6 +10,12 @@ import {
   verifyTask,
   getTasksByUserId,
   getTasksCollection,
+  acceptTask,
+  startTask,
+  submitProof,
+  approveTask,
+  rejectTask,
+  getTasksPendingReview,
 } from '../models/Task.js';
 import { getReportById, updateReportStatus } from '../models/Report.js';
 import { getUserById, incrementUserPoints, getUsersCollection } from '../models/User.js';
@@ -393,6 +399,295 @@ export const getSolverStatistics = asyncHandler(async (req, res) => {
       success: true,
       count: statistics.length,
       data: statistics,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Accept task (problem solver accepts the assignment)
+// @route   POST /api/tasks/:id/accept
+// @access  Private (Problem Solver, NGO)
+export const acceptTaskAssignment = asyncHandler(async (req, res) => {
+  try {
+    const task = await getTaskById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found',
+      });
+    }
+
+    // Verify the task is assigned to the requesting user
+    if (task.assignedTo.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to accept this task',
+      });
+    }
+
+    if (task.status !== 'assigned') {
+      return res.status(400).json({
+        success: false,
+        message: 'Task cannot be accepted in its current status',
+      });
+    }
+
+    const updatedTask = await acceptTask(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Task accepted successfully',
+      data: updatedTask,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Start working on task
+// @route   POST /api/tasks/:id/start
+// @access  Private (Problem Solver, NGO)
+export const startWorkingOnTask = asyncHandler(async (req, res) => {
+  try {
+    const task = await getTaskById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found',
+      });
+    }
+
+    if (task.assignedTo.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to start this task',
+      });
+    }
+
+    const updatedTask = await startTask(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      message: 'Task started successfully',
+      data: updatedTask,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Submit proof for task completion
+// @route   POST /api/tasks/:id/submit-proof
+// @access  Private (Problem Solver, NGO)
+export const submitTaskProofHandler = asyncHandler(async (req, res) => {
+  try {
+    const task = await getTaskById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found',
+      });
+    }
+
+    if (task.assignedTo.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to submit proof for this task',
+      });
+    }
+
+    const { images, description } = req.body;
+
+    if (!images || images.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide at least one proof image',
+      });
+    }
+
+    const updatedTask = await submitProof(req.params.id, { images, description });
+
+    res.status(200).json({
+      success: true,
+      message: 'Proof submitted successfully. Waiting for review.',
+      data: updatedTask,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Get tasks pending review
+// @route   GET /api/tasks/pending-review
+// @access  Private (Authority, SuperAdmin)
+export const getPendingReviewTasks = asyncHandler(async (req, res) => {
+  try {
+    const result = await getTasksPendingReview({
+      page: parseInt(req.query.page) || 1,
+      limit: parseInt(req.query.limit) || 10,
+    });
+
+    // Populate task details if not already populated
+    const tasksWithDetails = await Promise.all(
+      result.tasks.map(async (task) => {
+        // Check if report is already populated (object) or needs fetching (ObjectId)
+        let reportData = task.report;
+        if (task.report && !task.report.title) {
+          const report = await getReportById(task.report.toString());
+          reportData = report ? {
+            _id: report._id,
+            title: report.title,
+            location: report.location,
+            images: report.images,
+          } : null;
+        }
+
+        // Check if solver is already populated (object) or needs fetching (ObjectId)
+        let solverData = task.solver;
+        if (!task.solver || !task.solver.name) {
+          const solver = await getUserById(task.assignedTo.toString());
+          solverData = solver ? {
+            _id: solver._id,
+            name: solver.name,
+            email: solver.email,
+            role: solver.role,
+          } : null;
+        }
+
+        return {
+          ...task,
+          report: reportData,
+          solver: solverData,
+        };
+      })
+    );
+
+    res.status(200).json({
+      success: true,
+      count: tasksWithDetails.length,
+      pagination: result.pagination,
+      data: tasksWithDetails,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Approve task submission
+// @route   POST /api/tasks/:id/approve
+// @access  Private (Authority, SuperAdmin)
+export const approveTaskSubmission = asyncHandler(async (req, res) => {
+  try {
+    const task = await getTaskById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found',
+      });
+    }
+
+    if (task.status !== 'submitted') {
+      return res.status(400).json({
+        success: false,
+        message: 'Task is not in submitted status',
+      });
+    }
+
+    const { points = 50, rating = 5, feedback = 'Great work!' } = req.body;
+
+    // Calculate points based on priority if not provided
+    let awardPoints = points;
+    if (!req.body.points) {
+      const pointsMap = { low: 20, medium: 30, high: 50, urgent: 100 };
+      awardPoints = pointsMap[task.priority] || 30;
+    }
+
+    const updatedTask = await approveTask(req.params.id, {
+      points: awardPoints,
+      rating,
+      feedback,
+    });
+
+    // Award points to solver
+    await incrementUserPoints(task.assignedTo.toString(), awardPoints);
+
+    // Update report status to resolved
+    await updateReportStatus(
+      task.report.toString(),
+      'resolved',
+      `Task completed and approved. Reward: ${awardPoints} points`,
+      req.user.id
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Task approved successfully. Points awarded to solver.',
+      data: updatedTask,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Reject task submission
+// @route   POST /api/tasks/:id/reject
+// @access  Private (Authority, SuperAdmin)
+export const rejectTaskSubmission = asyncHandler(async (req, res) => {
+  try {
+    const task = await getTaskById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: 'Task not found',
+      });
+    }
+
+    if (task.status !== 'submitted') {
+      return res.status(400).json({
+        success: false,
+        message: 'Task is not in submitted status',
+      });
+    }
+
+    const { rejectionReason } = req.body;
+
+    if (!rejectionReason) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a rejection reason',
+      });
+    }
+
+    const updatedTask = await rejectTask(req.params.id, rejectionReason);
+
+    res.status(200).json({
+      success: true,
+      message: 'Task rejected. Solver needs to resubmit.',
+      data: updatedTask,
     });
   } catch (error) {
     res.status(400).json({
