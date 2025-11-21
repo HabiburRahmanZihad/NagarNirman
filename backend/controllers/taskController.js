@@ -338,38 +338,43 @@ export const getSolverStatistics = asyncHandler(async (req, res) => {
     // Get statistics for each solver
     const statistics = await Promise.all(
       solvers.map(async (solver) => {
-        // Count tasks by status for this solver
-        const taskStats = await tasksCollection
-          .aggregate([
-            {
-              $match: {
-                assignedTo: solver._id,
-              },
-            },
-            {
-              $group: {
-                _id: '$status',
-                count: { $sum: 1 },
-              },
-            },
-          ])
+        // Get task counts using the same logic as getSolvers
+        const totalTasks = await tasksCollection.countDocuments({
+          assignedTo: solver._id,
+        });
+
+        const completedTasks = await tasksCollection.countDocuments({
+          assignedTo: solver._id,
+          status: 'completed',
+        });
+
+        // Count pending/active tasks (assigned, accepted, in-progress, submitted)
+        const pendingTasks = await tasksCollection.countDocuments({
+          assignedTo: solver._id,
+          status: { $in: ['assigned', 'accepted', 'in-progress', 'submitted'] },
+        });
+
+        // Determine if solver is busy (5 or more pending tasks)
+        const isBusy = pendingTasks >= 5;
+        const availabilityStatus = isBusy ? 'Busy' : 'Free';
+
+        // Calculate average rating from completed tasks
+        const completedTasksWithRating = await tasksCollection
+          .find({
+            assignedTo: solver._id,
+            status: 'completed',
+            rating: { $exists: true, $ne: null },
+          })
           .toArray();
 
-        // Transform to object with status counts
-        const statusCounts = {
-          pending: 0,
-          'in-progress': 0,
-          completed: 0,
-          verified: 0,
-          total: 0,
-        };
+        let avgRating = 0;
+        if (completedTasksWithRating.length > 0) {
+          const totalRating = completedTasksWithRating.reduce((sum, task) => sum + (task.rating || 0), 0);
+          avgRating = totalRating / completedTasksWithRating.length;
+        }
 
-        taskStats.forEach((stat) => {
-          if (statusCounts.hasOwnProperty(stat._id)) {
-            statusCounts[stat._id] = stat.count;
-            statusCounts.total += stat.count;
-          }
-        });
+        // Calculate success rate
+        const successRate = totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(0) : 0;
 
         return {
           _id: solver._id,
@@ -381,8 +386,25 @@ export const getSolverStatistics = asyncHandler(async (req, res) => {
           points: solver.points || 0,
           avatar: solver.avatar || '',
           isActive: solver.isActive,
-          tasks: statusCounts,
-          isFree: statusCounts.total === 0,
+          taskStats: {
+            total: totalTasks,
+            completed: completedTasks,
+            pending: pendingTasks,
+            rating: avgRating > 0 ? avgRating.toFixed(1) : 'N/A',
+            successRate: `${successRate}%`,
+            status: availabilityStatus,
+            isBusy: isBusy,
+          },
+          // Keep old structure for backward compatibility
+          tasks: {
+            pending: pendingTasks,
+            'in-progress': 0, // Not separately tracked in this version
+            completed: completedTasks,
+            verified: 0, // Not separately tracked
+            total: totalTasks,
+          },
+          isFree: !isBusy,
+          status: availabilityStatus,
         };
       })
     );
@@ -595,6 +617,7 @@ export const getPendingReviewTasks = asyncHandler(async (req, res) => {
     const result = await getTasksPendingReview({
       page: parseInt(req.query.page) || 1,
       limit: parseInt(req.query.limit) || 10,
+      division: req.query.division, // Filter by report division
     });
 
     // Populate task details if not already populated
@@ -674,6 +697,18 @@ export const approveTaskSubmission = asyncHandler(async (req, res) => {
     if (!req.body.points) {
       const pointsMap = { low: 20, medium: 30, high: 50, urgent: 100 };
       awardPoints = pointsMap[task.priority] || 30;
+    }
+
+    // Apply deadline penalty if task is completed after deadline
+    if (task.deadline) {
+      const deadline = new Date(task.deadline);
+      const now = new Date();
+
+      if (now > deadline) {
+        // Task missed deadline - apply 50% penalty
+        awardPoints = Math.floor(awardPoints / 2);
+        console.log(`⚠️ Deadline missed! Points reduced from ${awardPoints * 2} to ${awardPoints}`);
+      }
     }
 
     // Approve the task

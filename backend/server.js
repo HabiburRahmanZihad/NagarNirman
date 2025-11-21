@@ -31,8 +31,16 @@ import { errorHandler } from './middleware/errorHandler.js';
 // Initialize Express app
 const app = express();
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB and create indexes
+connectDB().then(async () => {
+  // Create indexes for better performance
+  try {
+    const { createTaskIndexes } = await import('./models/Task.js');
+    await createTaskIndexes();
+  } catch (error) {
+    console.error('Error creating indexes:', error);
+  }
+});
 
 // Middleware
 app.use(cors({

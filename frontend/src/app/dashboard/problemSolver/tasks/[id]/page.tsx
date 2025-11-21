@@ -30,6 +30,8 @@ interface Task {
     images: string[];
     severity: 'low' | 'medium' | 'high';
     problemType: string;
+    category?: string;
+    subcategory?: string;
     status: string;
     createdAt: string;
   };
@@ -337,11 +339,34 @@ export default function TaskDetailPage() {
                   <p className="text-sm text-gray-500 mb-1">Description</p>
                   <p className="text-gray-700 leading-relaxed">{task.report.description}</p>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Problem Type</p>
-                  <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium capitalize">
-                    {task.report.problemType || 'Uncategorized'}
-                  </span>
+
+                {/* Problem Classification - Highlighted Section */}
+                <div className="p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+                  <p className="text-xs font-semibold text-gray-700 mb-2">🏷️ Problem Classification</p>
+                  <div className="flex flex-wrap gap-2">
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Problem Type</p>
+                      <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium capitalize">
+                        {task.report.problemType || 'Uncategorized'}
+                      </span>
+                    </div>
+                    {task.report.category && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Category</p>
+                        <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                          {task.report.category}
+                        </span>
+                      </div>
+                    )}
+                    {task.report.subcategory && (
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Subcategory</p>
+                        <span className="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
+                          {task.report.subcategory}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>

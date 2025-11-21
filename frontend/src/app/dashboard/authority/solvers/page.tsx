@@ -27,8 +27,11 @@ interface Solver {
   taskStats?: {
     total: number;
     completed: number;
+    pending: number;
     rating: string | number;
     successRate: string;
+    status: string;
+    isBusy: boolean;
   };
 }
 
@@ -490,10 +493,19 @@ export default function SolversPage() {
 
                 {/* Status & Actions */}
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                  <span className={`flex items-center text-sm ${solver.isActive ? 'text-green-600' : 'text-gray-400'}`}>
-                    <span className={`w-2 h-2 rounded-full mr-2 ${solver.isActive ? 'bg-green-600' : 'bg-gray-400'}`}></span>
-                    {solver.isActive ? 'Active' : 'Inactive'}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className={`flex items-center text-sm ${solver.isActive ? 'text-green-600' : 'text-gray-400'}`}>
+                      <span className={`w-2 h-2 rounded-full mr-2 ${solver.isActive ? 'bg-green-600' : 'bg-gray-400'}`}></span>
+                      {solver.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      solver.taskStats?.isBusy
+                        ? 'bg-orange-100 text-orange-800'
+                        : 'bg-green-100 text-green-800'
+                    }`}>
+                      {solver.taskStats?.status || 'Free'}
+                    </span>
+                  </div>
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={() => window.location.href = `mailto:${solver.email}`}

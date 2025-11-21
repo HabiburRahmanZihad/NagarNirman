@@ -29,11 +29,14 @@ interface Report {
   title: string;
   description: string;
   problemType: string;
+  category?: string;
+  subcategory?: string;
   severity: string;
   status: string;
   location: {
     address: string;
     district: string;
+    division?: string;
     coordinates?: number[];
   };
   images: string[];
@@ -321,9 +324,35 @@ export default function ReportDetailsPage() {
                   {statusInfo.icon}
                   {statusInfo.label}
                 </span>
-                <span className="px-4 py-2 rounded-full text-sm font-semibold bg-purple-100 text-purple-800">
-                  {report.problemType.toUpperCase()}
-                </span>
+              </div>
+
+              {/* Problem Classification */}
+              <div className="mb-4 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">Problem Classification</h4>
+                <div className="flex flex-wrap gap-2">
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">Problem Type</p>
+                    <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold capitalize">
+                      {report.problemType}
+                    </span>
+                  </div>
+                  {report.category && (
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Category</p>
+                      <span className="inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-semibold">
+                        {report.category}
+                      </span>
+                    </div>
+                  )}
+                  {report.subcategory && (
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Subcategory</p>
+                      <span className="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-semibold">
+                        {report.subcategory}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <h1 className="text-3xl font-bold text-[#002E2E] mb-4">

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Calendar, MapPin, AlertTriangle, CheckCircle, Clock, Sparkles, Target, TrendingUp, Upload, X, Image as ImageIcon, FileText, Send, AlertCircle, Eye } from "lucide-react";
+import { Search, Calendar, MapPin, AlertTriangle, CheckCircle, Clock, Sparkles, Target, TrendingUp, Upload, X, Image as ImageIcon, FileText, Send, AlertCircle, Eye, RefreshCw } from "lucide-react";
 import TaskCard from "@/components/solver/TaskCard";
 import TaskFilterBar from "@/components/solver/TaskFilterBar";
 import { useAuth } from "@/context/AuthContext";
@@ -25,6 +25,8 @@ interface Task {
     images?: string[];
     severity?: "low" | "medium" | "high";
     problemType?: string;
+    category?: string;
+    subcategory?: string;
   };
   priority: "low" | "medium" | "high";
   status: "assigned" | "accepted" | "in-progress" | "submitted" | "completed" | "rejected" | "verified";
@@ -79,32 +81,34 @@ export default function SolverTasksPage() {
     }
   }, [isAuthenticated, user, authLoading, router]);
 
-  // Fetch tasks
+  // Fetch tasks function
+  const fetchTasks = async () => {
+    if (!user || (user.role !== 'problemSolver' && user.role !== 'ngo')) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await taskAPI.getMyTasks();
+
+      if (response.success && Array.isArray(response.data)) {
+        setTasks(response.data);
+        setFilteredTasks(response.data);
+        toast.success('Tasks refreshed successfully!');
+      } else {
+        console.error('Invalid tasks response:', response);
+        toast.error('Failed to load tasks');
+      }
+    } catch (error: any) {
+      console.error('Error fetching tasks:', error);
+      toast.error(error.message || 'Failed to load tasks');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch tasks on mount
   useEffect(() => {
-    const fetchTasks = async () => {
-      if (!user || (user.role !== 'problemSolver' && user.role !== 'ngo')) {
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const response = await taskAPI.getMyTasks();
-
-        if (response.success && Array.isArray(response.data)) {
-          setTasks(response.data);
-          setFilteredTasks(response.data);
-        } else {
-          console.error('Invalid tasks response:', response);
-          toast.error('Failed to load tasks');
-        }
-      } catch (error: any) {
-        console.error('Error fetching tasks:', error);
-        toast.error(error.message || 'Failed to load tasks');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (user && (user.role === 'problemSolver' || user.role === 'ngo')) {
       fetchTasks();
     }
@@ -317,9 +321,20 @@ export default function SolverTasksPage() {
             </h1>
             <p className="text-gray-600 mt-2">Manage and complete your assigned cleanup tasks</p>
           </div>
-          <div className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 rounded-full text-white shadow-lg">
-            <Sparkles className="w-5 h-5" />
-            <span className="font-semibold">{stats.totalPoints} Points Earned</span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={fetchTasks}
+              disabled={loading}
+              className="flex items-center space-x-2 px-4 py-2 bg-white border-2 border-green-500 text-green-600 rounded-full hover:bg-green-50 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Refresh tasks"
+            >
+              <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+              <span className="font-semibold">Refresh</span>
+            </button>
+            <div className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 rounded-full text-white shadow-lg">
+              <Sparkles className="w-5 h-5" />
+              <span className="font-semibold">{stats.totalPoints} Points Earned</span>
+            </div>
           </div>
         </motion.div>
 

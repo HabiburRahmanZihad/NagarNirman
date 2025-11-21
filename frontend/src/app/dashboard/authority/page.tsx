@@ -70,8 +70,11 @@ export default function AuthorityDashboard() {
         }));
       }
 
-      // Fetch applications
-      const applicationsResponse = await problemSolverAPI.getAllApplications({ status: 'pending' });
+      // Fetch applications from authority's division only
+      const applicationsResponse = await problemSolverAPI.getAllApplications({
+        status: 'pending',
+        division: user.division // Filter by authority's division
+      });
       if (applicationsResponse.success) {
         const applications = applicationsResponse.data;
         setRecentApplications(applications.slice(0, 5));
@@ -81,8 +84,8 @@ export default function AuthorityDashboard() {
         }));
       }
 
-      // Fetch pending review tasks
-      const tasksResponse = await taskAPI.getPendingReview();
+      // Fetch pending review tasks from authority's division (based on report division)
+      const tasksResponse = await taskAPI.getPendingReview({ division: user.division });
       if (tasksResponse.success) {
         const pendingTasks = tasksResponse.data;
         setStats(prev => ({

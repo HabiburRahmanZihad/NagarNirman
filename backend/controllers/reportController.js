@@ -12,6 +12,7 @@ import {
   assignReportTo,
 } from '../models/Report.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+import { uploadToImgBB, uploadMultipleToImgBB } from '../utils/imageUpload.js';
 
 // @desc    Get all reports
 // @route   GET /api/reports
@@ -78,35 +79,6 @@ export const getReport = asyncHandler(async (req, res) => {
   }
 });
 
-// Helper function to upload image to ImgBB
-const uploadToImgBB = async (base64Image) => {
-  const apiKey = process.env.IMGBB_API_KEY;
-
-  if (!apiKey) {
-    throw new Error('ImgBB API key not configured');
-  }
-
-  // Remove data:image/...;base64, prefix if present
-  const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, '');
-
-  const formData = new URLSearchParams();
-  formData.append('key', apiKey);
-  formData.append('image', base64Data);
-
-  const response = await fetch('https://api.imgbb.com/1/upload', {
-    method: 'POST',
-    body: formData,
-  });
-
-  const result = await response.json();
-
-  if (!result.success) {
-    throw new Error(result.error?.message || 'Failed to upload image');
-  }
-
-  return result.data.url;
-};
-
 // @desc    Create new report
 // @route   POST /api/reports
 // @access  Private
@@ -154,21 +126,23 @@ export const createNewReport = asyncHandler(async (req, res) => {
       });
     }
 
-    // Upload images to ImgBB
+    // Upload images to ImgBB using centralized utility
     let imageUrls = [];
     if (images && Array.isArray(images) && images.length > 0) {
       console.log(`Uploading ${images.length} images to ImgBB...`);
 
-      const uploadPromises = images.map(base64Image => uploadToImgBB(base64Image));
-      imageUrls = await Promise.all(uploadPromises);
+      const uploadResults = await uploadMultipleToImgBB(images, `report_${title.substring(0, 20)}`);
+      imageUrls = uploadResults.map(result => result.url);
 
-      console.log('Images uploaded successfully:', imageUrls);
+      console.log('Images uploaded successfully to ImgBB:', imageUrls);
     }
 
     const report = await createReport({
       title,
       description,
       problemType,
+      category: req.body.category || problemType, // Save original category
+      subcategory: req.body.subcategory || null, // Save subcategory
       severity,
       location: parsedLocation,
       images: imageUrls,
