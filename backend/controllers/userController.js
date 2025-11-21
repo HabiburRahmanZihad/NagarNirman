@@ -658,6 +658,16 @@ export const getSolvers = asyncHandler(async (req, res) => {
             status: 'completed',
           });
 
+          // Count pending/active tasks (assigned, accepted, in-progress, submitted)
+          const pendingTasks = await tasksCollection.countDocuments({
+            assignedTo: new ObjectId(user._id),
+            status: { $in: ['assigned', 'accepted', 'in-progress', 'submitted'] },
+          });
+
+          // Determine if solver is busy (5 or more pending tasks)
+          const isBusy = pendingTasks >= 5;
+          const availabilityStatus = isBusy ? 'Busy' : 'Free';
+
           // Calculate average rating from completed tasks
           const completedTasksWithRating = await tasksCollection
             .find({
@@ -681,8 +691,11 @@ export const getSolvers = asyncHandler(async (req, res) => {
             taskStats: {
               total: totalTasks,
               completed: completedTasks,
+              pending: pendingTasks,
               rating: avgRating > 0 ? avgRating.toFixed(1) : 'N/A',
               successRate: `${successRate}%`,
+              status: availabilityStatus,
+              isBusy: isBusy,
             },
           };
         } catch (error) {
@@ -692,8 +705,11 @@ export const getSolvers = asyncHandler(async (req, res) => {
             taskStats: {
               total: 0,
               completed: 0,
+              pending: 0,
               rating: 'N/A',
               successRate: '0%',
+              status: 'Free',
+              isBusy: false,
             },
           };
         }

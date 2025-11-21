@@ -21,6 +21,7 @@ import {
   Download,
   BarChart3,
   PlusCircle,
+  XCircle,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -34,14 +35,24 @@ interface SolverStats {
   points: number;
   avatar: string;
   isActive: boolean;
-  tasks: {
+  taskStats?: {
+    total: number;
+    completed: number;
+    pending: number;
+    rating: string | number;
+    successRate: string;
+    status: string;
+    isBusy: boolean;
+  };
+  // Keep old structure for backward compatibility
+  tasks?: {
     pending: number;
     'in-progress': number;
     completed: number;
-    verified: number;
     total: number;
   };
   isFree: boolean;
+  status?: string;
 }
 
 export default function SolverStatisticsPage() {
@@ -431,22 +442,22 @@ export default function SolverStatisticsPage() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-900 font-bold">
-                          {solver.tasks.total}
+                          {solver.taskStats?.total ?? solver.tasks?.total ?? 0}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 text-yellow-700 font-semibold">
-                          {solver.tasks.pending}
+                          {solver.taskStats?.pending ?? solver.tasks?.pending ?? 0}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-semibold">
-                          {solver.tasks['in-progress']}
+                          {solver.tasks?.['in-progress'] ?? 0}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-green-100 text-green-700 font-semibold">
-                          {solver.tasks.completed + solver.tasks.verified}
+                          {solver.taskStats?.completed ?? solver.tasks?.completed ?? 0}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
@@ -456,15 +467,15 @@ export default function SolverStatisticsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        {solver.isFree ? (
+                        {(solver.taskStats?.isBusy === false || solver.isFree) ? (
                           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
                             <CheckCircle2 className="w-3 h-3" />
-                            Free
+                            {solver.taskStats?.status || solver.status || 'Free'}
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">
-                            <Clock className="w-3 h-3" />
-                            Busy
+                            <XCircle className="w-3 h-3" />
+                            {solver.taskStats?.status || solver.status || 'Busy'}
                           </span>
                         )}
                       </td>
