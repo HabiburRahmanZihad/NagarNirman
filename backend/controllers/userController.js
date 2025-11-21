@@ -640,81 +640,94 @@ export const getSolvers = asyncHandler(async (req, res) => {
 
     console.log(`Found ${result.users.length} solvers`);
 
-    // Get task statistics for each solver
-    const usersCollection = await getUsersCollection();
+    // Get task statistics for all solvers in bulk using aggregation
     const { getTasksCollection } = await import('../models/Task.js');
     const tasksCollection = getTasksCollection();
 
-    const solversWithStats = await Promise.all(
-      result.users.map(async (user) => {
-        try {
-          // Get task counts
-          const totalTasks = await tasksCollection.countDocuments({
-            assignedTo: new ObjectId(user._id),
-          });
+    // Get all solver IDs
+    const solverIds = result.users.map(user => new ObjectId(user._id));
 
-          const completedTasks = await tasksCollection.countDocuments({
-            assignedTo: new ObjectId(user._id),
-            status: 'completed',
-          });
-
-          // Count pending/active tasks (assigned, accepted, in-progress, submitted)
-          const pendingTasks = await tasksCollection.countDocuments({
-            assignedTo: new ObjectId(user._id),
-            status: { $in: ['assigned', 'accepted', 'in-progress', 'submitted'] },
-          });
-
-          // Determine if solver is busy (5 or more pending tasks)
-          const isBusy = pendingTasks >= 5;
-          const availabilityStatus = isBusy ? 'Busy' : 'Free';
-
-          // Calculate average rating from completed tasks
-          const completedTasksWithRating = await tasksCollection
-            .find({
-              assignedTo: new ObjectId(user._id),
-              status: 'completed',
-              rating: { $exists: true, $ne: null },
-            })
-            .toArray();
-
-          let avgRating = 0;
-          if (completedTasksWithRating.length > 0) {
-            const totalRating = completedTasksWithRating.reduce((sum, task) => sum + (task.rating || 0), 0);
-            avgRating = totalRating / completedTasksWithRating.length;
-          }
-
-          // Calculate success rate
-          const successRate = totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(0) : 0;
-
-          return {
-            ...user,
-            taskStats: {
-              total: totalTasks,
-              completed: completedTasks,
-              pending: pendingTasks,
-              rating: avgRating > 0 ? avgRating.toFixed(1) : 'N/A',
-              successRate: `${successRate}%`,
-              status: availabilityStatus,
-              isBusy: isBusy,
-            },
-          };
-        } catch (error) {
-          console.error(`Error getting stats for user ${user._id}:`, error);
-          return {
-            ...user,
-            taskStats: {
-              total: 0,
-              completed: 0,
-              pending: 0,
-              rating: 'N/A',
-              successRate: '0%',
-              status: 'Free',
-              isBusy: false,
-            },
-          };
+    // Use aggregation to get all stats in one query
+    const statsAggregation = await tasksCollection.aggregate([
+      {
+        $match: {
+          assignedTo: { $in: solverIds }
         }
-      })
-    );
+      },
+      {
+        $group: {
+          _id: '$assignedTo',
+          totalTasks: { $sum: 1 },
+          completedTasks: {
+            $sum: { $cond: [{ $eq: ['$status', 'completed'] }, 1, 0] }
+          },
+          pendingTasks: {
+            $sum: {
+              $cond: [
+                { $in: ['$status', ['assigned', 'accepted', 'in-progress', 'submitted']] },
+                1,
+                0
+              ]
+            }
+          },
+          avgRating: {
+            $avg: {
+              $cond: [
+                { $and: [{ $eq: ['$status', 'completed'] }, { $ne: ['$rating', null] }] },
+                '$rating',
+                null
+              ]
+            }
+          },
+          ratingCount: {
+            $sum: {
+              $cond: [
+                { $and: [{ $eq: ['$status', 'completed'] }, { $ne: ['$rating', null] }] },
+                1,
+                0
+              ]
+            }
+          }
+        }
+      }
+    ]).toArray();
+
+    // Create a map for quick lookup
+    const statsMap = new Map();
+    statsAggregation.forEach(stat => {
+      const successRate = stat.totalTasks > 0
+        ? ((stat.completedTasks / stat.totalTasks) * 100).toFixed(0)
+        : 0;
+      const isBusy = stat.pendingTasks >= 5;
+
+      statsMap.set(stat._id.toString(), {
+        total: stat.totalTasks,
+        completed: stat.completedTasks,
+        pending: stat.pendingTasks,
+        rating: stat.ratingCount > 0 ? stat.avgRating.toFixed(1) : 'N/A',
+        successRate: `${successRate}%`,
+        status: isBusy ? 'Busy' : 'Free',
+        isBusy: isBusy,
+      });
+    });
+
+    // Map stats to users
+    const solversWithStats = result.users.map(user => {
+      const stats = statsMap.get(user._id.toString()) || {
+        total: 0,
+        completed: 0,
+        pending: 0,
+        rating: 'N/A',
+        successRate: '0%',
+        status: 'Free',
+        isBusy: false,
+      };
+
+      return {
+        ...user,
+        taskStats: stats,
+      };
+    });
 
     res.status(200).json({
       success: true,

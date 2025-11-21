@@ -141,6 +141,8 @@ export const createNewReport = asyncHandler(async (req, res) => {
       title,
       description,
       problemType,
+      category: req.body.category || problemType, // Save original category
+      subcategory: req.body.subcategory || null, // Save subcategory
       severity,
       location: parsedLocation,
       images: imageUrls,

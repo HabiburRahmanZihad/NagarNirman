@@ -42,6 +42,8 @@ export const createReport = async (reportData) => {
     location,
     images = [],
     createdBy,
+    category,
+    subcategory,
   } = reportData;
 
   // Validate required fields
@@ -67,6 +69,8 @@ export const createReport = async (reportData) => {
     description: description.trim(),
     images,
     problemType,
+    category: category || problemType, // Store original category
+    subcategory: subcategory || null, // Store subcategory
     severity,
     status: 'pending',
     location: {

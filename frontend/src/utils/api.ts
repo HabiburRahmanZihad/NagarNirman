@@ -120,8 +120,8 @@ export const taskAPI = {
     return apiClient(url, { requiresAuth: true });
   },
 
-  getMyTasks: () => {
-    return apiClient(API_ENDPOINTS.MY_TASKS, { requiresAuth: true });
+  getMyTasks: (limit: number = 100) => {
+    return apiClient(`${API_ENDPOINTS.MY_TASKS}?limit=${limit}`, { requiresAuth: true });
   },
 
   updateStatus: (taskId: string, status: string) => {
@@ -158,8 +158,13 @@ export const taskAPI = {
     });
   },
 
-  getPendingReview: (page: number = 1, limit: number = 10) => {
-    return apiClient(`${API_ENDPOINTS.PENDING_REVIEW_TASKS}?page=${page}&limit=${limit}`, {
+  getPendingReview: (filters: { page?: number; limit?: number; division?: string } = {}) => {
+    const { page = 1, limit = 10, division } = filters;
+    let url = `${API_ENDPOINTS.PENDING_REVIEW_TASKS}?page=${page}&limit=${limit}`;
+    if (division) {
+      url += `&division=${encodeURIComponent(division)}`;
+    }
+    return apiClient(url, {
       requiresAuth: true,
     });
   },

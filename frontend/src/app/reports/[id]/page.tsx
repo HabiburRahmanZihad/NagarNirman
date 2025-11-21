@@ -29,11 +29,14 @@ interface Report {
   title: string;
   description: string;
   problemType: string;
+  category?: string;
+  subcategory?: string;
   severity: string;
   status: string;
   location: {
     address: string;
     district: string;
+    division?: string;
     coordinates?: number[];
   };
   images: string[];
@@ -321,9 +324,35 @@ export default function ReportDetailsPage() {
                   {statusInfo.icon}
                   {statusInfo.label}
                 </span>
-                <span className="px-4 py-2 rounded-full text-sm font-semibold bg-purple-100 text-purple-800">
-                  {report.problemType.toUpperCase()}
-                </span>
+              </div>
+
+              {/* Problem Classification */}
+              <div className="mb-4 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">🏷️ Problem Classification</h4>
+                <div className="flex flex-wrap gap-3">
+                  <div>
+                    <p className="text-xs text-gray-500 mb-1">Problem Type</p>
+                    <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold capitalize">
+                      {report.problemType}
+                    </span>
+                  </div>
+                  {report.category && (
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Category</p>
+                      <span className="inline-block px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-semibold">
+                        {report.category}
+                      </span>
+                    </div>
+                  )}
+                  {report.subcategory && (
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Subcategory</p>
+                      <span className="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-semibold">
+                        {report.subcategory}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <h1 className="text-3xl font-bold text-[#002E2E] mb-4">
@@ -433,12 +462,26 @@ export default function ReportDetailsPage() {
               </h3>
               <div className="space-y-2 text-[#6B7280]">
                 <p><span className="font-semibold">Address:</span> {report.location.address}</p>
+                {report.location.division && (
+                  <p><span className="font-semibold">Division:</span> {report.location.division}</p>
+                )}
                 <p><span className="font-semibold">District:</span> {report.location.district}</p>
                 {report.location.coordinates && report.location.coordinates.length === 2 && (
-                  <p>
-                    <span className="font-semibold">Coordinates:</span>{' '}
-                    {report.location.coordinates[1].toFixed(6)}, {report.location.coordinates[0].toFixed(6)}
-                  </p>
+                  <>
+                    <p>
+                      <span className="font-semibold">Coordinates:</span>{' '}
+                      {report.location.coordinates[1].toFixed(6)}, {report.location.coordinates[0].toFixed(6)}
+                    </p>
+                    <a
+                      href={`https://www.google.com/maps?q=${report.location.coordinates[1]},${report.location.coordinates[0]}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-[#2a7d2f] hover:text-[#1e5d22] font-semibold transition"
+                    >
+                      <FaMapMarkerAlt />
+                      View on Google Maps
+                    </a>
+                  </>
                 )}
               </div>
             </Card>

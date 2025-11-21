@@ -617,6 +617,7 @@ export const getPendingReviewTasks = asyncHandler(async (req, res) => {
     const result = await getTasksPendingReview({
       page: parseInt(req.query.page) || 1,
       limit: parseInt(req.query.limit) || 10,
+      division: req.query.division, // Filter by report division
     });
 
     // Populate task details if not already populated

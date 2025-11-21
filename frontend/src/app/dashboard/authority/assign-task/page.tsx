@@ -55,6 +55,15 @@ interface ProblemSolver {
   completedTasks?: number;
   successRate?: number;
   points?: number;
+  taskStats?: {
+    total: number;
+    completed: number;
+    pending: number;
+    rating: string | number;
+    successRate: string;
+    status: string;
+    isBusy: boolean;
+  };
   createdAt: string;
 }
 
@@ -430,7 +439,6 @@ const allProblemSolversOld: any[] = [
 const AssignTaskPage = () => {
   const router = useRouter();
   const { user: authUser, isLoading, isAuthenticated } = useAuth();
-  const [currentUser, setCurrentUser] = useState(authUser);
   const [reports, setReports] = useState<Report[]>([]);
   const [problemSolvers, setProblemSolvers] = useState<ProblemSolver[]>([]);
   const [filters, setFilters] = useState({
@@ -457,98 +465,103 @@ const AssignTaskPage = () => {
     }
   }, [isAuthenticated, authUser, isLoading, router]);
 
-  // Update current user when auth user changes
-  useEffect(() => {
-    if (authUser) {
-      setCurrentUser(authUser);
-    }
-  }, [authUser]);
-
-  // Get user info
-  const isAuthorityUser = currentUser?.role === 'authority';
-  const userDistrict = currentUser?.district;
-  const userDivision = currentUser?.division;
-
   // Auto-set filters based on user's location
   useEffect(() => {
-    if (isAuthorityUser && userDivision) {
+    if (authUser?.role === 'authority' && authUser.division) {
       setFilters({
-        division: userDivision,
+        division: authUser.division,
         district: '', // Show all districts by default
         status: 'pending',
         severity: ''
       });
     }
-  }, [isAuthorityUser, userDivision]);
+  }, [authUser]);
 
   // Load data based on user's division from API
   useEffect(() => {
     const loadData = async () => {
-      if (!isAuthorityUser || !userDivision) {
+      // Wait for auth to complete
+      if (isLoading) {
+        return;
+      }
+
+      // Check if user is authority with division
+      if (!authUser || authUser.role !== 'authority' || !authUser.division) {
         setLoading(false);
         return;
       }
 
       setLoading(true);
+      console.log('Loading data for division:', authUser.division);
 
       try {
-        // Fetch reports from authority's entire division (all districts)
-        const reportsResponse = await reportAPI.getAll({
-          division: userDivision
-        });
+        // Fetch reports and solvers in parallel
+        // Reports: Filter by authority's division
+        // Solvers: Get ALL approved solvers (no division filter) so authority can assign to anyone
+        const [reportsResponse, solversResponse] = await Promise.all([
+          reportAPI.getAll({ division: authUser.division }).catch(err => {
+            console.error('Reports API error:', err);
+            return { success: false, data: [] };
+          }),
+          userAPI.getSolvers({ limit: 100 }).catch(err => {
+            console.error('Solvers API error:', err);
+            return { success: false, users: [] };
+          })
+        ]);
 
+        console.log('Reports response:', reportsResponse);
+        console.log('Solvers response:', solversResponse);
+
+        // Set reports
         if (reportsResponse.success && reportsResponse.data) {
           setReports(reportsResponse.data);
+        } else {
+          setReports([]);
         }
 
-        // Fetch approved problem solvers from authority's entire division (all districts)
-        const solversResponse = await userAPI.getSolvers({
-          division: userDivision,
-          limit: 100
-        });
-
+        // Set solvers
         if (solversResponse.success && solversResponse.users) {
-          // Sort by rating initially (if rating exists, otherwise by name)
+          // Sort by rating initially
           const sortedSolvers = [...solversResponse.users].sort((a, b) => {
-            const ratingA = a.rating || 0;
-            const ratingB = b.rating || 0;
+            const ratingA = a.taskStats?.rating !== undefined && a.taskStats.rating !== 'N/A'
+              ? (typeof a.taskStats.rating === 'string' ? parseFloat(a.taskStats.rating) : a.taskStats.rating)
+              : a.rating || 0;
+            const ratingB = b.taskStats?.rating !== undefined && b.taskStats.rating !== 'N/A'
+              ? (typeof b.taskStats.rating === 'string' ? parseFloat(b.taskStats.rating) : b.taskStats.rating)
+              : b.rating || 0;
             return ratingB - ratingA;
           });
           setProblemSolvers(sortedSolvers);
+        } else {
+          setProblemSolvers([]);
         }
 
-        const reportCount = reportsResponse.success ? reportsResponse.data?.length || 0 : 0;
-        const solverCount = solversResponse.success ? solversResponse.users?.length || 0 : 0;
+        const reportCount = reportsResponse.data?.length || 0;
+        const solverCount = solversResponse.users?.length || 0;
+
+        console.log(`Loaded ${reportCount} reports and ${solverCount} solvers`);
 
         if (reportCount === 0 && solverCount === 0) {
-          toast.error(`No reports or solvers found in ${userDivision} division`);
+          toast.error(`No reports or solvers found in ${authUser.division} division`);
         } else if (reportCount === 0) {
-          toast.error(`${solverCount} solvers available, but no reports found in ${userDivision}`);
+          toast(`${solverCount} solvers available, but no reports found in ${authUser.division}`);
         } else if (solverCount === 0) {
-          toast.error(`${reportCount} reports found, but no approved solvers in ${userDivision}`);
+          toast(`${reportCount} reports found, but no approved solvers in ${authUser.division}`);
         } else {
-          toast.success(`Loaded ${reportCount} reports and ${solverCount} solvers from ${userDivision}`);
+          toast.success(`Loaded ${reportCount} reports and ${solverCount} solvers`);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error loading data:', error);
-        toast.error('Failed to load data. Please try again.');
-        // Fallback to dummy data for development
-        const filteredReports = allReports.filter(report =>
-          report.location.division === userDivision
-        );
-        setReports(filteredReports);
-
-        const filteredSolvers = allProblemSolvers.filter(solver =>
-          solver.division === userDivision && solver.approved === true
-        );
-        setProblemSolvers(filteredSolvers);
+        toast.error('Failed to load data: ' + (error.message || 'Unknown error'));
+        setReports([]);
+        setProblemSolvers([]);
       } finally {
         setLoading(false);
       }
     };
 
     loadData();
-  }, [isAuthorityUser, userDivision]);
+  }, [authUser, isLoading]);
 
   // Get available districts based on selected division from divisionsData
   const availableDistricts = filters.division
@@ -562,16 +575,40 @@ const AssignTaskPage = () => {
   const getSortedSolvers = (solvers: ProblemSolver[]) => {
     return [...solvers].sort((a, b) => {
       switch (sortBy) {
-        case 'rating':
-          return (b.rating || 0) - (a.rating || 0);
+        case 'rating': {
+          const ratingA = a.taskStats?.rating !== undefined && a.taskStats.rating !== 'N/A'
+            ? (typeof a.taskStats.rating === 'string' ? parseFloat(a.taskStats.rating) : a.taskStats.rating)
+            : a.rating || 0;
+          const ratingB = b.taskStats?.rating !== undefined && b.taskStats.rating !== 'N/A'
+            ? (typeof b.taskStats.rating === 'string' ? parseFloat(b.taskStats.rating) : b.taskStats.rating)
+            : b.rating || 0;
+          return ratingB - ratingA;
+        }
         case 'points':
           return (b.points || 0) - (a.points || 0);
-        case 'completedTasks':
-          return (b.completedTasks || 0) - (a.completedTasks || 0);
-        case 'successRate':
-          return (b.successRate || 0) - (a.successRate || 0);
-        default:
-          return (b.rating || 0) - (a.rating || 0);
+        case 'completedTasks': {
+          const completedA = a.taskStats?.completed ?? a.completedTasks ?? 0;
+          const completedB = b.taskStats?.completed ?? b.completedTasks ?? 0;
+          return completedB - completedA;
+        }
+        case 'successRate': {
+          const successA = a.taskStats?.successRate
+            ? parseFloat(a.taskStats.successRate.replace('%', ''))
+            : a.successRate || 0;
+          const successB = b.taskStats?.successRate
+            ? parseFloat(b.taskStats.successRate.replace('%', ''))
+            : b.successRate || 0;
+          return successB - successA;
+        }
+        default: {
+          const ratingA = a.taskStats?.rating !== undefined && a.taskStats.rating !== 'N/A'
+            ? (typeof a.taskStats.rating === 'string' ? parseFloat(a.taskStats.rating) : a.taskStats.rating)
+            : a.rating || 0;
+          const ratingB = b.taskStats?.rating !== undefined && b.taskStats.rating !== 'N/A'
+            ? (typeof b.taskStats.rating === 'string' ? parseFloat(b.taskStats.rating) : b.taskStats.rating)
+            : b.rating || 0;
+          return ratingB - ratingA;
+        }
       }
     });
   };
@@ -620,7 +657,7 @@ const AssignTaskPage = () => {
                   {
                     status: 'approved',
                     note: `Task assigned: ${report.title}`,
-                    updatedBy: currentUser?.name || 'Authority',
+                    updatedBy: authUser?.name || 'Authority',
                     date: new Date().toISOString()
                   }
                 ],
@@ -668,7 +705,7 @@ const AssignTaskPage = () => {
                   {
                     status: newStatus,
                     note: `Status updated to ${newStatus}`,
-                    updatedBy: currentUser?.name || 'Authority',
+                    updatedBy: authUser?.name || 'Authority',
                     date: new Date().toISOString()
                   }
                 ],
@@ -761,19 +798,19 @@ const AssignTaskPage = () => {
           <div className="flex justify-between items-start">
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-[#002E2E]">Task Assignment Center</h1>
-              {isAuthorityUser && userDistrict && userDivision && (
+              {authUser?.role === 'authority' && authUser.district && authUser.division && (
                 <div className="mt-2 flex items-center space-x-2">
                   <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">
                     <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd" />
                     </svg>
-                    Division: {userDivision}
+                    Division: {authUser.division}
                   </div>
                   <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
                     <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                     </svg>
-                    District: {userDistrict}
+                    District: {authUser.district}
                   </div>
                 </div>
               )}
@@ -873,7 +910,7 @@ const AssignTaskPage = () => {
                   division: e.target.value,
                   district: ''
                 })}
-                disabled={isAuthorityUser}
+                disabled={authUser?.role === 'authority'}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
               >
                 <option value="">All Divisions</option>
@@ -881,8 +918,8 @@ const AssignTaskPage = () => {
                   <option key={division} value={division}>{division}</option>
                 ))}
               </select>
-              {isAuthorityUser && (
-                <p className="text-xs text-gray-500 mt-1">Automatically set to your division: {userDivision}</p>
+              {authUser?.role === 'authority' && (
+                <p className="text-xs text-gray-500 mt-1">Automatically set to your division: {authUser.division}</p>
               )}
             </div>
             <div>
@@ -897,19 +934,19 @@ const AssignTaskPage = () => {
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
               >
                 <option value="">
-                  {isAuthorityUser && userDivision
-                    ? `All Districts in ${userDivision}`
+                  {authUser?.role === 'authority' && authUser.division
+                    ? `All Districts in ${authUser.division}`
                     : 'All Districts'}
                 </option>
                 {availableDistricts.map(district => (
                   <option key={district} value={district}>{district}</option>
                 ))}
               </select>
-              {!filters.division && !isAuthorityUser && (
+              {!filters.division && authUser?.role !== 'authority' && (
                 <p className="text-xs text-gray-500 mt-1">Select a division first</p>
               )}
-              {isAuthorityUser && (
-                <p className="text-xs text-gray-500 mt-1">Filter by specific district within {userDivision} division</p>
+              {authUser?.role === 'authority' && (
+                <p className="text-xs text-gray-500 mt-1">Filter by specific district within {authUser.division} division</p>
               )}
             </div>
             <div>
@@ -1020,7 +1057,7 @@ const AssignTaskPage = () => {
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold text-[#002E2E]">
-                Pending Tasks {isAuthorityUser && userDivision && `in ${userDivision} Division`}
+                Pending Tasks {authUser?.role === 'authority' && authUser.division && `in ${authUser.division} Division`}
               </h2>
               <span className="text-sm text-gray-500">
                 {filteredReports.filter(r => r.status === 'pending').length} pending tasks
@@ -1163,8 +1200,8 @@ const AssignTaskPage = () => {
                 </div>
                 <p className="text-gray-500 text-lg">No tasks found</p>
                 <p className="text-gray-400 mt-1">
-                  {isAuthorityUser && userDivision
-                    ? `No infrastructure issues reported in ${userDivision} division with current filters`
+                  {authUser?.role === 'authority' && authUser.division
+                    ? `No infrastructure issues reported in ${authUser.division} division with current filters`
                     : 'Try adjusting your filters or check back later'
                   }
                 </p>
@@ -1299,12 +1336,21 @@ const AssignTaskPage = () => {
                               <div className="flex items-center space-x-2 mb-1">
                                 <h4 className="font-semibold text-gray-900 text-lg">{solver.name}</h4>
                                 <div className="flex items-center space-x-1">
-                                  <svg className={`w-4 h-4 ${getRatingColor(solver.rating || 0)}`} fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                  </svg>
-                                  <span className={`font-bold ${getRatingColor(solver.rating || 0)}`}>
-                                    {(solver.rating || 0).toFixed(1)}
-                                  </span>
+                                  {(() => {
+                                    const rating = solver.taskStats?.rating !== undefined && solver.taskStats.rating !== 'N/A'
+                                      ? (typeof solver.taskStats.rating === 'string' ? parseFloat(solver.taskStats.rating) : solver.taskStats.rating)
+                                      : solver.rating || 0;
+                                    return (
+                                      <>
+                                        <svg className={`w-4 h-4 ${getRatingColor(rating)}`} fill="currentColor" viewBox="0 0 20 20">
+                                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        </svg>
+                                        <span className={`font-bold ${getRatingColor(rating)}`}>
+                                          {rating > 0 ? rating.toFixed(1) : 'N/A'}
+                                        </span>
+                                      </>
+                                    );
+                                  })()}
                                 </div>
                               </div>
                               <p className="text-sm text-gray-600 mb-2">{solver.organization || solver.role} • {solver.district || solver.division}</p>
@@ -1312,11 +1358,15 @@ const AssignTaskPage = () => {
                               {/* Performance Stats */}
                               <div className="grid grid-cols-4 gap-4 text-xs">
                                 <div className="text-center">
-                                  <div className="font-bold text-gray-900">{solver.completedTasks || 0}</div>
+                                  <div className="font-bold text-gray-900">
+                                    {solver.taskStats?.completed ?? solver.completedTasks ?? 0}
+                                  </div>
                                   <div className="text-gray-500">Tasks</div>
                                 </div>
                                 <div className="text-center">
-                                  <div className="font-bold text-green-600">{solver.successRate || 0}%</div>
+                                  <div className="font-bold text-green-600">
+                                    {solver.taskStats?.successRate ?? (solver.successRate ? `${solver.successRate}%` : '0%')}
+                                  </div>
                                   <div className="text-gray-500">Success</div>
                                 </div>
                                 <div className="text-center">

@@ -202,6 +202,8 @@ export default function NewReportPage() {
         title: data.title,
         description: data.description,
         problemType: problemType,
+        category: data.category, // Save original category
+        subcategory: data.subcategory || null, // Save subcategory
         severity: data.severity,
         location: locationData,
         images: base64Images,

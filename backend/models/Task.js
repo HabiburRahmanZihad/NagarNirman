@@ -5,6 +5,20 @@ import { getDB } from '../config/db.js';
 // Get tasks collection
 export const getTasksCollection = () => getDB().collection('tasks');
 
+// Create indexes for better query performance
+export const createTaskIndexes = async () => {
+  const collection = getTasksCollection();
+  try {
+    await collection.createIndex({ assignedTo: 1, status: 1 });
+    await collection.createIndex({ report: 1 });
+    await collection.createIndex({ status: 1, reviewStatus: 1 });
+    await collection.createIndex({ createdAt: -1 });
+    console.log('Task indexes created successfully');
+  } catch (error) {
+    console.error('Error creating task indexes:', error);
+  }
+};
+
 // Validate priority
 export const isValidPriority = (priority) => {
   const validPriorities = ['low', 'medium', 'high', 'urgent'];
@@ -151,22 +165,39 @@ export const getTaskById = async (taskId) => {
 
 // Find tasks with filters
 export const findTasks = async (filter = {}, options = {}) => {
-  const { page = 1, limit = 10, sort = { createdAt: -1 } } = options;
+  const { page = 1, limit = 10, sort = { createdAt: -1 }, populate = true } = options;
   const skip = (page - 1) * limit;
 
-  // Use aggregation to populate report data
-  const tasks = await getTasksCollection()
-    .aggregate([
-      { $match: filter },
-      { $sort: sort },
-      { $skip: skip },
-      { $limit: limit },
+  // Build aggregation pipeline
+  const pipeline = [
+    { $match: filter },
+    { $sort: sort },
+    { $skip: skip },
+    { $limit: limit }
+  ];
+
+  // Only add lookups if populate is true
+  if (populate) {
+    pipeline.push(
       {
         $lookup: {
           from: 'reports',
           localField: 'report',
           foreignField: '_id',
-          as: 'report'
+          as: 'report',
+          pipeline: [
+            {
+              $project: {
+                title: 1,
+                location: 1,
+                images: 1,
+                severity: 1,
+                problemType: 1,
+                category: 1,
+                subcategory: 1
+              }
+            }
+          ]
         }
       },
       {
@@ -174,27 +205,12 @@ export const findTasks = async (filter = {}, options = {}) => {
           path: '$report',
           preserveNullAndEmptyArrays: true
         }
-      },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'assignedTo',
-          foreignField: '_id',
-          as: 'solver'
-        }
-      },
-      {
-        $unwind: {
-          path: '$solver',
-          preserveNullAndEmptyArrays: true
-        }
-      },
-      {
-        $project: {
-          'solver.password': 0
-        }
       }
-    ])
+    );
+  }
+
+  const tasks = await getTasksCollection()
+    .aggregate(pipeline)
     .toArray();
 
   const total = await getTasksCollection().countDocuments(filter);
@@ -321,13 +337,65 @@ export const deleteTask = async (taskId) => {
   return result.deletedCount > 0;
 };
 
-// Get tasks by user ID
+// Get tasks by user ID (optimized for solver's own tasks)
 export const getTasksByUserId = async (userId, options = {}) => {
   if (!ObjectId.isValid(userId)) {
     throw new Error('Invalid user ID');
   }
 
-  return await findTasks({ assignedTo: new ObjectId(userId) }, options);
+  const { page = 1, limit = 100, sort = { createdAt: -1 } } = options;
+  const skip = (page - 1) * limit;
+
+  // Optimized aggregation - only fetch essential report fields
+  const tasks = await getTasksCollection()
+    .aggregate([
+      { $match: { assignedTo: new ObjectId(userId) } },
+      { $sort: sort },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: 'reports',
+          localField: 'report',
+          foreignField: '_id',
+          as: 'report',
+          pipeline: [
+            {
+              $project: {
+                title: 1,
+                'location.division': 1,
+                'location.district': 1,
+                'location.address': 1,
+                images: { $slice: ['$images', 1] }, // Only first image
+                severity: 1,
+                problemType: 1,
+                category: 1,
+                subcategory: 1
+              }
+            }
+          ]
+        }
+      },
+      {
+        $unwind: {
+          path: '$report',
+          preserveNullAndEmptyArrays: true
+        }
+      }
+    ])
+    .toArray();
+
+  const total = await getTasksCollection().countDocuments({ assignedTo: new ObjectId(userId) });
+
+  return {
+    tasks,
+    pagination: {
+      page,
+      pages: Math.ceil(total / limit),
+      total,
+      limit
+    }
+  };
 };
 
 // Get tasks by report ID
@@ -470,11 +538,76 @@ export const rejectTask = async (taskId, rejectionReason) => {
 
 // Get tasks pending review (for authority/superadmin)
 export const getTasksPendingReview = async (options = {}) => {
-  return await findTasks(
+  const { page = 1, limit = 10, division } = options;
+  const skip = (page - 1) * limit;
+
+  // Build aggregation pipeline to filter by report division
+  const pipeline = [
+    { $match: { status: 'submitted', reviewStatus: 'pending' } },
     {
-      status: 'submitted',
-      reviewStatus: 'pending'
+      $lookup: {
+        from: 'reports',
+        localField: 'report',
+        foreignField: '_id',
+        as: 'report'
+      }
     },
-    options
+    { $unwind: { path: '$report', preserveNullAndEmptyArrays: true } }
+  ];
+
+  // Add division filter if provided (filter by report's location.division)
+  if (division) {
+    pipeline.push({ $match: { 'report.location.division': division } });
+  }
+
+  // Add solver lookup and final stages
+  pipeline.push(
+    { $sort: { createdAt: -1 } },
+    { $skip: skip },
+    { $limit: limit },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'assignedTo',
+        foreignField: '_id',
+        as: 'solver'
+      }
+    },
+    { $unwind: { path: '$solver', preserveNullAndEmptyArrays: true } },
+    { $project: { 'solver.password': 0 } }
   );
+
+  const tasks = await getTasksCollection().aggregate(pipeline).toArray();
+
+  // Count total matching tasks
+  const countPipeline = [
+    { $match: { status: 'submitted', reviewStatus: 'pending' } },
+    {
+      $lookup: {
+        from: 'reports',
+        localField: 'report',
+        foreignField: '_id',
+        as: 'report'
+      }
+    },
+    { $unwind: { path: '$report', preserveNullAndEmptyArrays: true } }
+  ];
+
+  if (division) {
+    countPipeline.push({ $match: { 'report.location.division': division } });
+  }
+
+  countPipeline.push({ $count: 'total' });
+  const countResult = await getTasksCollection().aggregate(countPipeline).toArray();
+  const total = countResult.length > 0 ? countResult[0].total : 0;
+
+  return {
+    tasks,
+    pagination: {
+      page,
+      pages: Math.ceil(total / limit),
+      total,
+      limit
+    }
+  };
 };

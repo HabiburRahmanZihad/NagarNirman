@@ -40,6 +40,10 @@ interface TaskReview {
   report: {
     _id: string;
     title: string;
+    description?: string;
+    problemType?: string;
+    category?: string;
+    subcategory?: string;
     location: any;
     images: string[];
   };
@@ -85,7 +89,13 @@ export default function TaskReviewPage() {
   const fetchPendingTasks = async () => {
     try {
       setLoading(true);
-      const response = await taskAPI.getPendingReview();
+      // Pass division filter for authority users (filter by report's division, not solver's)
+      const filters: any = {};
+      if (user?.role === 'authority' && user.division) {
+        filters.division = user.division;
+      }
+
+      const response = await taskAPI.getPendingReview(filters);
 
       if (response.success) {
         setTasks(response.data);
@@ -344,9 +354,27 @@ export default function TaskReviewPage() {
                   <div className="mb-4 p-4 bg-green-50 rounded-lg border border-green-200">
                     <p className="text-sm text-gray-600 mb-1">Original Report:</p>
                     <p className="font-semibold text-gray-900">{task.report.title}</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 mb-2">
                       📍 {task.report.location?.district}, {task.report.location?.division}
                     </p>
+                    {/* Problem Classification */}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {task.report.problemType && (
+                        <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold capitalize">
+                          Type: {task.report.problemType}
+                        </span>
+                      )}
+                      {task.report.category && (
+                        <span className="inline-block px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
+                          {task.report.category}
+                        </span>
+                      )}
+                      {task.report.subcategory && (
+                        <span className="inline-block px-2 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-semibold">
+                          {task.report.subcategory}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Submission Info */}
