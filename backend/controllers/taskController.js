@@ -9,9 +9,10 @@ import {
   submitTaskProof,
   verifyTask,
   getTasksByUserId,
+  getTasksCollection,
 } from '../models/Task.js';
 import { getReportById, updateReportStatus } from '../models/Report.js';
-import { getUserById, incrementUserPoints } from '../models/User.js';
+import { getUserById, incrementUserPoints, getUsersCollection } from '../models/User.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 
 // @desc    Get all tasks
@@ -300,6 +301,98 @@ export const getMyTasks = asyncHandler(async (req, res) => {
       count: result.tasks.length,
       pagination: result.pagination,
       data: result.tasks,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Get solver statistics (task performance)
+// @route   GET /api/tasks/solver-statistics
+// @access  Private (SuperAdmin)
+export const getSolverStatistics = asyncHandler(async (req, res) => {
+  try {
+    const usersCollection = getUsersCollection();
+    const tasksCollection = getTasksCollection();
+
+    // Get all problem solvers and NGOs
+    const solvers = await usersCollection
+      .find({
+        role: { $in: ['problemSolver', 'ngo'] },
+        approved: true,
+      })
+      .project({
+        password: 0,
+      })
+      .toArray();
+
+    // Get statistics for each solver
+    const statistics = await Promise.all(
+      solvers.map(async (solver) => {
+        // Count tasks by status for this solver
+        const taskStats = await tasksCollection
+          .aggregate([
+            {
+              $match: {
+                assignedTo: solver._id,
+              },
+            },
+            {
+              $group: {
+                _id: '$status',
+                count: { $sum: 1 },
+              },
+            },
+          ])
+          .toArray();
+
+        // Transform to object with status counts
+        const statusCounts = {
+          pending: 0,
+          'in-progress': 0,
+          completed: 0,
+          verified: 0,
+          total: 0,
+        };
+
+        taskStats.forEach((stat) => {
+          if (statusCounts.hasOwnProperty(stat._id)) {
+            statusCounts[stat._id] = stat.count;
+            statusCounts.total += stat.count;
+          }
+        });
+
+        return {
+          _id: solver._id,
+          name: solver.name,
+          email: solver.email,
+          role: solver.role,
+          division: solver.division || '',
+          district: solver.district || '',
+          points: solver.points || 0,
+          avatar: solver.avatar || '',
+          isActive: solver.isActive,
+          tasks: statusCounts,
+          isFree: statusCounts.total === 0,
+        };
+      })
+    );
+
+    // Sort by total tasks (descending) and then by name
+    statistics.sort((a, b) => {
+      if (b.tasks.total !== a.tasks.total) {
+        return b.tasks.total - a.tasks.total;
+      }
+      return a.name.localeCompare(b.name);
+    });
+
+    res.status(200).json({
+      success: true,
+      count: statistics.length,
+      data: statistics,
     });
   } catch (error) {
     res.status(400).json({

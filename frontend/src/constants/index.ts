@@ -100,6 +100,7 @@ export const API_ENDPOINTS = {
   UPDATE_TASK_STATUS: (id: string) => `${API_BASE_URL}/api/tasks/${id}/status`,
   COMPLETE_TASK: (id: string) => `${API_BASE_URL}/api/tasks/${id}/complete`,
   GRANT_REWARD: (id: string) => `${API_BASE_URL}/api/tasks/${id}/reward`,
+  SOLVER_STATISTICS: `${API_BASE_URL}/api/tasks/statistics/solvers`,
 } as const;
 
 export const STORAGE_KEYS = {

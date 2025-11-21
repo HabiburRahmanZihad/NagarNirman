@@ -131,6 +131,10 @@ export const taskAPI = {
       requiresAuth: true,
     });
   },
+
+  getSolverStatistics: () => {
+    return apiClient(API_ENDPOINTS.SOLVER_STATISTICS, { requiresAuth: true });
+  },
 };
 
 // Map API functions

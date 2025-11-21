@@ -8,6 +8,7 @@ import {
   completeTask,
   grantReward,
   getMyTasks,
+  getSolverStatistics,
 } from '../controllers/taskController.js';
 import { protect, authorize, checkApproved } from '../middleware/auth.js';
 
@@ -25,5 +26,8 @@ router.post('/:id/complete', protect, authorize('problemSolver', 'ngo'), checkAp
 router.get('/', protect, authorize('authority', 'superAdmin'), getTasks);
 router.post('/assign', protect, authorize('authority', 'superAdmin'), assignTask);
 router.post('/:id/reward', protect, authorize('authority', 'superAdmin'), grantReward);
+
+// SuperAdmin only routes
+router.get('/statistics/solvers', protect, authorize('superAdmin'), getSolverStatistics);
 
 export default router;

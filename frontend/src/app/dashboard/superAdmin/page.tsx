@@ -151,7 +151,7 @@ export default function SuperAdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
           <QuickAction
             title="All Reports"
             icon="📋"
@@ -177,8 +177,14 @@ export default function SuperAdminDashboard() {
             color="bg-purple-500"
           />
           <QuickAction
-            title="System Statistics"
+            title="Solver Statistics"
             icon="📊"
+            onClick={() => router.push('/dashboard/superAdmin/solver-statistics')}
+            color="bg-cyan-500"
+          />
+          <QuickAction
+            title="System Stats"
+            icon="📈"
             onClick={() => router.push('/dashboard/problemSolver/statistics')}
             color="bg-yellow-500"
           />
