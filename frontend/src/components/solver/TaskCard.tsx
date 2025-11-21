@@ -8,19 +8,27 @@ interface Task {
   _id: string;
   title: string;
   description: string;
-  location: {
-    division: string;
-    district: string;
+  report?: {
+    location?: {
+      division?: string;
+      district?: string;
+      address?: string;
+    };
+    images?: string[];
+    severity?: "low" | "medium" | "high";
   };
-  severity: "low" | "medium" | "high";
-  images: string[];
-  assignedDate: string;
-  status: "pending" | "ongoing" | "completed";
-  rewardPoints: number;
-  history: {
-    status: string;
-    date: string;
-  }[];
+  priority: "low" | "medium" | "high";
+  status: "pending" | "in-progress" | "completed" | "verified";
+  assignedTo: string;
+  assignedBy: string;
+  deadline?: string;
+  createdAt: string;
+  updatedAt: string;
+  proof?: {
+    images?: string[];
+    description?: string;
+    submittedAt?: string;
+  };
 }
 
 interface TaskCardProps {
@@ -29,25 +37,25 @@ interface TaskCardProps {
 }
 
 const severityConfig = {
-  low: { 
-    color: "text-green-600", 
-    bgColor: "bg-green-100", 
+  low: {
+    color: "text-green-600",
+    bgColor: "bg-green-100",
     borderColor: "border-green-200",
     headerBg: "from-green-400 to-green-500",
     headerColor: "from-green-500 to-green-600",
     lightBg: "bg-green-50"
   },
-  medium: { 
-    color: "text-yellow-600", 
-    bgColor: "bg-yellow-100", 
+  medium: {
+    color: "text-yellow-600",
+    bgColor: "bg-yellow-100",
     borderColor: "border-yellow-200",
     headerBg: "from-yellow-400 to-yellow-500",
     headerColor: "from-yellow-500 to-yellow-600",
     lightBg: "bg-yellow-50"
   },
-  high: { 
-    color: "text-red-600", 
-    bgColor: "bg-red-100", 
+  high: {
+    color: "text-red-600",
+    bgColor: "bg-red-100",
     borderColor: "border-red-200",
     headerBg: "from-red-400 to-red-500",
     headerColor: "from-red-500 to-red-600",
@@ -56,28 +64,34 @@ const severityConfig = {
 };
 
 const statusConfig = {
-  pending: { 
-    color: "text-yellow-600", 
-    bgColor: "bg-yellow-100", 
-    label: "Pending", 
+  pending: {
+    color: "text-yellow-600",
+    bgColor: "bg-yellow-100",
+    label: "Pending",
     icon: Clock,
   },
-  ongoing: { 
-    color: "text-blue-600", 
-    bgColor: "bg-blue-100", 
-    label: "In Progress", 
+  "in-progress": {
+    color: "text-blue-600",
+    bgColor: "bg-blue-100",
+    label: "In Progress",
     icon: Zap,
   },
-  completed: { 
-    color: "text-green-600", 
-    bgColor: "bg-green-100", 
-    label: "Completed", 
+  completed: {
+    color: "text-green-600",
+    bgColor: "bg-green-100",
+    label: "Completed",
+    icon: CheckCircle,
+  },
+  verified: {
+    color: "text-purple-600",
+    bgColor: "bg-purple-100",
+    label: "Verified",
     icon: CheckCircle,
   }
 };
 
 export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
-  const SeverityIcon = severityConfig[task.severity].icon;
+  const severity = task.priority || task.report?.severity || 'medium';
   const StatusIcon = statusConfig[task.status].icon;
 
   const formatDate = (dateString: string) => {
@@ -91,7 +105,7 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
     const date = new Date(dateString);
     const now = new Date();
     const diffHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
+
     if (diffHours < 24) {
       return `${diffHours}h ago`;
     } else {
@@ -100,14 +114,17 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
     }
   };
 
+  // Calculate reward points based on priority
+  const rewardPoints = severity === 'high' ? 50 : severity === 'medium' ? 30 : 20;
+
   return (
     <motion.div
       whileHover={{ y: -4 }}
       className="group bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300"
     >
       {/* Header Gradient Bar - Same color as details page */}
-      <div className={`h-1.5 bg-gradient-to-r ${severityConfig[task.severity].headerBg}`}></div>
-      
+      <div className={`h-1.5 bg-gradient-to-r ${severityConfig[severity].headerBg}`}></div>
+
       <div className="p-5">
         {/* Header with Status and Severity */}
         <div className="flex justify-between items-start mb-4">
@@ -115,10 +132,10 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
             <StatusIcon className="w-3 h-3 mr-1.5" />
             {statusConfig[task.status].label}
           </div>
-          
-          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${severityConfig[task.severity].bgColor} ${severityConfig[task.severity].color}`}>
+
+          <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-bold ${severityConfig[severity].bgColor} ${severityConfig[severity].color}`}>
             <AlertTriangle className="w-3 h-3 mr-1" />
-            {task.severity.charAt(0).toUpperCase() + task.severity.slice(1)}
+            {severity.charAt(0).toUpperCase() + severity.slice(1)}
           </div>
         </div>
 
@@ -136,20 +153,20 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
         <div className="space-y-2 mb-4">
           <div className="flex items-center text-sm text-gray-600">
             <MapPin className="w-4 h-4 text-green-600 mr-2 flex-shrink-0" />
-            <span className="font-medium">{task.location.district}</span>
+            <span className="font-medium">{task.report?.location?.district || 'Unknown'}</span>
             <span className="text-gray-400 mx-1">•</span>
-            <span className="text-gray-500">{task.location.division}</span>
+            <span className="text-gray-500">{task.report?.location?.division || 'N/A'}</span>
           </div>
           <div className="flex items-center text-sm text-gray-600">
             <Calendar className="w-4 h-4 text-blue-600 mr-2 flex-shrink-0" />
-            <span>Assigned {formatDate(task.assignedDate)}</span>
+            <span>Assigned {formatDate(task.createdAt)}</span>
             <span className="text-gray-400 mx-2">•</span>
-            <span className="text-gray-500">{getTimeAgo(task.assignedDate)}</span>
+            <span className="text-gray-500">{getTimeAgo(task.createdAt)}</span>
           </div>
         </div>
 
-        {/* Progress Bar for Ongoing Tasks */}
-        {task.status === 'ongoing' && (
+        {/* Progress Bar for In-Progress Tasks */}
+        {task.status === 'in-progress' && (
           <div className="mb-4">
             <div className="flex justify-between text-xs text-gray-600 mb-1">
               <span>Progress</span>
@@ -171,12 +188,12 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
           <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-1 bg-gradient-to-br from-yellow-400 to-yellow-500 px-2.5 py-1 rounded-full text-white font-bold text-sm">
               <Star className="w-3 h-3" />
-              <span>{task.rewardPoints}</span>
+              <span>{rewardPoints}</span>
             </div>
             <span className="text-xs text-gray-500 font-medium">points</span>
           </div>
-          
-          <Link 
+
+          <Link
             href={`/dashboard/problemSolver/tasks/${task._id}`}
             className="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium text-sm"
           >

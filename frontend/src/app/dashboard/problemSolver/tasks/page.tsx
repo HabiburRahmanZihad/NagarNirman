@@ -1,88 +1,41 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Calendar, MapPin, AlertTriangle, CheckCircle, Clock, Sparkles, Target, TrendingUp } from "lucide-react";
 import TaskCard from "@/components/solver/TaskCard";
 import TaskFilterBar from "@/components/solver/TaskFilterBar";
+import { useAuth } from "@/context/AuthContext";
+import { taskAPI } from "@/utils/api";
 import toast from "react-hot-toast";
 
 interface Task {
   _id: string;
   title: string;
   description: string;
-  location: {
-    division: string;
-    district: string;
+  report?: {
+    location?: {
+      division?: string;
+      district?: string;
+      address?: string;
+    };
+    images?: string[];
+    severity?: "low" | "medium" | "high";
   };
-  severity: "low" | "medium" | "high";
-  images: string[];
-  assignedDate: string;
-  status: "pending" | "ongoing" | "completed";
-  rewardPoints: number;
-  history: {
-    status: string;
-    date: string;
-  }[];
+  priority: "low" | "medium" | "high";
+  status: "pending" | "in-progress" | "completed" | "verified";
+  assignedTo: string;
+  assignedBy: string;
+  deadline?: string;
+  createdAt: string;
+  updatedAt: string;
+  proof?: {
+    images?: string[];
+    description?: string;
+    submittedAt?: string;
+  };
 }
-
-const dummyTasks: Task[] = [
-  {
-    _id: "tsk_001",
-    title: "Garbage accumulation in roadside drain",
-    description: "Blocked drainage causing water overflow in residential area near market.",
-    location: { division: "Dhaka", district: "Gazipur" },
-    severity: "high",
-    images: ["https://images.unsplash.com/photo-1550147760-44c9966d6bc7?w=500"],
-    assignedDate: "2025-11-10T08:30:00Z",
-    status: "pending",
-    rewardPoints: 50,
-    history: [{ status: "pending", date: "2025-11-10" }]
-  },
-  {
-    _id: "tsk_002",
-    title: "Plastic waste in public park",
-    description: "Large amount of plastic bottles and wrappers scattered across children's play area.",
-    location: { division: "Dhaka", district: "Mirpur" },
-    severity: "medium",
-    images: ["https://images.unsplash.com/photo-1587132135056-6130359ab700?w=500"],
-    assignedDate: "2025-11-09T14:20:00Z",
-    status: "ongoing",
-    rewardPoints: 30,
-    history: [
-      { status: "pending", date: "2025-11-09" },
-      { status: "ongoing", date: "2025-11-10" }
-    ]
-  },
-  {
-    _id: "tsk_003",
-    title: "Abandoned furniture on sidewalk",
-    description: "Old sofa and chairs blocking pedestrian pathway near school.",
-    location: { division: "Dhaka", district: "Uttara" },
-    severity: "low",
-    images: ["https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500"],
-    assignedDate: "2025-11-08T09:15:00Z",
-    status: "completed",
-    rewardPoints: 20,
-    history: [
-      { status: "pending", date: "2025-11-08" },
-      { status: "ongoing", date: "2025-11-09" },
-      { status: "completed", date: "2025-11-10" }
-    ]
-  },
-  {
-    _id: "tsk_004",
-    title: "Industrial waste dumping in river",
-    description: "Chemical waste being dumped directly into the river near industrial zone.",
-    location: { division: "Dhaka", district: "Gazipur" },
-    severity: "high",
-    images: ["https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?w=500"],
-    assignedDate: "2025-11-11T10:00:00Z",
-    status: "pending",
-    rewardPoints: 75,
-    history: [{ status: "pending", date: "2025-11-11" }]
-  }
-];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -95,8 +48,11 @@ const containerVariants = {
 };
 
 export default function SolverTasksPage() {
-  const [tasks, setTasks] = useState<Task[]>(dummyTasks);
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>(dummyTasks);
+  const router = useRouter();
+  const { user, isLoading: authLoading, isAuthenticated } = useAuth();
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     status: "all",
     severity: "all",
@@ -104,57 +60,128 @@ export default function SolverTasksPage() {
     search: ""
   });
 
+  // Check authentication
+  useEffect(() => {
+    if (!authLoading) {
+      if (!isAuthenticated) {
+        router.push("/auth/login");
+      } else if (user?.role !== "problemSolver" && user?.role !== "ngo") {
+        toast.error('Access denied. This page is only for Problem Solvers and NGOs.');
+        router.push(`/dashboard/${user?.role || 'user'}`);
+      }
+    }
+  }, [isAuthenticated, user, authLoading, router]);
+
+  // Fetch tasks
+  useEffect(() => {
+    const fetchTasks = async () => {
+      if (!user || (user.role !== 'problemSolver' && user.role !== 'ngo')) {
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await taskAPI.getMyTasks();
+
+        if (response.success && Array.isArray(response.data)) {
+          setTasks(response.data);
+          setFilteredTasks(response.data);
+        } else {
+          console.error('Invalid tasks response:', response);
+          toast.error('Failed to load tasks');
+        }
+      } catch (error: any) {
+        console.error('Error fetching tasks:', error);
+        toast.error(error.message || 'Failed to load tasks');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user && (user.role === 'problemSolver' || user.role === 'ngo')) {
+      fetchTasks();
+    }
+  }, [user]);
+
   const stats = {
     total: tasks.length,
     pending: tasks.filter(t => t.status === 'pending').length,
-    ongoing: tasks.filter(t => t.status === 'ongoing').length,
-    completed: tasks.filter(t => t.status === 'completed').length,
-    totalPoints: tasks.filter(t => t.status === 'completed').reduce((sum, t) => sum + t.rewardPoints, 0)
+    ongoing: tasks.filter(t => t.status === 'in-progress').length,
+    completed: tasks.filter(t => t.status === 'completed' || t.status === 'verified').length,
+    totalPoints: tasks.filter(t => t.status === 'completed' || t.status === 'verified').length * 10 // Placeholder points calculation
   };
 
+  // Filter tasks
   useEffect(() => {
     let result = tasks;
-    
+
     if (filters.status !== "all") {
-      result = result.filter(task => task.status === filters.status);
+      const statusMap: { [key: string]: string } = {
+        'pending': 'pending',
+        'ongoing': 'in-progress',
+        'completed': 'completed',
+        'verified': 'verified'
+      };
+      const mappedStatus = statusMap[filters.status] || filters.status;
+      result = result.filter(task => task.status === mappedStatus);
     }
-    
+
     if (filters.severity !== "all") {
-      result = result.filter(task => task.severity === filters.severity);
+      result = result.filter(task => task.priority === filters.severity);
     }
-    
+
     if (filters.district !== "all") {
-      result = result.filter(task => task.location.district === filters.district);
+      result = result.filter(task => task.report?.location?.district === filters.district);
     }
-    
+
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
-      result = result.filter(task => 
+      result = result.filter(task =>
         task.title.toLowerCase().includes(searchLower) ||
         task.description.toLowerCase().includes(searchLower)
       );
     }
-    
+
     setFilteredTasks(result);
   }, [filters, tasks]);
 
-  const updateTaskStatus = (taskId: string, newStatus: Task["status"]) => {
-    setTasks(prev => prev.map(task => 
-      task._id === taskId 
-        ? { 
-            ...task, 
-            status: newStatus,
-            history: [...task.history, { status: newStatus, date: new Date().toISOString().split('T')[0] }]
-          }
-        : task
-    ));
+  const updateTaskStatus = async (taskId: string, newStatus: Task["status"]) => {
+    try {
+      const response = await taskAPI.updateStatus(taskId, newStatus);
 
-    if (newStatus === "ongoing") {
-      toast.success("Task started successfully! 🚀");
-    } else if (newStatus === "completed") {
-      toast.success("Task completed! 🎉");
+      if (response.success) {
+        // Update local state
+        setTasks(prev => prev.map(task =>
+          task._id === taskId
+            ? { ...task, status: newStatus, updatedAt: new Date().toISOString() }
+            : task
+        ));
+
+        if (newStatus === "in-progress") {
+          toast.success("Task started successfully! 🚀");
+        } else if (newStatus === "completed") {
+          toast.success("Task marked as completed! 🎉");
+        }
+      } else {
+        toast.error(response.message || 'Failed to update task status');
+      }
+    } catch (error: any) {
+      console.error('Error updating task status:', error);
+      toast.error(error.message || 'Failed to update task status');
     }
   };
+
+  // Show loading state
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-gray-50/30 p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your tasks...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50/30 p-6">
@@ -246,7 +273,7 @@ export default function SolverTasksPage() {
         </motion.div>
 
         <TaskFilterBar filters={filters} onFiltersChange={setFilters} />
-        
+
         <motion.div
           variants={containerVariants}
           initial="hidden"
