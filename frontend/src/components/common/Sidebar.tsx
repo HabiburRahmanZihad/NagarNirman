@@ -46,6 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         ...commonLinks,
         // { href: '/reports', icon: '📋', label: 'All Reports' },
         { href: '/dashboard/authority/assign-task', icon: '🛠️', label: 'Assign Task' },
+        { href: '/dashboard/authority/review-tasks', icon: '✅', label: 'Review Tasks' },
         { href: '/dashboard/authority/solvers', icon: '💡', label: 'Solvers & NGOs' },
         { href: '/dashboard/authority/applications', icon: '📄', label: 'Applications' },
         { href: '/dashboard/authority/manage-users', icon: '👥', label: 'Manage Users' },
@@ -68,7 +69,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { href: '/dashboard/superAdmin/applications', icon: '📄', label: 'Applications' },
         { href: '/dashboard/superAdmin/all-reports', icon: '📋', label: 'All Reports' },
         { href: '/dashboard/superAdmin/assign-task', icon: '✏️', label: 'Assign Task' },
-        { href: '/dashboard/problemSolver/statistics', icon: '📊', label: 'Statistics' },
+        { href: '/dashboard/superAdmin/review-tasks', icon: '✅', label: 'Review Tasks' },
+        { href: '/dashboard/superAdmin/solver-statistics', icon: '📊', label: 'Solver Statistics' },
+        { href: '/dashboard/problemSolver/statistics', icon: '📈', label: 'System Statistics' },
         { href: '/dashboard/superAdmin/map-search', icon: '🗺️', label: 'Map Search' },
       ];
     }

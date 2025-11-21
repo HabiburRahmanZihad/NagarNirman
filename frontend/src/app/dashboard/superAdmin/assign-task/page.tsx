@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
@@ -48,6 +48,7 @@ interface ProblemSolver {
 
 export default function SuperAdminAssignTaskPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user: authUser, isLoading: authLoading, isAuthenticated } = useAuth();
   const [reports, setReports] = useState<Report[]>([]);
   const [solvers, setSolvers] = useState<ProblemSolver[]>([]);
@@ -55,6 +56,8 @@ export default function SuperAdminAssignTaskPage() {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [selectedSolver, setSelectedSolver] = useState<string>('');
   const [assigning, setAssigning] = useState(false);
+  const [preSelectedSolver, setPreSelectedSolver] = useState<{ id: string; name: string } | null>(null);
+  const [deadline, setDeadline] = useState<string>('');
 
   // Filters
   const [reportFilter, setReportFilter] = useState({
@@ -82,6 +85,21 @@ export default function SuperAdminAssignTaskPage() {
       }
     }
   }, [isAuthenticated, authUser, authLoading, router]);
+
+  // Check for pre-selected solver from URL params
+  useEffect(() => {
+    const solverId = searchParams.get('solverId');
+    const solverName = searchParams.get('solverName');
+
+    if (solverId && solverName) {
+      setPreSelectedSolver({ id: solverId, name: decodeURIComponent(solverName) });
+      setSelectedSolver(solverId);
+      toast.success(`${decodeURIComponent(solverName)} has been pre-selected. Now choose a report to assign.`, {
+        duration: 4000,
+        icon: '👤',
+      });
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (authUser?.role === 'superAdmin') {
@@ -173,6 +191,17 @@ export default function SuperAdminAssignTaskPage() {
       return;
     }
 
+    if (!deadline) {
+      toast.error('Please set a deadline for this task');
+      return;
+    }
+
+    const deadlineDate = new Date(deadline);
+    if (deadlineDate <= new Date()) {
+      toast.error('Deadline must be in the future');
+      return;
+    }
+
     try {
       setAssigning(true);
 
@@ -182,7 +211,7 @@ export default function SuperAdminAssignTaskPage() {
         report: selectedReport._id,
         assignedTo: selectedSolver,
         priority: selectedReport.severity,
-        deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days from now
+        deadline: deadlineDate.toISOString()
       };
 
       const response = await taskAPI.assign(taskData);
@@ -191,6 +220,8 @@ export default function SuperAdminAssignTaskPage() {
         toast.success('🎉 Task assigned successfully! Report status updated to approved.');
         setSelectedReport(null);
         setSelectedSolver('');
+        setPreSelectedSolver(null);
+        setDeadline('');
         fetchReports(); // Refresh reports to update status
         fetchSolvers(); // Refresh solvers
       } else {
@@ -422,12 +453,25 @@ export default function SuperAdminAssignTaskPage() {
                 onClick={() => {
                   setSelectedReport(null);
                   setSelectedSolver('');
+                  setPreSelectedSolver(null);
                 }}
                 className="px-4 py-2 border-2 border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
               >
                 ← Back
               </button>
             </div>
+
+            {/* Pre-Selected Solver Info */}
+            {preSelectedSolver && (
+              <div className="mb-4 p-4 bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-400 rounded-lg">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-green-600 text-xl">✓</span>
+                  <p className="text-sm font-semibold text-green-700">Solver Pre-Selected from Statistics:</p>
+                </div>
+                <p className="font-bold text-gray-900 text-lg">{preSelectedSolver.name}</p>
+                <p className="text-sm text-gray-600 mt-1">This solver is currently free and available for task assignment.</p>
+              </div>
+            )}
 
             {/* Selected Report Info */}
             <div className="mb-4 p-4 bg-green-50 border-2 border-green-200 rounded-lg">
@@ -466,13 +510,19 @@ export default function SuperAdminAssignTaskPage() {
                   <p className="text-gray-500 text-lg">No solvers found</p>
                 </div>
               ) : (
-                solvers.map((solver) => (
+                solvers.map((solver) => {
+                  const isPreSelected = preSelectedSolver?.id === solver._id;
+                  return (
                   <motion.div
                     key={solver._id}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     whileHover={{ scale: 1.05 }}
-                    className="border-2 rounded-xl p-4 cursor-pointer transition-all bg-white hover:shadow-xl border-gray-300 hover:border-blue-500"
+                    className={`border-2 rounded-xl p-4 cursor-pointer transition-all bg-white hover:shadow-xl ${
+                      isPreSelected
+                        ? 'border-green-500 bg-gradient-to-br from-green-50 to-blue-50 shadow-lg ring-2 ring-green-300'
+                        : 'border-gray-300 hover:border-blue-500'
+                    }`}
                     onClick={() => setSelectedSolver(solver._id)}
                   >
                     <div className="flex items-start justify-between mb-3">
@@ -516,12 +566,17 @@ export default function SuperAdminAssignTaskPage() {
                         e.stopPropagation();
                         setSelectedSolver(solver._id);
                       }}
-                      className="w-full px-4 py-2 bg-linear-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 text-sm font-bold shadow-md hover:shadow-lg transition-all"
+                      className={`w-full px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all ${
+                        isPreSelected
+                          ? 'bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700'
+                          : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700'
+                      }`}
                     >
-                      Select This Solver →
+                      {isPreSelected ? '✓ Pre-Selected Solver →' : 'Select This Solver →'}
                     </button>
                   </motion.div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
@@ -584,12 +639,91 @@ export default function SuperAdminAssignTaskPage() {
               </div>
             </div>
 
+            {/* Deadline Input */}
+            <div className="p-5 bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-300 rounded-xl mb-6">
+              <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <span className="text-lg">⏰</span>
+                Set Task Deadline (Required)
+              </p>
+              <div className="space-y-3">
+                <input
+                  type="datetime-local"
+                  value={deadline}
+                  onChange={(e) => setDeadline(e.target.value)}
+                  min={new Date().toISOString().slice(0, 16)}
+                  className="w-full px-4 py-3 border-2 border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-800 font-semibold"
+                  required
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const date = new Date();
+                      date.setDate(date.getDate() + 3);
+                      setDeadline(date.toISOString().slice(0, 16));
+                    }}
+                    className="flex-1 px-3 py-2 bg-white border border-orange-300 rounded-lg hover:bg-orange-50 text-sm font-medium text-gray-700"
+                  >
+                    +3 Days
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const date = new Date();
+                      date.setDate(date.getDate() + 7);
+                      setDeadline(date.toISOString().slice(0, 16));
+                    }}
+                    className="flex-1 px-3 py-2 bg-white border border-orange-300 rounded-lg hover:bg-orange-50 text-sm font-medium text-gray-700"
+                  >
+                    +1 Week
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const date = new Date();
+                      date.setDate(date.getDate() + 14);
+                      setDeadline(date.toISOString().slice(0, 16));
+                    }}
+                    className="flex-1 px-3 py-2 bg-white border border-orange-300 rounded-lg hover:bg-orange-50 text-sm font-medium text-gray-700"
+                  >
+                    +2 Weeks
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const date = new Date();
+                      date.setMonth(date.getMonth() + 1);
+                      setDeadline(date.toISOString().slice(0, 16));
+                    }}
+                    className="flex-1 px-3 py-2 bg-white border border-orange-300 rounded-lg hover:bg-orange-50 text-sm font-medium text-gray-700"
+                  >
+                    +1 Month
+                  </button>
+                </div>
+                {deadline && (
+                  <p className="text-sm text-gray-600 flex items-center gap-2">
+                    <span className="font-semibold">Selected:</span>
+                    <span className="text-orange-700 font-bold">
+                      {new Date(deadline).toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </span>
+                  </p>
+                )}
+              </div>
+            </div>
+
             {/* Actions */}
             <div className="flex gap-3">
               <button
                 onClick={() => {
                   setSelectedReport(null);
                   setSelectedSolver('');
+                  setDeadline('');
                 }}
                 className="flex-1 px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 font-bold text-gray-700"
               >

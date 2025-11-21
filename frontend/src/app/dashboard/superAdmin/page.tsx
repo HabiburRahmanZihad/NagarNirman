@@ -3,10 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { userAPI, statisticsAPI } from '@/utils/api';
+import { userAPI, statisticsAPI, taskAPI } from '@/utils/api';
 import { User } from '@/types';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function SuperAdminDashboard() {
   const { user, isLoading } = useAuth();
@@ -20,6 +21,11 @@ export default function SuperAdminDashboard() {
     problemSolvers: 0,
     ngos: 0,
     pendingApplications: 0,
+    pendingReviewTasks: 0,
+    totalTasks: 0,
+    completedTasks: 0,
+    assignedTasks: 0,
+    inProgressTasks: 0,
   });
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -45,20 +51,44 @@ export default function SuperAdminDashboard() {
       setLoading(true);
 
       // Fetch dashboard stats and users in parallel
-      const [dashboardResponse, usersResponse] = await Promise.all([
+      const [dashboardResponse, usersResponse, pendingTasksResponse, allTasksResponse] = await Promise.all([
         statisticsAPI.getAdminDashboard(),
-        userAPI.getAllUsers()
+        userAPI.getAllUsers(),
+        taskAPI.getPendingReview(),
+        taskAPI.getAll()
       ]);
 
       // Set stats from API
       if (dashboardResponse.success) {
-        setStats(dashboardResponse.data.stats);
+        setStats(prev => ({
+          ...prev,
+          ...dashboardResponse.data.stats
+        }));
         setAllReports(dashboardResponse.data.recentReports || []);
       }
 
       // Set all users for user management section
       if (usersResponse.success) {
         setAllUsers(usersResponse.data || []);
+      }
+
+      // Set task stats
+      if (pendingTasksResponse.success) {
+        setStats(prev => ({
+          ...prev,
+          pendingReviewTasks: pendingTasksResponse.data.length
+        }));
+      }
+
+      if (allTasksResponse.success) {
+        const tasks = allTasksResponse.data;
+        setStats(prev => ({
+          ...prev,
+          totalTasks: tasks.length,
+          completedTasks: tasks.filter((t: any) => t.status === 'completed' || t.status === 'verified').length,
+          assignedTasks: tasks.filter((t: any) => t.status === 'assigned').length,
+          inProgressTasks: tasks.filter((t: any) => t.status === 'in-progress' || t.status === 'accepted').length,
+        }));
       }
 
     } catch (error) {
@@ -140,18 +170,91 @@ export default function SuperAdminDashboard() {
           </div>
         </motion.div>
 
+        {/* Alerts Section */}
+        {stats.pendingReviewTasks > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 bg-purple-50 border-l-4 border-purple-500 p-4 rounded-lg"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">✅</span>
+                <div>
+                  <h3 className="font-semibold text-purple-800">
+                    {stats.pendingReviewTasks} Task{stats.pendingReviewTasks !== 1 ? 's' : ''} Awaiting Review
+                  </h3>
+                  <p className="text-sm text-purple-700">
+                    Review submitted work and approve or reject with feedback
+                  </p>
+                </div>
+              </div>
+              <Link href="/dashboard/superAdmin/review-tasks">
+                <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold text-sm">
+                  Review Now
+                </button>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           <StatCard title="Total Users" value={stats.totalUsers} icon="👥" color="blue" />
           <StatCard title="Total Reports" value={stats.totalReports} icon="📋" color="green" />
+          <StatCard title="Total Tasks" value={stats.totalTasks} icon="📝" color="indigo" badge={stats.pendingReviewTasks} />
           <StatCard title="Authorities" value={stats.authorities} icon="🏛️" color="purple" />
           <StatCard title="Problem Solvers" value={stats.problemSolvers} icon="💡" color="yellow" />
           <StatCard title="NGOs" value={stats.ngos} icon="🏢" color="cyan" />
-          <StatCard title="Pending Apps" value={stats.pendingApplications} icon="📄" color="red" />
         </div>
 
+        {/* Task Workflow Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 bg-white rounded-xl shadow-lg p-6"
+        >
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span>📊</span>
+            Task Workflow Overview
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <Link href="/dashboard/superAdmin/review-tasks">
+              <div className="p-4 bg-orange-50 rounded-lg hover:shadow-md transition-all cursor-pointer">
+                <div className="text-2xl font-bold text-orange-600">{stats.assignedTasks}</div>
+                <div className="text-sm text-gray-600 mt-1">Assigned</div>
+              </div>
+            </Link>
+            <div className="p-4 bg-blue-50 rounded-lg">
+              <div className="text-2xl font-bold text-blue-600">{stats.inProgressTasks}</div>
+              <div className="text-sm text-gray-600 mt-1">In Progress</div>
+            </div>
+            <Link href="/dashboard/superAdmin/review-tasks">
+              <div className="p-4 bg-purple-50 rounded-lg hover:shadow-md transition-all cursor-pointer relative">
+                {stats.pendingReviewTasks > 0 && (
+                  <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+                    {stats.pendingReviewTasks}
+                  </div>
+                )}
+                <div className="text-2xl font-bold text-purple-600">{stats.pendingReviewTasks}</div>
+                <div className="text-sm text-gray-600 mt-1">Pending Review</div>
+              </div>
+            </Link>
+            <div className="p-4 bg-green-50 rounded-lg">
+              <div className="text-2xl font-bold text-green-600">{stats.completedTasks}</div>
+              <div className="text-sm text-gray-600 mt-1">Completed</div>
+            </div>
+            <div className="p-4 bg-emerald-50 rounded-lg">
+              <div className="text-2xl font-bold text-emerald-600">
+                {stats.totalTasks > 0 ? Math.round((stats.completedTasks / stats.totalTasks) * 100) : 0}%
+              </div>
+              <div className="text-sm text-gray-600 mt-1">Completion Rate</div>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
           <QuickAction
             title="All Reports"
             icon="📋"
@@ -177,8 +280,14 @@ export default function SuperAdminDashboard() {
             color="bg-purple-500"
           />
           <QuickAction
-            title="System Statistics"
+            title="Solver Statistics"
             icon="📊"
+            onClick={() => router.push('/dashboard/superAdmin/solver-statistics')}
+            color="bg-cyan-500"
+          />
+          <QuickAction
+            title="System Stats"
+            icon="📈"
             onClick={() => router.push('/dashboard/problemSolver/statistics')}
             color="bg-yellow-500"
           />
@@ -443,7 +552,7 @@ export default function SuperAdminDashboard() {
 }
 
 // Helper Components
-function StatCard({ title, value, icon, color }: { title: string; value: number; icon: string; color: string }) {
+function StatCard({ title, value, icon, color, badge }: { title: string; value: number; icon: string; color: string; badge?: number }) {
   const colorClasses: Record<string, { border: string; bg: string; text: string }> = {
     blue: { border: 'border-blue-500', bg: 'bg-blue-50', text: 'text-blue-600' },
     green: { border: 'border-green-500', bg: 'bg-green-50', text: 'text-green-600' },
@@ -451,6 +560,7 @@ function StatCard({ title, value, icon, color }: { title: string; value: number;
     yellow: { border: 'border-yellow-500', bg: 'bg-yellow-50', text: 'text-yellow-600' },
     cyan: { border: 'border-cyan-500', bg: 'bg-cyan-50', text: 'text-cyan-600' },
     red: { border: 'border-red-500', bg: 'bg-red-50', text: 'text-red-600' },
+    indigo: { border: 'border-indigo-500', bg: 'bg-indigo-50', text: 'text-indigo-600' },
   };
 
   const colors = colorClasses[color] || colorClasses.blue;
@@ -461,8 +571,13 @@ function StatCard({ title, value, icon, color }: { title: string; value: number;
       animate={{ opacity: 1, scale: 1 }}
       whileHover={{ scale: 1.05, y: -5 }}
       transition={{ duration: 0.2 }}
-      className={`bg-white rounded-xl shadow-md hover:shadow-xl p-5 border-l-4 ${colors.border} transition-all`}
+      className={`bg-white rounded-xl shadow-md hover:shadow-xl p-5 border-l-4 ${colors.border} transition-all relative`}
     >
+      {badge && badge > 0 && (
+        <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+          {badge}
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <p className="text-gray-600 text-xs font-medium uppercase tracking-wide mb-1">{title}</p>

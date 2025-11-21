@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react";
 import { Search, Filter, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import divisionsData from "@/data/divisionsData.json";
+import categoryOptions from "@/data/categoryOptions.json";
 
 interface Filters {
   status: string;
   severity: string;
-  district: string;
+  category: string;
   search: string;
 }
 
@@ -17,24 +19,51 @@ interface TaskFilterBarProps {
 }
 
 const statusOptions = [
-  { value: "all", label: "All Tasks" },
-  { value: "pending", label: "Pending" },
+  { value: "all", label: "All Status" },
+  { value: "pending", label: "Assigned" },
   { value: "ongoing", label: "In Progress" },
-  { value: "completed", label: "Completed" }
+  { value: "submitted", label: "Submitted" },
+  { value: "completed", label: "Completed" },
+  { value: "rejected", label: "Rejected" }
 ];
 
 const severityOptions = [
-  { value: "all", label: "All Levels" },
+  { value: "all", label: "All Severity" },
   { value: "low", label: "Low" },
   { value: "medium", label: "Medium" },
   { value: "high", label: "High" }
 ];
 
-const districtOptions = [
-  { value: "all", label: "All Districts" },
-  { value: "Gazipur", label: "Gazipur" },
-  { value: "Mirpur", label: "Mirpur" },
-  { value: "Uttara", label: "Uttara" }
+// Generate division options from data
+const divisionOptions = [
+  { value: "all", label: "All Divisions" },
+  ...divisionsData.map(div => ({ value: div.division, label: div.division }))
+];
+
+// Generate all district options from data
+const getAllDistricts = () => {
+  const districts: { value: string; label: string }[] = [{ value: "all", label: "All Districts" }];
+  divisionsData.forEach(div => {
+    div.districts.forEach(dist => {
+      districts.push({ value: dist.name, label: dist.name });
+    });
+  });
+  return districts;
+};
+
+const districtOptions = getAllDistricts();
+
+// Generate category options based on backend problemType values
+const categoryOptionsList = [
+  { value: "all", label: "All Categories" },
+  { value: "road", label: "Road" },
+  { value: "drainage", label: "Drainage" },
+  { value: "street light", label: "Street Light" },
+  { value: "waste management", label: "Waste Management" },
+  { value: "water supply", label: "Water Supply" },
+  { value: "electricity", label: "Electricity" },
+  { value: "public property", label: "Public Property" },
+  { value: "other", label: "Other" }
 ];
 
 export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBarProps) {
@@ -52,9 +81,11 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
   const activeFiltersCount = [
     filters.status !== 'all',
     filters.severity !== 'all',
-    filters.district !== 'all',
+    filters.category !== 'all',
     filters.search !== ''
   ].filter(Boolean).length;
+
+
 
   return (
     <>
@@ -79,11 +110,11 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
           </div>
 
           {/* Desktop Filters */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3 flex-wrap">
             <select
               value={filters.status}
               onChange={(e) => onFiltersChange({ ...filters, status: e.target.value })}
-              className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 bg-white min-w-[140px] text-sm"
+              className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 bg-white min-w-[130px] text-sm"
             >
               {statusOptions.map(option => (
                 <option key={option.value} value={option.value}>
@@ -95,7 +126,7 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
             <select
               value={filters.severity}
               onChange={(e) => onFiltersChange({ ...filters, severity: e.target.value })}
-              className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 bg-white min-w-[130px] text-sm"
+              className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 bg-white min-w-[120px] text-sm"
             >
               {severityOptions.map(option => (
                 <option key={option.value} value={option.value}>
@@ -105,16 +136,34 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
             </select>
 
             <select
-              value={filters.district}
-              onChange={(e) => onFiltersChange({ ...filters, district: e.target.value })}
-              className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 bg-white min-w-[140px] text-sm"
+              value={filters.category}
+              onChange={(e) => onFiltersChange({ ...filters, category: e.target.value })}
+              className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 bg-white min-w-[160px] text-sm"
             >
-              {districtOptions.map(option => (
+              {categoryOptionsList.map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
             </select>
+
+            {activeFiltersCount > 0 && (
+              <button
+                onClick={() => {
+                  onFiltersChange({
+                    status: 'all',
+                    severity: 'all',
+                    category: 'all',
+                    search: ''
+                  });
+                  setSearchTerm('');
+                }}
+                className="px-4 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium flex items-center gap-2"
+              >
+                <X className="w-4 h-4" />
+                Clear All
+              </button>
+            )}
           </div>
 
           {/* Mobile Filter Button */}
@@ -133,7 +182,7 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
         </div>
 
         {/* Active Filters Tags */}
-        {(filters.status !== 'all' || filters.severity !== 'all' || filters.district !== 'all') && (
+        {(filters.status !== 'all' || filters.severity !== 'all' || filters.category !== 'all') && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -145,28 +194,31 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
                 <button
                   onClick={() => onFiltersChange({ ...filters, status: 'all' })}
                   className="ml-1.5 hover:text-green-900"
+                  aria-label="Remove status filter"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {filters.severity !== 'all' && (
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs bg-blue-100 text-blue-800 border border-blue-200">
-                Level: {severityOptions.find(s => s.value === filters.severity)?.label}
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs bg-orange-100 text-orange-800 border border-orange-200">
+                Severity: {severityOptions.find(s => s.value === filters.severity)?.label}
                 <button
                   onClick={() => onFiltersChange({ ...filters, severity: 'all' })}
-                  className="ml-1.5 hover:text-blue-900"
+                  className="ml-1.5 hover:text-orange-900"
+                  aria-label="Remove severity filter"
                 >
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
-            {filters.district !== 'all' && (
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs bg-purple-100 text-purple-800 border border-purple-200">
-                Area: {districtOptions.find(d => d.value === filters.district)?.label}
+            {filters.category !== 'all' && (
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs bg-pink-100 text-pink-800 border border-pink-200">
+                Category: {categoryOptionsList.find(c => c.value === filters.category)?.label}
                 <button
-                  onClick={() => onFiltersChange({ ...filters, district: 'all' })}
-                  className="ml-1.5 hover:text-purple-900"
+                  onClick={() => onFiltersChange({ ...filters, category: 'all' })}
+                  className="ml-1.5 hover:text-pink-900"
+                  aria-label="Remove category filter"
                 >
                   <X className="w-3 h-3" />
                 </button>
@@ -187,7 +239,7 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
               className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
               onClick={() => setShowMobileFilters(false)}
             />
-            
+
             <motion.div
               initial={{ opacity: 0, y: '100%' }}
               animate={{ opacity: 1, y: 0 }}
@@ -199,6 +251,7 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
                 <button
                   onClick={() => setShowMobileFilters(false)}
                   className="p-2 hover:bg-gray-100 rounded-lg"
+                  aria-label="Close filters"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -211,7 +264,10 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
                     {statusOptions.map(option => (
                       <button
                         key={option.value}
-                        onClick={() => onFiltersChange({ ...filters, status: option.value })}
+                        onClick={() => {
+                          onFiltersChange({ ...filters, status: option.value });
+                          if (option.value === 'all') setShowMobileFilters(false);
+                        }}
                         className={`p-3 rounded-lg border transition-all text-sm ${
                           filters.status === option.value
                             ? 'border-green-500 bg-green-50 text-green-700'
@@ -225,15 +281,18 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">Priority Level</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Severity Level</label>
                   <div className="grid grid-cols-2 gap-2">
                     {severityOptions.map(option => (
                       <button
                         key={option.value}
-                        onClick={() => onFiltersChange({ ...filters, severity: option.value })}
+                        onClick={() => {
+                          onFiltersChange({ ...filters, severity: option.value });
+                          if (option.value === 'all') setShowMobileFilters(false);
+                        }}
                         className={`p-3 rounded-lg border transition-all text-sm ${
                           filters.severity === option.value
-                            ? 'border-blue-500 bg-blue-50 text-blue-700'
+                            ? 'border-orange-500 bg-orange-50 text-orange-700'
                             : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
                         }`}
                       >
@@ -244,23 +303,35 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">District</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {districtOptions.map(option => (
-                      <button
-                        key={option.value}
-                        onClick={() => onFiltersChange({ ...filters, district: option.value })}
-                        className={`p-3 rounded-lg border transition-all text-sm ${
-                          filters.district === option.value
-                            ? 'border-purple-500 bg-purple-50 text-purple-700'
-                            : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                        }`}
-                      >
+                  <label className="block text-sm font-medium text-gray-700 mb-3">Problem Category</label>
+                  <select
+                    value={filters.category}
+                    onChange={(e) => onFiltersChange({ ...filters, category: e.target.value })}
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300 bg-white text-sm"
+                  >
+                    {categoryOptionsList.map(option => (
+                      <option key={option.value} value={option.value}>
                         {option.label}
-                      </button>
+                      </option>
                     ))}
-                  </div>
+                  </select>
                 </div>
+
+                <button
+                  onClick={() => {
+                    onFiltersChange({
+                      status: 'all',
+                      severity: 'all',
+                      category: 'all',
+                      search: ''
+                    });
+                    setSearchTerm('');
+                    setShowMobileFilters(false);
+                  }}
+                  className="w-full py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                >
+                  Clear All Filters
+                </button>
               </div>
             </motion.div>
           </div>

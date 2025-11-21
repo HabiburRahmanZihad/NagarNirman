@@ -94,17 +94,31 @@ export default function ReportDetailsPage() {
   const fetchReportDetails = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports/${reportId}`);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/reports/${reportId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store'
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
       const data = await res.json();
 
-      if (data.success) {
+      if (data.success && data.data) {
         setReport(data.data);
       } else {
-        toast.error('Failed to load report details');
+        toast.error('Report not found');
+        setReport(null);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching report:', error);
-      toast.error('Failed to load report details');
+      toast.error(error.message || 'Failed to load report details. Please check your connection.');
+      setReport(null);
     } finally {
       setIsLoading(false);
     }

@@ -42,18 +42,34 @@ export default function AllReportsPage() {
   const fetchReports = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports?limit=100`);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/reports?limit=100`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store'
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
       const data = await res.json();
 
-      if (data.success) {
+      if (data.success && data.data) {
         setReports(data.data);
         setFilteredReports(data.data);
       } else {
-        toast.error('Failed to load reports');
+        toast.error('No reports found');
+        setReports([]);
+        setFilteredReports([]);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching reports:', error);
-      toast.error('Failed to load reports');
+      toast.error(error.message || 'Failed to load reports. Please check your connection.');
+      setReports([]);
+      setFilteredReports([]);
     } finally {
       setIsLoading(false);
     }

@@ -640,9 +640,69 @@ export const getSolvers = asyncHandler(async (req, res) => {
 
     console.log(`Found ${result.users.length} solvers`);
 
+    // Get task statistics for each solver
+    const usersCollection = await getUsersCollection();
+    const { getTasksCollection } = await import('../models/Task.js');
+    const tasksCollection = getTasksCollection();
+
+    const solversWithStats = await Promise.all(
+      result.users.map(async (user) => {
+        try {
+          // Get task counts
+          const totalTasks = await tasksCollection.countDocuments({
+            assignedTo: new ObjectId(user._id),
+          });
+
+          const completedTasks = await tasksCollection.countDocuments({
+            assignedTo: new ObjectId(user._id),
+            status: 'completed',
+          });
+
+          // Calculate average rating from completed tasks
+          const completedTasksWithRating = await tasksCollection
+            .find({
+              assignedTo: new ObjectId(user._id),
+              status: 'completed',
+              rating: { $exists: true, $ne: null },
+            })
+            .toArray();
+
+          let avgRating = 0;
+          if (completedTasksWithRating.length > 0) {
+            const totalRating = completedTasksWithRating.reduce((sum, task) => sum + (task.rating || 0), 0);
+            avgRating = totalRating / completedTasksWithRating.length;
+          }
+
+          // Calculate success rate
+          const successRate = totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(0) : 0;
+
+          return {
+            ...user,
+            taskStats: {
+              total: totalTasks,
+              completed: completedTasks,
+              rating: avgRating > 0 ? avgRating.toFixed(1) : 'N/A',
+              successRate: `${successRate}%`,
+            },
+          };
+        } catch (error) {
+          console.error(`Error getting stats for user ${user._id}:`, error);
+          return {
+            ...user,
+            taskStats: {
+              total: 0,
+              completed: 0,
+              rating: 'N/A',
+              successRate: '0%',
+            },
+          };
+        }
+      })
+    );
+
     res.status(200).json({
       success: true,
-      users: result.users,
+      users: solversWithStats,
       pagination: result.pagination,
     });
   } catch (error) {

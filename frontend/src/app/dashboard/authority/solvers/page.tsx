@@ -24,6 +24,12 @@ interface Solver {
   isActive: boolean;
   phone?: string;
   createdAt: string;
+  taskStats?: {
+    total: number;
+    completed: number;
+    rating: string | number;
+    successRate: string;
+  };
 }
 
 export default function SolversPage() {
@@ -140,11 +146,17 @@ export default function SolversPage() {
     .sort((a, b) => {
       switch (sortBy) {
         case 'rating':
-          return (b.rating || 0) - (a.rating || 0);
+          const aRating = typeof a.taskStats?.rating === 'number' ? a.taskStats.rating : (a.rating || 0);
+          const bRating = typeof b.taskStats?.rating === 'number' ? b.taskStats.rating : (b.rating || 0);
+          return bRating - aRating;
         case 'completedTasks':
-          return (b.completedTasks || 0) - (a.completedTasks || 0);
+          const aCompleted = a.taskStats?.completed ?? a.completedTasks ?? 0;
+          const bCompleted = b.taskStats?.completed ?? b.completedTasks ?? 0;
+          return bCompleted - aCompleted;
         case 'successRate':
-          return (b.successRate || 0) - (a.successRate || 0);
+          const aSuccess = parseInt(String(a.taskStats?.successRate || a.successRate || '0').replace('%', ''));
+          const bSuccess = parseInt(String(b.taskStats?.successRate || b.successRate || '0').replace('%', ''));
+          return bSuccess - aSuccess;
         case 'createdAt':
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         default:
@@ -439,19 +451,19 @@ export default function SolversPage() {
                 <div className="grid grid-cols-3 gap-2 mb-4 p-3 bg-gray-50 rounded-lg">
                   <div className="text-center">
                     <div className="text-lg font-bold text-gray-900">
-                      {solver.rating ? solver.rating.toFixed(1) : 'N/A'}
+                      {solver.taskStats?.rating || solver.rating || 'N/A'}
                     </div>
                     <div className="text-xs text-gray-500">Rating</div>
                   </div>
                   <div className="text-center">
                     <div className="text-lg font-bold text-gray-900">
-                      {solver.completedTasks || 0}
+                      {solver.taskStats?.completed ?? solver.completedTasks ?? 0}
                     </div>
                     <div className="text-xs text-gray-500">Tasks</div>
                   </div>
                   <div className="text-center">
                     <div className="text-lg font-bold text-gray-900">
-                      {solver.successRate || 0}%
+                      {solver.taskStats?.successRate || `${solver.successRate || 0}%`}
                     </div>
                     <div className="text-xs text-gray-500">Success</div>
                   </div>

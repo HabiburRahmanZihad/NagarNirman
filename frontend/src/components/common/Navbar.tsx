@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { formatRole } from '@/utils/helpers';
 import Button from './Button';
 import Image from 'next/image';
+import { NotificationCenter } from './NotificationCenter';
 
 const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -74,6 +75,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center gap-3">
             {isAuthenticated && user ? (
               <>
+                <NotificationCenter />
                 <div className="hidden md:flex flex-col items-end">
                   <span className="text-sm font-semibold text-[#002E2E]">{user.name}</span>
                   <span className="text-xs text-[#6B7280]">{formatRole(user.role)}</span>

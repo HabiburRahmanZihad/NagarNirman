@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { NotificationProvider } from "@/context/NotificationContext";
 import { Toaster } from "react-hot-toast";
 import ClientLayout from "@/components/common/ClientLayout";
 
@@ -32,10 +33,12 @@ export default function RootLayout({
         className={`${urbanist.variable} font-sans antialiased min-h-screen flex flex-col`}
       >
         <AuthProvider>
-          <Toaster position="top-right" />
-          <ClientLayout>
-            {children}
-          </ClientLayout>
+          <NotificationProvider>
+            <Toaster position="top-right" />
+            <ClientLayout>
+              {children}
+            </ClientLayout>
+          </NotificationProvider>
         </AuthProvider>
       </body>
     </html>

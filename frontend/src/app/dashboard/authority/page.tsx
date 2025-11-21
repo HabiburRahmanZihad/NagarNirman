@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
-import { reportAPI, problemSolverAPI } from '@/utils/api';
+import { reportAPI, problemSolverAPI, taskAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
 
 interface Stats {
@@ -15,6 +15,10 @@ interface Stats {
   inProgressReports: number;
   resolvedReports: number;
   pendingApplications: number;
+  pendingReviewTasks: number;
+  totalTasks: number;
+  completedTasks: number;
+  rejectedTasks: number;
 }
 
 export default function AuthorityDashboard() {
@@ -26,6 +30,10 @@ export default function AuthorityDashboard() {
     inProgressReports: 0,
     resolvedReports: 0,
     pendingApplications: 0,
+    pendingReviewTasks: 0,
+    totalTasks: 0,
+    completedTasks: 0,
+    rejectedTasks: 0,
   });
   const [loadingStats, setLoadingStats] = useState(true);
   const [recentReports, setRecentReports] = useState<any[]>([]);
@@ -72,6 +80,28 @@ export default function AuthorityDashboard() {
           pendingApplications: applications.length,
         }));
       }
+
+      // Fetch pending review tasks
+      const tasksResponse = await taskAPI.getPendingReview();
+      if (tasksResponse.success) {
+        const pendingTasks = tasksResponse.data;
+        setStats(prev => ({
+          ...prev,
+          pendingReviewTasks: pendingTasks.length,
+        }));
+      }
+
+      // Fetch all tasks for additional stats
+      const allTasksResponse = await taskAPI.getAll();
+      if (allTasksResponse.success) {
+        const allTasks = allTasksResponse.data;
+        setStats(prev => ({
+          ...prev,
+          totalTasks: allTasks.length,
+          completedTasks: allTasks.filter((t: any) => t.status === 'completed' || t.status === 'verified').length,
+          rejectedTasks: allTasks.filter((t: any) => t.status === 'rejected').length,
+        }));
+      }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -94,7 +124,8 @@ export default function AuthorityDashboard() {
       icon: '📊',
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
-      trend: '+12% from last month',
+      trend: `${stats.totalTasks} tasks assigned`,
+      link: '/reports',
     },
     {
       title: 'Pending Review',
@@ -102,7 +133,18 @@ export default function AuthorityDashboard() {
       icon: '⏳',
       color: 'text-yellow-600',
       bgColor: 'bg-yellow-50',
-      trend: 'Needs attention',
+      trend: 'Reports awaiting review',
+      link: '/reports',
+    },
+    {
+      title: 'Tasks to Review',
+      value: stats.pendingReviewTasks,
+      icon: '✅',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+      trend: 'Submitted work awaiting approval',
+      link: '/dashboard/authority/review-tasks',
+      badge: stats.pendingReviewTasks > 0,
     },
     {
       title: 'In Progress',
@@ -110,15 +152,26 @@ export default function AuthorityDashboard() {
       icon: '⚙️',
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
-      trend: 'Being resolved',
+      trend: 'Being actively resolved',
+      link: '/reports',
     },
     {
       title: 'Resolved',
       value: stats.resolvedReports,
-      icon: '✅',
+      icon: '🎉',
       color: 'text-green-600',
       bgColor: 'bg-green-50',
       trend: `${stats.totalReports > 0 ? Math.round((stats.resolvedReports / stats.totalReports) * 100) : 0}% resolution rate`,
+      link: '/reports',
+    },
+    {
+      title: 'Completed Tasks',
+      value: stats.completedTasks,
+      icon: '🏆',
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-50',
+      trend: `${stats.rejectedTasks} rejected`,
+      link: '/dashboard/authority/review-tasks',
     },
   ];
 
@@ -143,7 +196,7 @@ export default function AuthorityDashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {statsCards.map((stat, index) => (
             <motion.div
               key={stat.title}
@@ -151,51 +204,89 @@ export default function AuthorityDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <div className={`${stat.bgColor} rounded-xl p-6`}>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-3xl">{stat.icon}</span>
-                  <span className={`text-3xl font-bold ${stat.color}`}>
-                    {loadingStats ? '...' : stat.value}
-                  </span>
+              <Link href={stat.link || '#'}>
+                <div className={`${stat.bgColor} rounded-xl p-6 cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 relative`}>
+                  {stat.badge && stat.value > 0 && (
+                    <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse">
+                      {stat.value}
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-3xl">{stat.icon}</span>
+                    <span className={`text-3xl font-bold ${stat.color}`}>
+                      {loadingStats ? '...' : stat.value}
+                    </span>
+                  </div>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-1">
+                    {stat.title}
+                  </h3>
+                  <p className="text-xs text-gray-600">
+                    {stat.trend}
+                  </p>
                 </div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                  {stat.title}
-                </h3>
-                <p className="text-xs text-gray-600">
-                  {stat.trend}
-                </p>
-              </div>
+              </Link>
             </motion.div>
           ))}
         </div>
 
-        {/* Pending Applications Alert */}
-        {stats.pendingApplications > 0 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <span className="text-2xl mr-3">⚠️</span>
-                <div>
-                  <h3 className="font-semibold text-yellow-800">
-                    {stats.pendingApplications} Pending Application{stats.pendingApplications !== 1 ? 's' : ''}
-                  </h3>
-                  <p className="text-sm text-yellow-700">
-                    Review problem solver applications awaiting approval
-                  </p>
+        {/* Action Alerts */}
+        <div className="space-y-4">
+          {/* Pending Review Tasks Alert */}
+          {stats.pendingReviewTasks > 0 && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-lg"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="text-2xl mr-3">✅</span>
+                  <div>
+                    <h3 className="font-semibold text-purple-800">
+                      {stats.pendingReviewTasks} Task{stats.pendingReviewTasks !== 1 ? 's' : ''} Awaiting Review
+                    </h3>
+                    <p className="text-sm text-purple-700">
+                      Problem solvers have submitted their work for your approval
+                    </p>
+                  </div>
                 </div>
+                <Link href="/dashboard/authority/review-tasks">
+                  <Button variant="accent" size="sm">
+                    Review Tasks
+                  </Button>
+                </Link>
               </div>
-              <Link href="/dashboard/authority/applications">
-                <Button variant="accent" size="sm">
-                  Review Now
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          )}
+
+          {/* Pending Applications Alert */}
+          {stats.pendingApplications > 0 && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-lg"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="text-2xl mr-3">⚠️</span>
+                  <div>
+                    <h3 className="font-semibold text-yellow-800">
+                      {stats.pendingApplications} Pending Application{stats.pendingApplications !== 1 ? 's' : ''}
+                    </h3>
+                    <p className="text-sm text-yellow-700">
+                      Review problem solver applications awaiting approval
+                    </p>
+                  </div>
+                </div>
+                <Link href="/dashboard/authority/applications">
+                  <Button variant="accent" size="sm">
+                    Review Now
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

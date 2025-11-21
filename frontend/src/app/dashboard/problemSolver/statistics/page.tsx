@@ -22,10 +22,10 @@ interface AnalyticsData {
   pendingReports: number;
   averageResolutionTime: number;
   completionRate: number;
-  categoryStats: Array<{ category: string; count: number }>;
-  statusStats: Array<{ status: string; count: number; color: string }>;
-  monthlyStats: Array<{ month: string; reports: number; resolved: number; pending: number }>;
-  districtStats: Array<{ district: string; division: string; total: number; pending: number; resolved: number; ongoing: number }>;
+  categoryStats: Array<{ category: string; count: number; percentage: number }>;
+  statusStats: Array<{ status: string; count: number; color: string; percentage: number }>;
+  monthlyStats: Array<{ month: string; reports: number; completed: number; pending: number }>;
+  districtStats: Array<{ district: string; division: string; reports: number; pending: number; completed: number; ongoing: number }>;
   solverPerformance: Array<{
     solverId: string;
     name: string;
@@ -166,32 +166,41 @@ const AnalyticsPage = () => {
 
       // Transform data to match component expectations with null checks
       const transformedData = {
-        ...data,
+        totalReports: data.totalReports || 0,
+        completedReports: data.completedReports || 0,
+        ongoingReports: data.ongoingReports || 0,
+        pendingReports: data.pendingReports || 0,
+        averageResolutionTime: data.averageResolutionTime || 0,
+        completionRate: data.completionRate || 0,
+        lastUpdated: data.lastUpdated || new Date().toISOString(),
         // Add percentages to category stats
         categoryStats: (data.categoryStats || []).map((cat: any) => ({
-          ...cat,
+          category: cat.category,
+          count: cat.count,
           percentage: data.totalReports > 0 ? (cat.count / data.totalReports) * 100 : 0
         })),
         // Add percentages to status stats
         statusStats: (data.statusStats || []).map((stat: any) => ({
-          ...stat,
+          status: stat.status,
+          count: stat.count,
+          color: stat.color,
           percentage: data.totalReports > 0 ? (stat.count / data.totalReports) * 100 : 0
         })),
         // Rename fields for monthly stats to match component
         monthlyStats: (data.monthlyStats || []).map((stat: any) => ({
           month: stat.month,
           reports: stat.reports,
-          completed: stat.resolved, // Rename resolved to completed
-          pending: stat.pending
+          completed: stat.resolved || 0, // Rename resolved to completed
+          pending: stat.pending || 0
         })),
         // Transform district stats to match component
         districtStats: (data.districtStats || []).map((stat: any) => ({
           district: stat.district,
           division: stat.division,
-          reports: stat.total, // Rename total to reports
-          pending: stat.pending,
-          completed: stat.resolved, // Rename resolved to completed
-          ongoing: stat.ongoing
+          reports: stat.total || 0, // Rename total to reports
+          pending: stat.pending || 0,
+          completed: stat.resolved || 0, // Rename resolved to completed
+          ongoing: stat.ongoing || 0
         })),
         // Ensure solver performance exists
         solverPerformance: data.solverPerformance || []
@@ -325,6 +334,7 @@ const AnalyticsPage = () => {
               </div>
 
               <select
+                aria-label="Filter by division"
                 value={divisionFilter}
                 onChange={(e) => setDivisionFilter(e.target.value)}
                 className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent"
@@ -432,11 +442,15 @@ const AnalyticsPage = () => {
                       </td>
                       <td className="py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-20 bg-gray-200 rounded-full h-2">
+                          <div className="w-20 bg-gray-200 rounded-full h-2 overflow-hidden">
                             <div
-                              className="h-2 rounded-full bg-linear-to-r from-[#2a7d2f] to-[#3a9d40]"
-                              style={{ width: `${solver.successRate}%` }}
-                            ></div>
+                              className="h-2 rounded-full bg-linear-to-r from-[#2a7d2f] to-[#3a9d40] transition-all duration-500"
+                              data-success-rate={solver.successRate}
+                            >
+                              <style dangerouslySetInnerHTML={{
+                                __html: `[data-success-rate="${solver.successRate}"] { width: ${Math.min(100, Math.max(0, solver.successRate))}%; }`
+                              }} />
+                            </div>
                           </div>
                           <span className="text-gray-900 font-medium min-w-12">{solver.successRate.toFixed(1)}%</span>
                         </div>
