@@ -54,6 +54,26 @@ interface UserInfo {
   name: string;
 }
 
+const professionOptions = [
+  { value: '', label: 'Select or type your profession' },
+  { value: 'Engineer', label: 'Engineer' },
+  { value: 'Teacher', label: 'Teacher' },
+  { value: 'Doctor', label: 'Doctor' },
+  { value: 'Lawyer', label: 'Lawyer' },
+  { value: 'Architect', label: 'Architect' },
+  { value: 'Social Worker', label: 'Social Worker' },
+  { value: 'Government Employee', label: 'Government Employee' },
+  { value: 'Business Person', label: 'Business Person' },
+  { value: 'Student', label: 'Student' },
+  { value: 'Volunteer', label: 'Volunteer' },
+  { value: 'NGO Worker', label: 'NGO Worker' },
+  { value: 'Healthcare Professional', label: 'Healthcare Professional' },
+  { value: 'IT Professional', label: 'IT Professional' },
+  { value: 'Community Leader', label: 'Community Leader' },
+  { value: 'Retired Professional', label: 'Retired Professional' },
+  { value: 'other', label: 'Other (Type below)' },
+];
+
 const skillOptions = [
   { value: 'infrastructure', label: 'Infrastructure' },
   { value: 'public-health', label: 'Public Health' },
@@ -81,6 +101,8 @@ export default function ApplyProblemSolver() {
   const [districts, setDistricts] = useState<{ name: string; latitude: number; longitude: number }[]>([]);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
+  const [professionType, setProfessionType] = useState<string>('');
+  const [customProfession, setCustomProfession] = useState<string>('');
 
   const {
     register,
@@ -146,8 +168,20 @@ export default function ApplyProblemSolver() {
         name: userData.name
       };
       setUserInfo(userInfo);
-      setValue('email', userInfo.email);
-      setValue('fullName', userInfo.name);
+
+      // Pre-fill all user data
+      setValue('email', userData.email || '');
+      setValue('fullName', userData.name || '');
+      setValue('phone', userData.phone || '');
+      setValue('division', userData.division || '');
+      setValue('district', userData.district || '');
+      setValue('address', userData.address || '');
+
+      // Set districts if division exists
+      if (userData.division) {
+        const division = divisionsData.find(div => div.division === userData.division);
+        setDistricts(division?.districts || []);
+      }
     }
 
     // Load draft from localStorage
@@ -163,13 +197,19 @@ export default function ApplyProblemSolver() {
   useEffect(() => {
     if (selectedDivision) {
       const division = divisionsData.find(div => div.division === selectedDivision);
-      setDistricts(division?.districts || []);
-      // Reset district when division changes
-      setValue('district', '');
+      const newDistricts = division?.districts || [];
+      setDistricts(newDistricts);
+
+      // Only reset district if it's not in the new districts list
+      const currentDistrict = watch('district');
+      const districtExists = newDistricts.some(d => d.name === currentDistrict);
+      if (currentDistrict && !districtExists) {
+        setValue('district', '');
+      }
     } else {
       setDistricts([]);
     }
-  }, [selectedDivision, setValue]);
+  }, [selectedDivision, setValue, watch]);
 
   useEffect(() => {
     if (profileImage && profileImage.length > 0) {
@@ -389,7 +429,7 @@ export default function ApplyProblemSolver() {
                     <div className="space-y-2">
                       <label htmlFor="fullName" className="flex items-center text-sm font-medium text-gray-700">
                         <FaUser className="w-4 h-4 mr-2 text-[#2a7d2f]" />
-                        Full Name <span className="text-red-500 ml-1">*</span>
+                        Full Name (as per NID/Birth Certificate) <span className="text-red-500 ml-1">*</span>
                       </label>
                       <input
                         id="fullName"
@@ -402,8 +442,14 @@ export default function ApplyProblemSolver() {
                           },
                         })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
-                        placeholder="Enter your full name"
+                        placeholder="Enter your full name exactly as it appears on your NID"
                       />
+                      <div className="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <span className="text-yellow-600 text-sm">⚠️</span>
+                        <p className="text-xs text-yellow-800">
+                          <strong>Important:</strong> Please enter your name exactly as it appears on your National ID Card or Birth Certificate. This will be verified during the approval process.
+                        </p>
+                      </div>
                       {errors.fullName && (
                         <p className="text-red-500 text-sm">{errors.fullName.message}</p>
                       )}
@@ -423,6 +469,7 @@ export default function ApplyProblemSolver() {
                         {...register('email', { required: true })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                       />
+                      <p className="text-xs text-gray-500">Email cannot be changed</p>
                     </div>
 
                     {/* Phone */}
@@ -434,16 +481,18 @@ export default function ApplyProblemSolver() {
                       <input
                         id="phone"
                         type="tel"
+                        readOnly
                         {...register('phone', {
                           required: 'Phone number is required',
                           pattern: {
-                            value: /^[0-9+\-\s()]+$/,
-                            message: 'Please enter a valid phone number',
+                            value: /^01[0-9]{9}$/,
+                            message: 'Phone number must be 11 digits starting with 01',
                           },
                         })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
-                        placeholder="Enter your phone number"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+                        placeholder="01XXXXXXXXX"
                       />
+                      <p className="text-xs text-gray-500">Phone number cannot be changed</p>
                       {errors.phone && (
                         <p className="text-red-500 text-sm">{errors.phone.message}</p>
                       )}
@@ -497,15 +546,50 @@ export default function ApplyProblemSolver() {
                         <FaUserTie className="w-4 h-4 mr-2 text-[#2a7d2f]" />
                         Profession <span className="text-red-500 ml-1">*</span>
                       </label>
+                      <select
+                        id="professionSelect"
+                        aria-label="Select Profession"
+                        value={professionType}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setProfessionType(value);
+                          if (value !== 'other') {
+                            setValue('profession', value);
+                            setCustomProfession('');
+                          } else {
+                            setValue('profession', customProfession);
+                          }
+                        }}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                      >
+                        {professionOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+
+                      {professionType === 'other' && (
+                        <input
+                          id="profession"
+                          type="text"
+                          value={customProfession}
+                          onChange={(e) => {
+                            setCustomProfession(e.target.value);
+                            setValue('profession', e.target.value);
+                          }}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors mt-2"
+                          placeholder="Enter your profession"
+                        />
+                      )}
+
                       <input
-                        id="profession"
-                        type="text"
+                        type="hidden"
                         {...register('profession', {
                           required: 'Profession is required',
                         })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
-                        placeholder="e.g., Teacher, Engineer, Volunteer"
                       />
+
                       {errors.profession && (
                         <p className="text-red-500 text-sm">{errors.profession.message}</p>
                       )}
