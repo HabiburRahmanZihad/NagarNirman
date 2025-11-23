@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, Loading, ReportCard } from '@/components/common';
+import { Card, Button, Loading, ReportCard, RefreshButton } from '@/components/common';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -30,6 +30,7 @@ export default function MyReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [filteredReports, setFilteredReports] = useState<Report[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
 
   // Check authentication
@@ -41,10 +42,14 @@ export default function MyReportsPage() {
   }, [authLoading, isAuthenticated, user, router]);
 
   // Fetch user's reports
-  const fetchMyReports = async () => {
+  const fetchMyReports = async (showToast = false) => {
     if (!user) return;
 
-    setIsLoading(true);
+    if (showToast) {
+      setIsRefreshing(true);
+    } else {
+      setIsLoading(true);
+    }
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const token = localStorage.getItem('nn_auth_token');
@@ -80,6 +85,10 @@ export default function MyReportsPage() {
       setFilteredReports([]);
     } finally {
       setIsLoading(false);
+      setIsRefreshing(false);
+      if (showToast) {
+        toast.success('Reports refreshed!');
+      }
     }
   };
 
@@ -130,12 +139,19 @@ export default function MyReportsPage() {
               Track and manage your submitted infrastructure reports
             </p>
           </div>
-          <Link href="/reports/new">
-            <Button variant="primary" className="flex items-center gap-2">
-              <FaPlus />
-              Report New Issue
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <RefreshButton
+              onClick={() => fetchMyReports(true)}
+              isRefreshing={isRefreshing}
+              variant="outline"
+            />
+            <Link href="/reports/new">
+              <Button variant="primary" className="flex items-center gap-2">
+                <FaPlus />
+                Report New Issue
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats Dashboard */}

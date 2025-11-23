@@ -7,6 +7,7 @@ import UsersTable from "@/components/manage-users/UsersTable";
 import UserFilterBar from "@/components/manage-users/UserFilterBar";
 import toast from "react-hot-toast";
 import { Users } from "lucide-react";
+import { RefreshButton } from "@/components/common";
 import { useAuth } from "@/context/AuthContext";
 import { userAPI } from "@/utils/api";
 import divisionsData from "@/data/divisionsData.json";
@@ -40,6 +41,7 @@ export default function SuperAdminUsersPage() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const usersPerPage = 10;
 
   // Check authentication
@@ -55,28 +57,37 @@ export default function SuperAdminUsersPage() {
   }, [isAuthenticated, authUser, authLoading, router]);
 
   // Load users from API
-  useEffect(() => {
-    const loadUsers = async () => {
+  const loadUsers = async (showToast = false) => {
+    if (showToast) {
+      setIsRefreshing(true);
+    } else {
       setIsLoading(true);
-      try {
-        // Fetch all users (superAdmin has no division restrictions)
-        const response = await userAPI.getAllUsers({
-          limit: 1000 // Get all users
-        });
+    }
+    try {
+      // Fetch all users (superAdmin has no division restrictions)
+      const response = await userAPI.getAllUsers({
+        limit: 1000 // Get all users
+      });
 
-        if (response.success && response.data) {
-          setUsers(response.data);
-          setFilteredUsers(response.data);
+      if (response.success && response.data) {
+        setUsers(response.data);
+        setFilteredUsers(response.data);
+        if (showToast) {
+          toast.success(`Users refreshed! ${response.data.length} users loaded`);
+        } else {
           toast.success(`Loaded ${response.data.length} users from the system`);
         }
-      } catch (error: any) {
-        console.error('Error loading users:', error);
-        toast.error('Failed to load users. Please try again.');
-      } finally {
-        setIsLoading(false);
       }
-    };
+    } catch (error: any) {
+      console.error('Error loading users:', error);
+      toast.error('Failed to load users. Please try again.');
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  };
 
+  useEffect(() => {
     if (authUser?.role === "superAdmin") {
       loadUsers();
     }
@@ -167,18 +178,25 @@ export default function SuperAdminUsersPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-3 bg-[#2a7d2f] rounded-xl shadow-lg">
-              <Users className="w-8 h-8 text-white" />
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-[#2a7d2f] rounded-xl shadow-lg">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  All Users Management
+                </h1>
+                <p className="text-gray-600 mt-1">
+                  System-wide user management (SuperAdmin)
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                All Users Management
-              </h1>
-              <p className="text-gray-600 mt-1">
-                System-wide user management (SuperAdmin)
-              </p>
-            </div>
+            <RefreshButton
+              onClick={() => loadUsers(true)}
+              isRefreshing={isRefreshing}
+              variant="primary"
+            />
           </div>
         </motion.div>
 

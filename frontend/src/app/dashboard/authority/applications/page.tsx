@@ -18,6 +18,7 @@ import {
   FaEye,
   FaFilter,
 } from 'react-icons/fa';
+import { RefreshButton } from '@/components/common';
 
 interface Application {
   _id: string;
@@ -48,6 +49,7 @@ export default function ProblemSolverApplications() {
   const router = useRouter();
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [selectedApp, setSelectedApp] = useState<Application | null>(null);
   const [reviewNote, setReviewNote] = useState('');
@@ -90,7 +92,10 @@ export default function ProblemSolverApplications() {
     return userData.division;
   };
 
-  const fetchApplications = async () => {
+  const fetchApplications = async (showToast = false) => {
+    if (showToast) {
+      setIsRefreshing(true);
+    }
     try {
       const { problemSolverAPI } = await import('@/utils/api');
       const filters: any = {
@@ -111,6 +116,10 @@ export default function ProblemSolverApplications() {
       console.error(error);
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
+      if (showToast) {
+        toast.success('Applications refreshed!');
+      }
     }
   };
 
@@ -198,23 +207,30 @@ export default function ProblemSolverApplications() {
 
         {/* Filters */}
         <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <div className="flex items-center space-x-4">
-            <FaFilter className="text-gray-500" />
-            <label className="text-sm font-medium text-gray-700">Status:</label>
-            <select
-              aria-label="Filter by status"
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"
-            >
-              <option value="all">All Applications</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
-            <span className="text-sm text-gray-600">
-              Total: {pagination.total} applications
-            </span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <FaFilter className="text-gray-500" />
+              <label className="text-sm font-medium text-gray-700">Status:</label>
+              <select
+                aria-label="Filter by status"
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"
+              >
+                <option value="all">All Applications</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+              <span className="text-sm text-gray-600">
+                Total: {pagination.total} applications
+              </span>
+            </div>
+            <RefreshButton
+              onClick={() => fetchApplications(true)}
+              isRefreshing={isRefreshing}
+              variant="primary"
+            />
           </div>
         </div>
 
