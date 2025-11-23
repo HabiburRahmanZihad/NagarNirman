@@ -23,19 +23,46 @@ export const createApplication = async (applicationData) => {
     skills,
     motivation,
     experience,
-    profileImage,
     nidOrIdDoc,
+    nidNumber,
+    emergencyContact,
+    emergencyContactName,
+    emergencyContactRelation,
+    educationLevel,
+    availability,
+    languagesSpoken,
+    previousVolunteerWork,
+    linkedinProfile,
+    facebookProfile,
+    twitterProfile,
+    websiteProfile,
   } = applicationData;
 
-  // Validate required fields
-  if (!userId || !fullName || !email || !phone || !dateOfBirth || !gender ||
-    !division || !district || !address || !profession || !skills ||
-    !motivation || !nidOrIdDoc) {
-    throw new Error('Please provide all required fields');
-  }
+  // Validate required fields with specific messages
+  if (!userId) throw new Error('User ID is required');
+  if (!fullName) throw new Error('Full name is required');
+  if (!email) throw new Error('Email is required');
+  if (!phone) throw new Error('Phone number is required');
+  if (!dateOfBirth) throw new Error('Date of birth is required');
+  if (!gender) throw new Error('Gender is required');
+  if (!division) throw new Error('Division is required');
+  if (!district) throw new Error('District is required');
+  if (!address) throw new Error('Address is required');
+  if (!profession) throw new Error('Profession is required');
+  if (!nidNumber) throw new Error('NID number is required');
+  if (!emergencyContactName) throw new Error('Emergency contact name is required');
+  if (!emergencyContact) throw new Error('Emergency contact number is required');
+  if (!emergencyContactRelation) throw new Error('Emergency contact relation is required');
+  if (!motivation) throw new Error('Motivation is required');
+  if (!nidOrIdDoc) throw new Error('NID document is required');
+  if (!linkedinProfile) throw new Error('LinkedIn profile is required');
 
   if (!Array.isArray(skills) || skills.length === 0) {
     throw new Error('At least one skill is required');
+  }
+
+  if (!Array.isArray(languagesSpoken) || languagesSpoken.length === 0) {
+    throw new Error('At least one language is required');
   }
 
   if (motivation.length < 50) {
@@ -68,8 +95,19 @@ export const createApplication = async (applicationData) => {
     skills,
     motivation: motivation.trim(),
     experience: experience?.trim() || null,
-    profileImage: profileImage || null, // URL from ImgBB
     nidOrIdDoc, // URL from ImgBB
+    nidNumber: nidNumber.trim(),
+    emergencyContact: emergencyContact.trim(),
+    emergencyContactName: emergencyContactName.trim(),
+    emergencyContactRelation,
+    educationLevel: educationLevel?.trim() || null,
+    availability: availability || null,
+    languagesSpoken,
+    previousVolunteerWork: previousVolunteerWork?.trim() || null,
+    linkedinProfile: linkedinProfile.trim(),
+    facebookProfile: facebookProfile?.trim() || null,
+    twitterProfile: twitterProfile?.trim() || null,
+    websiteProfile: websiteProfile?.trim() || null,
     status: 'pending', // pending, approved, rejected
     reviewedBy: null,
     reviewedAt: null,

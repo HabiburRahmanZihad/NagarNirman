@@ -362,6 +362,14 @@ export const problemSolverAPI = {
     });
   },
 
+  // Delete user's rejected application
+  deleteMyApplication: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/my-application`, {
+      method: 'DELETE',
+      requiresAuth: true,
+    });
+  },
+
   // Get all applications (Authority only)
   getAllApplications: (filters?: { status?: string; division?: string; district?: string; page?: number; limit?: number }) => {
     const params = new URLSearchParams();

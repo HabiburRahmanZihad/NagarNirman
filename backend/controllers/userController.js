@@ -121,22 +121,25 @@ export const applyProblemSolver = asyncHandler(async (req, res) => {
       skills,
       motivation,
       experience,
-      profileImage,
       nidOrIdDoc,
+      nidNumber,
+      emergencyContact,
+      emergencyContactName,
+      emergencyContactRelation,
+      educationLevel,
+      availability,
+      languagesSpoken,
+      previousVolunteerWork,
+      linkedinProfile,
+      facebookProfile,
+      twitterProfile,
+      websiteProfile,
     } = req.body;
 
-    // Upload images to ImgBB
-    let profileImageUrl = null;
+    // Upload NID document to ImgBB
     let nidOrIdDocUrl = null;
 
     try {
-      // Upload profile image if provided
-      if (profileImage) {
-        validateImage(profileImage, 5); // 5MB max
-        const profileUpload = await uploadToImgBB(profileImage, `${fullName}_profile`);
-        profileImageUrl = profileUpload.url;
-      }
-
       // Upload NID/ID document (required)
       if (!nidOrIdDoc) {
         return res.status(400).json({
@@ -145,7 +148,7 @@ export const applyProblemSolver = asyncHandler(async (req, res) => {
         });
       }
 
-      validateImage(nidOrIdDoc, 5); // 5MB max
+      validateImage(nidOrIdDoc, 10); // 10MB max for documents
       const nidUpload = await uploadToImgBB(nidOrIdDoc, `${fullName}_nid`);
       nidOrIdDocUrl = nidUpload.url;
 
@@ -156,7 +159,7 @@ export const applyProblemSolver = asyncHandler(async (req, res) => {
       });
     }
 
-    // Create application with image URLs
+    // Create application with all data
     const application = await createApplication({
       userId: req.user.id,
       fullName,
@@ -172,8 +175,19 @@ export const applyProblemSolver = asyncHandler(async (req, res) => {
       skills,
       motivation,
       experience,
-      profileImage: profileImageUrl,
       nidOrIdDoc: nidOrIdDocUrl,
+      nidNumber,
+      emergencyContact,
+      emergencyContactName,
+      emergencyContactRelation,
+      educationLevel,
+      availability,
+      languagesSpoken,
+      previousVolunteerWork,
+      linkedinProfile,
+      facebookProfile,
+      twitterProfile,
+      websiteProfile,
     });
 
     res.status(201).json({
@@ -216,6 +230,45 @@ export const approveUser = asyncHandler(async (req, res) => {
       success: true,
       message: `User ${approve ? 'approved' : 'rejected'} successfully`,
       data: user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+// @desc    Delete rejected application to allow reapply
+// @route   DELETE /api/users/my-application
+// @access  Private
+export const deleteMyApplication = asyncHandler(async (req, res) => {
+  try {
+    const { getApplicationByUserId, deleteApplication } = await import('../models/ProblemSolverApplication.js');
+
+    // Get user's application
+    const application = await getApplicationByUserId(req.user.id);
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: 'No application found',
+      });
+    }
+
+    // Only allow deletion of rejected applications
+    if (application.status !== 'rejected') {
+      return res.status(400).json({
+        success: false,
+        message: 'Only rejected applications can be deleted',
+      });
+    }
+
+    await deleteApplication(application._id.toString());
+
+    res.status(200).json({
+      success: true,
+      message: 'Application deleted successfully. You can now reapply.',
     });
   } catch (error) {
     res.status(400).json({

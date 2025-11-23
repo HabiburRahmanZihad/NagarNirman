@@ -44,8 +44,19 @@ interface FormData {
   skills: { value: string; label: string }[];
   motivation: string;
   experience: string;
-  profileImage: FileList | null;
   nidOrIdDoc: FileList | null;
+  nidNumber: string;
+  emergencyContact: string;
+  emergencyContactName: string;
+  emergencyContactRelation: string;
+  educationLevel: string;
+  availability: string;
+  languagesSpoken: { value: string; label: string }[];
+  previousVolunteerWork: string;
+  linkedinProfile: string;
+  facebookProfile: string;
+  twitterProfile: string;
+  websiteProfile: string;
   agree: boolean;
 }
 
@@ -85,6 +96,16 @@ const skillOptions = [
   { value: 'technology', label: 'Technology' },
   { value: 'community-outreach', label: 'Community Outreach' },
   { value: 'legal-aid', label: 'Legal Aid' },
+  { value: 'project-management', label: 'Project Management' },
+  { value: 'data-analysis', label: 'Data Analysis' },
+  { value: 'communication', label: 'Communication & Public Relations' },
+  { value: 'financial-management', label: 'Financial Management' },
+  { value: 'urban-planning', label: 'Urban Planning' },
+  { value: 'medical-healthcare', label: 'Medical & Healthcare' },
+  { value: 'engineering', label: 'Engineering' },
+  { value: 'research', label: 'Research & Documentation' },
+  { value: 'training', label: 'Training & Capacity Building' },
+  { value: 'conflict-resolution', label: 'Conflict Resolution' },
 ];
 
 const genderOptions = [
@@ -93,16 +114,61 @@ const genderOptions = [
   { value: 'other', label: 'Other' },
 ];
 
+const educationLevelOptions = [
+  { value: '', label: 'Select Education Level' },
+  { value: 'Secondary', label: 'Secondary School (SSC)' },
+  { value: 'Higher Secondary', label: 'Higher Secondary (HSC)' },
+  { value: 'Diploma', label: 'Diploma' },
+  { value: 'Bachelor', label: "Bachelor's Degree" },
+  { value: 'Master', label: "Master's Degree" },
+  { value: 'PhD', label: 'PhD/Doctorate' },
+  { value: 'Other', label: 'Other' },
+];
+
+const availabilityOptions = [
+  { value: '', label: 'Select Availability' },
+  { value: 'Full-time', label: 'Full-time (40+ hours/week)' },
+  { value: 'Part-time', label: 'Part-time (20-40 hours/week)' },
+  { value: 'Weekends', label: 'Weekends Only' },
+  { value: 'Flexible', label: 'Flexible (As needed)' },
+  { value: 'Limited', label: 'Limited (Few hours/week)' },
+];
+
+const relationOptions = [
+  { value: '', label: 'Select Relation' },
+  { value: 'Father', label: 'Father' },
+  { value: 'Mother', label: 'Mother' },
+  { value: 'Spouse', label: 'Spouse' },
+  { value: 'Sibling', label: 'Sibling' },
+  { value: 'Child', label: 'Child' },
+  { value: 'Friend', label: 'Friend' },
+  { value: 'Colleague', label: 'Colleague' },
+  { value: 'Other', label: 'Other' },
+];
+
+const languageOptions = [
+  { value: 'Bengali', label: 'Bengali' },
+  { value: 'English', label: 'English' },
+  { value: 'Hindi', label: 'Hindi' },
+  { value: 'Urdu', label: 'Urdu' },
+  { value: 'Arabic', label: 'Arabic' },
+  { value: 'French', label: 'French' },
+  { value: 'Spanish', label: 'Spanish' },
+  { value: 'Mandarin', label: 'Mandarin' },
+];
+
 export default function ApplyProblemSolver() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [districts, setDistricts] = useState<{ name: string; latitude: number; longitude: number }[]>([]);
-  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
+  const [nidDocumentPreview, setNidDocumentPreview] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [professionType, setProfessionType] = useState<string>('');
   const [customProfession, setCustomProfession] = useState<string>('');
+  const [educationLevelType, setEducationLevelType] = useState<string>('');
+  const [customEducationLevel, setCustomEducationLevel] = useState<string>('');
 
   const {
     register,
@@ -122,12 +188,13 @@ export default function ApplyProblemSolver() {
       gender: '',
       division: '',
       district: '',
+      languagesSpoken: [],
     },
   });
 
   const selectedDivision = watch('division');
-  const profileImage = watch('profileImage');
-  const step1Fields = watch(['fullName', 'phone', 'dateOfBirth', 'gender', 'division', 'district', 'address', 'profession']);
+  const nidOrIdDoc = watch('nidOrIdDoc');
+  const step1Fields = watch(['fullName', 'phone', 'dateOfBirth', 'gender', 'division', 'district', 'address', 'profession', 'nidNumber', 'emergencyContact', 'emergencyContactName', 'emergencyContactRelation']);
 
   // Check if step 1 is valid
   const isStep1Valid = () => {
@@ -139,7 +206,11 @@ export default function ApplyProblemSolver() {
       step1Fields[4] && // division
       step1Fields[5] && // district
       step1Fields[6] && // address
-      step1Fields[7]    // profession
+      step1Fields[7] && // profession
+      step1Fields[8] && // nidNumber
+      step1Fields[9] && // emergencyContact
+      step1Fields[10] && // emergencyContactName
+      step1Fields[11]    // emergencyContactRelation
     );
   };
 
@@ -177,6 +248,15 @@ export default function ApplyProblemSolver() {
       setValue('district', userData.district || '');
       setValue('address', userData.address || '');
 
+      // Set profession type if it's in the dropdown
+      if (userData.profession) {
+        const professionExists = professionOptions.find(opt => opt.value === userData.profession);
+        if (professionExists) {
+          setProfessionType(userData.profession);
+          setValue('profession', userData.profession);
+        }
+      }
+
       // Set districts if division exists
       if (userData.division) {
         const division = divisionsData.find(div => div.division === userData.division);
@@ -184,13 +264,117 @@ export default function ApplyProblemSolver() {
       }
     }
 
-    // Load draft from localStorage
-    const draft = localStorage.getItem('problem-solver-draft');
-    if (draft) {
-      const draftData = JSON.parse(draft);
-      Object.keys(draftData).forEach(key => {
-        setValue(key as keyof FormData, draftData[key]);
-      });
+    // Check for reapply data (rejected application)
+    const reapplyDataStr = localStorage.getItem('nn_reapply_data');
+    if (reapplyDataStr) {
+      try {
+        const reapplyData = JSON.parse(reapplyDataStr);
+
+        // Show notification about prefilled data
+        toast.success('Your previous application data has been loaded. You can modify any field before resubmitting.', {
+          duration: 5000,
+        });
+
+        // Display review note if available
+        if (reapplyData.reviewNote) {
+          setTimeout(() => {
+            toast.error(`Previous Rejection Reason: ${reapplyData.reviewNote}`, {
+              duration: 10000,
+            });
+          }, 1000);
+        }
+
+        // Pre-fill all fields from previous application
+        setValue('fullName', reapplyData.fullName || '');
+        setValue('email', reapplyData.email || '');
+        setValue('phone', reapplyData.phone || '');
+        setValue('dateOfBirth', reapplyData.dateOfBirth ? new Date(reapplyData.dateOfBirth).toISOString().split('T')[0] : '');
+        setValue('gender', reapplyData.gender || '');
+        setValue('division', reapplyData.division || '');
+        setValue('district', reapplyData.district || '');
+        setValue('address', reapplyData.address || '');
+
+        // Handle profession
+        if (reapplyData.profession) {
+          const professionExists = professionOptions.find(opt => opt.value === reapplyData.profession);
+          if (professionExists) {
+            setProfessionType(reapplyData.profession);
+            setValue('profession', reapplyData.profession);
+          } else {
+            setProfessionType('other');
+            setCustomProfession(reapplyData.profession);
+            setValue('profession', reapplyData.profession);
+          }
+        }
+
+        setValue('organization', reapplyData.organization || '');
+        setValue('nidNumber', reapplyData.nidNumber || '');
+        setValue('emergencyContact', reapplyData.emergencyContact || '');
+        setValue('emergencyContactName', reapplyData.emergencyContactName || '');
+        setValue('emergencyContactRelation', reapplyData.emergencyContactRelation || '');
+
+        // Handle education level
+        if (reapplyData.educationLevel) {
+          const educationExists = educationLevelOptions.find(opt => opt.value === reapplyData.educationLevel);
+          if (educationExists) {
+            setEducationLevelType(reapplyData.educationLevel);
+            setValue('educationLevel', reapplyData.educationLevel);
+          } else {
+            setEducationLevelType('Other');
+            setCustomEducationLevel(reapplyData.educationLevel);
+            setValue('educationLevel', reapplyData.educationLevel);
+          }
+        }
+
+        setValue('availability', reapplyData.availability || '');
+        setValue('previousVolunteerWork', reapplyData.previousVolunteerWork || '');
+        setValue('linkedinProfile', reapplyData.linkedinProfile || '');
+        setValue('facebookProfile', reapplyData.facebookProfile || '');
+        setValue('twitterProfile', reapplyData.twitterProfile || '');
+        setValue('websiteProfile', reapplyData.websiteProfile || '');
+        setValue('motivation', reapplyData.motivation || '');
+        setValue('experience', reapplyData.experience || '');
+
+        // Handle skills (convert array to Select format)
+        if (reapplyData.skills && Array.isArray(reapplyData.skills)) {
+          const skillsFormatted = reapplyData.skills.map((skill: string) => ({
+            value: skill,
+            label: skill.charAt(0).toUpperCase() + skill.slice(1).replace(/-/g, ' ')
+          }));
+          setValue('skills', skillsFormatted);
+        }
+
+        // Handle languages (convert array to Select format)
+        if (reapplyData.languagesSpoken && Array.isArray(reapplyData.languagesSpoken)) {
+          const languagesFormatted = reapplyData.languagesSpoken.map((lang: string) => ({
+            value: lang,
+            label: lang
+          }));
+          setValue('languagesSpoken', languagesFormatted);
+        }
+
+        // Set districts based on division
+        if (reapplyData.division) {
+          const division = divisionsData.find(div => div.division === reapplyData.division);
+          setDistricts(division?.districts || []);
+        }
+
+        // Clear reapply data after loading
+        localStorage.removeItem('nn_reapply_data');
+      } catch (error) {
+        console.error('Failed to load reapply data:', error);
+        toast.error('Failed to load previous application data');
+        localStorage.removeItem('nn_reapply_data');
+      }
+    } else {
+      // Load draft from localStorage only if no reapply data
+      const draft = localStorage.getItem('problem-solver-draft');
+      if (draft) {
+        const draftData = JSON.parse(draft);
+        Object.keys(draftData).forEach(key => {
+          setValue(key as keyof FormData, draftData[key]);
+        });
+      }
     }
   }, [router, setValue]);
 
@@ -212,15 +396,15 @@ export default function ApplyProblemSolver() {
   }, [selectedDivision, setValue, watch]);
 
   useEffect(() => {
-    if (profileImage && profileImage.length > 0) {
-      const file = profileImage[0];
+    if (nidOrIdDoc && nidOrIdDoc.length > 0) {
+      const file = nidOrIdDoc[0];
       const reader = new FileReader();
       reader.onload = (e) => {
-        setProfileImagePreview(e.target?.result as string);
+        setNidDocumentPreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
     }
-  }, [profileImage]);
+  }, [nidOrIdDoc]);
 
   const saveDraft = (data: Partial<FormData>) => {
     setIsSavingDraft(true);
@@ -234,28 +418,184 @@ export default function ApplyProblemSolver() {
     }
   };
 
+  const scrollToField = (fieldName: string, step: number) => {
+    // Navigate to the correct step first
+    setCurrentStep(step);
+
+    // Wait for the step to render, then scroll to the field
+    setTimeout(() => {
+      const element = document.getElementById(fieldName);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.focus();
+
+        // Add a highlight animation
+        element.classList.add('ring-2', 'ring-red-500', 'ring-offset-2');
+        setTimeout(() => {
+          element.classList.remove('ring-2', 'ring-red-500', 'ring-offset-2');
+        }, 3000);
+      }
+    }, 100);
+  };
+
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
 
     try {
+      // Validate required fields and redirect to first missing field
+      if (!data.fullName) {
+        toast.error('Please enter your full name');
+        scrollToField('fullName', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.phone) {
+        toast.error('Phone number is required');
+        scrollToField('phone', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.dateOfBirth) {
+        toast.error('Please select your date of birth');
+        scrollToField('dateOfBirth', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.gender) {
+        toast.error('Please select your gender');
+        scrollToField('gender', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.division) {
+        toast.error('Please select your division');
+        scrollToField('division', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.district) {
+        toast.error('Please select your district');
+        scrollToField('district', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.address) {
+        toast.error('Please enter your address');
+        scrollToField('address', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.profession) {
+        toast.error('Please select or enter your profession');
+        scrollToField('professionSelect', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.nidNumber) {
+        toast.error('Please enter your NID number');
+        scrollToField('nidNumber', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.emergencyContactName) {
+        toast.error('Please enter emergency contact name');
+        scrollToField('emergencyContactName', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.emergencyContact) {
+        toast.error('Please enter emergency contact number');
+        scrollToField('emergencyContact', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.emergencyContactRelation) {
+        toast.error('Please select emergency contact relation');
+        scrollToField('emergencyContactRelation', 1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.skills || data.skills.length === 0) {
+        toast.error('Please select at least one skill');
+        scrollToField('skills', 2);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.motivation) {
+        toast.error('Please enter your motivation (minimum 50 characters)');
+        scrollToField('motivation', 2);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.languagesSpoken || data.languagesSpoken.length === 0) {
+        toast.error('Please select at least one language you can speak');
+        scrollToField('languagesSpoken', 2);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.linkedinProfile) {
+        toast.error('LinkedIn profile is required');
+        scrollToField('linkedinProfile', 2);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.nidOrIdDoc || data.nidOrIdDoc.length === 0) {
+        toast.error('Please upload your NID and important documents');
+        scrollToField('nidOrIdDoc', 2);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!data.agree) {
+        toast.error('Please agree to the terms and conditions');
+        scrollToField('agree', 2);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Convert file to base64
+      let nidDocBase64 = null;
+      try {
+        nidDocBase64 = await fileToBase64(data.nidOrIdDoc[0]);
+      } catch (error) {
+        toast.error('Failed to process document. Please try again.');
+        setIsSubmitting(false);
+        return;
+      }
+
       // Prepare the data for API submission
       const submissionData = {
-        fullName: data.fullName,
-        email: data.email,
-        phone: data.phone,
+        fullName: data.fullName.trim(),
+        email: data.email.trim().toLowerCase(),
+        phone: data.phone.trim(),
         dateOfBirth: data.dateOfBirth,
         gender: data.gender,
         division: data.division,
         district: data.district,
-        address: data.address,
-        profession: data.profession,
-        organization: data.organization || null,
-        skills: data.skills.map(skill => skill.value),
-        motivation: data.motivation,
-        experience: data.experience || null,
-        profileImage: data.profileImage?.[0] ? await fileToBase64(data.profileImage[0]) : null,
-        nidOrIdDoc: data.nidOrIdDoc?.[0] ? await fileToBase64(data.nidOrIdDoc[0]) : null,
+        address: data.address.trim(),
+        profession: data.profession.trim(),
+        organization: data.organization?.trim() || null,
+        skills: Array.isArray(data.skills) ? data.skills.map(skill => skill.value) : [],
+        motivation: data.motivation.trim(),
+        experience: data.experience?.trim() || null,
+        nidOrIdDoc: nidDocBase64,
+        nidNumber: data.nidNumber.trim(),
+        emergencyContact: data.emergencyContact.trim(),
+        emergencyContactName: data.emergencyContactName.trim(),
+        emergencyContactRelation: data.emergencyContactRelation,
+        educationLevel: data.educationLevel?.trim() || null,
+        availability: data.availability || null,
+        languagesSpoken: Array.isArray(data.languagesSpoken) ? data.languagesSpoken.map(lang => lang.value) : [],
+        previousVolunteerWork: data.previousVolunteerWork?.trim() || null,
+        linkedinProfile: data.linkedinProfile.trim(),
+        facebookProfile: data.facebookProfile?.trim() || null,
+        twitterProfile: data.twitterProfile?.trim() || null,
+        websiteProfile: data.websiteProfile?.trim() || null,
       };
+
+      // Debug log to check data
+      console.log('Submission Data:', submissionData);
+      console.log('Skills:', submissionData.skills);
+      console.log('Languages:', submissionData.languagesSpoken);
 
       // Import the API function
       const { problemSolverAPI } = await import('@/utils/api');
@@ -277,7 +617,21 @@ export default function ApplyProblemSolver() {
 
     } catch (error: any) {
       console.error('Submission error:', error);
-      toast.error(error.message || 'Failed to submit application. Please try again.');
+
+      // Better error messages
+      if (error.message?.includes('required fields')) {
+        toast.error('Please fill in all required fields correctly');
+      } else if (error.message?.includes('already have an application')) {
+        toast.error(error.message);
+      } else if (error.message?.includes('language')) {
+        toast.error('Please select at least one language');
+      } else if (error.message?.includes('skill')) {
+        toast.error('Please select at least one skill');
+      } else if (error.message?.includes('LinkedIn')) {
+        toast.error('Please provide a valid LinkedIn profile URL');
+      } else {
+        toast.error(error.message || 'Failed to submit application. Please try again.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -337,7 +691,7 @@ export default function ApplyProblemSolver() {
 
   const nextStep = async () => {
     // Validate step 1 fields before proceeding
-    const isValid = await trigger(['fullName', 'phone', 'dateOfBirth', 'gender', 'division', 'district', 'address', 'profession']);
+    const isValid = await trigger(['fullName', 'phone', 'dateOfBirth', 'gender', 'division', 'district', 'address', 'profession', 'nidNumber', 'emergencyContact', 'emergencyContactName', 'emergencyContactRelation']);
     if (isValid) {
       setCurrentStep(2);
     }
@@ -554,10 +908,10 @@ export default function ApplyProblemSolver() {
                           const value = e.target.value;
                           setProfessionType(value);
                           if (value !== 'other') {
-                            setValue('profession', value);
+                            setValue('profession', value, { shouldValidate: true });
                             setCustomProfession('');
                           } else {
-                            setValue('profession', customProfession);
+                            setValue('profession', customProfession, { shouldValidate: true });
                           }
                         }}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
@@ -571,15 +925,16 @@ export default function ApplyProblemSolver() {
 
                       {professionType === 'other' && (
                         <input
-                          id="profession"
+                          id="professionCustom"
                           type="text"
                           value={customProfession}
                           onChange={(e) => {
                             setCustomProfession(e.target.value);
-                            setValue('profession', e.target.value);
+                            setValue('profession', e.target.value, { shouldValidate: true });
                           }}
                           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors mt-2"
                           placeholder="Enter your profession"
+                          required
                         />
                       )}
 
@@ -588,10 +943,37 @@ export default function ApplyProblemSolver() {
                         {...register('profession', {
                           required: 'Profession is required',
                         })}
+                        value={professionType === 'other' ? customProfession : professionType}
                       />
 
                       {errors.profession && (
                         <p className="text-red-500 text-sm">{errors.profession.message}</p>
+                      )}
+                    </div>
+
+                    {/* NID Number */}
+                    <div className="lg:col-span-2 space-y-2">
+                      <label htmlFor="nidNumber" className="flex items-center text-sm font-medium text-gray-700">
+                        <FaIdCard className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                        National ID (NID) Number <span className="text-red-500 ml-1">*</span>
+                      </label>
+                      <input
+                        id="nidNumber"
+                        type="text"
+                        {...register('nidNumber', {
+                          required: 'NID number is required',
+                          pattern: {
+                            value: /^[0-9]{10}$|^[0-9]{13}$|^[0-9]{17}$/,
+                            message: 'NID must be 10, 13, or 17 digits',
+                          },
+                        })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        placeholder="Enter your 10/13/17 digit NID number"
+                        maxLength={17}
+                      />
+                      <p className="text-xs text-gray-500">Enter your National ID number (10, 13, or 17 digits)</p>
+                      {errors.nidNumber && (
+                        <p className="text-red-500 text-sm">{errors.nidNumber.message}</p>
                       )}
                     </div>
 
@@ -664,6 +1046,78 @@ export default function ApplyProblemSolver() {
                         <p className="text-red-500 text-sm">{errors.address.message}</p>
                       )}
                     </div>
+
+                    {/* Emergency Contact Section */}
+                    <div className="lg:col-span-2">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3 mt-4">Emergency Contact Information</h3>
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <label htmlFor="emergencyContactName" className="flex items-center text-sm font-medium text-gray-700">
+                            <FaUser className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                            Contact Name <span className="text-red-500 ml-1">*</span>
+                          </label>
+                          <input
+                            id="emergencyContactName"
+                            type="text"
+                            {...register('emergencyContactName', {
+                              required: 'Emergency contact name is required',
+                            })}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                            placeholder="Full name"
+                          />
+                          {errors.emergencyContactName && (
+                            <p className="text-red-500 text-sm">{errors.emergencyContactName.message}</p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <label htmlFor="emergencyContact" className="flex items-center text-sm font-medium text-gray-700">
+                            <FaPhone className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                            Contact Number <span className="text-red-500 ml-1">*</span>
+                          </label>
+                          <input
+                            id="emergencyContact"
+                            type="tel"
+                            {...register('emergencyContact', {
+                              required: 'Emergency contact number is required',
+                              pattern: {
+                                value: /^01[0-9]{9}$/,
+                                message: 'Must be 11 digits starting with 01',
+                              },
+                            })}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                            placeholder="01XXXXXXXXX"
+                            maxLength={11}
+                          />
+                          {errors.emergencyContact && (
+                            <p className="text-red-500 text-sm">{errors.emergencyContact.message}</p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <label htmlFor="emergencyContactRelation" className="flex items-center text-sm font-medium text-gray-700">
+                            <FaUserTie className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                            Relation <span className="text-red-500 ml-1">*</span>
+                          </label>
+                          <select
+                            id="emergencyContactRelation"
+                            {...register('emergencyContactRelation', {
+                              required: 'Relation is required',
+                            })}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          >
+                            {relationOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                          {errors.emergencyContactRelation && (
+                            <p className="text-red-500 text-sm">{errors.emergencyContactRelation.message}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Step Navigation */}
@@ -696,19 +1150,128 @@ export default function ApplyProblemSolver() {
                 >
                   <h2 className="text-xl font-semibold text-gray-900 mb-4">Background & Skills</h2>
 
-                  {/* Organization - Full Width */}
-                  <div className="space-y-2">
-                    <label htmlFor="organization" className="flex items-center text-sm font-medium text-gray-700">
-                      <FaBuilding className="w-4 h-4 mr-2 text-[#2a7d2f]" />
-                      Organization (Optional)
-                    </label>
-                    <input
-                      id="organization"
-                      type="text"
-                      {...register('organization')}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
-                      placeholder="e.g., NGO, Company, Institution"
-                    />
+                  {/* Additional Information Grid */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Organization */}
+                    <div className="space-y-2">
+                      <label htmlFor="organization" className="flex items-center text-sm font-medium text-gray-700">
+                        <FaBuilding className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                        Organization (Optional)
+                      </label>
+                      <input
+                        id="organization"
+                        type="text"
+                        {...register('organization')}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        placeholder="e.g., NGO, Company, Institution"
+                      />
+                    </div>
+
+                    {/* Education Level */}
+                    <div className="space-y-2">
+                      <label htmlFor="educationLevel" className="flex items-center text-sm font-medium text-gray-700">
+                        <FaFileAlt className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                        Education Level
+                      </label>
+                      <select
+                        id="educationLevelSelect"
+                        aria-label="Select Education Level"
+                        value={educationLevelType}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setEducationLevelType(value);
+                          if (value !== 'Other') {
+                            setValue('educationLevel', value, { shouldValidate: true });
+                            setCustomEducationLevel('');
+                          } else {
+                            setValue('educationLevel', customEducationLevel, { shouldValidate: true });
+                          }
+                        }}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                      >
+                        {educationLevelOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+
+                      {educationLevelType === 'Other' && (
+                        <input
+                          id="educationLevelCustom"
+                          type="text"
+                          value={customEducationLevel}
+                          onChange={(e) => {
+                            setCustomEducationLevel(e.target.value);
+                            setValue('educationLevel', e.target.value, { shouldValidate: true });
+                          }}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors mt-2"
+                          placeholder="Enter your education level"
+                        />
+                      )}
+
+                      <input
+                        type="hidden"
+                        {...register('educationLevel')}
+                        value={educationLevelType === 'Other' ? customEducationLevel : educationLevelType}
+                      />
+                    </div>
+
+                    {/* Availability */}
+                    <div className="space-y-2">
+                      <label htmlFor="availability" className="flex items-center text-sm font-medium text-gray-700">
+                        <FaCalendar className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                        Availability
+                      </label>
+                      <select
+                        id="availability"
+                        {...register('availability')}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                      >
+                        {availabilityOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Languages Spoken */}
+                    <div className="lg:col-span-2 space-y-2">
+                      <label htmlFor="languagesSpoken" className="flex items-center text-sm font-medium text-gray-700">
+                        <FaCode className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                        Languages Spoken <span className="text-red-500 ml-1">*</span>
+                      </label>
+                      <Controller
+                        name="languagesSpoken"
+                        control={control}
+                        rules={{ required: 'At least one language is required' }}
+                        render={({ field }) => (
+                          <Select
+                            {...field}
+                            isMulti
+                            options={languageOptions}
+                            className="react-select-container"
+                            classNamePrefix="react-select"
+                            placeholder="Select languages you can speak..."
+                            styles={{
+                              control: (base) => ({
+                                ...base,
+                                border: '1px solid #D1D5DB',
+                                borderRadius: '0.5rem',
+                                padding: '0.25rem',
+                                '&:hover': {
+                                  borderColor: '#D1D5DB',
+                                },
+                              }),
+                            }}
+                          />
+                        )}
+                      />
+                      {errors.languagesSpoken && (
+                        <p className="text-red-500 text-sm">{errors.languagesSpoken.message}</p>
+                      )}
+                    </div>
                   </div>
 
                   {/* Skills */}
@@ -776,60 +1339,150 @@ export default function ApplyProblemSolver() {
                   <div className="space-y-2">
                     <label htmlFor="experience" className="flex items-center text-sm font-medium text-gray-700">
                       <FaFileAlt className="w-4 h-4 mr-2 text-[#2a7d2f]" />
-                      Relevant Experience (Optional)
+                      Relevant Work Experience (Optional)
                     </label>
                     <textarea
                       id="experience"
                       rows={3}
                       {...register('experience')}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none"
-                      placeholder="Describe any relevant work or volunteer experience..."
+                      placeholder="Describe any relevant work experience..."
                     />
                   </div>
 
-                  {/* File Uploads */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Profile Image */}
-                    <div className="space-y-2">
-                      <label htmlFor="profileImage" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaImage className="w-4 h-4 mr-2 text-[#2a7d2f]" />
-                        Profile Photo (Optional)
-                      </label>
-                      <input
-                        id="profileImage"
-                        type="file"
-                        accept=".jpg,.jpeg,.png"
-                        {...register('profileImage')}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#2a7d2f] file:text-white hover:file:bg-[#236b27]"
-                      />
-                      {profileImagePreview && (
-                        <div className="mt-2">
-                          <img
-                            src={profileImagePreview}
-                            alt="Profile preview"
-                            className="w-20 h-20 rounded-full object-cover border-2 border-[#2a7d2f]"
-                          />
-                        </div>
-                      )}
-                    </div>
+                  {/* Previous Volunteer Work */}
+                  <div className="space-y-2">
+                    <label htmlFor="previousVolunteerWork" className="flex items-center text-sm font-medium text-gray-700">
+                      <FaCheck className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                      Previous Volunteer Work (Optional)
+                    </label>
+                    <textarea
+                      id="previousVolunteerWork"
+                      rows={3}
+                      {...register('previousVolunteerWork')}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none"
+                      placeholder="Describe any previous volunteer work or community service..."
+                    />
+                  </div>
 
-                    {/* ID Document - Now Required */}
+                  {/* Social Media Links */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Social Media & Professional Links</h3>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {/* LinkedIn - Required */}
+                      <div className="space-y-2">
+                        <label htmlFor="linkedinProfile" className="flex items-center text-sm font-medium text-gray-700">
+                          <FaCode className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                          LinkedIn Profile <span className="text-red-500 ml-1">*</span>
+                        </label>
+                        <input
+                          id="linkedinProfile"
+                          type="url"
+                          {...register('linkedinProfile', {
+                            required: 'LinkedIn profile is required',
+                            pattern: {
+                              value: /^https?:\/\/(www\.)?linkedin\.com\/.+$/,
+                              message: 'Please enter a valid LinkedIn URL',
+                            },
+                          })}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          placeholder="https://linkedin.com/in/your-profile"
+                        />
+                        {errors.linkedinProfile && (
+                          <p className="text-red-500 text-sm">{errors.linkedinProfile.message}</p>
+                        )}
+                      </div>
+
+                      {/* Facebook - Optional */}
+                      <div className="space-y-2">
+                        <label htmlFor="facebookProfile" className="flex items-center text-sm font-medium text-gray-700">
+                          <FaCode className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                          Facebook Profile (Optional)
+                        </label>
+                        <input
+                          id="facebookProfile"
+                          type="url"
+                          {...register('facebookProfile')}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          placeholder="https://facebook.com/your-profile"
+                        />
+                      </div>
+
+                      {/* Twitter - Optional */}
+                      <div className="space-y-2">
+                        <label htmlFor="twitterProfile" className="flex items-center text-sm font-medium text-gray-700">
+                          <FaCode className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                          Twitter/X Profile (Optional)
+                        </label>
+                        <input
+                          id="twitterProfile"
+                          type="url"
+                          {...register('twitterProfile')}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          placeholder="https://twitter.com/your-profile"
+                        />
+                      </div>
+
+                      {/* Website - Optional */}
+                      <div className="space-y-2">
+                        <label htmlFor="websiteProfile" className="flex items-center text-sm font-medium text-gray-700">
+                          <FaCode className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                          Personal Website (Optional)
+                        </label>
+                        <input
+                          id="websiteProfile"
+                          type="url"
+                          {...register('websiteProfile')}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          placeholder="https://your-website.com"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Document Upload */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Required Documents</h3>
                     <div className="space-y-2">
                       <label htmlFor="nidOrIdDoc" className="flex items-center text-sm font-medium text-gray-700">
                         <FaIdCard className="w-4 h-4 mr-2 text-[#2a7d2f]" />
-                        ID Document <span className="text-red-500 ml-1">*</span>
+                        NID & Important Documents <span className="text-red-500 ml-1">*</span>
                       </label>
+                      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg mb-2">
+                        <p className="text-sm text-blue-800">
+                          <strong>Required:</strong> Please upload a clear copy of your National ID Card and any other relevant identification documents (e.g., Birth Certificate, Passport). You can upload multiple pages as a single PDF file or multiple image files.
+                        </p>
+                      </div>
                       <input
                         id="nidOrIdDoc"
                         type="file"
                         accept=".pdf,.jpg,.jpeg,.png"
                         {...register('nidOrIdDoc', {
-                          required: 'ID document is required',
+                          required: 'NID and identification documents are required',
                         })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#2a7d2f] file:text-white hover:file:bg-[#236b27]"
                       />
                       {errors.nidOrIdDoc && (
                         <p className="text-red-500 text-sm">{errors.nidOrIdDoc.message}</p>
+                      )}
+
+                      {/* Document Preview */}
+                      {nidDocumentPreview && (
+                        <div className="mt-4 p-4 border border-gray-300 rounded-lg bg-gray-50">
+                          <p className="text-sm font-medium text-gray-700 mb-2">Document Preview:</p>
+                          {nidOrIdDoc?.[0]?.type === 'application/pdf' ? (
+                            <div className="flex items-center space-x-2 text-gray-600">
+                              <FaFileAlt className="w-6 h-6 text-red-500" />
+                              <span className="text-sm">{nidOrIdDoc[0].name}</span>
+                            </div>
+                          ) : (
+                            <img
+                              src={nidDocumentPreview}
+                              alt="Document preview"
+                              className="max-w-full h-auto max-h-64 object-contain border-2 border-[#2a7d2f] rounded-lg"
+                            />
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>

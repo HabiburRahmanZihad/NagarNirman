@@ -12,6 +12,7 @@ import {
   updateUserStatus,
   deleteUser,
   getMyApplication,
+  deleteMyApplication,
   getAllApplications,
   getApplicationDetails,
   reviewApplication,
@@ -27,6 +28,7 @@ router.get('/leaderboard', getLeaderboard);
 // Protected routes
 router.post('/apply-problem-solver', protect, applyProblemSolver);
 router.get('/my-application', protect, getMyApplication);
+router.delete('/my-application', protect, deleteMyApplication);
 router.put('/profile', protect, updateProfile);
 
 // Authority and SuperAdmin routes (must be before /:id routes)

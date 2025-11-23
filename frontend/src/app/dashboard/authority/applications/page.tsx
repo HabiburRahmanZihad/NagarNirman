@@ -36,8 +36,19 @@ interface Application {
   skills: string[];
   motivation: string;
   experience?: string;
-  profileImage?: string;
   nidOrIdDoc: string;
+  nidNumber: string;
+  emergencyContact: string;
+  emergencyContactName: string;
+  emergencyContactRelation: string;
+  educationLevel?: string;
+  availability?: string;
+  languagesSpoken: string[];
+  previousVolunteerWork?: string;
+  linkedinProfile: string;
+  facebookProfile?: string;
+  twitterProfile?: string;
+  websiteProfile?: string;
   status: 'pending' | 'approved' | 'rejected';
   reviewedBy?: string;
   reviewedAt?: string;
@@ -179,52 +190,65 @@ export default function ProblemSolverApplications() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2a7d2f]"></div>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-[#2a7d2f] border-b-[#2a7d2f] border-l-transparent border-r-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
       <Toaster position="top-right" />
 
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-100 p-6"
+        >
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] bg-clip-text text-transparent mb-3">
             Problem Solver Applications
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-700 text-lg">
             Review and manage applications from citizens who want to become problem solvers
             {userDivision && (
-              <span className="inline-flex items-center ml-2 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+              <span className="inline-flex items-center ml-2 px-4 py-1.5 rounded-full text-sm font-semibold bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200 shadow-sm">
                 📍 {userDivision} Division
               </span>
             )}
           </p>
-        </div>
+        </motion.div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-4 mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <FaFilter className="text-gray-500" />
-              <label className="text-sm font-medium text-gray-700">Status:</label>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6"
+        >
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center space-x-4 flex-wrap">
+              <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-[#2a7d2f] to-[#1e5a23] rounded-xl shadow-md">
+                <FaFilter className="text-white" />
+              </div>
+              <label className="text-sm font-semibold text-gray-700">Filter by Status:</label>
               <select
                 aria-label="Filter by status"
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"
+                className="px-5 py-2.5 bg-white/90 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] font-medium text-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer"
               >
                 <option value="all">All Applications</option>
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
+                <option value="pending">⏳ Pending</option>
+                <option value="approved">✅ Approved</option>
+                <option value="rejected">❌ Rejected</option>
               </select>
-              <span className="text-sm text-gray-600">
-                Total: {pagination.total} applications
-              </span>
+              <div className="px-5 py-2.5 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl border border-blue-200 shadow-sm">
+                <span className="text-sm font-semibold text-blue-900">
+                  Total: <span className="text-lg">{pagination.total}</span> applications
+                </span>
+              </div>
             </div>
             <RefreshButton
               onClick={() => fetchApplications(true)}
@@ -232,21 +256,30 @@ export default function ProblemSolverApplications() {
               variant="primary"
             />
           </div>
-        </div>
+        </motion.div>
 
         {/* Applications List */}
         {applications.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-12 text-center">
-            <p className="text-gray-500 text-lg">No applications found</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl shadow-lg border border-gray-100 p-16 text-center"
+          >
+            <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center">
+              <span className="text-5xl">📋</span>
+            </div>
+            <p className="text-gray-600 text-xl font-medium">No applications found</p>
+            <p className="text-gray-500 mt-2">Try adjusting your filters</p>
+          </motion.div>
         ) : (
-          <div className="space-y-4">
-            {applications.map((app) => (
+          <div className="space-y-6">
+            {applications.map((app, index) => (
               <motion.div
                 key={app._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-lg shadow hover:shadow-md transition-shadow p-6"
+                transition={{ delay: Math.min(index * 0.03, 0.3) }}
+                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-200 p-6 border border-gray-200 hover:border-[#2a7d2f]/50"
               >
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
@@ -293,9 +326,9 @@ export default function ProblemSolverApplications() {
 
                   <button
                     onClick={() => openModal(app)}
-                    className="ml-4 bg-[#2a7d2f] text-white px-4 py-2 rounded-lg hover:bg-[#236b27] transition-colors flex items-center space-x-2"
+                    className="ml-4 bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] text-white px-6 py-3 rounded-xl hover:from-[#236b27] hover:to-[#1a4d1f] transition-all duration-300 flex items-center space-x-2 shadow-lg hover:shadow-xl hover:scale-105 font-medium"
                   >
-                    <FaEye />
+                    <FaEye className="text-lg" />
                     <span>View Details</span>
                   </button>
                 </div>
@@ -306,46 +339,55 @@ export default function ProblemSolverApplications() {
 
         {/* Pagination */}
         {pagination.pages > 1 && (
-          <div className="mt-6 flex justify-center space-x-2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-8 flex justify-center space-x-3"
+          >
             {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
                 onClick={() => setPagination({ ...pagination, page })}
-                className={`px-4 py-2 rounded-lg ${
+                className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg ${
                   pagination.page === page
-                    ? 'bg-[#2a7d2f] text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                    ? 'bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] text-white scale-110'
+                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
                 {page}
               </button>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
 
       {/* Modal */}
       {showModal && selectedApp && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6"
+            transition={{ duration: 0.2 }}
+            className="bg-white rounded-3xl max-w-4xl w-full my-8 shadow-2xl border border-gray-200 overflow-hidden"
           >
-            <div className="flex justify-between items-start mb-4">
-              <h2 className="text-2xl font-bold text-gray-900">Application Details</h2>
+            <div className="bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] text-white p-6 flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Application Details</h2>
               <button
                 onClick={closeModal}
-                className="text-gray-500 hover:text-gray-700 text-2xl"
+                className="w-10 h-10 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full text-white text-2xl transition-colors"
               >
                 ×
               </button>
             </div>
+            <div className="p-6 max-h-[calc(90vh-120px)] overflow-y-auto">
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               {/* Personal Info */}
-              <div className="border-b pb-4">
-                <h3 className="text-lg font-semibold mb-3">Personal Information</h3>
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <span className="w-2 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full mr-3"></span>
+                  Personal Information
+                </h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <strong>Full Name:</strong> {selectedApp.fullName}
@@ -366,12 +408,63 @@ export default function ProblemSolverApplications() {
                   <div>
                     <strong>Profession:</strong> {selectedApp.profession}
                   </div>
+                  {selectedApp.nidNumber && (
+                    <div>
+                      <strong>NID Number:</strong> {selectedApp.nidNumber}
+                    </div>
+                  )}
+                  {selectedApp.educationLevel && (
+                    <div>
+                      <strong>Education Level:</strong> {selectedApp.educationLevel}
+                    </div>
+                  )}
+                  {selectedApp.availability && (
+                    <div>
+                      <strong>Availability:</strong> {selectedApp.availability}
+                    </div>
+                  )}
+                  {selectedApp.languagesSpoken && selectedApp.languagesSpoken.length > 0 && (
+                    <div className="col-span-2">
+                      <strong>Languages Spoken:</strong>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {selectedApp.languagesSpoken.map((lang, idx) => (
+                          <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                            {lang}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
+              {/* Emergency Contact */}
+              {selectedApp.emergencyContactName && (
+                <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-6 border border-red-100">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <span className="w-2 h-8 bg-gradient-to-b from-red-500 to-orange-600 rounded-full mr-3"></span>
+                    Emergency Contact
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <strong>Name:</strong> {selectedApp.emergencyContactName}
+                    </div>
+                    <div>
+                      <strong>Phone:</strong> {selectedApp.emergencyContact}
+                    </div>
+                    <div>
+                      <strong>Relation:</strong> {selectedApp.emergencyContactRelation}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Location */}
-              <div className="border-b pb-4">
-                <h3 className="text-lg font-semibold mb-3">Location</h3>
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <span className="w-2 h-8 bg-gradient-to-b from-green-500 to-emerald-600 rounded-full mr-3"></span>
+                  Location
+                </h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <strong>Division:</strong> {selectedApp.division}
@@ -386,8 +479,11 @@ export default function ProblemSolverApplications() {
               </div>
 
               {/* Professional Info */}
-              <div className="border-b pb-4">
-                <h3 className="text-lg font-semibold mb-3">Professional Information</h3>
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <span className="w-2 h-8 bg-gradient-to-b from-purple-500 to-pink-600 rounded-full mr-3"></span>
+                  Professional Information
+                </h3>
                 <div className="space-y-2 text-sm">
                   {selectedApp.organization && (
                     <div>
@@ -395,56 +491,129 @@ export default function ProblemSolverApplications() {
                     </div>
                   )}
                   <div>
-                    <strong>Skills:</strong> {selectedApp.skills.join(', ')}
+                    <strong>Skills:</strong>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {selectedApp.skills.map((skill, idx) => (
+                        <span key={idx} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  {selectedApp.previousVolunteerWork && (
+                    <div>
+                      <strong>Previous Volunteer Work:</strong>
+                      <p className="mt-1 text-gray-700 whitespace-pre-wrap break-words bg-white p-3 rounded-lg">{selectedApp.previousVolunteerWork}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Social Media Links */}
+              {(selectedApp.linkedinProfile || selectedApp.facebookProfile || selectedApp.twitterProfile || selectedApp.websiteProfile) && (
+                <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl p-6 border border-cyan-100">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <span className="w-2 h-8 bg-gradient-to-b from-cyan-500 to-blue-600 rounded-full mr-3"></span>
+                    Social Media & Professional Links
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    {selectedApp.linkedinProfile && (
+                      <div>
+                        <strong>LinkedIn:</strong>{' '}
+                        <a
+                          href={selectedApp.linkedinProfile}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          {selectedApp.linkedinProfile}
+                        </a>
+                      </div>
+                    )}
+                    {selectedApp.facebookProfile && (
+                      <div>
+                        <strong>Facebook:</strong>{' '}
+                        <a
+                          href={selectedApp.facebookProfile}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          {selectedApp.facebookProfile}
+                        </a>
+                      </div>
+                    )}
+                    {selectedApp.twitterProfile && (
+                      <div>
+                        <strong>Twitter/X:</strong>{' '}
+                        <a
+                          href={selectedApp.twitterProfile}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          {selectedApp.twitterProfile}
+                        </a>
+                      </div>
+                    )}
+                    {selectedApp.websiteProfile && (
+                      <div>
+                        <strong>Personal Website:</strong>{' '}
+                        <a
+                          href={selectedApp.websiteProfile}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          {selectedApp.websiteProfile}
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Documents & Images */}
-              <div className="border-b pb-4">
-                <h3 className="text-lg font-semibold mb-3">Documents & Images</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  {selectedApp.profileImage && (
-                    <div>
-                      <p className="text-sm font-medium text-gray-700 mb-2">Profile Photo</p>
+              {selectedApp.nidOrIdDoc && (
+                <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-6 border border-amber-100">
+                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <span className="w-2 h-8 bg-gradient-to-b from-amber-500 to-yellow-600 rounded-full mr-3"></span>
+                    NID & Important Documents
+                  </h3>
+                  <div>
+                    <a
+                      href={selectedApp.nidOrIdDoc}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block"
+                    >
                       <img
-                        src={selectedApp.profileImage}
-                        alt="Profile"
-                        className="w-32 h-32 rounded-lg object-cover border-2 border-gray-300"
+                        src={selectedApp.nidOrIdDoc}
+                        alt="NID Document"
+                        className="max-w-full h-auto max-h-96 rounded-lg object-contain border-2 border-gray-300 hover:border-[#2a7d2f] transition-colors cursor-pointer"
                       />
-                    </div>
-                  )}
-                  {selectedApp.nidOrIdDoc && (
-                    <div>
-                      <p className="text-sm font-medium text-gray-700 mb-2">ID Document</p>
-                      <a
-                        href={selectedApp.nidOrIdDoc}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-block"
-                      >
-                        <img
-                          src={selectedApp.nidOrIdDoc}
-                          alt="ID Document"
-                          className="w-32 h-32 rounded-lg object-cover border-2 border-gray-300 hover:border-[#2a7d2f] transition-colors cursor-pointer"
-                        />
-                      </a>
-                      <p className="text-xs text-gray-500 mt-1">Click to view full size</p>
-                    </div>
-                  )}
+                    </a>
+                    <p className="text-xs text-gray-500 mt-2">Click image to view in full size</p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Motivation & Experience */}
-              <div className="border-b pb-4">
-                <h3 className="text-lg font-semibold mb-3">Motivation</h3>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap">
+              <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl p-6 border border-teal-100">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                  <span className="w-2 h-8 bg-gradient-to-b from-teal-500 to-cyan-600 rounded-full mr-3"></span>
+                  Motivation
+                </h3>
+                <p className="text-sm text-gray-700 whitespace-pre-wrap break-words bg-white p-4 rounded-lg overflow-wrap-anywhere">
                   {selectedApp.motivation}
                 </p>
                 {selectedApp.experience && (
                   <>
-                    <h3 className="text-lg font-semibold mb-3 mt-4">Experience</h3>
-                    <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 mt-6 flex items-center">
+                      <span className="w-2 h-8 bg-gradient-to-b from-teal-500 to-cyan-600 rounded-full mr-3"></span>
+                      Experience
+                    </h3>
+                    <p className="text-sm text-gray-700 whitespace-pre-wrap break-words bg-white p-4 rounded-lg overflow-wrap-anywhere">
                       {selectedApp.experience}
                     </p>
                   </>
@@ -453,16 +622,16 @@ export default function ProblemSolverApplications() {
 
               {/* Review Section */}
               {selectedApp.status === 'pending' && (
-                <div className="space-y-4">
+                <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl p-6 border-2 border-dashed border-gray-300 space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Review Note (Optional)
+                    <label className="block text-sm font-bold text-gray-700 mb-3">
+                      📝 Review Note (Optional)
                     </label>
                     <textarea
                       value={reviewNote}
                       onChange={(e) => setReviewNote(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] resize-none"
-                      rows={3}
+                      className="w-full px-5 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] resize-none shadow-sm"
+                      rows={4}
                       placeholder="Add any notes about your decision..."
                     />
                   </div>
@@ -471,18 +640,18 @@ export default function ProblemSolverApplications() {
                     <button
                       onClick={() => handleReview(selectedApp._id, 'approved')}
                       disabled={isReviewing}
-                      className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center justify-center space-x-2"
+                      className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                     >
-                      <FaCheckCircle />
-                      <span>Approve</span>
+                      <FaCheckCircle className="text-xl" />
+                      <span>Approve Application</span>
                     </button>
                     <button
                       onClick={() => handleReview(selectedApp._id, 'rejected')}
                       disabled={isReviewing}
-                      className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center justify-center space-x-2"
+                      className="flex-1 bg-gradient-to-r from-red-600 to-rose-600 text-white py-4 rounded-xl hover:from-red-700 hover:to-rose-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                     >
-                      <FaTimesCircle />
-                      <span>Reject</span>
+                      <FaTimesCircle className="text-xl" />
+                      <span>Reject Application</span>
                     </button>
                   </div>
                 </div>
@@ -490,16 +659,21 @@ export default function ProblemSolverApplications() {
 
               {/* Review Info if already reviewed */}
               {selectedApp.status !== 'pending' && selectedApp.reviewNote && (
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold mb-2">Review Note</h3>
-                  <p className="text-sm text-gray-700">{selectedApp.reviewNote}</p>
+                <div className="bg-gradient-to-br from-gray-50 to-slate-100 rounded-2xl p-6 border-2 border-gray-200">
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
+                    <span className="w-2 h-8 bg-gradient-to-b from-gray-500 to-slate-600 rounded-full mr-3"></span>
+                    Review Note
+                  </h3>
+                  <p className="text-base text-gray-700 bg-white p-4 rounded-lg">{selectedApp.reviewNote}</p>
                   {selectedApp.reviewedAt && (
-                    <p className="text-xs text-gray-500 mt-2">
+                    <p className="text-sm text-gray-500 mt-3 flex items-center">
+                      <FaCalendar className="mr-2" />
                       Reviewed on {new Date(selectedApp.reviewedAt).toLocaleString()}
                     </p>
                   )}
                 </div>
               )}
+            </div>
             </div>
           </motion.div>
         </div>
