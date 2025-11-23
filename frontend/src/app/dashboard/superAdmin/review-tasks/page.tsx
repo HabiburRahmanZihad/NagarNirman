@@ -442,6 +442,7 @@ export default function TaskReviewPage() {
                           Reward Points
                         </label>
                         <input
+                          aria-label="Reward points"
                           type="number"
                           value={reviewData.points}
                           onChange={(e) => setReviewData({ ...reviewData, points: parseInt(e.target.value) || 0 })}
@@ -461,6 +462,7 @@ export default function TaskReviewPage() {
                         <div className="flex gap-2">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <button
+                              aria-label={`Set rating to ${star} star${star > 1 ? 's' : ''}`}
                               key={star}
                               type="button"
                               onClick={() => setReviewData({ ...reviewData, rating: star })}

@@ -646,7 +646,8 @@ export default function SuperAdminAssignTaskPage() {
                 Set Task Deadline (Required)
               </p>
               <div className="space-y-3">
-                <input
+                    <input
+                      aria-label="Set task deadline"
                   type="datetime-local"
                   value={deadline}
                   onChange={(e) => setDeadline(e.target.value)}

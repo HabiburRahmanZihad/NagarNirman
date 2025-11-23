@@ -112,6 +112,7 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
           {/* Desktop Filters */}
           <div className="hidden lg:flex items-center gap-3 flex-wrap">
             <select
+              aria-label="Filter tasks by status"
               value={filters.status}
               onChange={(e) => onFiltersChange({ ...filters, status: e.target.value })}
               className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 bg-white min-w-[130px] text-sm"
@@ -124,6 +125,7 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
             </select>
 
             <select
+              aria-label="Filter tasks by severity"
               value={filters.severity}
               onChange={(e) => onFiltersChange({ ...filters, severity: e.target.value })}
               className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 bg-white min-w-[120px] text-sm"
@@ -136,6 +138,7 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
             </select>
 
             <select
+              aria-label="Filter tasks by category"
               value={filters.category}
               onChange={(e) => onFiltersChange({ ...filters, category: e.target.value })}
               className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 bg-white min-w-[160px] text-sm"
@@ -305,6 +308,7 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">Problem Category</label>
                   <select
+                    aria-label="Filter tasks by category"
                     value={filters.category}
                     onChange={(e) => onFiltersChange({ ...filters, category: e.target.value })}
                     className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300 bg-white text-sm"
