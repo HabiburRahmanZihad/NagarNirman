@@ -324,98 +324,178 @@ export const getSolverStatistics = asyncHandler(async (req, res) => {
     const usersCollection = getUsersCollection();
     const tasksCollection = getTasksCollection();
 
-    // Get all problem solvers and NGOs
-    const solvers = await usersCollection
-      .find({
-        role: { $in: ['problemSolver', 'ngo'] },
-        approved: true,
-      })
-      .project({
-        password: 0,
-      })
+    // Get all problem solvers and NGOs with their task statistics in ONE aggregation query
+    const statistics = await usersCollection
+      .aggregate([
+        // Match approved solvers and NGOs
+        {
+          $match: {
+            role: { $in: ['problemSolver', 'ngo'] },
+            approved: true,
+          },
+        },
+        // Lookup tasks for each solver
+        {
+          $lookup: {
+            from: 'tasks',
+            let: { solverId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: ['$assignedTo', '$$solverId'] },
+                },
+              },
+              {
+                $facet: {
+                  total: [{ $count: 'count' }],
+                  completed: [
+                    { $match: { status: 'completed' } },
+                    { $count: 'count' },
+                  ],
+                  verified: [
+                    { $match: { status: 'verified' } },
+                    { $count: 'count' },
+                  ],
+                  pending: [
+                    {
+                      $match: {
+                        status: { $in: ['assigned', 'accepted', 'in-progress', 'submitted'] },
+                      },
+                    },
+                    { $count: 'count' },
+                  ],
+                  inProgress: [
+                    { $match: { status: 'in-progress' } },
+                    { $count: 'count' },
+                  ],
+                  avgRating: [
+                    {
+                      $match: {
+                        status: 'completed',
+                        rating: { $exists: true, $ne: null },
+                      },
+                    },
+                    {
+                      $group: {
+                        _id: null,
+                        avgRating: { $avg: '$rating' },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+            as: 'taskStats',
+          },
+        },
+        // Transform the data - exclude password first
+        {
+          $project: {
+            password: 0,
+          },
+        },
+        // Then include the fields we need
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            email: 1,
+            role: 1,
+            division: 1,
+            district: 1,
+            points: 1,
+            avatar: 1,
+            isActive: 1,
+            taskData: { $arrayElemAt: ['$taskStats', 0] },
+          },
+        },
+        {
+          $addFields: {
+            totalTasks: { $ifNull: [{ $arrayElemAt: ['$taskData.total.count', 0] }, 0] },
+            completedTasks: { $ifNull: [{ $arrayElemAt: ['$taskData.completed.count', 0] }, 0] },
+            verifiedTasks: { $ifNull: [{ $arrayElemAt: ['$taskData.verified.count', 0] }, 0] },
+            pendingTasks: { $ifNull: [{ $arrayElemAt: ['$taskData.pending.count', 0] }, 0] },
+            inProgressTasks: { $ifNull: [{ $arrayElemAt: ['$taskData.inProgress.count', 0] }, 0] },
+            avgRating: { $ifNull: [{ $arrayElemAt: ['$taskData.avgRating.avgRating', 0] }, 0] },
+          },
+        },
+        {
+          $addFields: {
+            isBusy: { $gte: ['$pendingTasks', 5] },
+            successRate: {
+              $cond: {
+                if: { $gt: ['$totalTasks', 0] },
+                then: {
+                  $multiply: [
+                    { $divide: ['$completedTasks', '$totalTasks'] },
+                    100,
+                  ],
+                },
+                else: 0,
+              },
+            },
+          },
+        },
+        {
+          $addFields: {
+            isFree: { $not: '$isBusy' },
+            status: {
+              $cond: {
+                if: '$isBusy',
+                then: 'Busy',
+                else: 'Free',
+              },
+            },
+          },
+        },
+        // Format final output
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            email: 1,
+            role: 1,
+            division: { $ifNull: ['$division', ''] },
+            district: { $ifNull: ['$district', ''] },
+            points: { $ifNull: ['$points', 0] },
+            avatar: { $ifNull: ['$avatar', ''] },
+            isActive: 1,
+            taskStats: {
+              total: '$totalTasks',
+              completed: '$completedTasks',
+              pending: '$pendingTasks',
+              rating: {
+                $cond: {
+                  if: { $gt: ['$avgRating', 0] },
+                  then: { $round: ['$avgRating', 1] },
+                  else: 0,
+                },
+              },
+              successRate: { $round: ['$successRate', 0] },
+              status: '$status',
+              isBusy: '$isBusy',
+            },
+            // Keep old structure for backward compatibility
+            tasks: {
+              pending: '$pendingTasks',
+              'in-progress': '$inProgressTasks',
+              completed: '$completedTasks',
+              verified: '$verifiedTasks',
+              total: '$totalTasks',
+            },
+            isFree: '$isFree',
+            status: '$status',
+          },
+        },
+        // Sort by total tasks (descending) and then by name
+        {
+          $sort: {
+            'tasks.total': -1,
+            name: 1,
+          },
+        },
+      ])
       .toArray();
-
-    // Get statistics for each solver
-    const statistics = await Promise.all(
-      solvers.map(async (solver) => {
-        // Get task counts using the same logic as getSolvers
-        const totalTasks = await tasksCollection.countDocuments({
-          assignedTo: solver._id,
-        });
-
-        const completedTasks = await tasksCollection.countDocuments({
-          assignedTo: solver._id,
-          status: 'completed',
-        });
-
-        // Count pending/active tasks (assigned, accepted, in-progress, submitted)
-        const pendingTasks = await tasksCollection.countDocuments({
-          assignedTo: solver._id,
-          status: { $in: ['assigned', 'accepted', 'in-progress', 'submitted'] },
-        });
-
-        // Determine if solver is busy (5 or more pending tasks)
-        const isBusy = pendingTasks >= 5;
-        const availabilityStatus = isBusy ? 'Busy' : 'Free';
-
-        // Calculate average rating from completed tasks
-        const completedTasksWithRating = await tasksCollection
-          .find({
-            assignedTo: solver._id,
-            status: 'completed',
-            rating: { $exists: true, $ne: null },
-          })
-          .toArray();
-
-        let avgRating = 0;
-        if (completedTasksWithRating.length > 0) {
-          const totalRating = completedTasksWithRating.reduce((sum, task) => sum + (task.rating || 0), 0);
-          avgRating = totalRating / completedTasksWithRating.length;
-        }
-
-        // Calculate success rate
-        const successRate = totalTasks > 0 ? ((completedTasks / totalTasks) * 100).toFixed(0) : 0;
-
-        return {
-          _id: solver._id,
-          name: solver.name,
-          email: solver.email,
-          role: solver.role,
-          division: solver.division || '',
-          district: solver.district || '',
-          points: solver.points || 0,
-          avatar: solver.avatar || '',
-          isActive: solver.isActive,
-          taskStats: {
-            total: totalTasks,
-            completed: completedTasks,
-            pending: pendingTasks,
-            rating: avgRating > 0 ? avgRating.toFixed(1) : 'N/A',
-            successRate: `${successRate}%`,
-            status: availabilityStatus,
-            isBusy: isBusy,
-          },
-          // Keep old structure for backward compatibility
-          tasks: {
-            pending: pendingTasks,
-            'in-progress': 0, // Not separately tracked in this version
-            completed: completedTasks,
-            verified: 0, // Not separately tracked
-            total: totalTasks,
-          },
-          isFree: !isBusy,
-          status: availabilityStatus,
-        };
-      })
-    );
-
-    // Sort by total tasks (descending) and then by name
-    statistics.sort((a, b) => {
-      if (b.tasks.total !== a.tasks.total) {
-        return b.tasks.total - a.tasks.total;
-      }
-      return a.name.localeCompare(b.name);
-    });
 
     res.status(200).json({
       success: true,
