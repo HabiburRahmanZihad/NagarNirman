@@ -84,13 +84,6 @@ export default function TaskDetailPage() {
   const [submittingProof, setSubmittingProof] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && user?.role !== 'problemSolver' && user?.role !== 'ngo') {
-      toast.error('Access denied');
-      router.push('/dashboard');
-    }
-  }, [user, authLoading, router]);
-
-  useEffect(() => {
     if (params.id && user) {
       fetchTaskDetails();
     }

@@ -93,7 +93,6 @@ export default function ReportDetailsPage() {
 
   const reportId = params?.id as string;
 
-  // Fetch report details
   const fetchReportDetails = async () => {
     setIsLoading(true);
     try {

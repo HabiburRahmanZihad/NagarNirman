@@ -57,7 +57,7 @@ const containerVariants = {
 
 export default function SolverTasksPage() {
   const router = useRouter();
-  const { user, isLoading: authLoading, isAuthenticated } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const { addNotification } = useNotifications();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
@@ -69,21 +69,10 @@ export default function SolverTasksPage() {
     search: ""
   });
 
-  // Check authentication
-  useEffect(() => {
-    if (!authLoading) {
-      if (!isAuthenticated) {
-        router.push("/auth/login");
-      } else if (user?.role !== "problemSolver" && user?.role !== "ngo") {
-        toast.error('Access denied. This page is only for Problem Solvers and NGOs.');
-        router.push(`/dashboard/${user?.role || 'user'}`);
-      }
-    }
-  }, [isAuthenticated, user, authLoading, router]);
-
   // Fetch tasks function
-  const fetchTasks = async () => {
-    if (!user || (user.role !== 'problemSolver' && user.role !== 'ngo')) {
+  // Accepts a flag to show toast only on manual refresh
+  const fetchTasks = async (showToast = false) => {
+    if (!user) {
       return;
     }
 
@@ -94,7 +83,7 @@ export default function SolverTasksPage() {
       if (response.success && Array.isArray(response.data)) {
         setTasks(response.data);
         setFilteredTasks(response.data);
-        toast.success('Tasks refreshed successfully!');
+        if (showToast) toast.success('Tasks refreshed successfully!');
       } else {
         console.error('Invalid tasks response:', response);
         toast.error('Failed to load tasks');
@@ -107,11 +96,12 @@ export default function SolverTasksPage() {
     }
   };
 
-  // Fetch tasks on mount
+  // Fetch tasks on mount (no toast)
   useEffect(() => {
     if (user && (user.role === 'problemSolver' || user.role === 'ngo')) {
-      fetchTasks();
+      fetchTasks(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const [showProofModal, setShowProofModal] = useState(false);
@@ -294,13 +284,53 @@ export default function SolverTasksPage() {
     }
   };
 
-  // Show loading state
+  // Skeleton loader for grid
+  const SkeletonCard = () => (
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden animate-pulse">
+      <div className="h-2 bg-gray-200">
+        <div className="h-full bg-gray-300 w-1/2" />
+      </div>
+      <div className="p-5">
+        <div className="flex justify-between items-start mb-4">
+          <span className="px-8 py-2 rounded-full bg-gray-200" />
+          <span className="h-6 w-10 bg-gray-200 rounded" />
+        </div>
+        <div className="h-5 bg-gray-200 rounded mb-2 w-3/4" />
+        <div className="h-4 bg-gray-100 rounded mb-4 w-2/3" />
+        <div className="flex items-center text-sm text-gray-600 mb-4">
+          <div className="w-4 h-4 bg-gray-200 rounded mr-2" />
+          <span className="h-4 w-20 bg-gray-100 rounded" />
+        </div>
+        <div className="h-8 bg-gray-100 rounded w-full" />
+      </div>
+    </div>
+  );
+
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-gray-50/30 p-6 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your tasks...</p>
+      <div className="min-h-screen bg-gray-50/30 p-6">
+        <div className="max-w-8xl mx-auto space-y-6">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <div>
+              <div className="h-8 w-48 bg-gray-200 rounded mb-2 animate-pulse" />
+              <div className="h-4 w-64 bg-gray-100 rounded animate-pulse" />
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-32 bg-gray-200 rounded-full animate-pulse" />
+              <div className="h-10 w-40 bg-gray-300 rounded-full animate-pulse" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100 animate-pulse h-24" />
+            ))}
+          </div>
+          <div className="h-12 w-full bg-gray-100 rounded mb-6 animate-pulse" />
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -316,14 +346,14 @@ export default function SolverTasksPage() {
           className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4"
         >
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-linear-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
               Your Missions
             </h1>
             <p className="text-gray-600 mt-2">Manage and complete your assigned cleanup tasks</p>
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={fetchTasks}
+              onClick={() => fetchTasks(true)}
               disabled={loading}
               className="flex items-center space-x-2 px-4 py-2 bg-white border-2 border-green-500 text-green-600 rounded-full hover:bg-green-50 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               title="Refresh tasks"
@@ -331,7 +361,7 @@ export default function SolverTasksPage() {
               <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
               <span className="font-semibold">Refresh</span>
             </button>
-            <div className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 rounded-full text-white shadow-lg">
+            <div className="flex items-center space-x-2 px-4 py-2 bg-linear-to-r from-green-500 to-green-600 rounded-full text-white shadow-lg">
               <Sparkles className="w-5 h-5" />
               <span className="font-semibold">{stats.totalPoints} Points Earned</span>
             </div>
@@ -507,7 +537,7 @@ export default function SolverTasksPage() {
                   {task.status === 'rejected' && task.rejectionReason && (
                     <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                       <div className="flex items-start space-x-2">
-                        <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                        <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
                         <div>
                           <p className="text-sm font-semibold text-red-800 mb-1">Rejection Feedback:</p>
                           <p className="text-sm text-red-700">{task.rejectionReason}</p>
@@ -525,7 +555,7 @@ export default function SolverTasksPage() {
                     {task.status === 'assigned' && (
                       <Link
                         href={`/dashboard/problemSolver/tasks/${task._id}`}
-                        className="w-full py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                        className="w-full py-2.5 bg-linear-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-300 flex items-center justify-center space-x-2"
                       >
                         <Eye className="w-5 h-5" />
                         <span>View Details to Accept</span>
@@ -537,7 +567,7 @@ export default function SolverTasksPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleStartTask(task._id)}
-                          className="flex-1 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                          className="flex-1 py-2.5 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center space-x-2"
                         >
                           <TrendingUp className="w-5 h-5" />
                           <span>Start Working</span>
@@ -557,7 +587,7 @@ export default function SolverTasksPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleOpenProofModal(task._id)}
-                          className="flex-1 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                          className="flex-1 py-2.5 bg-linear-to-r from-purple-500 to-purple-600 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 flex items-center justify-center space-x-2"
                         >
                           <Upload className="w-5 h-5" />
                           <span>Submit Proof</span>
@@ -577,7 +607,7 @@ export default function SolverTasksPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleOpenProofModal(task._id)}
-                          className="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                          className="flex-1 py-2.5 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center justify-center space-x-2"
                         >
                           <Upload className="w-5 h-5" />
                           <span>Resubmit Proof</span>
@@ -638,7 +668,7 @@ export default function SolverTasksPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center py-16"
           >
-            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center">
+            <div className="w-24 h-24 mx-auto mb-6 bg-linear-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center">
               <Search className="w-10 h-10 text-green-600" />
             </div>
             <h3 className="text-2xl font-bold text-gray-700 mb-2">No missions found</h3>
@@ -760,7 +790,7 @@ export default function SolverTasksPage() {
                     className={`flex-1 px-6 py-3 rounded-lg font-semibold text-white flex items-center justify-center space-x-2 transition-all duration-300 ${
                       submittingProof || proofImages.length === 0 || !proofDescription.trim()
                         ? 'bg-gray-400 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                        : 'bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
                     }`}
                   >
                     {submittingProof ? (

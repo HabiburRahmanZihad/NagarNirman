@@ -454,17 +454,6 @@ const AssignTaskPage = () => {
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'rating' | 'points' | 'completedTasks' | 'successRate'>('rating');
 
-  // Check if user is authenticated and has 'authority' role
-  useEffect(() => {
-    if (!isLoading) {
-      if (!isAuthenticated) {
-        router.push("/auth/login");
-      } else if (authUser?.role !== "authority") {
-        router.push("/");
-      }
-    }
-  }, [isAuthenticated, authUser, isLoading, router]);
-
   // Auto-set filters based on user's location
   useEffect(() => {
     if (authUser?.role === 'authority' && authUser.division) {

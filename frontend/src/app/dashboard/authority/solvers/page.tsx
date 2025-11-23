@@ -45,17 +45,6 @@ export default function SolversPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'completedTasks' | 'successRate' | 'createdAt'>('rating');
 
-  // Check if user is authenticated and has 'authority' role
-  useEffect(() => {
-    if (!isLoading) {
-      if (!isAuthenticated) {
-        router.push("/auth/login");
-      } else if (authUser?.role !== "authority") {
-        router.push("/");
-      }
-    }
-  }, [isAuthenticated, authUser, isLoading, router]);
-
   useEffect(() => {
     if (authUser?.division) {
       fetchSolvers();
@@ -205,7 +194,7 @@ export default function SolversPage() {
             </div>
             <div className="flex items-center space-x-4">
               <button
-                onClick={fetchSolvers}
+                onClick={() => fetchSolvers(true)}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
                 title="Refresh data"
               >

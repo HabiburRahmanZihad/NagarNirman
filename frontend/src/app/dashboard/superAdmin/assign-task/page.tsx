@@ -74,18 +74,6 @@ export default function SuperAdminAssignTaskPage() {
     search: ''
   });
 
-  // Check authentication
-  useEffect(() => {
-    if (!authLoading) {
-      if (!isAuthenticated) {
-        router.push("/auth/login");
-      } else if (authUser?.role !== "superAdmin") {
-        toast.error('Access denied. SuperAdmin only.');
-        router.push("/");
-      }
-    }
-  }, [isAuthenticated, authUser, authLoading, router]);
-
   // Check for pre-selected solver from URL params
   useEffect(() => {
     const solverId = searchParams.get('solverId');

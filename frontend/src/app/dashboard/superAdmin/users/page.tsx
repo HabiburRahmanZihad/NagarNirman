@@ -44,18 +44,6 @@ export default function SuperAdminUsersPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const usersPerPage = 10;
 
-  // Check authentication
-  useEffect(() => {
-    if (!authLoading) {
-      if (!isAuthenticated) {
-        router.push("/auth/login");
-      } else if (authUser?.role !== "superAdmin") {
-        toast.error("Access denied. SuperAdmin only.");
-        router.push("/");
-      }
-    }
-  }, [isAuthenticated, authUser, authLoading, router]);
-
   // Load users from API
   const loadUsers = async (showToast = false) => {
     if (showToast) {

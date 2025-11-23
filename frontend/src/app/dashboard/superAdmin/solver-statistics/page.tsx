@@ -72,13 +72,6 @@ export default function SolverStatisticsPage() {
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 
   useEffect(() => {
-    if (!authLoading && user?.role !== 'superAdmin') {
-      toast.error('Access denied. SuperAdmin only.');
-      router.push('/dashboard');
-    }
-  }, [user, authLoading, router]);
-
-  useEffect(() => {
     if (user?.role === 'superAdmin') {
       fetchStatistics();
     }

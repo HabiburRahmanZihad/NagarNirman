@@ -74,18 +74,6 @@ export default function SuperAdminApplications() {
     total: 0,
   });
 
-  // Check authentication
-  useEffect(() => {
-    if (!authLoading) {
-      if (!isAuthenticated) {
-        router.push('/auth/login');
-      } else if (user?.role !== 'superAdmin') {
-        toast.error('Access denied. SuperAdmin only.');
-        router.push('/');
-      }
-    }
-  }, [isAuthenticated, user, authLoading, router]);
-
   useEffect(() => {
     if (user?.role === 'superAdmin') {
       fetchApplications();

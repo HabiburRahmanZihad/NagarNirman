@@ -74,13 +74,6 @@ export default function TaskReviewPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && user?.role !== 'authority' && user?.role !== 'superAdmin') {
-      toast.error('Access denied. Authority or SuperAdmin only.');
-      router.push('/dashboard');
-    }
-  }, [user, authLoading, router]);
-
-  useEffect(() => {
     if (user?.role === 'authority' || user?.role === 'superAdmin') {
       fetchPendingTasks();
     }

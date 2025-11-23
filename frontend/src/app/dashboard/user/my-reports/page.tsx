@@ -33,14 +33,6 @@ export default function MyReportsPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all');
 
-  // Check authentication
-  useEffect(() => {
-    if (!authLoading && (!isAuthenticated || user?.role !== 'user')) {
-      toast.error('Please login as a user to view your reports');
-      router.push('/auth/login');
-    }
-  }, [authLoading, isAuthenticated, user, router]);
-
   // Fetch user's reports
   const fetchMyReports = async (showToast = false) => {
     if (!user) return;

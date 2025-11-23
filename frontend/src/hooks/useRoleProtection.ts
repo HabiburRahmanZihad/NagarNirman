@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
@@ -25,29 +25,32 @@ export const useRoleProtection = ({
 }: UseRoleProtectionOptions) => {
   const router = useRouter();
   const { user, isLoading, isAuthenticated } = useAuth();
+  const hasRedirected = useRef(false);
 
   useEffect(() => {
-    // Don't check while loading
-    if (isLoading) return;
+    // Don't check while loading or if already redirected
+    if (isLoading || hasRedirected.current) return;
 
     // Not authenticated - redirect to login
     if (!isAuthenticated || !user) {
+      hasRedirected.current = true;
       if (showToast) {
         toast.error('Please login to access this page');
       }
-      router.push('/auth/login');
+      router.replace('/auth/login');
       return;
     }
 
     // Check if user's role is allowed
     if (!allowedRoles.includes(user.role as UserRole)) {
+      hasRedirected.current = true;
       if (showToast) {
         toast.error('You do not have permission to access this page');
       }
 
       // Redirect to appropriate dashboard based on user's role
       const dashboardPath = redirectTo || getRoleDashboardPath(user.role);
-      router.push(dashboardPath);
+      router.replace(dashboardPath);
       return;
     }
   }, [user, isLoading, isAuthenticated, allowedRoles, redirectTo, router, showToast]);
