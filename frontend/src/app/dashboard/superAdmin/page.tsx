@@ -50,12 +50,20 @@ export default function SuperAdminDashboard() {
     try {
       setLoading(true);
 
-      // Fetch dashboard stats and users in parallel
-      const [dashboardResponse, usersResponse, pendingTasksResponse, allTasksResponse] = await Promise.all([
-        statisticsAPI.getAdminDashboard(),
-        userAPI.getAllUsers(),
-        taskAPI.getPendingReview(),
-        taskAPI.getAll()
+      // Fetch all necessary data with error handling for each call - using fast statistics API
+      const [dashboardResponse, usersResponse, taskStatsResponse] = await Promise.all([
+        statisticsAPI.getAdminDashboard().catch(err => {
+          console.error('Dashboard API error:', err);
+          return { success: false, data: { stats: {}, recentReports: [] } };
+        }),
+        userAPI.getAllUsers({ limit: 100 }).catch(err => {
+          console.error('Users API error:', err);
+          return { success: false, data: [] };
+        }),
+        taskAPI.getTaskStatistics().catch(err => {
+          console.error('Task statistics API error:', err);
+          return { success: false, data: {} };
+        })
       ]);
 
       // Set stats from API
@@ -72,28 +80,22 @@ export default function SuperAdminDashboard() {
         setAllUsers(usersResponse.data || []);
       }
 
-      // Set task stats
-      if (pendingTasksResponse.success) {
+      // Set task stats from fast statistics endpoint
+      if (taskStatsResponse.success && taskStatsResponse.data) {
         setStats(prev => ({
           ...prev,
-          pendingReviewTasks: pendingTasksResponse.data.length
+          totalTasks: taskStatsResponse.data.totalTasks || 0,
+          completedTasks: taskStatsResponse.data.completedTasks || 0,
+          assignedTasks: taskStatsResponse.data.assignedTasks || 0,
+          inProgressTasks: taskStatsResponse.data.inProgressTasks || 0,
+          pendingReviewTasks: taskStatsResponse.data.pendingReviewTasks || 0,
         }));
       }
 
-      if (allTasksResponse.success) {
-        const tasks = allTasksResponse.data;
-        setStats(prev => ({
-          ...prev,
-          totalTasks: tasks.length,
-          completedTasks: tasks.filter((t: any) => t.status === 'completed' || t.status === 'verified').length,
-          assignedTasks: tasks.filter((t: any) => t.status === 'assigned').length,
-          inProgressTasks: tasks.filter((t: any) => t.status === 'in-progress' || t.status === 'accepted').length,
-        }));
-      }
-
+      toast.success('Dashboard loaded successfully!');
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      toast.error('Failed to load dashboard data');
+      toast.error('Some data may not be available');
     } finally {
       setLoading(false);
     }
@@ -157,16 +159,34 @@ export default function SuperAdminDashboard() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="bg-linear-to-r from-green-400 to-blue-500 p-3 rounded-xl shadow-lg">
-              <span className="text-3xl">🛡️</span>
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <div className="flex items-center gap-3">
+              <div className="bg-linear-to-r from-green-400 to-blue-500 p-3 rounded-xl shadow-lg">
+                <span className="text-3xl">🛡️</span>
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold bg-linear-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                  SuperAdmin Dashboard
+                </h1>
+                <p className="text-gray-600 mt-1">Complete system overview and management</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold bg-linear-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                SuperAdmin Dashboard
-              </h1>
-              <p className="text-gray-600 mt-1">Complete system overview and management</p>
-            </div>
+            <button
+              onClick={fetchDashboardData}
+              disabled={loading}
+              className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-green-500 text-green-600 rounded-xl hover:bg-green-50 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Refresh dashboard"
+            >
+              <svg
+                className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span className="font-semibold">Refresh</span>
+            </button>
           </div>
         </motion.div>
 

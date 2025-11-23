@@ -890,3 +890,54 @@ export const rejectTaskSubmission = asyncHandler(async (req, res) => {
     });
   }
 });
+
+// @desc    Get task statistics (fast counts only)
+// @route   GET /api/tasks/statistics
+// @access  Private (SuperAdmin, Authority)
+export const getTaskStatistics = asyncHandler(async (req, res) => {
+  try {
+    const tasksCollection = getTasksCollection();
+
+    // Get all counts in parallel using aggregation
+    const stats = await tasksCollection.aggregate([
+      {
+        $facet: {
+          total: [{ $count: 'count' }],
+          assigned: [{ $match: { status: 'assigned' } }, { $count: 'count' }],
+          accepted: [{ $match: { status: 'accepted' } }, { $count: 'count' }],
+          inProgress: [{ $match: { status: 'in-progress' } }, { $count: 'count' }],
+          submitted: [{ $match: { status: 'submitted' } }, { $count: 'count' }],
+          completed: [{ $match: { status: 'completed' } }, { $count: 'count' }],
+          verified: [{ $match: { status: 'verified' } }, { $count: 'count' }],
+          rejected: [{ $match: { status: 'rejected' } }, { $count: 'count' }],
+          pendingReview: [
+            { $match: { status: 'submitted', reviewStatus: 'pending' } },
+            { $count: 'count' }
+          ]
+        }
+      }
+    ]).toArray();
+
+    const result = stats[0];
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalTasks: result.total[0]?.count || 0,
+        assignedTasks: result.assigned[0]?.count || 0,
+        acceptedTasks: result.accepted[0]?.count || 0,
+        inProgressTasks: (result.inProgress[0]?.count || 0) + (result.accepted[0]?.count || 0),
+        submittedTasks: result.submitted[0]?.count || 0,
+        completedTasks: (result.completed[0]?.count || 0) + (result.verified[0]?.count || 0),
+        verifiedTasks: result.verified[0]?.count || 0,
+        rejectedTasks: result.rejected[0]?.count || 0,
+        pendingReviewTasks: result.pendingReview[0]?.count || 0
+      }
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
