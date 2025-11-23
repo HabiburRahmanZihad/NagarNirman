@@ -243,9 +243,9 @@ export default function NewReportPage() {
       setPreviews([]);
       setDistricts([]);
 
-      // Redirect to reports page after 1.5 seconds
+      // Redirect to user's my-reports page after 1.5 seconds
       setTimeout(() => {
-        router.push("/reports");
+        router.push("/dashboard/user/my-reports");
       }, 1500);
 
     } catch (error: unknown) {
