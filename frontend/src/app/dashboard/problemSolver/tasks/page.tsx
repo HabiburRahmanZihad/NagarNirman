@@ -532,52 +532,97 @@ export default function SolverTasksPage() {
                       </Link>
                     )}
 
-                    {/* Start Working Button */}
+                    {/* Start Working Button with See Details */}
                     {task.status === 'accepted' && (
-                      <button
-                        onClick={() => handleStartTask(task._id)}
-                        className="w-full py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center space-x-2"
-                      >
-                        <TrendingUp className="w-5 h-5" />
-                        <span>Start Working</span>
-                      </button>
-                    )}
-
-                    {/* Submit Proof Button */}
-                    {task.status === 'in-progress' && (
-                      <button
-                        onClick={() => handleOpenProofModal(task._id)}
-                        className="w-full py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 flex items-center justify-center space-x-2"
-                      >
-                        <Upload className="w-5 h-5" />
-                        <span>Submit Proof</span>
-                      </button>
-                    )}
-
-                    {/* Resubmit Button */}
-                    {task.status === 'rejected' && (
-                      <button
-                        onClick={() => handleOpenProofModal(task._id)}
-                        className="w-full py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center justify-center space-x-2"
-                      >
-                        <Upload className="w-5 h-5" />
-                        <span>Resubmit Proof</span>
-                      </button>
-                    )}
-
-                    {/* Waiting for Review */}
-                    {task.status === 'submitted' && (
-                      <div className="w-full py-2.5 bg-blue-50 text-blue-700 rounded-lg font-semibold text-center border border-blue-200">
-                        <Clock className="w-5 h-5 inline mr-2" />
-                        Waiting for Review...
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleStartTask(task._id)}
+                          className="flex-1 py-2.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                        >
+                          <TrendingUp className="w-5 h-5" />
+                          <span>Start Working</span>
+                        </button>
+                        <Link
+                          href={`/dashboard/problemSolver/tasks/${task._id}`}
+                          className="px-4 py-2.5 bg-white border-2 border-blue-500 text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 flex items-center justify-center"
+                          title="See Details"
+                        >
+                          <Eye className="w-5 h-5" />
+                        </Link>
                       </div>
                     )}
 
-                    {/* Completed */}
+                    {/* Submit Proof Button with See Details */}
+                    {task.status === 'in-progress' && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleOpenProofModal(task._id)}
+                          className="flex-1 py-2.5 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                        >
+                          <Upload className="w-5 h-5" />
+                          <span>Submit Proof</span>
+                        </button>
+                        <Link
+                          href={`/dashboard/problemSolver/tasks/${task._id}`}
+                          className="px-4 py-2.5 bg-white border-2 border-purple-500 text-purple-600 rounded-lg font-semibold hover:bg-purple-50 transition-all duration-300 flex items-center justify-center"
+                          title="See Details"
+                        >
+                          <Eye className="w-5 h-5" />
+                        </Link>
+                      </div>
+                    )}
+
+                    {/* Resubmit Button with See Details */}
+                    {task.status === 'rejected' && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleOpenProofModal(task._id)}
+                          className="flex-1 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                        >
+                          <Upload className="w-5 h-5" />
+                          <span>Resubmit Proof</span>
+                        </button>
+                        <Link
+                          href={`/dashboard/problemSolver/tasks/${task._id}`}
+                          className="px-4 py-2.5 bg-white border-2 border-orange-500 text-orange-600 rounded-lg font-semibold hover:bg-orange-50 transition-all duration-300 flex items-center justify-center"
+                          title="See Details"
+                        >
+                          <Eye className="w-5 h-5" />
+                        </Link>
+                      </div>
+                    )}
+
+                    {/* Waiting for Review with See Details */}
+                    {task.status === 'submitted' && (
+                      <div className="space-y-2">
+                        <div className="w-full py-2.5 bg-blue-50 text-blue-700 rounded-lg font-semibold text-center border border-blue-200">
+                          <Clock className="w-5 h-5 inline mr-2" />
+                          Waiting for Review...
+                        </div>
+                        <Link
+                          href={`/dashboard/problemSolver/tasks/${task._id}`}
+                          className="w-full py-2 bg-white border-2 border-blue-500 text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 flex items-center justify-center space-x-2"
+                        >
+                          <Eye className="w-4 h-4" />
+                          <span>See Details</span>
+                        </Link>
+                      </div>
+                    )}
+
+                    {/* Completed with See Details */}
                     {(task.status === 'completed' || task.status === 'verified') && (
-                      <div className="w-full py-2.5 bg-green-50 text-green-700 rounded-lg font-semibold text-center border border-green-200">
-                        <CheckCircle className="w-5 h-5 inline mr-2" />
-                        Task Completed!
+                      <div className="space-y-2">
+                        <div className="w-full py-2.5 bg-green-50 text-green-700 rounded-lg font-semibold text-center border border-green-200">
+                          <CheckCircle className="w-5 h-5 inline mr-2" />
+                          Task Completed!
+                        </div>
+                        <Link
+                          href={`/dashboard/problemSolver/tasks/${task._id}`}
+                          className="w-full py-2 bg-white border-2 border-green-500 text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-all duration-300 flex items-center justify-center space-x-2"
+                        >
+                          <Eye className="w-4 h-4" />
+                          <span>See Details</span>
+                        </Link>
                       </div>
                     )}
                   </div>
