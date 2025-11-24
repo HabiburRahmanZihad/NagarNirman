@@ -164,47 +164,47 @@ const AnalyticsPage = () => {
         throw new Error('No data received from API');
       }
 
-      // Transform data to match component expectations with null checks
-      const transformedData = {
-        totalReports: data.totalReports || 0,
-        completedReports: data.completedReports || 0,
-        ongoingReports: data.ongoingReports || 0,
-        pendingReports: data.pendingReports || 0,
-        averageResolutionTime: data.averageResolutionTime || 0,
-        completionRate: data.completionRate || 0,
-        lastUpdated: data.lastUpdated || new Date().toISOString(),
-        // Add percentages to category stats
-        categoryStats: (data.categoryStats || []).map((cat: any) => ({
-          category: cat.category,
-          count: cat.count,
-          percentage: data.totalReports > 0 ? (cat.count / data.totalReports) * 100 : 0
-        })),
-        // Add percentages to status stats
-        statusStats: (data.statusStats || []).map((stat: any) => ({
-          status: stat.status,
-          count: stat.count,
-          color: stat.color,
-          percentage: data.totalReports > 0 ? (stat.count / data.totalReports) * 100 : 0
-        })),
-        // Rename fields for monthly stats to match component
-        monthlyStats: (data.monthlyStats || []).map((stat: any) => ({
-          month: stat.month,
-          reports: stat.reports,
-          completed: stat.resolved || 0, // Rename resolved to completed
-          pending: stat.pending || 0
-        })),
-        // Transform district stats to match component
-        districtStats: (data.districtStats || []).map((stat: any) => ({
-          district: stat.district,
-          division: stat.division,
-          reports: stat.total || 0, // Rename total to reports
-          pending: stat.pending || 0,
-          completed: stat.resolved || 0, // Rename resolved to completed
-          ongoing: stat.ongoing || 0
-        })),
-        // Ensure solver performance exists
-        solverPerformance: data.solverPerformance || []
-      };
+         // Transform data to match component expectations with null checks
+        const transformedData = {
+          totalReports: data.totalReports || 0,
+          completedReports: data.completedReports || 0,
+          ongoingReports: data.ongoingReports || 0,
+          pendingReports: data.pendingReports || 0,
+          averageResolutionTime: data.averageResolutionTime || 0,
+          completionRate: data.completionRate || 0,
+          lastUpdated: data.lastUpdated || new Date().toISOString(),
+          // Add percentages to category stats
+          categoryStats: (data.categoryStats || []).map((cat: any) => ({
+            category: cat.category,
+            count: cat.count,
+            percentage: data.totalReports > 0 ? (cat.count / data.totalReports) * 100 : 0
+          })),
+          // Add percentages to status stats
+          statusStats: (data.statusStats || []).map((stat: any) => ({
+            status: stat.status,
+            count: stat.count,
+            color: stat.color,
+            percentage: data.totalReports > 0 ? (stat.count / data.totalReports) * 100 : 0
+          })),
+          // Rename fields for monthly stats to match component
+          monthlyStats: (data.monthlyStats || []).map((stat: any) => ({
+            month: stat.month,
+            reports: stat.reports,
+            completed: stat.resolved || 0, // Rename resolved to completed
+            pending: stat.pending || 0
+          })),
+          // Transform district stats to match component
+          districtStats: (data.districtStats || []).map((stat: any) => ({
+            district: stat.district,
+            division: stat.division,
+            reports: stat.total || 0, // Rename total to reports
+            pending: stat.pending || 0,
+            completed: stat.resolved || 0, // Rename resolved to completed
+            ongoing: stat.ongoing || 0
+          })),
+          // Ensure solver performance exists
+          solverPerformance: data.solverPerformance || []
+        };
 
       setAnalyticsData(transformedData as any);
       setLastUpdated(new Date());
@@ -342,11 +342,15 @@ const AnalyticsPage = () => {
                 <option value="all">
                   {user?.division ? `My Division (${user.division})` : 'All Divisions'}
                 </option>
-                {Object.keys(divisionsData).map((division) => (
-                  <option key={division} value={division}>
-                    {division.charAt(0).toUpperCase() + division.slice(1)}
-                  </option>
-                ))}
+                {(Array.isArray(divisionsData)
+                  ? divisionsData.map((d: any) => d.division)
+                  : Object.keys(divisionsData)
+                ).filter((division: string) => division && division !== user?.division)
+                  .map((division: string) => (
+                    <option key={division} value={division}>
+                      {division.charAt(0).toUpperCase() + division.slice(1)}
+                    </option>
+                  ))}
               </select>
             </div>
 
@@ -408,7 +412,6 @@ const AnalyticsPage = () => {
                   <th className="text-left py-4 font-medium text-gray-900">Completed Tasks</th>
                   <th className="text-left py-4 font-medium text-gray-900">Success Rate</th>
                   <th className="text-left py-4 font-medium text-gray-900">Avg. Resolution Time</th>
-                  <th className="text-left py-4 font-medium text-gray-900">Rating</th>
                 </tr>
               </thead>
               <tbody>
@@ -458,30 +461,11 @@ const AnalyticsPage = () => {
                       <td className="py-4">
                         <span className="text-gray-900 font-medium">{solver.avgResolutionTime.toFixed(1)}h</span>
                       </td>
-                      <td className="py-4">
-                        <div className="flex items-center gap-2">
-                          <div className="flex">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <span
-                                key={star}
-                                className={`text-lg ${
-                                  star <= Math.floor(solver.rating)
-                                    ? 'text-yellow-500'
-                                    : 'text-gray-300'
-                                }`}
-                              >
-                                ★
-                              </span>
-                            ))}
-                          </div>
-                          <span className="text-gray-900 font-bold">{solver.rating.toFixed(1)}</span>
-                        </div>
-                      </td>
                     </motion.tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-gray-500">
+                    <td colSpan={4} className="py-8 text-center text-gray-500">
                       No solver performance data available
                     </td>
                   </tr>
