@@ -117,7 +117,7 @@ export default function SolverTasksPage() {
     submitted: tasks.filter(t => t.status === 'submitted').length,
     completed: tasks.filter(t => t.status === 'completed' || t.status === 'verified').length,
     rejected: tasks.filter(t => t.status === 'rejected').length,
-    totalPoints: tasks.filter(t => t.status === 'completed' || t.status === 'verified').length * 10 // Placeholder points calculation
+    totalPoints: user?.points ?? 0 // Use actual user points from backend
   };
 
   // Filter tasks

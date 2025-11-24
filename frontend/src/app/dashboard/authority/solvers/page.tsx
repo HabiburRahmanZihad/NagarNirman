@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import divisionsData from '@/data/divisionsData.json';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
@@ -116,8 +117,14 @@ export default function SolversPage() {
     }
   };
 
-  // Get unique districts
-  const districts = Array.from(new Set(solvers.map(s => s.district).filter(Boolean)));
+  // Get all districts for the authority's division
+  let districts: string[] = [];
+  if (authUser?.division) {
+    const divisionObj = (divisionsData as any[]).find(d => d.division.toLowerCase() === authUser.division.toLowerCase());
+    if (divisionObj) {
+      districts = divisionObj.districts.map((d: any) => d.name);
+    }
+  }
 
   // Filter and sort solvers
   const filteredSolvers = solvers
@@ -137,18 +144,32 @@ export default function SolversPage() {
     })
     .sort((a, b) => {
       switch (sortBy) {
-        case 'rating':
-          const aRating = typeof a.taskStats?.rating === 'number' ? a.taskStats.rating : (a.rating || 0);
-          const bRating = typeof b.taskStats?.rating === 'number' ? b.taskStats.rating : (b.rating || 0);
-          return bRating - aRating;
-        case 'completedTasks':
+        case 'rating': {
+          // Use the best available rating (taskStats.rating, rating, or 0)
+          const getRating = (solver: any) => {
+            if (typeof solver.taskStats?.rating === 'number') return solver.taskStats.rating;
+            if (!isNaN(Number(solver.taskStats?.rating))) return Number(solver.taskStats.rating);
+            if (typeof solver.rating === 'number') return solver.rating;
+            if (!isNaN(Number(solver.rating))) return Number(solver.rating);
+            return 0;
+          };
+          return getRating(b) - getRating(a);
+        }
+        case 'completedTasks': {
           const aCompleted = a.taskStats?.completed ?? a.completedTasks ?? 0;
           const bCompleted = b.taskStats?.completed ?? b.completedTasks ?? 0;
           return bCompleted - aCompleted;
-        case 'successRate':
-          const aSuccess = parseInt(String(a.taskStats?.successRate || a.successRate || '0').replace('%', ''));
-          const bSuccess = parseInt(String(b.taskStats?.successRate || b.successRate || '0').replace('%', ''));
-          return bSuccess - aSuccess;
+        }
+        case 'successRate': {
+          const getSuccess = (solver: any) => {
+            if (typeof solver.taskStats?.successRate === 'string') return parseInt(solver.taskStats.successRate.replace('%', ''));
+            if (typeof solver.successRate === 'string') return parseInt(solver.successRate.replace('%', ''));
+            if (typeof solver.taskStats?.successRate === 'number') return solver.taskStats.successRate;
+            if (typeof solver.successRate === 'number') return solver.successRate;
+            return 0;
+          };
+          return getSuccess(b) - getSuccess(a);
+        }
         case 'createdAt':
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         default:
@@ -439,7 +460,7 @@ export default function SolversPage() {
                   )}
                 </div>
 
-                {/* Performance Metrics */}
+                {/* Performance Metrics + Points */}
                 <div className="grid grid-cols-3 gap-2 mb-4 p-3 bg-gray-50 rounded-lg">
                   <div className="text-center">
                     <div className="text-lg font-bold text-gray-900">
@@ -459,6 +480,14 @@ export default function SolversPage() {
                     </div>
                     <div className="text-xs text-gray-500">Success</div>
                   </div>
+                  {typeof solver.points !== 'undefined' && (
+                    <div className="col-span-3 text-center mt-2">
+                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-50 text-yellow-700 rounded-full text-xs font-semibold border border-yellow-200">
+                        <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 01.894.553l2.382 4.828 5.327.774a1 1 0 01.554 1.707l-3.853 3.755.91 5.308a1 1 0 01-1.451 1.054L10 16.347l-4.771 2.504A1 1 0 013.778 17.8l.91-5.308L.835 8.737a1 1 0 01.554-1.707l5.327-.774L9.098 2.553A1 1 0 0110 2z" /></svg>
+                        {solver.points} Points
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Expertise Tags */}
