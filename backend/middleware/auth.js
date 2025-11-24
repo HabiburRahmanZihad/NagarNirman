@@ -1,3 +1,13 @@
+// Only allow superAdmin
+export const superAdminOnly = (req, res, next) => {
+  if (!req.user || req.user.role !== 'superAdmin') {
+    return res.status(403).json({
+      success: false,
+      message: 'Access denied. Super Admins only.'
+    });
+  }
+  next();
+};
 // Authentication Middleware (Native MongoDB)
 import jwt from 'jsonwebtoken';
 import { getUserById } from '../models/User.js';
