@@ -25,6 +25,7 @@ interface Solver {
   isActive: boolean;
   phone?: string;
   createdAt: string;
+  points?: number;
   taskStats?: {
     total: number;
     completed: number;
@@ -120,7 +121,10 @@ export default function SolversPage() {
   // Get all districts for the authority's division
   let districts: string[] = [];
   if (authUser?.division) {
-    const divisionObj = (divisionsData as any[]).find(d => d.division.toLowerCase() === authUser.division.toLowerCase());
+    // Normalize division names for robust matching (trim, lowercase, remove unicode spaces)
+    const normalize = (str: string) => str.replace(/\s+/g, ' ').trim().toLowerCase();
+    const userDivision = normalize(authUser.division);
+    const divisionObj = (divisionsData as any[]).find(d => normalize(d.division) === userDivision);
     if (divisionObj) {
       districts = divisionObj.districts.map((d: any) => d.name);
     }
@@ -480,14 +484,14 @@ export default function SolversPage() {
                     </div>
                     <div className="text-xs text-gray-500">Success</div>
                   </div>
-                  {typeof solver.points !== 'undefined' && (
+                  {
                     <div className="col-span-3 text-center mt-2">
                       <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-50 text-yellow-700 rounded-full text-xs font-semibold border border-yellow-200">
                         <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 01.894.553l2.382 4.828 5.327.774a1 1 0 01.554 1.707l-3.853 3.755.91 5.308a1 1 0 01-1.451 1.054L10 16.347l-4.771 2.504A1 1 0 013.778 17.8l.91-5.308L.835 8.737a1 1 0 01.554-1.707l5.327-.774L9.098 2.553A1 1 0 0110 2z" /></svg>
-                        {solver.points} Points
+                        {Number(solver.points || 0).toLocaleString()} Points
                       </span>
                     </div>
-                  )}
+                  }
                 </div>
 
                 {/* Expertise Tags */}
