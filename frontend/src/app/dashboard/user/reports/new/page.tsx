@@ -38,19 +38,6 @@ export default function NewReportPage() {
   const selectedCategory = watch("category");
   const selectedDivision = watch("division");
 
-  // Check if user is authenticated and has 'user' role
-  useEffect(() => {
-    if (!isLoading) {
-      if (!isAuthenticated) {
-        toast.error("Please login to submit a report");
-        router.push("/auth/login");
-      } else if (user?.role !== "user") {
-        toast.error("Only users can submit reports. Please register as a user.");
-        router.push("/");
-      }
-    }
-  }, [isAuthenticated, user, isLoading, router]);
-
   const handleDivisionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const div = e.target.value;
     setValue("division", div);
@@ -243,9 +230,9 @@ export default function NewReportPage() {
       setPreviews([]);
       setDistricts([]);
 
-      // Redirect to reports page after 1.5 seconds
+      // Redirect to user's reports dashboard after 1.5 seconds
       setTimeout(() => {
-        router.push("/reports");
+        router.push("/dashboard/user/my-reports");
       }, 1500);
 
     } catch (error: unknown) {

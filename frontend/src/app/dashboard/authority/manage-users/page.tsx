@@ -40,17 +40,6 @@ export default function ManageUsersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const usersPerPage = 10;
 
-  // Check authentication
-  useEffect(() => {
-    if (!authLoading) {
-      if (!isAuthenticated) {
-        router.push("/auth/login");
-      } else if (authUser?.role !== "authority") {
-        router.push("/");
-      }
-    }
-  }, [isAuthenticated, authUser, authLoading, router]);
-
   // Load users from API
   useEffect(() => {
     const loadUsers = async () => {

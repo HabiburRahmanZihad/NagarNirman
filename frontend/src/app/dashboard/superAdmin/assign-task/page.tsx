@@ -74,18 +74,6 @@ export default function SuperAdminAssignTaskPage() {
     search: ''
   });
 
-  // Check authentication
-  useEffect(() => {
-    if (!authLoading) {
-      if (!isAuthenticated) {
-        router.push("/auth/login");
-      } else if (authUser?.role !== "superAdmin") {
-        toast.error('Access denied. SuperAdmin only.');
-        router.push("/");
-      }
-    }
-  }, [isAuthenticated, authUser, authLoading, router]);
-
   // Check for pre-selected solver from URL params
   useEffect(() => {
     const solverId = searchParams.get('solverId');
@@ -646,7 +634,8 @@ export default function SuperAdminAssignTaskPage() {
                 Set Task Deadline (Required)
               </p>
               <div className="space-y-3">
-                <input
+                    <input
+                      aria-label="Set task deadline"
                   type="datetime-local"
                   value={deadline}
                   onChange={(e) => setDeadline(e.target.value)}

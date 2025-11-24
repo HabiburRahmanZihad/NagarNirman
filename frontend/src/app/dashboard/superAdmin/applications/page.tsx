@@ -38,8 +38,19 @@ interface Application {
   skills: string[];
   motivation: string;
   experience?: string;
-  profileImage?: string;
   nidOrIdDoc: string;
+  nidNumber: string;
+  emergencyContact: string;
+  emergencyContactName: string;
+  emergencyContactRelation: string;
+  educationLevel?: string;
+  availability?: string;
+  languagesSpoken: string[];
+  previousVolunteerWork?: string;
+  linkedinProfile: string;
+  facebookProfile?: string;
+  twitterProfile?: string;
+  websiteProfile?: string;
   status: 'pending' | 'approved' | 'rejected';
   reviewedBy?: string;
   reviewedAt?: string;
@@ -62,18 +73,6 @@ export default function SuperAdminApplications() {
     pages: 1,
     total: 0,
   });
-
-  // Check authentication
-  useEffect(() => {
-    if (!authLoading) {
-      if (!isAuthenticated) {
-        router.push('/auth/login');
-      } else if (user?.role !== 'superAdmin') {
-        toast.error('Access denied. SuperAdmin only.');
-        router.push('/');
-      }
-    }
-  }, [isAuthenticated, user, authLoading, router]);
 
   useEffect(() => {
     if (user?.role === 'superAdmin') {
@@ -159,9 +158,9 @@ export default function SuperAdminApplications() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#81d586] mx-auto"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-[#2a7d2f] border-b-[#2a7d2f] border-l-transparent border-r-transparent mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading applications...</p>
         </div>
       </div>
@@ -169,7 +168,7 @@ export default function SuperAdminApplications() {
   }
 
   return (
-    <div className="p-6">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 p-6">
       <div className="max-w-7xl mx-auto">
         <Toaster position="top-right" />
 
@@ -177,17 +176,17 @@ export default function SuperAdminApplications() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-100 p-6"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-3 bg-[#2a7d2f] rounded-xl shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-gradient-to-br from-[#2a7d2f] to-[#1e5a23] rounded-xl shadow-lg">
               <FaShieldAlt className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] bg-clip-text text-transparent">
                 All Applications Management
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-gray-600 mt-1 text-lg">
                 System-wide problem solver applications (SuperAdmin)
               </p>
             </div>
@@ -268,21 +267,23 @@ export default function SuperAdminApplications() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-white rounded-lg shadow p-4 mb-6"
+          className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6"
         >
           <div className="flex items-center space-x-4">
-            <FaFilter className="text-gray-500" />
-            <label className="text-sm font-medium text-gray-700">Status:</label>
+            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-[#2a7d2f] to-[#1e5a23] rounded-xl shadow-md">
+              <FaFilter className="text-white" />
+            </div>
+            <label className="text-sm font-semibold text-gray-700">Filter by Status:</label>
             <select
               aria-label="Filter by status"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"
+              className="px-5 py-2.5 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] font-medium text-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer"
             >
               <option value="all">All Applications</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
+              <option value="pending">⏳ Pending</option>
+              <option value="approved">✅ Approved</option>
+              <option value="rejected">❌ Rejected</option>
             </select>
           </div>
         </motion.div>
@@ -294,10 +295,13 @@ export default function SuperAdminApplications() {
           transition={{ delay: 0.6 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {applications.map((app) => (
-            <div
+          {applications.map((app, index) => (
+            <motion.div
               key={app._id}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: Math.min(index * 0.03, 0.3) }}
+              className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-200 p-6 border border-gray-200 hover:border-[#2a7d2f]/50"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3">
@@ -335,60 +339,71 @@ export default function SuperAdminApplications() {
 
               <button
                 onClick={() => openModal(app)}
-                className="w-full flex items-center justify-center px-4 py-2 bg-[#2a7d2f] text-white rounded-lg hover:bg-[#1e5c22] transition-colors"
+                className="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] text-white rounded-xl hover:from-[#236b27] hover:to-[#1a4d1f] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-medium"
               >
-                <FaEye className="mr-2" />
+                <FaEye className="mr-2 text-lg" />
                 View Details & Review
               </button>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
 
         {applications.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No applications found</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl shadow-lg border border-gray-100 p-16 text-center"
+          >
+            <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center">
+              <span className="text-5xl">📋</span>
+            </div>
+            <p className="text-gray-600 text-xl font-medium">No applications found</p>
+            <p className="text-gray-500 mt-2">Try adjusting your filters</p>
+          </motion.div>
         )}
 
         {/* Pagination */}
         {pagination.pages > 1 && (
-          <div className="mt-6 flex justify-center space-x-2">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-8 flex justify-center space-x-3"
+          >
             {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
                 onClick={() => setPagination({ ...pagination, page })}
-                className={`px-4 py-2 rounded-lg ${
+                className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg ${
                   pagination.page === page
-                    ? 'bg-[#2a7d2f] text-white'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] text-white scale-110'
+                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
                 }`}
               >
                 {page}
               </button>
             ))}
-          </div>
+          </motion.div>
         )}
 
         {/* Modal */}
         {showModal && selectedApp && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white rounded-3xl max-w-4xl w-full my-8 shadow-2xl border border-gray-200 overflow-hidden"
             >
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    Application Details
-                  </h2>
-                  <button
-                    onClick={closeModal}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    ✕
-                  </button>
-                </div>
+              <div className="bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] text-white p-6 flex justify-between items-center">
+                <h2 className="text-2xl font-bold">Application Details</h2>
+                <button
+                  onClick={closeModal}
+                  className="w-10 h-10 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full text-white text-2xl transition-colors"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="p-6 max-h-[calc(90vh-120px)] overflow-y-auto">
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
@@ -414,6 +429,24 @@ export default function SuperAdminApplications() {
                         {new Date(selectedApp.dateOfBirth).toLocaleDateString()}
                       </p>
                     </div>
+                    {selectedApp.nidNumber && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">NID Number</label>
+                        <p className="text-gray-900">{selectedApp.nidNumber}</p>
+                      </div>
+                    )}
+                    {selectedApp.educationLevel && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Education Level</label>
+                        <p className="text-gray-900">{selectedApp.educationLevel}</p>
+                      </div>
+                    )}
+                    {selectedApp.availability && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Availability</label>
+                        <p className="text-gray-900">{selectedApp.availability}</p>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-4">
@@ -439,8 +472,44 @@ export default function SuperAdminApplications() {
                         <p className="text-gray-900">{selectedApp.organization}</p>
                       </div>
                     )}
+                    {selectedApp.languagesSpoken && selectedApp.languagesSpoken.length > 0 && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-500">Languages Spoken</label>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {selectedApp.languagesSpoken.map((lang: string, index: number) => (
+                            <span
+                              key={index}
+                              className="px-2 py-1 bg-purple-100 text-purple-800 rounded text-sm"
+                            >
+                              {lang}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
+
+                {/* Emergency Contact Section */}
+                {selectedApp.emergencyContactName && (
+                  <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Emergency Contact</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="text-xs font-medium text-gray-500">Name</label>
+                        <p className="text-gray-900">{selectedApp.emergencyContactName}</p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-500">Phone</label>
+                        <p className="text-gray-900">{selectedApp.emergencyContact}</p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-500">Relation</label>
+                        <p className="text-gray-900">{selectedApp.emergencyContactRelation}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="mt-6 space-y-4">
                   <div>
@@ -449,7 +518,7 @@ export default function SuperAdminApplications() {
                       {selectedApp.skills.map((skill, index) => (
                         <span
                           key={index}
-                          className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                          className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium"
                         >
                           {skill}
                         </span>
@@ -457,15 +526,107 @@ export default function SuperAdminApplications() {
                     </div>
                   </div>
 
+                  {selectedApp.languagesSpoken && selectedApp.languagesSpoken.length > 0 && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Languages Spoken</label>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {selectedApp.languagesSpoken.map((lang, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+                          >
+                            {lang}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   <div>
                     <label className="text-sm font-medium text-gray-500">Motivation</label>
-                    <p className="text-gray-900 mt-1">{selectedApp.motivation}</p>
+                    <p className="text-gray-900 mt-1 whitespace-pre-wrap break-words bg-gray-50 p-4 rounded-lg">{selectedApp.motivation}</p>
                   </div>
 
                   {selectedApp.experience && (
                     <div>
                       <label className="text-sm font-medium text-gray-500">Experience</label>
-                      <p className="text-gray-900 mt-1">{selectedApp.experience}</p>
+                      <p className="text-gray-900 mt-1 whitespace-pre-wrap break-words bg-gray-50 p-4 rounded-lg">{selectedApp.experience}</p>
+                    </div>
+                  )}
+
+                  {selectedApp.previousVolunteerWork && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">Previous Volunteer Work</label>
+                      <p className="text-gray-900 mt-1 whitespace-pre-wrap break-words bg-green-50 p-4 rounded-lg">{selectedApp.previousVolunteerWork}</p>
+                    </div>
+                  )}
+
+                  {/* Social Media Links */}
+                  {(selectedApp.linkedinProfile || selectedApp.facebookProfile || selectedApp.twitterProfile || selectedApp.websiteProfile) && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500 mb-3 block">Social Media & Professional Links</label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {selectedApp.linkedinProfile && (
+                          <a
+                            href={selectedApp.linkedinProfile}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center px-4 py-3 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
+                          >
+                            <span className="text-blue-600 font-medium">🔗 LinkedIn Profile</span>
+                          </a>
+                        )}
+                        {selectedApp.facebookProfile && (
+                          <a
+                            href={selectedApp.facebookProfile}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center px-4 py-3 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
+                          >
+                            <span className="text-blue-600 font-medium">📘 Facebook Profile</span>
+                          </a>
+                        )}
+                        {selectedApp.twitterProfile && (
+                          <a
+                            href={selectedApp.twitterProfile}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center px-4 py-3 bg-sky-50 hover:bg-sky-100 rounded-lg border border-sky-200 transition-colors"
+                          >
+                            <span className="text-sky-600 font-medium">🐦 Twitter Profile</span>
+                          </a>
+                        )}
+                        {selectedApp.websiteProfile && (
+                          <a
+                            href={selectedApp.websiteProfile}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center px-4 py-3 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors"
+                          >
+                            <span className="text-purple-600 font-medium">🌐 Personal Website</span>
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* NID Document */}
+                  {selectedApp.nidOrIdDoc && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">NID & Important Documents</label>
+                      <a
+                        href={selectedApp.nidOrIdDoc}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block mt-2"
+                      >
+                        <img
+                          src={selectedApp.nidOrIdDoc}
+                          alt="NID Document"
+                          className="max-w-full h-auto max-h-96 rounded-lg object-contain border-2 border-gray-300 hover:border-[#2a7d2f] transition-colors cursor-pointer"
+                        />
+                      </a>
+                      <p className="text-xs text-gray-500 mt-1">Click to view in full size</p>
                     </div>
                   )}
 
@@ -475,14 +636,14 @@ export default function SuperAdminApplications() {
                   </div>
 
                   {selectedApp.status === 'pending' && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Review Note</label>
+                    <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl p-6 border-2 border-dashed border-gray-300">
+                      <label className="text-sm font-bold text-gray-700 mb-3 block">📝 Review Note (Optional)</label>
                       <textarea
                         value={reviewNote}
                         onChange={(e) => setReviewNote(e.target.value)}
-                        placeholder="Add a note for this review..."
-                        className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent"
-                        rows={3}
+                        placeholder="Add any notes about your decision..."
+                        className="w-full px-5 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] resize-none shadow-sm"
+                        rows={4}
                       />
                     </div>
                   )}
@@ -493,15 +654,17 @@ export default function SuperAdminApplications() {
                     <button
                       onClick={() => handleReview(selectedApp._id, 'approved')}
                       disabled={isReviewing}
-                      className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="flex-1 px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-bold text-lg flex items-center justify-center"
                     >
+                      <FaCheckCircle className="mr-2 text-xl" />
                       {isReviewing ? 'Processing...' : 'Approve Application'}
                     </button>
                     <button
                       onClick={() => handleReview(selectedApp._id, 'rejected')}
                       disabled={isReviewing}
-                      className="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="flex-1 px-6 py-4 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-bold text-lg flex items-center justify-center"
                     >
+                      <FaTimesCircle className="mr-2 text-xl" />
                       {isReviewing ? 'Processing...' : 'Reject Application'}
                     </button>
                   </div>

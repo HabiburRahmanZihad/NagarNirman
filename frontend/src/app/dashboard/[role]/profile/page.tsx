@@ -85,6 +85,16 @@ const ProfilePage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate phone number
+    if (profileData.phone) {
+      const phoneRegex = /^01[0-9]{9}$/;
+      if (!phoneRegex.test(profileData.phone)) {
+        toast.error('Phone number must be 11 digits starting with 01');
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
@@ -217,14 +227,24 @@ const ProfilePage = () => {
                   />
                   <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
                 </div>
-                <Input
-                  label="Phone Number"
-                  name="phone"
-                  type="tel"
-                  value={profileData.phone}
-                  onChange={handleChange}
-                  placeholder="+880 1XXX-XXXXXX"
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={profileData.phone}
+                    onChange={handleChange}
+                    placeholder="01XXXXXXXXX"
+                    maxLength={11}
+                    pattern="^01[0-9]{9}$"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-gray-900"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    11 digits starting with 01 (e.g., 01712345678)
+                  </p>
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Role

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
+import { RefreshButton } from '@/components/common';
 import { reportAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
 
@@ -26,6 +27,7 @@ export default function SolverDashboard() {
     points: 0,
   });
   const [loadingStats, setLoadingStats] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [availableReports, setAvailableReports] = useState<any[]>([]);
   const [myTasks, setMyTasks] = useState<any[]>([]);
 
@@ -41,9 +43,13 @@ export default function SolverDashboard() {
     }
   }, [user]);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = async (showToast = false) => {
     try {
-      setLoadingStats(true);
+      if (showToast) {
+        setIsRefreshing(true);
+      } else {
+        setLoadingStats(true);
+      }
 
       // Fetch available reports (pending reports)
       const reportsResponse = await reportAPI.getAll({ status: 'pending' });
@@ -63,6 +69,11 @@ export default function SolverDashboard() {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setLoadingStats(false);
+      setIsRefreshing(false);
+      if (showToast) {
+        const toast = (await import('react-hot-toast')).default;
+        toast.success('Dashboard refreshed!');
+      }
     }
   };
 
@@ -121,11 +132,18 @@ export default function SolverDashboard() {
               Help resolve community issues and earn points!
             </p>
           </div>
-          <Link href="/reports">
-            <Button variant="primary">
-              Browse All Reports
-            </Button>
-          </Link>
+          <div className="flex gap-2">
+            <RefreshButton
+              onClick={() => fetchDashboardData(true)}
+              isRefreshing={isRefreshing}
+              variant="outline"
+            />
+            <Link href="/reports">
+              <Button variant="primary">
+                Browse All Reports
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats Grid */}

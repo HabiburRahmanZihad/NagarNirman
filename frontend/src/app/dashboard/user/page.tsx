@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
@@ -8,6 +8,7 @@ import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
 import { userAPI, reportAPI, problemSolverAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 
 interface UserStats {
   totalReports: number;
@@ -19,35 +20,34 @@ interface UserStats {
 
 export default function UserDashboard() {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
   const [applicationStatus, setApplicationStatus] = useState<any>(null);
   const [recentReports, setRecentReports] = useState<any[]>([]);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push('/auth/login');
-    }
-  }, [isAuthenticated, isLoading, router]);
-
-  useEffect(() => {
-    if (user) {
-      fetchUserStats();
-      fetchRecentReports();
-      fetchApplicationStatus();
+    // Prevent duplicate API calls
+    if (user && !hasFetched.current) {
+      hasFetched.current = true;
+      fetchAllData();
     }
   }, [user]);
 
+  const fetchAllData = async () => {
+    await Promise.all([
+      fetchUserStats(),
+      fetchRecentReports(),
+      fetchApplicationStatus()
+    ]);
+  };
+
   const fetchUserStats = async () => {
+    if (!user?._id) return;
+
     try {
-      if (!user?._id) {
-        console.log('No user ID available');
-        return;
-      }
-      console.log('Fetching stats for user:', user._id);
       const response = await userAPI.getUserStats(user._id);
-      console.log('Stats response:', response);
       if (response.success && response.data) {
         const { reports } = response.data;
         setStats({
@@ -57,33 +57,27 @@ export default function UserDashboard() {
           resolvedReports: reports?.byStatus?.resolved || 0,
           rejectedReports: reports?.byStatus?.rejected || 0,
         });
-        console.log('Stats updated:', {
-          totalReports: reports?.total || 0,
-          pendingReports: reports?.byStatus?.pending || 0,
-          inProgressReports: reports?.byStatus?.in_progress || 0,
-          resolvedReports: reports?.byStatus?.resolved || 0,
-        });
       }
-    } catch (error) {
-      console.error('Error fetching stats:', error);
+    } catch (error: any) {
+      toast.error('Failed to load statistics');
     } finally {
       setLoadingStats(false);
     }
   };
 
   const fetchRecentReports = async () => {
+    if (!user?._id) return;
+
     try {
       const response = await reportAPI.getAll();
-      console.log('Reports response:', response);
       if (response.success && Array.isArray(response.data)) {
-        // Filter reports by current user
         const userReports = response.data.filter(
-          (report: any) => report.createdBy === user?._id || report.createdBy?._id === user?._id
+          (report: any) => report.createdBy === user._id || report.createdBy?._id === user._id
         );
         setRecentReports(userReports.slice(0, 5));
       }
-    } catch (error) {
-      console.error('Error fetching reports:', error);
+    } catch (error: any) {
+      toast.error('Failed to load recent reports');
     }
   };
 
@@ -93,8 +87,11 @@ export default function UserDashboard() {
       if (response.success) {
         setApplicationStatus(response.data);
       }
-    } catch (error) {
-      // User may not have applied yet
+    } catch (error: any) {
+      // 404 means user hasn't applied yet - this is normal and expected
+      if (error.status !== 404) {
+        toast.error('Failed to check application status');
+      }
     }
   };
 

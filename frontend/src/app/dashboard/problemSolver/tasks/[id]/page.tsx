@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, MapPin, Calendar, User, AlertTriangle, CheckCircle, Clock, Star, Eye, Award, Target, TrendingUp } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, User, AlertTriangle, CheckCircle, Clock, Star, Eye, Award, Target, TrendingUp, Upload, X, Image as ImageIcon, FileText, Send } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { taskAPI } from "@/utils/api";
@@ -78,13 +78,10 @@ export default function TaskDetailPage() {
   const [loading, setLoading] = useState(true);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
-
-  useEffect(() => {
-    if (!authLoading && user?.role !== 'problemSolver' && user?.role !== 'ngo') {
-      toast.error('Access denied');
-      router.push('/dashboard');
-    }
-  }, [user, authLoading, router]);
+  const [showProofModal, setShowProofModal] = useState(false);
+  const [proofImages, setProofImages] = useState<string[]>([]);
+  const [proofDescription, setProofDescription] = useState('');
+  const [submittingProof, setSubmittingProof] = useState(false);
 
   useEffect(() => {
     if (params.id && user) {
@@ -127,6 +124,78 @@ export default function TaskDetailPage() {
     } catch (error: any) {
       console.error('Error accepting task:', error);
       toast.error(error.message || 'Failed to accept task');
+    }
+  };
+
+  const handleStartTask = async () => {
+    if (!task) return;
+
+    try {
+      const response = await taskAPI.startTask(task._id);
+      if (response.success) {
+        toast.success('Task started! Good luck! 🚀');
+        fetchTaskDetails();
+      } else {
+        toast.error(response.message || 'Failed to start task');
+      }
+    } catch (error: any) {
+      console.error('Error starting task:', error);
+      toast.error(error.message || 'Failed to start task');
+    }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const fileArray = Array.from(files);
+    fileArray.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProofImages((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setProofImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmitProof = async () => {
+    if (!task) return;
+
+    if (proofImages.length === 0) {
+      toast.error('Please upload at least one proof image');
+      return;
+    }
+
+    if (!proofDescription.trim()) {
+      toast.error('Please provide a description of your work');
+      return;
+    }
+
+    try {
+      setSubmittingProof(true);
+      const response = await taskAPI.submitProof(task._id, {
+        images: proofImages,
+        description: proofDescription,
+      });
+
+      if (response.success) {
+        toast.success('Proof submitted successfully! Waiting for review. ✅');
+        setShowProofModal(false);
+        setProofImages([]);
+        setProofDescription('');
+        fetchTaskDetails();
+      } else {
+        toast.error(response.message || 'Failed to submit proof');
+      }
+    } catch (error: any) {
+      console.error('Error submitting proof:', error);
+      toast.error(error.message || 'Failed to submit proof');
+    } finally {
+      setSubmittingProof(false);
     }
   };
 
@@ -621,7 +690,7 @@ export default function TaskDetailPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-8 flex justify-center gap-4"
+          className="mt-8 flex justify-center gap-4 flex-wrap"
         >
           {task.status === 'assigned' && (
             <button
@@ -630,6 +699,33 @@ export default function TaskDetailPage() {
             >
               <CheckCircle className="w-5 h-5" />
               <span>Accept This Task</span>
+            </button>
+          )}
+          {task.status === 'accepted' && (
+            <button
+              onClick={handleStartTask}
+              className="px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+            >
+              <TrendingUp className="w-5 h-5" />
+              <span>Start Working</span>
+            </button>
+          )}
+          {task.status === 'in-progress' && (
+            <button
+              onClick={() => setShowProofModal(true)}
+              className="px-8 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+            >
+              <Upload className="w-5 h-5" />
+              <span>Submit Proof</span>
+            </button>
+          )}
+          {task.status === 'rejected' && (
+            <button
+              onClick={() => setShowProofModal(true)}
+              className="px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+            >
+              <Upload className="w-5 h-5" />
+              <span>Resubmit Proof</span>
             </button>
           )}
           <Link
@@ -663,6 +759,136 @@ export default function TaskDetailPage() {
               className="w-full h-auto rounded-lg"
             />
           </div>
+        </div>
+      )}
+
+      {/* Proof Submission Modal */}
+      {showProofModal && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+          >
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+                  <Upload className="w-6 h-6 mr-2 text-purple-600" />
+                  Submit Work Proof
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowProofModal(false);
+                    setProofImages([]);
+                    setProofDescription('');
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  aria-label="Close modal"
+                >
+                  <X className="w-6 h-6 text-gray-600" />
+                </button>
+              </div>
+
+              {/* Upload Images */}
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Upload Proof Images *
+                </label>
+                <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-purple-500 transition-colors">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="proof-upload"
+                  />
+                  <label
+                    htmlFor="proof-upload"
+                    className="cursor-pointer flex flex-col items-center"
+                  >
+                    <ImageIcon className="w-12 h-12 text-gray-400 mb-2" />
+                    <span className="text-sm text-gray-600 font-medium">
+                      Click to upload images
+                    </span>
+                    <span className="text-xs text-gray-500 mt-1">
+                      PNG, JPG up to 5MB each
+                    </span>
+                  </label>
+                </div>
+
+                {/* Image Preview */}
+                {proofImages.length > 0 && (
+                  <div className="mt-4 grid grid-cols-3 gap-3">
+                    {proofImages.map((image, index) => (
+                      <div key={index} className="relative group">
+                        <Image
+                          src={image}
+                          alt={`Proof ${index + 1}`}
+                          width={200}
+                          height={200}
+                          className="w-full h-32 object-cover rounded-lg"
+                        />
+                        <button
+                          onClick={() => handleRemoveImage(index)}
+                          className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          aria-label={`Remove proof image ${index + 1}`}
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Description */}
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Work Description *
+                </label>
+                <textarea
+                  value={proofDescription}
+                  onChange={(e) => setProofDescription(e.target.value)}
+                  placeholder="Describe the work you've completed, steps taken, and any challenges faced..."
+                  rows={6}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleSubmitProof}
+                  disabled={submittingProof || proofImages.length === 0 || !proofDescription.trim()}
+                  className="flex-1 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                >
+                  {submittingProof ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      <span>Submit Proof</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowProofModal(false);
+                    setProofImages([]);
+                    setProofDescription('');
+                  }}
+                  disabled={submittingProof}
+                  className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </motion.div>
         </div>
       )}
     </div>

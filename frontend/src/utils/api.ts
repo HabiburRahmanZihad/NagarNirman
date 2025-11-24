@@ -136,6 +136,10 @@ export const taskAPI = {
     return apiClient(API_ENDPOINTS.SOLVER_STATISTICS, { requiresAuth: true });
   },
 
+  getTaskStatistics: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/tasks/statistics/counts`, { requiresAuth: true });
+  },
+
   acceptTask: (taskId: string) => {
     return apiClient(API_ENDPOINTS.ACCEPT_TASK(taskId), {
       method: 'POST',
@@ -354,6 +358,14 @@ export const problemSolverAPI = {
   // Get user's own application
   getMyApplication: () => {
     return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/my-application`, {
+      requiresAuth: true,
+    });
+  },
+
+  // Delete user's rejected application
+  deleteMyApplication: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/my-application`, {
+      method: 'DELETE',
       requiresAuth: true,
     });
   },

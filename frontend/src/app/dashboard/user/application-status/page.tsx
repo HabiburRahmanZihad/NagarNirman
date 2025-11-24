@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaCheckCircle,
   FaTimesCircle,
@@ -14,6 +14,18 @@ import {
   FaPhone,
   FaMapMarkerAlt,
   FaBriefcase,
+  FaIdCard,
+  FaUserShield,
+  FaGraduationCap,
+  FaClock as FaAvailability,
+  FaLanguage,
+  FaHandsHelping,
+  FaLinkedin,
+  FaFacebook,
+  FaTwitter,
+  FaGlobe,
+  FaFileImage,
+  FaPaperPlane,
 } from 'react-icons/fa';
 
 interface Application {
@@ -31,6 +43,20 @@ interface Application {
   skills: string[];
   motivation: string;
   experience?: string;
+  nidOrIdDoc: string;
+  nidNumber: string;
+  emergencyContact: string;
+  emergencyContactName: string;
+  emergencyContactRelation: string;
+  educationLevel?: string;
+  availability?: string;
+  languagesSpoken: string[];
+  previousVolunteerWork?: string;
+  linkedinProfile: string;
+  facebookProfile?: string;
+  twitterProfile?: string;
+  websiteProfile?: string;
+  profileImage?: string;
   status: 'pending' | 'approved' | 'rejected';
   reviewedBy?: string;
   reviewedAt?: string;
@@ -43,6 +69,8 @@ export default function MyApplicationStatus() {
   const [application, setApplication] = useState<Application | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     checkAuthAndFetch();
@@ -78,6 +106,64 @@ export default function MyApplicationStatus() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteConfirmClick = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    setShowDeleteConfirm(false);
+    setDeleting(true);
+    try {
+      const { problemSolverAPI } = await import('@/utils/api');
+
+      // Save application data to localStorage for prefilling
+      if (application) {
+        localStorage.setItem('nn_reapply_data', JSON.stringify({
+          fullName: application.fullName,
+          email: application.email,
+          phone: application.phone,
+          dateOfBirth: application.dateOfBirth,
+          gender: application.gender,
+          division: application.division,
+          district: application.district,
+          address: application.address,
+          profession: application.profession,
+          organization: application.organization,
+          skills: application.skills,
+          motivation: application.motivation,
+          experience: application.experience,
+          nidNumber: application.nidNumber,
+          emergencyContact: application.emergencyContact,
+          emergencyContactName: application.emergencyContactName,
+          emergencyContactRelation: application.emergencyContactRelation,
+          educationLevel: application.educationLevel,
+          availability: application.availability,
+          languagesSpoken: application.languagesSpoken,
+          previousVolunteerWork: application.previousVolunteerWork,
+          linkedinProfile: application.linkedinProfile,
+          facebookProfile: application.facebookProfile,
+          twitterProfile: application.twitterProfile,
+          websiteProfile: application.websiteProfile,
+          reviewNote: application.reviewNote, // Include feedback
+        }));
+      }
+
+      await problemSolverAPI.deleteMyApplication();
+      toast.success('Application deleted. Redirecting to application form...');
+
+      setTimeout(() => {
+        router.push('/dashboard/user/join-as-a-Problem-Solver');
+      }, 1500);
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to delete application');
+      setDeleting(false);
     }
   };
 
@@ -242,6 +328,59 @@ export default function MyApplicationStatus() {
                     <p className="font-medium">{application.profession}</p>
                   </div>
                 </div>
+                <div className="flex items-center text-gray-700">
+                  <FaIdCard className="mr-3 text-[#2a7d2f]" />
+                  <div>
+                    <p className="text-sm text-gray-500">NID Number</p>
+                    <p className="font-medium">{application.nidNumber}</p>
+                  </div>
+                </div>
+                {application.educationLevel && (
+                  <div className="flex items-center text-gray-700">
+                    <FaGraduationCap className="mr-3 text-[#2a7d2f]" />
+                    <div>
+                      <p className="text-sm text-gray-500">Education Level</p>
+                      <p className="font-medium">{application.educationLevel}</p>
+                    </div>
+                  </div>
+                )}
+                {application.availability && (
+                  <div className="flex items-center text-gray-700">
+                    <FaAvailability className="mr-3 text-[#2a7d2f]" />
+                    <div>
+                      <p className="text-sm text-gray-500">Availability</p>
+                      <p className="font-medium">{application.availability}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Emergency Contact */}
+            <div className="border-t pt-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                <FaUserShield className="mr-2 text-[#2a7d2f]" />
+                Emergency Contact
+              </h2>
+              <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Name:</span>
+                  <span className="font-medium text-gray-900">
+                    {application.emergencyContactName}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Phone:</span>
+                  <span className="font-medium text-gray-900">
+                    {application.emergencyContact}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Relation:</span>
+                  <span className="font-medium text-gray-900">
+                    {application.emergencyContactRelation}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -258,6 +397,26 @@ export default function MyApplicationStatus() {
                 </div>
               </div>
             </div>
+
+            {/* Languages Spoken */}
+            {application.languagesSpoken && application.languagesSpoken.length > 0 && (
+              <div className="border-t pt-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <FaLanguage className="mr-2 text-[#2a7d2f]" />
+                  Languages Spoken
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  {application.languagesSpoken.map((language, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+                    >
+                      {language}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Skills */}
             <div className="border-t pt-6">
@@ -284,10 +443,108 @@ export default function MyApplicationStatus() {
               </p>
             </div>
 
+            {/* Previous Volunteer Work */}
+            {application.previousVolunteerWork && (
+              <div className="border-t pt-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <FaHandsHelping className="mr-2 text-[#2a7d2f]" />
+                  Previous Volunteer Work
+                </h2>
+                <p className="text-gray-700 whitespace-pre-wrap bg-green-50 p-4 rounded-lg">
+                  {application.previousVolunteerWork}
+                </p>
+              </div>
+            )}
+
+            {/* Social Media Links */}
+            {(application.linkedinProfile || application.facebookProfile ||
+              application.twitterProfile || application.websiteProfile) && (
+              <div className="border-t pt-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                  Social Media & Online Presence
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {application.linkedinProfile && (
+                    <a
+                      href={application.linkedinProfile}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-lg border border-blue-200 transition-all duration-300 shadow-sm hover:shadow-md"
+                    >
+                      <div className="flex items-center justify-center w-12 h-12 bg-[#0077b5] rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
+                        <FaLinkedin className="text-white text-xl" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-600 mb-0.5">LinkedIn</p>
+                        <p className="text-[#0077b5] font-semibold truncate group-hover:underline">
+                          LinkedIn Profile
+                        </p>
+                      </div>
+                    </a>
+                  )}
+                  {application.facebookProfile && (
+                    <a
+                      href={application.facebookProfile}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-100 hover:from-blue-100 hover:to-indigo-200 rounded-lg border border-indigo-200 transition-all duration-300 shadow-sm hover:shadow-md"
+                    >
+                      <div className="flex items-center justify-center w-12 h-12 bg-[#1877f2] rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
+                        <FaFacebook className="text-white text-xl" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-600 mb-0.5">Facebook</p>
+                        <p className="text-[#1877f2] font-semibold truncate group-hover:underline">
+                          Facebook Profile
+                        </p>
+                      </div>
+                    </a>
+                  )}
+                  {application.twitterProfile && (
+                    <a
+                      href={application.twitterProfile}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center p-4 bg-gradient-to-r from-sky-50 to-cyan-100 hover:from-sky-100 hover:to-cyan-200 rounded-lg border border-sky-200 transition-all duration-300 shadow-sm hover:shadow-md"
+                    >
+                      <div className="flex items-center justify-center w-12 h-12 bg-[#1da1f2] rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
+                        <FaTwitter className="text-white text-xl" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-600 mb-0.5">Twitter</p>
+                        <p className="text-[#1da1f2] font-semibold truncate group-hover:underline">
+                          Twitter Profile
+                        </p>
+                      </div>
+                    </a>
+                  )}
+                  {application.websiteProfile && (
+                    <a
+                      href={application.websiteProfile}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center p-4 bg-gradient-to-r from-purple-50 to-pink-100 hover:from-purple-100 hover:to-pink-200 rounded-lg border border-purple-200 transition-all duration-300 shadow-sm hover:shadow-md"
+                    >
+                      <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
+                        <FaGlobe className="text-white text-xl" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-600 mb-0.5">Website</p>
+                        <p className="text-purple-700 font-semibold truncate group-hover:underline">
+                          Personal Website
+                        </p>
+                      </div>
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Documents & Images */}
             {(application.profileImage || application.nidOrIdDoc) && (
               <div className="border-t pt-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <FaFileImage className="mr-2 text-[#2a7d2f]" />
                   Submitted Documents
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -299,27 +556,30 @@ export default function MyApplicationStatus() {
                       <img
                         src={application.profileImage}
                         alt="Profile"
-                        className="w-40 h-40 rounded-lg object-cover border-2 border-[#2a7d2f]"
+                        className="w-48 h-48 rounded-lg object-cover border-2 border-[#2a7d2f] shadow-md"
                       />
                     </div>
                   )}
                   {application.nidOrIdDoc && (
                     <div>
-                      <p className="text-sm font-medium text-gray-700 mb-2">
-                        ID Document
+                      <p className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <FaIdCard className="mr-1" />
+                        NID/ID Document
                       </p>
                       <a
                         href={application.nidOrIdDoc}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="block"
                       >
                         <img
                           src={application.nidOrIdDoc}
                           alt="ID Document"
-                          className="w-40 h-40 rounded-lg object-cover border-2 border-[#2a7d2f] hover:opacity-80 transition-opacity cursor-pointer"
+                          className="w-full max-w-md rounded-lg object-cover border-2 border-[#2a7d2f] hover:opacity-80 transition-opacity cursor-pointer shadow-md"
                         />
                       </a>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 mt-2 flex items-center">
+                        <span className="mr-1">🔍</span>
                         Click to view full size
                       </p>
                     </div>
@@ -345,7 +605,7 @@ export default function MyApplicationStatus() {
               </div>
             )}
 
-            {/* Action Button */}
+            {/* Action Buttons */}
             {application.status === 'approved' && (
               <div className="border-t pt-6 text-center">
                 <button
@@ -356,8 +616,87 @@ export default function MyApplicationStatus() {
                 </button>
               </div>
             )}
+
+            {application.status === 'rejected' && (
+              <div className="border-t pt-6">
+                <div className="bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-lg border-2 border-orange-200">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                    <span className="text-2xl mr-2">💡</span>
+                    Want to Reapply?
+                  </h3>
+                  <p className="text-gray-700 mb-4">
+                    You can delete this rejected application and submit a new one with updated information.
+                    Your previous data will be pre-filled in the form to make it easier.
+                  </p>
+                  <button
+                    onClick={handleDeleteConfirmClick}
+                    disabled={deleting}
+                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-md hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2"
+                  >
+                    {deleting ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        Deleting...
+                      </>
+                    ) : (
+                      <>
+                        <FaPaperPlane />
+                        Delete & Start New Application
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </motion.div>
+
+        {/* Delete Confirmation Toast/Modal */}
+        <AnimatePresence>
+          {showDeleteConfirm && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+              onClick={handleCancelDelete}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6"
+              >
+                <div className="text-center">
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-orange-100 mb-4">
+                    <FaPaperPlane className="h-8 w-8 text-orange-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    Delete and Reapply?
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Are you sure you want to delete this application and start a new one? Your previous data will be saved for reference.
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleCancelDelete}
+                      className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleConfirmDelete}
+                      className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all font-semibold shadow-md hover:shadow-lg"
+                    >
+                      Yes, Delete
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

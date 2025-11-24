@@ -39,8 +39,8 @@ interface SolverStats {
     total: number;
     completed: number;
     pending: number;
-    rating: string | number;
-    successRate: string;
+    rating: number;
+    successRate: number;
     status: string;
     isBusy: boolean;
   };
@@ -49,11 +49,15 @@ interface SolverStats {
     pending: number;
     'in-progress': number;
     completed: number;
+    verified: number;
     total: number;
   };
   isFree: boolean;
   status?: string;
 }
+
+type SortOption = 'name' | 'points' | 'total' | 'completed' | 'pending' | 'rating' | 'successRate';
+type SortOrder = 'asc' | 'desc';
 
 export default function SolverStatisticsPage() {
   const { user, isLoading: authLoading } = useAuth();
@@ -64,13 +68,8 @@ export default function SolverStatisticsPage() {
   const [filterRole, setFilterRole] = useState<'all' | 'problemSolver' | 'ngo'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'free'>('all');
   const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    if (!authLoading && user?.role !== 'superAdmin') {
-      toast.error('Access denied. SuperAdmin only.');
-      router.push('/dashboard');
-    }
-  }, [user, authLoading, router]);
+  const [sortBy, setSortBy] = useState<SortOption>('total');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
 
   useEffect(() => {
     if (user?.role === 'superAdmin') {
@@ -106,8 +105,58 @@ export default function SolverStatisticsPage() {
       );
     }
 
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      switch (sortBy) {
+        case 'name':
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+          break;
+        case 'points':
+          aValue = a.points || 0;
+          bValue = b.points || 0;
+          break;
+        case 'total':
+          aValue = a.taskStats?.total ?? a.tasks?.total ?? 0;
+          bValue = b.taskStats?.total ?? b.tasks?.total ?? 0;
+          break;
+        case 'completed':
+          aValue = a.taskStats?.completed ?? a.tasks?.completed ?? 0;
+          bValue = b.taskStats?.completed ?? b.tasks?.completed ?? 0;
+          break;
+        case 'pending':
+          aValue = a.taskStats?.pending ?? a.tasks?.pending ?? 0;
+          bValue = b.taskStats?.pending ?? b.tasks?.pending ?? 0;
+          break;
+        case 'rating':
+          aValue = typeof a.taskStats?.rating === 'number' ? a.taskStats.rating : 0;
+          bValue = typeof b.taskStats?.rating === 'number' ? b.taskStats.rating : 0;
+          break;
+        case 'successRate':
+          aValue = typeof a.taskStats?.successRate === 'number' ? a.taskStats.successRate : 0;
+          bValue = typeof b.taskStats?.successRate === 'number' ? b.taskStats.successRate : 0;
+          break;
+        default:
+          aValue = 0;
+          bValue = 0;
+      }
+
+      // Handle string comparison
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortOrder === 'asc'
+          ? aValue.localeCompare(bValue)
+          : bValue.localeCompare(aValue);
+      }
+
+      // Handle numeric comparison
+      return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+    });
+
     setFilteredStats(filtered);
-  }, [statistics, filterRole, filterStatus, searchQuery]);
+  }, [statistics, filterRole, filterStatus, searchQuery, sortBy, sortOrder]);
 
   const fetchStatistics = async () => {
     try {
@@ -130,10 +179,14 @@ export default function SolverStatisticsPage() {
     totalSolvers: statistics.length,
     freeSolvers: statistics.filter((s) => s.isFree).length,
     activeSolvers: statistics.filter((s) => !s.isFree).length,
-    totalTasks: statistics.reduce((sum, s) => sum + s.tasks.total, 0),
-    completedTasks: statistics.reduce((sum, s) => sum + s.tasks.completed + s.tasks.verified, 0),
-    inProgressTasks: statistics.reduce((sum, s) => sum + s.tasks['in-progress'], 0),
-    pendingTasks: statistics.reduce((sum, s) => sum + s.tasks.pending, 0),
+    totalTasks: statistics.reduce((sum, s) => sum + (s.tasks?.total ?? 0), 0),
+    completedTasks: statistics.reduce((sum, s) => {
+      const completed = s.tasks?.completed ?? 0;
+      const verified = s.tasks?.verified ?? 0;
+      return sum + completed + verified;
+    }, 0),
+    inProgressTasks: statistics.reduce((sum, s) => sum + (s.tasks?.['in-progress'] ?? 0), 0),
+    pendingTasks: statistics.reduce((sum, s) => sum + (s.tasks?.pending ?? 0), 0),
   };
 
   const getRoleColor = (role: string) => {
@@ -325,9 +378,9 @@ export default function SolverStatisticsPage() {
             <h2 className="text-lg font-bold text-gray-900">Filters</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {/* Search */}
-            <div className="relative">
+            <div className="relative md:col-span-2">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
@@ -361,7 +414,31 @@ export default function SolverStatisticsPage() {
               <option value="active">Active (Has Tasks)</option>
               <option value="free">Free (No Tasks)</option>
             </select>
+
+            {/* Sort By */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              aria-label="Sort by"
+            >
+              <option value="total">Sort: Total Tasks</option>
+              <option value="completed">Sort: Completed</option>
+              <option value="pending">Sort: Pending</option>
+              <option value="rating">Sort: Rating</option>
+              <option value="successRate">Sort: Success Rate</option>
+              <option value="points">Sort: Points</option>
+              <option value="name">Sort: Name</option>
+            </select>
           </div>
+
+          {/* Sort Order Toggle */}
+          <button
+            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+            className="mt-4 flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-gray-700 font-medium"
+          >
+            {sortOrder === 'asc' ? '↑ Ascending' : '↓ Descending'}
+          </button>
         </motion.div>
 
         {/* Results Count */}
@@ -407,6 +484,7 @@ export default function SolverStatisticsPage() {
                     <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">In Progress</th>
                     <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Completed</th>
                     <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Points</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Rating / Success</th>
                     <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Status</th>
                     <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Actions</th>
                   </tr>
@@ -464,6 +542,23 @@ export default function SolverStatisticsPage() {
                         <div className="flex items-center justify-center gap-1">
                           <Award className="w-4 h-4 text-yellow-500" />
                           <span className="font-bold text-gray-900">{solver.points}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex flex-col items-center gap-1">
+                          <div className="flex items-center gap-1">
+                            <span className="text-yellow-500">⭐</span>
+                            <span className="font-semibold text-gray-900">
+                              {typeof solver.taskStats?.rating === 'number' && solver.taskStats.rating > 0
+                                ? solver.taskStats.rating.toFixed(1)
+                                : 'N/A'}
+                            </span>
+                          </div>
+                          <span className="text-xs text-gray-500">
+                            {typeof solver.taskStats?.successRate === 'number'
+                              ? `${solver.taskStats.successRate}%`
+                              : '0%'}
+                          </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">

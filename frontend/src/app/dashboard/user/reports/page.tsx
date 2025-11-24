@@ -208,6 +208,7 @@ export default function AllReportsPage() {
                   District
                 </label>
                 <select
+                  aria-label="Filter reports by district"
                   value={filters.district}
                   onChange={(e) => setFilters({ ...filters, district: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"
@@ -227,6 +228,7 @@ export default function AllReportsPage() {
                   Status
                 </label>
                 <select
+                  aria-label="Filter reports by status"
                   value={filters.status}
                   onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"
@@ -246,6 +248,7 @@ export default function AllReportsPage() {
                   Severity
                 </label>
                 <select
+                  aria-label="Filter reports by severity"
                   value={filters.severity}
                   onChange={(e) => setFilters({ ...filters, severity: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"
@@ -264,6 +267,7 @@ export default function AllReportsPage() {
                   Problem Type
                 </label>
                 <select
+                  aria-label="Filter reports by problem type"
                   value={filters.problemType}
                   onChange={(e) => setFilters({ ...filters, problemType: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"
