@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import UsersTable from "@/components/manage-users/UsersTable";
 import UserFilterBar from "@/components/manage-users/UserFilterBar";
 import toast from "react-hot-toast";
 import { Users } from "lucide-react";
+import RefreshButton from "@/components/common/RefreshButton";
 import { useAuth } from "@/context/AuthContext";
 import { userAPI } from "@/utils/api";
 
@@ -41,35 +42,35 @@ export default function ManageUsersPage() {
   const usersPerPage = 10;
 
   // Load users from API
-  useEffect(() => {
-    const loadUsers = async () => {
-      if (!authUser?.division) return;
+  const loadUsers = useCallback(async () => {
+    if (!authUser?.division) return;
 
-      setIsLoading(true);
-      try {
-        // Fetch users from authority's division only
-        const response = await userAPI.getAllUsers({
-          division: authUser.division,
-          limit: 100 // Get all users from this division
-        });
+    setIsLoading(true);
+    try {
+      // Fetch users from authority's division only
+      const response = await userAPI.getAllUsers({
+        division: authUser.division,
+        limit: 100 // Get all users from this division
+      });
 
-        if (response.success && response.data) {
-          setUsers(response.data);
-          setFilteredUsers(response.data);
-          toast.success(`Loaded ${response.data.length} users from ${authUser.division}`);
-        }
-      } catch (error: any) {
-        console.error('Error loading users:', error);
-        toast.error('Failed to load users. Please try again.');
-      } finally {
-        setIsLoading(false);
+      if (response.success && response.data) {
+        setUsers(response.data);
+        setFilteredUsers(response.data);
+        toast.success(`Loaded ${response.data.length} users from ${authUser.division}`);
       }
-    };
+    } catch (error: any) {
+      console.error('Error loading users:', error);
+      toast.error('Failed to load users. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [authUser]);
 
+  useEffect(() => {
     if (authUser?.division) {
       loadUsers();
     }
-  }, [authUser]);
+  }, [authUser, loadUsers]);
 
   // Filter and search users
   useEffect(() => {
@@ -217,16 +218,19 @@ export default function ManageUsersPage() {
             </div>
           )}
         </div>
-        <div className="px-6 py-4 bg-linear-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-[#2a7d2f] rounded-lg">
-              <Users className="text-white" size={20} />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">User Management</h3>
-              <p className="text-sm text-gray-600">{users.length} users in {authUser?.division}</p>
+        <div className="flex items-center gap-3">
+          <div className="px-6 py-4 bg-linear-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-[#2a7d2f] rounded-lg">
+                <Users className="text-white" size={20} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">User Management</h3>
+                <p className="text-sm text-gray-600">{users.length} users in {authUser?.division}</p>
+              </div>
             </div>
           </div>
+          <RefreshButton onClick={loadUsers} className="ml-2" tooltip="Refresh Users" />
         </div>
       </div>
 
