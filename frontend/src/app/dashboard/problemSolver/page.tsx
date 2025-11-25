@@ -138,7 +138,7 @@ export default function SolverDashboard() {
               isRefreshing={isRefreshing}
               variant="outline"
             />
-            <Link href="/reports">
+            <Link href="/dashboard/problemSolver/all-reports">
               <Button variant="primary">
                 Browse All Reports
               </Button>
@@ -226,7 +226,7 @@ export default function SolverDashboard() {
                 <h2 className="text-xl font-bold text-gray-900">
                   Available Reports
                 </h2>
-                <Link href="/reports">
+                <Link href="/dashboard/problemSolver/tasks">
                   <Button variant="outline" size="sm">
                     View All
                   </Button>
