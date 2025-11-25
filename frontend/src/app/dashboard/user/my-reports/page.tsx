@@ -137,7 +137,7 @@ export default function MyReportsPage() {
               isRefreshing={isRefreshing}
               variant="outline"
             />
-            <Link href="/reports/new">
+            <Link href="/dashboard/user/reports/new">
               <Button variant="primary" className="flex items-center gap-2">
                 <FaPlus />
                 Report New Issue
