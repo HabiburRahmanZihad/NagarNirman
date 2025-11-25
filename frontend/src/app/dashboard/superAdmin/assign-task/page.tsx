@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { reportAPI, userAPI, taskAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
+import { FaCheckDouble } from 'react-icons/fa';
 
 interface Report {
   _id: string;
@@ -259,22 +260,13 @@ export default function SuperAdminAssignTaskPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <nav className="flex mb-3" aria-label="Breadcrumb">
-            <ol className="flex items-center space-x-2 text-sm">
-              <li>
-                <Link href="/dashboard/superAdmin" className="text-gray-500 hover:text-gray-700">
-                  SuperAdmin Dashboard
-                </Link>
-              </li>
-              <li className="text-gray-400">/</li>
-              <li className="text-green-600 font-medium">Assign Task</li>
-            </ol>
-          </nav>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-linear-to-br from-green-500 to-green-600 p-3 rounded-xl shadow-lg">
-                <span className="text-3xl">✅</span>
+                <span className="text-3xl">
+                  <FaCheckDouble />
+                </span>
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">Quick Task Assignment</h1>

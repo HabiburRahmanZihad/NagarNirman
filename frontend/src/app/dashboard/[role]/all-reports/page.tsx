@@ -150,7 +150,7 @@ export default function AllReportsPage() {
             </p>
           </div>
           {isAuthenticated && user?.role === 'user' && (
-            <Link href="/reports/new">
+            <Link href="/dashboard/user/reports/new">
               <Button variant="primary" className="flex items-center gap-2">
                 <FaPlus />
                 Report New Issue

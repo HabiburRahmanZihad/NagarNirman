@@ -772,17 +772,6 @@ const AssignTaskPage = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header with Breadcrumb */}
         <div className="mb-8">
-          <nav className="flex mb-4" aria-label="Breadcrumb">
-            <ol className="flex items-center space-x-2 text-sm">
-              <li>
-                <Link href="/dashboard/authority" className="text-gray-500 hover:text-gray-700 transition-colors">
-                  Authority Dashboard
-                </Link>
-              </li>
-              <li className="text-gray-400">/</li>
-              <li className="text-[#81d586] font-medium">Task Assignment</li>
-            </ol>
-          </nav>
 
           <div className="flex justify-between items-start">
             <div className="flex-1">

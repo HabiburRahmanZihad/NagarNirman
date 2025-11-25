@@ -128,16 +128,16 @@ export default function AuthorityDashboard() {
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
       trend: `${stats.totalTasks} tasks assigned`,
-      link: '/reports',
+      link: '/dashboard/authority/all-reports',
     },
     {
-      title: 'Pending Review',
+      title: 'Assign Tasks',
       value: stats.pendingReports,
       icon: '⏳',
       color: 'text-yellow-600',
       bgColor: 'bg-yellow-50',
       trend: 'Reports awaiting review',
-      link: '/reports',
+      link: '/dashboard/authority/assign-task',
     },
     {
       title: 'Tasks to Review',
@@ -156,7 +156,7 @@ export default function AuthorityDashboard() {
       color: 'text-orange-600',
       bgColor: 'bg-orange-50',
       trend: 'Being actively resolved',
-      link: '/reports',
+      link: '/dashboard/authority/assign-task',
     },
     {
       title: 'Resolved',
@@ -165,7 +165,7 @@ export default function AuthorityDashboard() {
       color: 'text-green-600',
       bgColor: 'bg-green-50',
       trend: `${stats.totalReports > 0 ? Math.round((stats.resolvedReports / stats.totalReports) * 100) : 0}% resolution rate`,
-      link: '/reports',
+      link: '/dashboard/authority/assign-task',
     },
     {
       title: 'Completed Tasks',
@@ -174,7 +174,7 @@ export default function AuthorityDashboard() {
       color: 'text-emerald-600',
       bgColor: 'bg-emerald-50',
       trend: `${stats.rejectedTasks} rejected`,
-      link: '/dashboard/authority/review-tasks',
+      link: '/dashboard/authority/assign-task',
     },
   ];
 
@@ -300,7 +300,7 @@ export default function AuthorityDashboard() {
                 Quick Actions
               </h2>
               <div className="space-y-3">
-                <Link href="/reports">
+                <Link href="/dashboard/authority/all-reports">
                   <Button variant="primary" className="w-full justify-start">
                     <span className="mr-2">📋</span> All Reports
                   </Button>

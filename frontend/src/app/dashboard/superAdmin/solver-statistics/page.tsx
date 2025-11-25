@@ -228,13 +228,6 @@ export default function SolverStatisticsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <Link
-            href="/dashboard/superAdmin"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-green-600 mb-4 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="font-medium">Back to Dashboard</span>
-          </Link>
 
           <div className="flex items-center justify-between">
             <div>
