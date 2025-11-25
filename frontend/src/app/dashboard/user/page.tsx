@@ -179,7 +179,7 @@ export default function UserDashboard() {
                 Quick Actions
               </h2>
               <div className="space-y-3">
-                <Link href="/reports/new">
+                <Link href="/dashboard/user/reports/new">
                   <Button variant="primary" className="w-full justify-start">
                     <span className="mr-2">📝</span> Report New Issue
                   </Button>
@@ -189,13 +189,13 @@ export default function UserDashboard() {
                     <span className="mr-2">📋</span> My Reports
                   </Button>
                 </Link>
-                <Link href="/map-search">
+                <Link href="/dashboard/user/map-search">
                   <Button variant="outline" className="w-full justify-start">
                     <span className="mr-2">🗺️</span> Map Search
                   </Button>
                 </Link>
                 {!applicationStatus && (
-                  <Link href="/join-as-a-Problem-Solver">
+                  <Link href="/dashboard/user/join-as-a-Problem-Solver">
                     <Button variant="accent" className="w-full justify-start">
                       <span className="mr-2">💡</span> Become a Solver
                     </Button>
