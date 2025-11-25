@@ -451,7 +451,7 @@ export default function SuperAdminDashboard() {
               <p className="text-sm text-gray-600 mt-1">Latest reports from across the system</p>
             </div>
             <button
-              onClick={() => router.push('/reports')}
+              onClick={() => router.push('/dashboard/superAdmin/all-reports')}
               className="px-4 py-2 bg-linear-to-r from-[#81d586] to-[#6bc175] text-white rounded-lg hover:shadow-lg transition-all font-medium flex items-center gap-2"
             >
               View All
@@ -467,7 +467,7 @@ export default function SuperAdminDashboard() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
                 className="flex items-center justify-between p-4 border-2 border-gray-100 rounded-lg hover:border-[#81d586] hover:shadow-md cursor-pointer transition-all group"
-                onClick={() => router.push(`/reports/${report._id}`)}
+                // onClick={() => router.push(`/reports/${report._id}`)}
               >
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-900 group-hover:text-[#81d586] transition-colors">
@@ -496,7 +496,7 @@ export default function SuperAdminDashboard() {
 
       {/* Role Change Modal */}
       {showRoleModal && selectedUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
