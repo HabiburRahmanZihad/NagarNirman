@@ -35,7 +35,7 @@ export default function DonationSection() {
     setIndex((i) => (i - 1 + images.length) % images.length);
 
   return (
-    <section className="bg-base100 max-w-6xl mx-auto py-12 px-6 md:px-12  grid grid-cols-1 md:grid-cols-2 gap-6 items-center md:my-12">
+    <section className="bg-base100 max-w-6xl mx-auto py-12 grid grid-cols-1 md:grid-cols-2 gap-6 items-center md:my-12">
       {/* LEFT TEXT SECTION */}
       <div>
         <p className="text-primary font-medium mb-2">
