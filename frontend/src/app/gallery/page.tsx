@@ -70,9 +70,9 @@ const gallery = () => {
         </div>
       </section>
       {/* gallery section */}
-      {/* <section className="bg-base100 py-16 px-6">
+      <section className="bg-base100 py-16 px-6">
         <div className="max-w-6xl mx-auto">
-          Grid
+          {/* Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {images.map((img, index) => (
               <div
@@ -86,7 +86,7 @@ const gallery = () => {
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
 
-                Hover Overlay
+                {/* Hover Overlay */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                   <span className="text-white text-lg font-semibold">View</span>
                 </div>
@@ -94,7 +94,7 @@ const gallery = () => {
             ))}
           </div>
         </div>
-      </section> */}
+      </section>
       {/* banner section */}
       {/* <section className="relative w-full h-[220px] sm:h-[280px] md:h-[350px]">
         <Image
