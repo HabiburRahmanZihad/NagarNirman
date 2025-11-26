@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
-import { formatRole } from '@/utils/helpers';
-import Button from './Button';
-import Image from 'next/image';
-import { NotificationCenter } from './NotificationCenter';
+import React from "react";
+import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { formatRole } from "@/utils/helpers";
+import Button from "./Button";
+import Image from "next/image";
+import { NotificationCenter } from "./NotificationCenter";
 
 const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -29,18 +29,25 @@ const Navbar: React.FC = () => {
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center gap-6">
-            <Link href="/" className="text-[#374151] hover:text-[#81d586] transition-colors">
+            <Link
+              href="/"
+              className="text-[#374151] hover:text-[#81d586] transition-colors"
+            >
               Home
             </Link>
 
             {isAuthenticated && (
               <Link
                 href={
-                  user?.role === 'superAdmin' ? '/dashboard/superAdmin' :
-                  user?.role === 'authority' ? '/dashboard/authority' :
-                  user?.role === 'problemSolver' || user?.role === 'ngo' ? '/dashboard/problemSolver' :
-                  user?.role === 'user' ? '/dashboard/user' :
-                  '/dashboard'
+                  user?.role === "superAdmin"
+                    ? "/dashboard/superAdmin"
+                    : user?.role === "authority"
+                    ? "/dashboard/authority"
+                    : user?.role === "problemSolver" || user?.role === "ngo"
+                    ? "/dashboard/problemSolver"
+                    : user?.role === "user"
+                    ? "/dashboard/user"
+                    : "/dashboard"
                 }
                 className="text-[#374151] hover:text-[#81d586] transition-colors"
               >
@@ -48,27 +55,48 @@ const Navbar: React.FC = () => {
               </Link>
             )}
 
-            <Link href="/reports" className="text-[#374151] hover:text-[#81d586] transition-colors">
+            <Link
+              href="/reports"
+              className="text-[#374151] hover:text-[#81d586] transition-colors"
+            >
               All Reports
             </Link>
 
-            <Link href="/map-search" className="text-[#374151] hover:text-[#81d586] transition-colors">
+            <Link
+              href="/map-search"
+              className="text-[#374151] hover:text-[#81d586] transition-colors"
+            >
               Map Search
             </Link>
 
             <div className="relative group">
-              <Link href="/about" className="text-[#374151] hover:text-[#81d586] transition-colors">
+              <Link
+                href="/about"
+                className="text-[#374151] hover:text-[#81d586] transition-colors"
+              >
                 About
               </Link>
               <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                <Link href="/about" className="block px-4 py-2 text-[#374151] hover:bg-[#F6FFF9] hover:text-[#2a7d2f] rounded-t-lg">
+                <Link
+                  href="/about"
+                  className="block px-4 py-2 text-[#374151] hover:bg-[#F6FFF9] hover:text-[#2a7d2f] rounded-t-lg"
+                >
                   About Us
                 </Link>
-                <Link href="/about-team" className="block px-4 py-2 text-[#374151] hover:bg-[#F6FFF9] hover:text-[#2a7d2f] rounded-b-lg">
+                <Link
+                  href="/about-team"
+                  className="block px-4 py-2 text-[#374151] hover:bg-[#F6FFF9] hover:text-[#2a7d2f] rounded-b-lg"
+                >
                   Meet the Team
                 </Link>
               </div>
             </div>
+            <Link
+              href="/gallery"
+              className="text-[#374151] hover:text-[#81d586] transition-colors"
+            >
+              Gallery
+            </Link>
           </div>
 
           {/* Auth Buttons */}
@@ -77,8 +105,12 @@ const Navbar: React.FC = () => {
               <>
                 <NotificationCenter />
                 <div className="hidden md:flex flex-col items-end">
-                  <span className="text-sm font-semibold text-[#002E2E]">{user.name}</span>
-                  <span className="text-xs text-[#6B7280]">{formatRole(user.role)}</span>
+                  <span className="text-sm font-semibold text-[#002E2E]">
+                    {user.name}
+                  </span>
+                  <span className="text-xs text-[#6B7280]">
+                    {formatRole(user.role)}
+                  </span>
                 </div>
                 <Button variant="outline" size="sm" onClick={logout}>
                   Logout
