@@ -96,7 +96,7 @@ const gallery = () => {
         </div>
       </section>
       {/* banner section */}
-      {/* <section className="relative w-full h-[220px] sm:h-[280px] md:h-[350px]">
+      <section className="relative w-full h-[220px] sm:h-[280px] md:h-[350px]">
         <Image
           src="https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/09/cause-15.jpg"
           alt="Wildlife Banner"
@@ -134,7 +134,7 @@ const gallery = () => {
           </div>
         </div>
       </section>
-       */}
+      
     </div>
   );
 };
