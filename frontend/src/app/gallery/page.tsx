@@ -71,14 +71,14 @@ const gallery = () => {
         </div>
       </section>
       {/* gallery section */}
-      <section className="bg-base100 py-16 px-6">
+      <section className="bg-base100 md:py-16 py-10 md:mb-6 mb-7 px-6">
         <div className="max-w-6xl mx-auto">
           {/* Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {images.map((img, index) => (
               <div
                 key={index}
-                className="relative overflow-hidden rounded-lg aspect-square group"
+                className="relative overflow-hidden rounded-xl aspect-square group"
               >
                 <Image
                   src={img}

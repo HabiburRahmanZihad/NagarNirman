@@ -35,7 +35,7 @@ export default function DonationSection() {
     setIndex((i) => (i - 1 + images.length) % images.length);
 
   return (
-    <section className="bg-base100 max-w-6xl mx-auto py-12 px-6 md:px-12  grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+    <section className="bg-base100 max-w-6xl mx-auto py-12 px-6 md:px-12  grid grid-cols-1 md:grid-cols-2 gap-6 items-center md:my-12">
       {/* LEFT TEXT SECTION */}
       <div>
         <p className="text-primary font-medium mb-2">
@@ -56,12 +56,12 @@ export default function DonationSection() {
       </div>
 
       {/* RIGHT SLIDER */}
-      <div className="relative w-full h-[300px] md:h-[350px] md:w-[600px] overflow-hidden rounded-2xl shadow">
+      <div className="relative w-full h-[300px] md:h-[350px] md:w-[600px]  rounded-2xl shadow">
         <Image
           src={images[index]}
           alt="carousel"
           fill
-          className="object-cover"
+          className="object-cover rounded-xl"
         />
         {/* Arrows */}
         <button
@@ -77,7 +77,7 @@ export default function DonationSection() {
           ▶
         </button>
         {/* Bottom Bar */}
-        <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-full md:w-[500px] bg-accent/80 text-white py-4 grid grid-cols-4 text-center text-sm font-semibold rounded-lg shadow-lg z-20 backdrop-blur-sm">
+        <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-full md:w-[500px] bg-accent/80 text-white py-4 grid grid-cols-4 text-center text-sm font-semibold rounded-lg shadow-lg z-10 backdrop-blur-sm">
           <div>
             4+
             <br />
@@ -106,7 +106,7 @@ export default function DonationSection() {
         {icons.map((icon, i) => (
           <div
             key={i}
-            className="text-center p-6 bg-base200 rounded-2xl shadow hover:shadow-lg transition"
+            className="text-center p-6 bg-base200 rounded-xl shadow hover:shadow-lg transition"
           >
             <div className="flex justify-center mb-4">
               <Image src={icon.src} alt="icon" width={60} height={60} />
