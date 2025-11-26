@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import React from "react";
+import DonationSection from "./DonationSection";
 
 
 // gallery image
@@ -134,7 +135,7 @@ const gallery = () => {
           </div>
         </div>
       </section>
-      
+      <DonationSection/>
     </div>
   );
 };
