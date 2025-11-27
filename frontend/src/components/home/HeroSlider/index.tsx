@@ -1,14 +1,15 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay, EffectFade } from 'swiper/modules';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/effect-fade';
 import SlideContent from './SlideContent';
 import Decorations from './Decorations';
+import Image from 'next/image';
 
 const slides = [
   {
@@ -44,11 +45,31 @@ const slides = [
 ];
 
 export default function HeroSlider() {
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+  const swiperRef = useRef<any>(null);
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (swiperRef.current && swiperRef.current.swiper) {
+      const swiper = swiperRef.current.swiper;
+      
+      if (typeof swiper.params.navigation === 'object') {
+        swiper.params.navigation.prevEl = prevRef.current;
+        swiper.params.navigation.nextEl = nextRef.current;
+      }
+      
+      swiper.navigation.init();
+      swiper.navigation.update();
+
+      swiper.on('slideChange', () => {
+        setActiveIndex(swiper.realIndex);
+      });
+    }
+  }, []);
 
   return (
-    <section className="relative min-h-screen overflow-hidden">
+    <section className="relative lg:min-h-[700px] overflow-hidden">
       <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30">
         <button
           ref={prevRef}
@@ -72,25 +93,18 @@ export default function HeroSlider() {
       </div>
 
       <Swiper
+        ref={swiperRef}
         modules={[Navigation, Autoplay, EffectFade]}
-        navigation={{
-          prevEl: prevRef.current,
-          nextEl: nextRef.current,
-        }}
-        onBeforeInit={(swiper) => {
-          if (typeof swiper.params.navigation === 'object') {
-            swiper.params.navigation.prevEl = prevRef.current;
-            swiper.params.navigation.nextEl = nextRef.current;
-          }
-        }}
+        navigation={false}
         effect="fade"
         fadeEffect={{ crossFade: false }}
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         speed={1000}
         loop={true}
         className="h-screen w-full"
+        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
       >
-        {slides.map((slide) => (
+        {slides.map((slide, index) => (
           <SwiperSlide key={slide.id} className="relative">
             <div 
               className="absolute inset-0 z-0 bg-cover bg-center"
@@ -101,7 +115,11 @@ export default function HeroSlider() {
             <div className="container mx-auto px-4 h-full flex items-center pt-16 pb-32 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full">
                 <div className="text-white z-20">
-                  <SlideContent {...slide} />
+                  <AnimatePresence mode="wait">
+                    {activeIndex === index && (
+                      <SlideContent key={slide.id} {...slide} />
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 <div className="relative flex justify-center lg:justify-end">
@@ -113,7 +131,13 @@ export default function HeroSlider() {
         ))}
       </Swiper>
 
-      <div className="absolute bottom-0 left-0 w-full h-24 bg-white rounded-t-[80px] z-10" />
+      {/* Custom shape from SVG */}
+      <div className="slider-bottom-shape absolute bottom-0 left-0 w-full z-10">
+        <Image 
+        width={500}
+        height={32}
+        src="/assets/Subtract.svg" alt="" className="w-full h-25 object-cover" />
+      </div>
     </section>
   );
 }

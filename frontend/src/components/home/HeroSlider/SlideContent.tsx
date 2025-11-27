@@ -10,6 +10,13 @@ const containerVariants = {
       staggerChildren: 0.2,
       duration: 0.8
     }
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      staggerChildren: 0.1,
+      duration: 0.5
+    }
   }
 };
 
@@ -21,6 +28,13 @@ const itemVariants = {
     transition: {
       duration: 0.7,
       ease: "easeOut"
+    }
+  },
+  exit: {
+    opacity: 0,
+    y: -30,
+    transition: {
+      duration: 0.5
     }
   }
 };
@@ -42,9 +56,11 @@ export default function SlideContent({
 }: SlideContentProps) {
   return (
     <motion.div
+      key={smallTitle}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
+      exit="exit"
       className="max-w-2xl"
     >
       <div className="relative">

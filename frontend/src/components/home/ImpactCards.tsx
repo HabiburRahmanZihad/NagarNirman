@@ -69,22 +69,8 @@ const cardVariants = {
 
 export default function ImpactCards() {
   return (
-    <section className="py-20 bg-white relative z-20">
+    <section className="relative z-20 -mt-30">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl font-bold text-[#002E2E] mb-4">
-            Report Common City Issues
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Help improve your community by reporting infrastructure problems quickly and easily
-          </p>
-        </motion.div>
 
         <motion.div
           variants={containerVariants}
