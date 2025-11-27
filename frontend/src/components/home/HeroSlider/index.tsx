@@ -10,6 +10,7 @@ import 'swiper/css/effect-fade';
 import SlideContent from './SlideContent';
 import Decorations from './Decorations';
 import Image from 'next/image';
+import { div } from 'framer-motion/client';
 
 const slides = [
   {
@@ -69,13 +70,13 @@ export default function HeroSlider() {
   }, []);
 
   return (
-    <section className="relative lg:min-h-[700px] overflow-hidden">
+    <section className="lg:h-[700px] relative overflow-hidden">
       <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30">
         <button
           ref={prevRef}
-          className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 border border-white/30"
+          className="w-10 h-10 lg:w-12 lg:h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 border border-white/30"
         >
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 lg:w-6 lg:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
@@ -84,9 +85,9 @@ export default function HeroSlider() {
       <div className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30">
         <button
           ref={nextRef}
-          className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 border border-white/30"
+          className="w-10 h-10 lg:w-12 lg:h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 border border-white/30"
         >
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 lg:w-6 lg:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
@@ -101,28 +102,30 @@ export default function HeroSlider() {
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         speed={1000}
         loop={true}
-        className="h-screen w-full"
+        className="h-full w-full"
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
       >
         {slides.map((slide, index) => (
-          <SwiperSlide key={slide.id} className="relative">
+          <SwiperSlide key={slide.id} className="relative lg:pt-30 lg:pb-50 md:pt-20 md:pb-40 pt-5 pb-40">
             <div 
               className="absolute inset-0 z-0 bg-cover bg-center"
               style={{ backgroundImage: `url(${slide.bgImage})` }}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40 z-0" />
             
-            <div className="container mx-auto px-4 h-full flex items-center pt-16 pb-32 relative z-10">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full">
-                <div className="text-white z-20">
+            <div className="container mx-auto px-4 lg:px-0 h-full flex items-center justify-center lg:justify-center py-8 lg:py-0 relative z-10">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center w-full">
+                <div className="text-white z-20 order-2 lg:order-1 text-center lg:text-left">
                   <AnimatePresence mode="wait">
                     {activeIndex === index && (
-                      <SlideContent key={slide.id} {...slide} />
+                      <div className='flex items-center lg:justify-start justify-center'>
+                        <SlideContent key={slide.id} {...slide} />
+                      </div>
                     )}
                   </AnimatePresence>
                 </div>
 
-                <div className="relative flex justify-center lg:justify-end">
+                <div className="relative flex justify-center lg:justify-end order-1 lg:order-2">
                   <Decorations imageUrl={slide.image} />
                 </div>
               </div>
@@ -134,9 +137,12 @@ export default function HeroSlider() {
       {/* Custom shape from SVG */}
       <div className="slider-bottom-shape absolute bottom-0 left-0 w-full z-10">
         <Image 
-        width={500}
-        height={32}
-        src="/assets/Subtract.svg" alt="" className="w-full h-25 object-cover" />
+          width={1440}
+          height={100}
+          src="/assets/Subtract.svg" 
+          alt="" 
+          className="w-full h-20 lg:h-25 object-cover" 
+        />
       </div>
     </section>
   );

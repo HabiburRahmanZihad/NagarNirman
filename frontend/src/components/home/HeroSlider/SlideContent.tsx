@@ -82,14 +82,14 @@ export default function SlideContent({
 
         <motion.p
           variants={itemVariants}
-          className="text-gray-200 text-lg mb-8 leading-relaxed max-w-lg"
+          className="text-gray-200 mx-auto lg:mx-0 text-lg mb-8 leading-relaxed max-w-lg"
         >
           {paragraph}
         </motion.p>
 
         <motion.div
           variants={containerVariants}
-          className="flex flex-col sm:flex-row gap-4"
+          className="flex flex-col justify-center lg:justify-start sm:flex-row gap-4"
         >
           <motion.button
             variants={itemVariants}

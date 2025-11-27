@@ -26,20 +26,37 @@ export default function Decorations({ imageUrl }: DecorationsProps) {
 
       <motion.div
         animate={{
-          y: [0, -15, 0],
+          y: [0, -25, 0],
           rotate: [0, 5, 0, -5, 0]
         }}
         transition={{
-          duration: 6,
+          duration: 8,
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute -top-4 -left-4 z-20"
+        className="absolute top-0 -left-4 z-20"
       >
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#2a7d2f" strokeWidth="1.5">
-          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#f2a921" strokeWidth="1">
+          <path d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
         </svg>
       </motion.div>
+      <motion.div
+        animate={{
+          y: [0, -25, 0],
+          rotate: [0, 5, 0, -5, 0]
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-20 -right-10 z-20"
+      >
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#f2a921" strokeWidth="1">
+          <path d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-3 5h3m-6 0h.01M12 16h3m-6 0h.01M10 3v4h4V3h-4Z"/>
+        </svg>
+      </motion.div>
+      
 
       <motion.div
         animate={{
@@ -51,7 +68,7 @@ export default function Decorations({ imageUrl }: DecorationsProps) {
           repeat: Infinity,
           ease: "linear"
         }}
-        className="absolute -bottom-8 -right-8 w-32 h-32 border-2 border-[#2a7d2f] rounded-full opacity-40"
+        className="absolute -bottom-8 -right-8 w-32 h-32 border-2 border-[#f2a921] rounded-full opacity-40"
       />
       
       <motion.div
@@ -64,7 +81,7 @@ export default function Decorations({ imageUrl }: DecorationsProps) {
           repeat: Infinity,
           ease: "linear"
         }}
-        className="absolute top-1/2 -left-8 w-20 h-20 border border-white rounded-full opacity-20"
+        className="absolute top-1/2 -left-8 w-20 h-20 border border-[#f2a921] rounded-full opacity-20"
       />
 
       <div className="absolute inset-0 -z-10 bg-dotted-pattern opacity-20" />
