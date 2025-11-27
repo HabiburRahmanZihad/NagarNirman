@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
+import HeroSlider from "@/components/home/HeroSlider";
 
 // Help section
 const data = [
@@ -52,6 +53,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-linear-to-b from-green-50 to-white">
       {/* Hero Section */}
+      <HeroSlider></HeroSlider>
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="flex justify-center mb-8">
           <Image
