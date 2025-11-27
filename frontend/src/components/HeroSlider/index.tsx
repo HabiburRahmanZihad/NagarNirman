@@ -13,30 +13,33 @@ import Decorations from './Decorations';
 const slides = [
   {
     id: 1,
-    smallTitle: "How You Could Help!!",
-    mainHeading: "These kids need your love and support",
-    paragraph: "Your contribution can help provide education, food, shelter and a brighter future for vulnerable children.",
+    smallTitle: "Report. Resolve. Rebuild.",
+    mainHeading: "These Communities Need Your Support",
+    paragraph: "Your reports help identify infrastructure issues faster and create sustainable, cleaner communities across Bangladesh.",
     primaryBtn: "Support Us",
     secondaryBtn: "About Us",
-    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+    image: "https://images.unsplash.com/photo-1541976590-713941681591?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    bgImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
   },
   {
     id: 2,
     smallTitle: "Join Our Mission",
-    mainHeading: "Together we can change their tomorrow",
-    paragraph: "Be part of a movement that empowers communities with health support, nutrition, and safe shelter.",
-    primaryBtn: "Donate Now",
-    secondaryBtn: "Our Work",
-    image: "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+    mainHeading: "Be the Change in Your Community",
+    paragraph: "Your report helps authorities identify and fix problems faster. Track progress and see real impact in your neighborhood.",
+    primaryBtn: "Get Started",
+    secondaryBtn: "Learn More",
+    image: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    bgImage: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
   },
   {
     id: 3,
-    smallTitle: "You Can Make a Difference",
-    mainHeading: "Your kindness creates real impact",
-    paragraph: "Even the smallest donation helps improve the lives of kids struggling with poverty and uncertainty.",
-    primaryBtn: "Get Involved",
-    secondaryBtn: "Contact Us",
-    image: "https://images.unsplash.com/photo-1491895200221-4c8c2f064826?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
+    smallTitle: "Make Your Voice Count",
+    mainHeading: "Together We Can Build Better Cities",
+    paragraph: "Monitor infrastructure problems, support solutions, and contribute to SDG 11 for sustainable cities and communities.",
+    primaryBtn: "Explore Map",
+    secondaryBtn: "Join as Solver",
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    bgImage: "https://images.unsplash.com/photo-1541976590-713941681591?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
   }
 ];
 
@@ -45,24 +48,26 @@ export default function HeroSlider() {
   const nextRef = useRef(null);
 
   return (
-    <section className="relative bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen overflow-hidden">
+    <section className="relative min-h-screen overflow-hidden">
       {/* Background with dark overlay */}
-      <div className="absolute inset-0 bg-black/40 z-0" />
+      <div className="absolute inset-0 bg-black/50 z-0" />
       
-      {/* Navigation arrows */}
-      <div className="container mx-auto px-4 relative z-20">
+      {/* Navigation arrows - Fixed position */}
+      <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30">
         <button
           ref={prevRef}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 border border-white/20"
+          className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 border border-white/30"
         >
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        
+      </div>
+      
+      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30">
         <button
           ref={nextRef}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 border border-white/20"
+          className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300 border border-white/30"
         >
           <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -91,8 +96,15 @@ export default function HeroSlider() {
       >
         {slides.map((slide) => (
           <SwiperSlide key={slide.id}>
-            <div className="container mx-auto px-4 h-full flex items-center pt-20 pb-32">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
+            {/* Background Image for each slide */}
+            <div 
+              className="absolute inset-0 z-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${slide.bgImage})` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 z-0" />
+            
+            <div className="container mx-auto px-4 h-full flex items-center pt-16 pb-32 relative z-10">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center w-full">
                 {/* Left Content */}
                 <div className="text-white z-20">
                   <SlideContent {...slide} />
@@ -109,7 +121,7 @@ export default function HeroSlider() {
       </Swiper>
 
       {/* Curved bottom shape */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-white rounded-t-[100px] z-10" />
+      <div className="absolute bottom-0 left-0 w-full h-24 bg-white rounded-t-[80px] z-10" />
     </section>
   );
 }

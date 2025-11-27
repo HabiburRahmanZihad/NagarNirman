@@ -8,14 +8,14 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.2,
-      duration: 0.8
+      staggerChildren: 0.3,
+      duration: 1
     }
   }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 40 },
   visible: {
     opacity: 1,
     y: 0,
@@ -27,10 +27,10 @@ const itemVariants = {
 };
 
 const buttonVariants = {
-  hidden: { opacity: 0, scale: 0.9 },
+  hidden: { opacity: 0, x: -20 },
   visible: {
     opacity: 1,
-    scale: 1,
+    x: 0,
     transition: {
       duration: 0.6,
       ease: "easeOut"
@@ -68,43 +68,50 @@ export default function SlideContent({
     >
       <motion.h3
         variants={itemVariants}
-        className="text-[#ffe733] font-semibold text-lg mb-4 tracking-wide"
+        className="text-[#81d586] font-semibold text-xl mb-6 tracking-wider uppercase"
       >
         {smallTitle}
       </motion.h3>
 
       <motion.h1
         variants={itemVariants}
-        className="text-5xl lg:text-6xl font-bold leading-tight mb-6"
+        className="text-6xl lg:text-7xl font-bold leading-tight mb-8"
       >
         {mainHeading}
       </motion.h1>
 
       <motion.p
         variants={itemVariants}
-        className="text-gray-300 text-lg mb-8 leading-relaxed max-w-lg"
+        className="text-gray-200 text-xl mb-12 leading-relaxed max-w-xl"
       >
         {paragraph}
       </motion.p>
 
       <motion.div
-        variants={itemVariants}
-        className="flex flex-col sm:flex-row gap-4"
+        variants={containerVariants}
+        className="flex flex-col sm:flex-row gap-6"
       >
         <motion.button
           variants={buttonVariants}
-          whileHover={{ scale: 1.05 }}
+          whileHover={{ 
+            scale: 1.05,
+            backgroundColor: "#1e6b23"
+          }}
           whileTap={{ scale: 0.95 }}
-          className="bg-[#ffe733] text-gray-900 px-8 py-4 rounded-full font-semibold text-lg hover:bg-yellow-400 transition-colors duration-300 shadow-lg"
+          className="bg-[#2a7d2f] text-white px-12 py-5 rounded-full font-bold text-lg hover:bg-[#1e6b23] transition-all duration-300 shadow-2xl border-2 border-[#2a7d2f] hover:border-[#81d586]"
         >
           {primaryBtn}
         </motion.button>
 
         <motion.button
           variants={buttonVariants}
-          whileHover={{ scale: 1.05 }}
+          whileHover={{ 
+            scale: 1.05,
+            backgroundColor: "white",
+            color: "#2a7d2f"
+          }}
           whileTap={{ scale: 0.95 }}
-          className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-gray-900 transition-all duration-300"
+          className="border-2 border-white text-white px-12 py-5 rounded-full font-bold text-lg hover:bg-white hover:text-[#2a7d2f] transition-all duration-300"
         >
           {secondaryBtn}
         </motion.button>
