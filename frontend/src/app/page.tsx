@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
+import HeroSlider from "@/components/HeroSlider";
 
 // Help section
 const data = [
@@ -52,72 +53,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-linear-to-b from-green-50 to-white">
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 text-center">
-        <div className="flex justify-center mb-8">
-          <Image
-            src="/logo/logo.png"
-            alt="NagarNirman Logo"
-            width={220}
-            height={220}
-            style={{ width: "auto", height: "auto" }}
-            priority
-          />
-        </div>
-
-        <h1 className="text-5xl md:text-6xl font-bold text-[#002E2E] mb-6">
-          NagarNirman
-        </h1>
-
-        <p className="text-2xl md:text-3xl text-[#81d586] font-semibold mb-4">
-          Report. Resolve. Rebuild.
-        </p>
-
-        <p className="text-lg text-[#374151] max-w-2xl mx-auto mb-8">
-          Empowering citizens to report infrastructure issues and work together
-          with authorities to build smarter, cleaner, and more transparent
-          cities across Bangladesh.
-        </p>
-
-        <div className="flex flex-wrap justify-center gap-4">
-          {isAuthenticated ? (
-            <>
-              <Link href="/reports/new">
-                <Button variant="primary" size="lg">
-                  Report an Issue
-                </Button>
-              </Link>
-              <Link href="/map-search">
-                <Button variant="secondary" size="lg">
-                  Explore Map
-                </Button>
-              </Link>
-              <Link href="/reports">
-                <Button variant="outline" size="lg">
-                  View All Reports
-                </Button>
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link href="/auth/register">
-                <Button variant="primary" size="lg">
-                  Get Started
-                </Button>
-              </Link>
-              <Link href="/map-search">
-                <Button variant="secondary" size="lg">
-                  Explore Map
-                </Button>
-              </Link>
-              <Link href="/reports">
-                <Button variant="outline" size="lg">
-                  Browse Reports
-                </Button>
-              </Link>
-            </>
-          )}
-        </div>
-      </section>
+      <HeroSlider></HeroSlider>
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-16">
