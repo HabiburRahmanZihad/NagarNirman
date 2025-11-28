@@ -5,6 +5,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { Toaster } from "react-hot-toast";
 import ClientLayout from "@/components/common/ClientLayout";
+import RouteLoader from "@/components/Loader/RouteLoader";
 
 const urbanist = Urbanist({
   subsets: ["latin"],
@@ -36,6 +37,7 @@ export default function RootLayout({
           <NotificationProvider>
             <Toaster position="top-right" />
             <ClientLayout>
+              <RouteLoader></RouteLoader>
               {children}
             </ClientLayout>
           </NotificationProvider>
