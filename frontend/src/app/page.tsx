@@ -8,6 +8,7 @@ import Card from "@/components/common/Card";
 import HeroSlider from "@/components/home/HeroSlider";
 import ImpactCards from "@/components/home/ImpactCards";
 import FaqSection from "@/components/home/faq/Faq";
+import WhatWeDo from "@/components/home/whatWeDo/WhatWeDo";
 
 // Help section
 const data = [
@@ -525,6 +526,7 @@ export default function Home() {
        </div>
       </section>
       <FaqSection></FaqSection>
+      <WhatWeDo></WhatWeDo>
     </>
   );
 }
