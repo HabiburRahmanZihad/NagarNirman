@@ -8,6 +8,7 @@ import Card from "@/components/common/Card";
 import HeroSlider from "@/components/home/HeroSlider";
 import ImpactCards from "@/components/home/ImpactCards";
 import FaqSection from "@/components/home/faq/Faq";
+import NationalAnthemSection from "@/components/home/NationalAnthemSection";
 
 // Help section
 const data = [
@@ -520,11 +521,12 @@ export default function Home() {
             />
           </div>
 
-          
+
         </div>
        </div>
       </section>
       <FaqSection></FaqSection>
+            <NationalAnthemSection />
     </>
   );
 }
