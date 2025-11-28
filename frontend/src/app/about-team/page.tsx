@@ -4,368 +4,305 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/common';
 import { PUBLIC_ROUTES } from '@/constants/routes';
+import { motion, useMotionValue, useSpring, useMotionTemplate } from 'framer-motion';
+import {
+  Github, Linkedin, Mail,
+  Terminal, Cpu, Globe, GitBranch,
+  ShieldCheck, Database, Zap, Layers,
+  MousePointer2, Code2, Server
+} from 'lucide-react';
 
-interface TeamMember {
-  name: string;
-  role: string;
-  bio: string;
-  avatar: string;
-  skills: string[];
-  social?: {
-    github?: string;
-    linkedin?: string;
-    twitter?: string;
-  };
-}
+// --- COMPONENT: 3D TILT CARD ---
+const TiltCard = ({ children, className }: { children: React.ReactNode; className?: string }) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
-const AboutTeamPage = () => {
-  const teamMembers: TeamMember[] = [
-    {
-      name: 'Ahmed Rahman',
-      role: 'Project Lead & Full Stack Developer',
-      bio: 'Passionate about civic tech and sustainable urban development. Leading the vision of NagarNirman.',
-      avatar: '👨‍💼',
-      skills: ['Leadership', 'Full Stack', 'Product Strategy', 'UX Design'],
-      social: {
-        github: '#',
-        linkedin: '#',
-        twitter: '#',
-      },
-    },
-    {
-      name: 'Fatima Khan',
-      role: 'Backend Architect',
-      bio: 'Expert in scalable systems and database design. Ensuring our platform handles millions of reports.',
-      avatar: '👩‍💻',
-      skills: ['Node.js', 'MongoDB', 'API Design', 'System Architecture'],
-      social: {
-        github: '#',
-        linkedin: '#',
-      },
-    },
-    {
-      name: 'Rafi Hassan',
-      role: 'Frontend Developer',
-      bio: 'Creating beautiful, accessible user experiences. Focused on making reporting effortless.',
-      avatar: '👨‍🎨',
-      skills: ['React', 'Next.js', 'TypeScript', 'UI/UX'],
-      social: {
-        github: '#',
-        linkedin: '#',
-      },
-    },
-    {
-      name: 'Nadia Islam',
-      role: 'Community Manager',
-      bio: 'Building bridges between citizens and authorities. Ensuring every voice is heard.',
-      avatar: '👩‍🏫',
-      skills: ['Community Building', 'Communication', 'Outreach', 'Training'],
-      social: {
-        linkedin: '#',
-        twitter: '#',
-      },
-    },
-    {
-      name: 'Karim Ahmed',
-      role: 'Data Analyst',
-      bio: 'Turning reports into insights. Helping cities make data-driven infrastructure decisions.',
-      avatar: '👨‍🔬',
-      skills: ['Data Analysis', 'Visualization', 'Python', 'Statistics'],
-      social: {
-        github: '#',
-        linkedin: '#',
-      },
-    },
-    {
-      name: 'Sadia Rahman',
-      role: 'QA & Testing Lead',
-      bio: 'Ensuring quality and reliability. Testing every feature to perfection.',
-      avatar: '👩‍🔧',
-      skills: ['QA Testing', 'Automation', 'Bug Tracking', 'User Testing'],
-      social: {
-        linkedin: '#',
-      },
-    },
-  ];
+  const mouseX = useSpring(x, { stiffness: 500, damping: 100 });
+  const mouseY = useSpring(y, { stiffness: 500, damping: 100 });
 
-  const advisors = [
-    {
-      name: 'Dr. Habibur Rahman',
-      role: 'Technical Advisor',
-      avatar: '👨‍🏫',
-      expertise: 'Urban Planning & Smart Cities',
-    },
-    {
-      name: 'Prof. Ayesha Begum',
-      role: 'Research Advisor',
-      avatar: '👩‍🔬',
-      expertise: 'Public Policy & Governance',
-    },
-  ];
+  function onMouseMove({ currentTarget, clientX, clientY }: React.MouseEvent) {
+    const { left, top, width, height } = currentTarget.getBoundingClientRect();
+    x.set(clientX - left - width / 2);
+    y.set(clientY - top - height / 2);
+  }
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-white to-[#F6FFF9]">
-      {/* Hero Section */}
-      <section className="relative py-20 bg-linear-to-r from-[#2a7d2f] to-[#1e5d22] text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-32 h-32 bg-[#aef452] rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-40 h-40 bg-[#f2a921] rounded-full blur-3xl" />
-        </div>
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Meet the Dream Team 🌟
+    <motion.div
+      onMouseMove={onMouseMove}
+      onMouseLeave={() => { x.set(0); y.set(0); }}
+      style={{ transformStyle: "preserve-3d", rotateX: mouseY, rotateY: mouseX }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// --- DATA ---
+const TEAM_MEMBERS = [
+  {
+    name: 'Ahmed Rahman',
+    role: 'The Architect',
+    subRole: 'Project Lead & DevOps',
+    bio: 'Orchestrating the chaos. Ahmed bridges complex backend logic with user-centric product strategy.',
+    avatar: '👨‍💼',
+    tech: [<Terminal key="1" className="w-4 h-4" />, <ShieldCheck key="2" className="w-4 h-4" />],
+    social: { github: '#', linkedin: '#' },
+  },
+  {
+    name: 'Fatima Khan',
+    role: 'The Engine',
+    subRole: 'Backend & DB Architect',
+    bio: 'Data integrity is her obsession. She ensures our MongoDB clusters scale efficiently and securely.',
+    avatar: '👩‍💻',
+    tech: [<Database key="1" className="w-4 h-4" />, <Cpu key="2" className="w-4 h-4" />],
+    social: { github: '#', linkedin: '#' },
+  },
+  {
+    name: 'Rafi Hassan',
+    role: 'The Artist',
+    subRole: 'Frontend & UI/UX',
+    bio: 'Pixel perfectionist. Rafi crafts accessible interfaces using ShadCN that feel like magic.',
+    avatar: '👨‍🎨',
+    tech: [<Globe key="1" className="w-4 h-4" />, <Zap key="2" className="w-4 h-4" />],
+    social: { github: '#', linkedin: '#' },
+  },
+];
+
+const AboutTeamPage = () => {
+  return (
+    // Main container uses your base-200 (light gray) for contrast against white cards
+    <div className="min-h-screen bg-base-200 text-[#002E2E] font-sans selection:bg-[#aef452] selection:text-[#002E2E] overflow-x-hidden">
+
+      {/* --- HERO SECTION --- */}
+      <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-32 overflow-hidden bg-base-300">
+        {/* Abstract Gradient Blobs using your Primary (#2a7d2f) and Secondary (#aef452) */}
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#aef452] opacity-30 blur-[100px] rounded-full pointer-events-none translate-x-1/3 -translate-y-1/3" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#2a7d2f] opacity-10 blur-[100px] rounded-full pointer-events-none -translate-x-1/3 translate-y-1/3" />
+
+        <div className="container mx-auto px-6 relative z-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#2a7d2f]/20 bg-white text-[#2a7d2f] text-xs font-bold tracking-wider mb-6 shadow-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2a7d2f] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#2a7d2f]"></span>
+              </span>
+              v1.0 ENGINEERING TEAM
+            </div>
+
+            <h1 className="text-5xl md:text-8xl font-bold tracking-tight mb-6 text-[#002E2E]">
+              Small Team. <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2a7d2f] via-[#2a7d2f] to-[#aef452]">
+                Massive Impact.
+              </span>
             </h1>
-            <p className="text-xl text-[#aef452] leading-relaxed mb-8">
-              Passionate individuals working together to transform urban infrastructure
-              management in Bangladesh
+
+            <p className="text-lg md:text-xl text-[#6B7280] max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+              We are a trio of students combining engineering, design, and data to solve Bangladesh's urban infrastructure challenges.
             </p>
-            <Link href={PUBLIC_ROUTES.ABOUT}>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-[#2a7d2f]">
-                ← Back to About
-              </Button>
-            </Link>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Team Values */}
-      <section className="py-12 bg-white">
+      {/* --- TEAM CARDS: BENTO GRID --- */}
+      <section className="py-20 bg-base-200">
         <div className="container mx-auto px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-4 gap-6 text-center">
-              {[
-                { icon: '🤝', label: 'Collaboration' },
-                { icon: '💡', label: 'Innovation' },
-                { icon: '🎯', label: 'Excellence' },
-                { icon: '❤️', label: 'Community First' },
-              ].map((value, index) => (
-                <div key={index} className="p-4">
-                  <div className="text-4xl mb-2">{value.icon}</div>
-                  <div className="font-semibold text-[#002E2E]">{value.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+          <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {TEAM_MEMBERS.map((member, index) => (
+              <TiltCard key={index} className="group relative h-full">
+                {/* Hover Glow Effect */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2a7d2f] to-[#aef452] rounded-[2rem] opacity-0 group-hover:opacity-100 blur transition duration-500" />
 
-      {/* Core Team Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-[#002E2E] mb-4">
-                Core Team Members
-              </h2>
-              <p className="text-xl text-[#6B7280]">
-                The brilliant minds behind NagarNirman
-              </p>
-            </div>
+                {/* Card Interior - bg-base-100 (White) */}
+                <div className="relative h-full bg-base-100 border border-gray-200 rounded-[2rem] p-8 flex flex-col overflow-hidden shadow-xl hover:shadow-2xl transition-all">
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {teamMembers.map((member, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-[#2a7d2f] group"
-                >
-                  {/* Card Header */}
-                  <div className="bg-linear-to-br from-[#2a7d2f]/10 to-[#aef452]/10 p-8 text-center relative">
-                    <div className="text-7xl mb-4 transform group-hover:scale-110 transition-transform">
-                      {member.avatar}
+                  {/* Decorative Number - NOW VISIBLE (Darker Gray) */}
+                  <span className="absolute -top-4 -right-2 text-[8rem] font-bold text-gray-100 pointer-events-none select-none z-0">
+                    0{index + 1}
+                  </span>
+
+                  {/* Header */}
+                  <div className="relative z-10 flex items-start justify-between mb-8">
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#2a7d2f] to-[#aef452] p-1 shadow-lg">
+                      <div className="w-full h-full bg-white rounded-[12px] flex items-center justify-center text-4xl">
+                        {member.avatar}
+                      </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-[#002E2E] mb-2">
-                      {member.name}
-                    </h3>
-                    <p className="text-[#2a7d2f] font-semibold mb-4">
+                    <div className="flex gap-2">
+                      {member.tech.map((icon, i) => (
+                        <div key={i} className="p-2.5 rounded-full bg-gray-50 border border-gray-200 text-[#6B7280]">
+                          {icon}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative z-10 mt-auto">
+                    <h3 className="text-3xl font-bold text-[#002E2E] mb-1">{member.name}</h3>
+                    <p className="text-sm font-bold uppercase tracking-widest text-[#2a7d2f] mb-4">
                       {member.role}
                     </p>
-                  </div>
-
-                  {/* Card Body */}
-                  <div className="p-6">
-                    <p className="text-[#6B7280] mb-4 text-sm leading-relaxed">
+                    <p className="text-[#6B7280] font-medium text-sm leading-relaxed mb-6 border-l-4 border-[#aef452] pl-4">
                       {member.bio}
                     </p>
+                  </div>
 
-                    {/* Skills */}
-                    <div className="mb-4">
-                      <div className="flex flex-wrap gap-2">
-                        {member.skills.map((skill, skillIndex) => (
-                          <span
-                            key={skillIndex}
-                            className="px-3 py-1 bg-[#F6FFF9] text-[#2a7d2f] text-xs font-semibold rounded-full border border-[#2a7d2f]/20"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
+                  {/* Footer */}
+                  <div className="relative z-10 pt-6 border-t border-gray-100 flex items-center justify-between">
+                    <span className="text-xs text-[#6B7280] font-bold tracking-wider">{member.subRole}</span>
+                    <div className="flex gap-3">
+                      <Link href={member.social.github || "#"} className="text-[#6B7280] hover:text-[#2a7d2f] transition-colors"><Github className="w-5 h-5"/></Link>
+                      <Link href={member.social.linkedin || "#"} className="text-[#6B7280] hover:text-[#0077b5] transition-colors"><Linkedin className="w-5 h-5"/></Link>
                     </div>
-
-                    {/* Social Links */}
-                    {member.social && (
-                      <div className="flex gap-3 justify-center pt-4 border-t border-gray-100">
-                        {member.social.github && (
-                          <a
-                            href={member.social.github}
-                            className="text-2xl hover:text-[#2a7d2f] transition-colors"
-                            aria-label="GitHub"
-                          >
-                            💻
-                          </a>
-                        )}
-                        {member.social.linkedin && (
-                          <a
-                            href={member.social.linkedin}
-                            className="text-2xl hover:text-[#2a7d2f] transition-colors"
-                            aria-label="LinkedIn"
-                          >
-                            💼
-                          </a>
-                        )}
-                        {member.social.twitter && (
-                          <a
-                            href={member.social.twitter}
-                            className="text-2xl hover:text-[#2a7d2f] transition-colors"
-                            aria-label="Twitter"
-                          >
-                            🐦
-                          </a>
-                        )}
-                      </div>
-                    )}
                   </div>
                 </div>
-              ))}
-            </div>
+              </TiltCard>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Advisors Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-6">
+      {/* --- WORKFLOW / ARCHITECTURE --- */}
+      <section className="py-24 bg-base-100 relative overflow-hidden">
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-[#002E2E] mb-4">The Workflow Engine</h2>
+            <p className="text-[#6B7280] text-lg">How 3 people manage an entire city&apos;s data.</p>
+          </div>
+
           <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-[#002E2E] mb-4">
-                Advisory Board
-              </h2>
-              <p className="text-xl text-[#6B7280]">
-                Guided by experts in urban development and public policy
-              </p>
-            </div>
+            {/* Diagram Placement */}
+             <div className="mb-12 flex justify-center opacity-90 hover:opacity-100 transition-opacity">
+                             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {advisors.map((advisor, index) => (
-                <div
-                  key={index}
-                  className="bg-linear-to-br from-[#F6FFF9] to-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all border-2 border-[#2a7d2f]/20"
-                >
-                  <div className="flex items-center gap-6">
-                    <div className="text-6xl">{advisor.avatar}</div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-[#002E2E] mb-1">
-                        {advisor.name}
-                      </h3>
-                      <p className="text-[#2a7d2f] font-semibold mb-2">
-                        {advisor.role}
-                      </p>
-                      <p className="text-[#6B7280] text-sm">
-                        {advisor.expertise}
-                      </p>
-                    </div>
-                  </div>
+            <div className="grid md:grid-cols-3 gap-6 items-center relative">
+              {/* Animated Connection Line */}
+              <div className="hidden md:block absolute top-1/2 left-0 w-full h-[3px] -translate-y-1/2 z-0 bg-gray-100 overflow-hidden rounded-full">
+                <motion.div
+                   className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#2a7d2f] to-transparent"
+                   animate={{ x: ["-100%", "400%"] }}
+                   transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                />
+              </div>
+
+              {/* Step 1 */}
+              <motion.div whileHover={{ scale: 1.05 }} className="bg-white border-2 border-[#2a7d2f] p-8 rounded-2xl relative z-10 text-center shadow-xl">
+                <div className="w-12 h-12 bg-[#2a7d2f]/10 text-[#2a7d2f] rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Layers className="w-6 h-6" />
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Join Us Section */}
-      <section className="py-16 bg-linear-to-br from-[#F6FFF9] to-[#aef452]/10">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold text-[#002E2E] mb-6">
-              Want to Join Our Team? 🚀
-            </h2>
-            <p className="text-xl text-[#6B7280] mb-8">
-              We're always looking for passionate individuals who want to make a real
-              impact on urban infrastructure and community development.
-            </p>
-            <div className="flex gap-4 justify-center flex-wrap">
-              <Button variant="primary" size="lg">
-                View Open Positions
-              </Button>
-              <Link href={PUBLIC_ROUTES.CONTACT}>
-                <Button variant="outline" size="lg">
-                  Get in Touch
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Team Culture */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold text-[#002E2E] text-center mb-12">
-              Our Team Culture
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: '🌱',
-                  title: 'Growth Mindset',
-                  desc: 'Continuous learning and development opportunities for everyone',
-                },
-                {
-                  icon: '🎨',
-                  title: 'Creative Freedom',
-                  desc: 'Space to experiment, innovate, and bring your ideas to life',
-                },
-                {
-                  icon: '⚖️',
-                  title: 'Work-Life Balance',
-                  desc: 'Flexible hours and remote work options for all team members',
-                },
-              ].map((item, index) => (
-                <div
-                  key={index}
-                  className="text-center p-8 rounded-2xl bg-linear-to-br from-[#F6FFF9] to-white shadow-lg hover:shadow-xl transition-all"
-                >
-                  <div className="text-5xl mb-4">{item.icon}</div>
-                  <h3 className="text-xl font-bold text-[#002E2E] mb-3">
-                    {item.title}
-                  </h3>
-                  <p className="text-[#6B7280]">{item.desc}</p>
+                <h3 className="font-bold text-[#002E2E] text-lg">Frontend UI</h3>
+                <p className="text-xs text-[#6B7280] mt-2 font-mono">React • Tailwind</p>
+                <div className="mt-4 text-xs bg-[#2a7d2f] text-white font-bold py-1 px-3 rounded-full inline-block">
+                  Rafi captures input
                 </div>
-              ))}
+              </motion.div>
+
+              {/* Step 2 */}
+              <motion.div whileHover={{ scale: 1.05 }} className="bg-white border-2 border-[#aef452] p-8 rounded-2xl relative z-10 text-center shadow-xl">
+                <div className="w-12 h-12 bg-[#aef452]/20 text-[#002E2E] rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <GitBranch className="w-6 h-6" />
+                </div>
+                <h3 className="font-bold text-[#002E2E] text-lg">DevOps Core</h3>
+                <p className="text-xs text-[#6B7280] mt-2 font-mono">CI/CD • Vercel</p>
+                <div className="mt-4 text-xs bg-[#aef452] text-[#002E2E] font-bold py-1 px-3 rounded-full inline-block">
+                  Ahmed deploys it
+                </div>
+              </motion.div>
+
+              {/* Step 3 */}
+              <motion.div whileHover={{ scale: 1.05 }} className="bg-white border-2 border-[#f2a921] p-8 rounded-2xl relative z-10 text-center shadow-xl">
+                <div className="w-12 h-12 bg-[#f2a921]/20 text-[#f2a921] rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <Database className="w-6 h-6" />
+                </div>
+                <h3 className="font-bold text-[#002E2E] text-lg">Backend API</h3>
+                <p className="text-xs text-[#6B7280] mt-2 font-mono">Node • Mongo</p>
+                <div className="mt-4 text-xs bg-[#f2a921] text-white font-bold py-1 px-3 rounded-full inline-block">
+                  Fatima secures data
+                </div>
+              </motion.div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="py-20 bg-linear-to-r from-[#2a7d2f] to-[#1e5d22] text-white">
+      {/* --- FUN STATS: BENTO STYLE --- */}
+      <section className="py-20 bg-base-200">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-6">
-              Together, We Build Better Cities! 🏙️
-            </h2>
-            <p className="text-xl text-[#aef452] mb-8">
-              Join our community and be part of the urban transformation
-            </p>
-            <Link href="/auth/register">
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-[#2a7d2f]">
-                Get Started Today
-              </Button>
-            </Link>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+            {/* Stat 1 */}
+            <div className="col-span-1 bg-white border border-gray-200 p-6 rounded-2xl flex flex-col justify-between hover:border-[#2a7d2f] transition-colors group shadow-sm">
+              <GitBranch className="w-6 h-6 text-[#6B7280] group-hover:text-[#2a7d2f] mb-4 transition-colors" />
+              <div>
+                <div className="text-3xl font-mono font-bold text-[#002E2E]">1,240+</div>
+                <div className="text-xs text-[#6B7280] font-bold uppercase tracking-widest mt-1">Commits</div>
+              </div>
+            </div>
+
+            {/* Stat 2 */}
+            <div className="col-span-1 bg-white border border-gray-200 p-6 rounded-2xl flex flex-col justify-between hover:border-[#f2a921] transition-colors group shadow-sm">
+              <Server className="w-6 h-6 text-[#6B7280] group-hover:text-[#f2a921] mb-4 transition-colors" />
+              <div>
+                <div className="text-3xl font-mono font-bold text-[#002E2E]">100%</div>
+                <div className="text-xs text-[#6B7280] font-bold uppercase tracking-widest mt-1">Free & Open</div>
+              </div>
+            </div>
+
+            {/* Stat 3 (Large) - FIXED VISIBILITY */}
+            <div className="col-span-2 bg-[#002E2E] p-6 rounded-2xl flex items-center justify-between relative overflow-hidden shadow-xl text-white">
+               <div className="absolute -right-10 -bottom-10 opacity-10"><Code2 className="w-40 h-40 text-white"/></div>
+               <div className="relative z-10">
+                 <div className="text-sm text-[#aef452] font-mono mb-2">SYSTEM HEALTH</div>
+                 <div className="text-4xl font-bold">99.9% Uptime</div>
+               </div>
+               <div className="h-4 w-4 bg-[#aef452] rounded-full animate-pulse relative z-10 mr-4 shadow-[0_0_15px_#aef452]"></div>
+            </div>
           </div>
         </div>
       </section>
+
+      {/* --- JOIN TEAM CTA (Corrected Colors) --- */}
+      <section className="py-24 text-center bg-base-100 relative overflow-hidden">
+        {/* Background Decorative Circles */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-[#2a7d2f]/10 rounded-full opacity-50" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-[#aef452]/20 rounded-full opacity-50" />
+
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="inline-block p-1 rounded-full bg-gradient-to-r from-[#2a7d2f] to-[#aef452] mb-8">
+            <div className="bg-white rounded-full px-6 py-2">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#002E2E] to-[#2a7d2f] font-bold tracking-widest text-xs uppercase flex items-center gap-2">
+                <MousePointer2 className="w-4 h-4 text-[#002E2E]" /> We are Hiring
+              </span>
+            </div>
+          </div>
+
+          <h2 className="text-4xl md:text-5xl font-bold text-[#002E2E] mb-6">
+            Want to join our team?
+          </h2>
+          <p className="text-xl text-[#6B7280] max-w-xl mx-auto mb-10">
+            We are always looking for passionate students to help us build a cleaner, smarter Bangladesh.
+          </p>
+
+          <div className="flex flex-col items-center gap-6">
+            <a href="mailto:e241024@ugrad.iiuc.ac.bd">
+              {/* Primary Button using DaisyUI standard or hardcoded styles */}
+              <Button size="lg" className="bg-[#2a7d2f] hover:bg-[#aef452] hover:text-[#002E2E] text-white font-bold h-16 px-12 rounded-full text-xl shadow-xl hover:shadow-2xl hover:scale-105 transition-all flex items-center gap-3">
+                <Mail className="w-6 h-6" />
+                Apply via Email
+              </Button>
+            </a>
+            <p className="text-sm text-[#6B7280] font-mono bg-base-200 px-4 py-2 rounded-lg border border-gray-200">
+              e241024@ugrad.iiuc.ac.bd
+            </p>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 };
