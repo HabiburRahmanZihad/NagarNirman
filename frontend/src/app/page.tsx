@@ -7,6 +7,7 @@ import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
 import HeroSlider from "@/components/home/HeroSlider";
 import ImpactCards from "@/components/home/ImpactCards";
+import FaqSection from "@/components/home/faq/Faq";
 
 // Help section
 const data = [
@@ -502,7 +503,7 @@ export default function Home() {
 
         {/* Bottom banner */}
         <div
-          className="mt-20 py-16 text-white relative"
+          className="md:mt-20  text-white relative"
           style={{
             backgroundImage:
               "url(https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/09/logo-white-300x50.png)",
@@ -519,22 +520,11 @@ export default function Home() {
             />
           </div>
 
-          {/* <div className="max-w-4xl mx-auto text-center">
-            <h3 className="text-3xl font-bold">
-              Write us for more information on donations
-            </h3>
-            <p className="mt-4">
-              Lorem ipsum dolor sit amet, tempus iaculis duis pretium Lorem
-              ipsum dolor sit amet.
-            </p>
-
-            <button className="mt-6 px-6 py-3 bg-accent text-white font-semibold rounded">
-              DONATE NOW
-            </button>
-          </div> */}
+          
         </div>
        </div>
       </section>
+      <FaqSection></FaqSection>
     </>
   );
 }
