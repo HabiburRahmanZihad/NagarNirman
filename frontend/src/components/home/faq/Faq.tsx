@@ -34,8 +34,8 @@ export default function FaqSection() {
   };
 
   return (
-    <section className="container mx-auto bg-base300 py-16 px-4 md:px-10">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <section className="mt-10 md:mt-0 px-4 md:px-10">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center py-6 md:py-8 ">
         {/* LEFT FAQ */}
         <div className="space-y-4">
           {faqs.map((item, index) => (

@@ -8,6 +8,7 @@ import Card from "@/components/common/Card";
 import HeroSlider from "@/components/home/HeroSlider";
 import ImpactCards from "@/components/home/ImpactCards";
 import FaqSection from "@/components/home/faq/Faq";
+import WhatWeDo from "@/components/home/whatWeDo/WhatWeDo";
 import NationalAnthemSection from "@/components/home/NationalAnthemSection";
 
 // Help section
@@ -526,6 +527,7 @@ export default function Home() {
        </div>
       </section>
       <FaqSection></FaqSection>
+      <WhatWeDo></WhatWeDo>
             <NationalAnthemSection />
     </>
   );
