@@ -34,7 +34,7 @@ export default function FaqSection() {
   };
 
   return (
-    <section className="mt-10 md:mt-0 px-4 md:px-10">
+    <section className="bg-base-300 mt-10 md:mt-0 px-4 md:px-10">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center py-6 md:py-8 ">
         {/* LEFT FAQ */}
         <div className="space-y-4">
@@ -113,6 +113,7 @@ export default function FaqSection() {
           </div>
         </div>
       </div>
+      
     </section>
   );
 }
