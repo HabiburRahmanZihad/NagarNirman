@@ -115,10 +115,10 @@ const NationalAnthemSection: React.FC = () => {
       />
 
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-black/50" />
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+      <div className="relative z-10 container mx-auto px-6 lg:px-12 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
 
         {/* Left: text + audio card */}
         <div className="w-full lg:w-[60%] text-white">
@@ -129,7 +129,7 @@ const NationalAnthemSection: React.FC = () => {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight mb-4">
             Fuel Your Spirit with the
             <br />
-            Anthem of Bangladesh
+            <span className="text-accent">Anthem of Bangladesh</span>
           </h2>
 
           <p className="text-sm md:text-base text-white/80 max-w-xl mb-8">
