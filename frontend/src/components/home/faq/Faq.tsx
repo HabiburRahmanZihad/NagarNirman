@@ -80,7 +80,7 @@ export default function FaqSection() {
 
           {/* BUTTON */}
           <button
-            className="group  px-5 py-2 rounded-full  
+            className="group  px-5 py-2 rounded-full
                              bg-secondary flex items-center gap-2
                               transition-all duration-300 ease-in-out
                           hover:bg-primary hover:text-white hover:shadow-lg">
@@ -113,7 +113,7 @@ export default function FaqSection() {
           </div>
         </div>
       </div>
-      
+
     </section>
   );
 }

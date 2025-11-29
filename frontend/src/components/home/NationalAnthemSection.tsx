@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState, CSSProperties } from 'react';
 import { Play, Pause } from 'lucide-react';
-// Import Framer Motion and CountUp
 import { motion, useInView, animate } from 'framer-motion';
 import CountUp from 'react-countup';
 import Link from 'next/link';
@@ -115,10 +114,10 @@ const NationalAnthemSection: React.FC = () => {
       />
 
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-black/50" />
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-8 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+      <div className="relative z-10 container mx-auto px-6 lg:px-12 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
 
         {/* Left: text + audio card */}
         <div className="w-full lg:w-[60%] text-white">
@@ -129,7 +128,7 @@ const NationalAnthemSection: React.FC = () => {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight mb-4">
             Fuel Your Spirit with the
             <br />
-            Anthem of Bangladesh
+            <span className="text-accent">Anthem of Bangladesh</span>
           </h2>
 
           <p className="text-sm md:text-base text-white/80 max-w-xl mb-8">
@@ -139,14 +138,14 @@ const NationalAnthemSection: React.FC = () => {
           </p>
 
           {/* Audio player card */}
-          <div className="w-full max-w-xl bg-[#fff8df] border border-[#f2a921] rounded-2xl shadow-xl px-6 py-4 md:py-5 flex flex-col gap-3">
+          <div className="w-full max-w-xl bg-[#fff8df] border border-accent rounded-2xl shadow-xl px-6 py-4 md:py-5 flex flex-col gap-3">
             {/* Track info + play button */}
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold text-[#002E2E]">
+                <p className="text-sm font-semibold text-primary">
                   National Anthem of Bangladesh
                 </p>
-                <p className="text-xs text-[#6B7280]">
+                <p className="text-xs text-neutral mt-1">
                   Amar Shonar Bangla
                 </p>
               </div>
@@ -154,13 +153,13 @@ const NationalAnthemSection: React.FC = () => {
               <button
                 type="button"
                 onClick={handleTogglePlay}
-                className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-[#f2a921] text-[#002E2E] shadow-md hover:bg-[#f5b739] transition-colors"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-accent text-primary shadow-md hover:bg-[#f5b739] transition-colors"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? (
                   <Pause className="w-5 h-5" />
                 ) : (
-                  <Play className="w-5 h-5 translate-x-[1px]" />
+                  <Play className="w-5 h-5 translate-x-px" />
                 )}
               </button>
             </div>
@@ -194,7 +193,7 @@ const NationalAnthemSection: React.FC = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="w-full lg:w-[40%] flex justify-center lg:justify-end"
         >
-          <div className="relative w-full max-w-sm lg:max-w-[320px] bg-[#2a7d2f] rounded-[40px] lg:rounded-l-[40px] lg:rounded-r-[40px] px-8 py-10 text-white shadow-2xl">
+          <div className="relative w-full max-w-sm lg:max-w-[320px] bg-primary rounded-[40px] lg:rounded-l-[40px] lg:rounded-r-[40px] px-8 py-10 text-white shadow-2xl">
             {/* Subtle pattern overlay */}
             <div className="pointer-events-none absolute inset-0 opacity-[0.08] bg-[radial-gradient(circle_at_center,#ffffff_1px,transparent_1px)] bg-[length:24px_24px]" />
 
@@ -211,7 +210,7 @@ const NationalAnthemSection: React.FC = () => {
                   <div className="bg-black/10 rounded-full p-3">
                     {/* Animated Radial Progress */}
                     <div
-                      className="radial-progress text-[#f2a921]"
+                      className="radial-progress text-accent"
                       style={radialStyle}
                       role="progressbar"
                     >
@@ -225,16 +224,16 @@ const NationalAnthemSection: React.FC = () => {
 
                 <div className="text-center">
                   <p className="text-3xl md:text-4xl font-bold">
-                     {/* Number Counter Animation */}
-                     {isInView ? (
-                        <CountUp
-                          start={0}
-                          end={12450}
-                          duration={2.5}
-                          separator=","
-                          suffix="+"
-                        />
-                     ) : "0+"}
+                    {/* Number Counter Animation */}
+                    {isInView ? (
+                      <CountUp
+                        start={0}
+                        end={12450}
+                        duration={2.5}
+                        separator=","
+                        suffix="+"
+                      />
+                    ) : "0+"}
                   </p>
                   <p className="text-sm tracking-wide uppercase text-white/80 mt-1">
                     Issues Resolved
@@ -246,7 +245,7 @@ const NationalAnthemSection: React.FC = () => {
               <Link
                 type='button'
                 href="/dashboard/user/reports/new"
-                className="mt-2 inline-flex items-center justify-center rounded-full bg-[#f2a921] text-[#002E2E] px-8 py-3 text-sm font-semibold shadow-md hover:bg-[#f5b739] transition-colors"
+                className="mt-2 inline-flex items-center justify-center rounded-full bg-accent text-primary px-8 py-3 text-md font-semibold shadow-md hover:bg-[#f5b739] transition-colors"
               >
                 Report an Issue
               </Link>
