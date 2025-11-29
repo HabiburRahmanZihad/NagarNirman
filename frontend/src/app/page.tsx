@@ -12,6 +12,7 @@ import WhatWeDo from "@/components/home/whatWeDo/WhatWeDo";
 import NationalAnthemSection from "@/components/home/NationalAnthemSection";
 import ContactSection from "@/components/home/ContactSection/ContactSection";
 import Volunteer from "@/components/home/Volunteer";
+import EventsSection from "@/components/home/EventsSection";
 
 // Help section
 const data = [
@@ -476,7 +477,7 @@ export default function Home() {
         <WhatWeDo></WhatWeDo>
       </section>
 
-      <section className="pb-24 px-6 lg:px-0 bg-base-300 overflow-hidden">
+      <section className="pb-24 px-6 lg:px-0 bg-base-100 overflow-hidden">
         <NationalAnthemSection />
       </section>
 
@@ -485,8 +486,12 @@ export default function Home() {
       </section> */}
 
 
-      <section className="pb-4 px-6 lg:px-0 bg-base-300 overflow-hidden">
+      <section className="pb-24 px-6 lg:px-0 bg-base-300 overflow-hidden">
         <Volunteer></Volunteer>
+      </section>
+
+      <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
+        <EventsSection></EventsSection>
       </section>
     </>
   );
