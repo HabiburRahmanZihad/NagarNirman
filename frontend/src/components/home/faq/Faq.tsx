@@ -34,8 +34,8 @@ export default function FaqSection() {
   };
 
   return (
-    <section className="container mx-auto bg-base300 py-16 px-4 md:px-10">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <section className="bg-base-300 mt-10 md:mt-0 px-4 md:px-10">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center py-6 md:py-8 ">
         {/* LEFT FAQ */}
         <div className="space-y-4">
           {faqs.map((item, index) => (
@@ -80,7 +80,7 @@ export default function FaqSection() {
 
           {/* BUTTON */}
           <button
-            className="group  px-5 py-2 rounded-full  
+            className="group  px-5 py-2 rounded-full
                              bg-secondary flex items-center gap-2
                               transition-all duration-300 ease-in-out
                           hover:bg-primary hover:text-white hover:shadow-lg">
@@ -113,6 +113,7 @@ export default function FaqSection() {
           </div>
         </div>
       </div>
+
     </section>
   );
 }

@@ -8,6 +8,11 @@ import Card from "@/components/common/Card";
 import HeroSlider from "@/components/home/HeroSlider";
 import ImpactCards from "@/components/home/ImpactCards";
 import FaqSection from "@/components/home/faq/Faq";
+import WhatWeDo from "@/components/home/whatWeDo/WhatWeDo";
+import NationalAnthemSection from "@/components/home/NationalAnthemSection";
+import ContactSection from "@/components/home/ContactSection/ContactSection";
+import Volunteer from "@/components/home/Volunteer";
+import EventsSection from "@/components/home/EventsSection";
 
 // Help section
 const data = [
@@ -462,69 +467,32 @@ export default function Home() {
           </Button>
         </Link>
       </section>
-      {/* Help Section */}
-      <section className="container mx-auto px-4 md:px-0 py-20 text-info">
-       <div className="">
-         <div className="text-center mb-16">
-          <p className="text-sm text-primary">Thanks to your help</p>
-          <h2 className="text-4xl font-bold mt-2">
-            The ways to help others in the <br className="md:block"/> best possible way
-          </h2>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl mx-auto">
-          {data.map((item, i) => (
-            <div key={i} className="flex items-center gap-6">
-              <Image
-                src={item.img}
-                alt={item.title}
-                width={150}
-                height={150}
-                className="rounded-lg"
-              />
 
-              <div>
-                <h3 className="text-xl font-semibold text-info">
-                  {item.title}
-                </h3>
-                <p className="text-neutral mb-2">{item.desc}</p>
-
-                <span
-                  className={`px-3 py-1 text-white text-xs font-semibold rounded ${
-                    item.badge === "green" ? "bg-primary" : "bg-accent"
-                  }`}
-                >
-                  NEW
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom banner */}
-        <div
-          className="md:mt-20  text-white relative"
-          style={{
-            backgroundImage:
-              "url(https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/09/logo-white-300x50.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        >
-          <div className="absolute left-6 top-6">
-            <Image
-              src="https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/05/icon-white.png"
-              width={60}
-              height={60}
-              alt="icon"
-            />
-          </div>
-
-          
-        </div>
-       </div>
-      </section>
+      {/* <section className="py-24 px-6 lg:px-0 bg-base-100 overflow-hidden">
+      </section> */}
       <FaqSection></FaqSection>
+
+      <section className="py-24 px-6 lg:px-0 bg-base-100 overflow-hidden">
+        <WhatWeDo></WhatWeDo>
+      </section>
+
+      <section className="pb-24 px-6 lg:px-0 bg-base-100 overflow-hidden">
+        <NationalAnthemSection />
+      </section>
+
+      {/* <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
+        <ContactSection />
+      </section> */}
+
+
+      <section className="pb-24 px-6 lg:px-0 bg-base-300 overflow-hidden">
+        <Volunteer></Volunteer>
+      </section>
+
+      <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
+        <EventsSection></EventsSection>
+      </section>
     </>
   );
 }
