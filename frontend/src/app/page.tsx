@@ -13,6 +13,7 @@ import NationalAnthemSection from "@/components/home/NationalAnthemSection";
 import ContactSection from "@/components/home/ContactSection/ContactSection";
 import Volunteer from "@/components/home/Volunteer";
 import EventsSection from "@/components/home/EventsSection";
+import PartnersMarquee from "@/components/home/partnersMarquee/PartnersMarquee";
 
 // Help section
 const data = [
@@ -468,7 +469,6 @@ export default function Home() {
         </Link>
       </section>
 
-
       {/* <section className="py-24 px-6 lg:px-0 bg-base-100 overflow-hidden">
       </section> */}
       <FaqSection></FaqSection>
@@ -477,6 +477,9 @@ export default function Home() {
         <WhatWeDo></WhatWeDo>
       </section>
 
+      <section className="pb-26 px-6 lg:px-0 overflow-hidden">
+        <PartnersMarquee></PartnersMarquee>
+      </section>
       <section className="pb-24 px-6 lg:px-0 bg-base-100 overflow-hidden">
         <NationalAnthemSection />
       </section>
@@ -484,7 +487,6 @@ export default function Home() {
       {/* <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
         <ContactSection />
       </section> */}
-
 
       <section className="pb-24 px-6 lg:px-0 bg-base-300 overflow-hidden">
         <Volunteer></Volunteer>
