@@ -20,7 +20,7 @@ const images = [
 
 export default function EmergencyHotlineMarquee() {
   return (
-    <section className="container mx-auto">
+    <section className="">
       <h2 className="text-center text-4xl md:text-5xl font-bold mb-10 text-[#003B31]">
         Emergency Hotline
       </h2>
