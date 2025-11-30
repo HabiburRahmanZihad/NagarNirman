@@ -17,7 +17,8 @@ import PartnersMarquee from "@/components/home/partnersMarquee/PartnersMarquee";
 import EmergencyHotlineMarquee from "@/components/home/emergencyHotlineMarquee/EmergencyHotlineMarquee";
 import Testimonials from "@/components/testimonials/Testimonials";
 import CountUpSection from "@/components/countUp/Count";
-import GreenFutureCard from "@/components/home/greenFutureCard/GreenFutureCard";
+import AboutSection from "@/components/home/aboutSection/AboutSection";
+
 
 // Help section
 const data = [
@@ -509,8 +510,8 @@ export default function Home() {
       <section className="pt-24 pb-20">
         <Testimonials></Testimonials>
       </section>
-      <section>
-        <GreenFutureCard></GreenFutureCard>
+      <section className="container mx-auto">
+      <AboutSection></AboutSection>
       </section>
       
     </>

@@ -6,6 +6,8 @@
 /* ============================
     DaisyUI Theme Configuration
 ============================ */
+
+
 @plugin "daisyui" {
     themes: light --default, dark;
 }
