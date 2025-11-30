@@ -16,6 +16,7 @@ import EventsSection from "@/components/home/EventsSection";
 import PartnersMarquee from "@/components/home/partnersMarquee/PartnersMarquee";
 import EmergencyHotlineMarquee from "@/components/home/emergencyHotlineMarquee/EmergencyHotlineMarquee";
 import Testimonials from "@/components/testimonials/Testimonials";
+import CountUpSection from "@/components/countUp/Count";
 
 // Help section
 const data = [
@@ -123,7 +124,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="bg-[#002E2E] text-white py-16">
+      {/* <section className="bg-[#002E2E] text-white py-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
@@ -144,7 +145,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
+
+      <CountUpSection></CountUpSection>
 
       {/* Routes & Features Section */}
       <section className="container mx-auto px-4 py-16 bg-white">
