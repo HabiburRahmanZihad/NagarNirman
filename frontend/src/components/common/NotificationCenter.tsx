@@ -28,7 +28,7 @@ export const NotificationCenter: React.FC = () => {
       default: return 'bg-blue-50 border-blue-200';
     }
   };
-
+  
   const handleNotificationClick = (notification: any) => {
     markAsRead(notification.id);
     if (notification.actionUrl) {
