@@ -1,4 +1,5 @@
 "use client";
+import { Sprout } from "lucide-react";
 import Image from "next/image";
 
 const images = [
@@ -21,9 +22,15 @@ const images = [
 export default function EmergencyHotlineMarquee() {
   return (
     <section className="">
-      <h2 className="text-center text-4xl md:text-5xl font-bold mb-10 text-[#003B31]">
-        Emergency Hotline
-      </h2>
+      <div className="text-center mb-16">
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <Sprout className="w-5 h-5 text-[#3C6E59]" />
+          <span className="text-[#555555] text-lg font-medium tracking-wide">         24/7 Support</span>
+        </div>
+        <h2 className="text-4xl md:text-5xl font-bold text-[#003B31]">
+          Emergency Hotline
+        </h2>
+      </div>
 
       <div className="relative whitespace-nowrap">
         {/* Scroll Wrapper */}
@@ -31,7 +38,7 @@ export default function EmergencyHotlineMarquee() {
           {[...images, ...images].map((src, i) => (
             <div
               key={i}
-              className="min-w-[200px] h-[120px] rounded-xl flex items-center justify-center p-3"
+              className="min-w-[200px] h-[120px] rounded-xl flex items-center justify-center p-3 bg-primary mx-2"
             >
               <Image
                 src={src}
