@@ -15,6 +15,7 @@ import Volunteer from "@/components/home/Volunteer";
 import EventsSection from "@/components/home/EventsSection";
 import PartnersMarquee from "@/components/home/partnersMarquee/PartnersMarquee";
 import EmergencyHotlineMarquee from "@/components/home/emergencyHotlineMarquee/EmergencyHotlineMarquee";
+import Testimonials from "@/components/testimonials/Testimonials";
 
 // Help section
 const data = [
@@ -499,6 +500,10 @@ export default function Home() {
       <section className="overflow-hidden">
         <EmergencyHotlineMarquee></EmergencyHotlineMarquee>
       </section>
+      <section className="pt-24">
+        <Testimonials></Testimonials>
+      </section>
+      
     </>
   );
 }
