@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNotifications } from '@/context/NotificationContext';
 import { useRouter } from 'next/navigation';
+import { FaBell } from 'react-icons/fa';
 
 export const NotificationCenter: React.FC = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead, clearNotification } = useNotifications();
@@ -27,7 +28,7 @@ export const NotificationCenter: React.FC = () => {
       default: return 'bg-blue-50 border-blue-200';
     }
   };
-
+  
   const handleNotificationClick = (notification: any) => {
     markAsRead(notification.id);
     if (notification.actionUrl) {
@@ -53,7 +54,9 @@ export const NotificationCenter: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
       >
-        <span className="text-2xl">🔔</span>
+        <span className="text-2xl text-primary">
+          <FaBell></FaBell>
+        </span>
         {unreadCount > 0 && (
           <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
             {unreadCount > 9 ? '9+' : unreadCount}
