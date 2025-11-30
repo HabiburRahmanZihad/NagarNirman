@@ -6,6 +6,7 @@ import { NotificationProvider } from "@/context/NotificationContext";
 import { Toaster } from "react-hot-toast";
 import ClientLayout from "@/components/common/ClientLayout";
 import RouteLoader from "@/components/Loader/RouteLoader";
+import Script from "next/script";
 
 const urbanist = Urbanist({
   subsets: ["latin"],
@@ -42,6 +43,35 @@ export default function RootLayout({
             </ClientLayout>
           </NotificationProvider>
         </AuthProvider>
+        <Script id="chatbase-init">
+          {`
+            (function(){
+              if(!window.chatbase || window.chatbase("getState") !== "initialized"){
+                window.chatbase = (...arguments) => {
+                  if(!window.chatbase.q){ window.chatbase.q = [] }
+                  window.chatbase.q.push(arguments)
+                };
+                window.chatbase = new Proxy(window.chatbase, {
+                  get(target, prop){
+                    if(prop === "q"){ return target.q }
+                    return (...args) => target(prop, ...args)
+                  }
+                })
+              }
+
+              const onLoad = function(){
+                const script = document.createElement("script");
+                script.src = "https://www.chatbase.co/embed.min.js";
+                script.id = "00qD6o1rqtCEbkpgPyOFW";
+                script.domain = "www.chatbase.co";
+                document.body.appendChild(script)
+              };
+
+              if(document.readyState === "complete"){ onLoad() }
+              else { window.addEventListener("load", onLoad) }
+            })();
+          `}
+        </Script>
       </body>
     </html>
   );
