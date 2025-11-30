@@ -18,6 +18,7 @@ import EmergencyHotlineMarquee from "@/components/home/emergencyHotlineMarquee/E
 import Testimonials from "@/components/testimonials/Testimonials";
 import CountUpSection from "@/components/countUp/Count";
 import GreenFutureCard from "@/components/home/greenFutureCard/GreenFutureCard";
+import HowToReport from "@/components/home/HowToReport/HowToReport";
 
 // Help section
 const data = [
@@ -500,6 +501,9 @@ export default function Home() {
         <Volunteer></Volunteer>
       </section>
 
+      <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
+        <HowToReport></HowToReport>
+      </section>
       <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
         <EventsSection></EventsSection>
       </section>
