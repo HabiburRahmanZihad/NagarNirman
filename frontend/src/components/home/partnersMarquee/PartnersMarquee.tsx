@@ -13,11 +13,10 @@ const logos = [
 
 export default function PartnersMarquee() {
   return (
-    <section className="">
-      <h2 className="text-center text-3xl font-bold mb-10 text-green-900">
+    <section className="container mx-auto">
+      <h2 className="text-center text-4xl md:text-5xl font-bold mb-10 text-[#003B31]">
         Major Partners
       </h2>
-
       <div className="relative overflow-hidden whitespace-nowrap">
         {/* Scrolling Wrapper */}
         <div className="flex animate-scroll gap-10">
