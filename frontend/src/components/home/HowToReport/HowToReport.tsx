@@ -115,15 +115,15 @@ const StepsProgress = () => {
         <div className="hidden md:block relative">
           <div className="relative h-[500px]">
             {/* Top Horizontal Line */}
-            <div className="absolute top-5 left-5 -right-9 lg:-right-20 h-1 bg-[#2a7d2f]" />
+            <div className="absolute top-5 left-5 right-0 h-1.5 bg-[#2a7d2f]" />
             
             {/* S-Curve Path */}
-            <div className="absolute top-5 -right-9 lg:-right-20 w-1 h-45 bg-[#2a7d2f]" />
-            <div className="absolute top-50 -right-9 lg:-right-20 -left-9 lg:-left-20 h-1 bg-[#2a7d2f]" />
-            <div className="absolute top-50 -left-9 lg:-left-20 w-1 h-40 bg-[#2a7d2f]" />
+            <div className="absolute border-[#2a7d2f] border-t-5 border-b-6 border-r-6 rounded-r-full top-5 -right-9 lg:-right-20 w-45 h-45.5 " />
+            <div className="absolute top-49 rounded-full right-10 lg:right-0 left-0 md:left-8 h-1.5 bg-[#2a7d2f]" />
+            <div className="absolute border-[#2a7d2f] border-t-6 border-b-6 border-l-6 rounded-l-full top-49 -left-9 lg:-left-20 w-45 h-44 " />
             
             {/* Bottom Horizontal Line */}
-            <div className="absolute bottom-35 -left-9 lg:-left-20 right-0 h-1 bg-[#2a7d2f]" />
+            <div className="absolute bottom-32 left-0 right-0 h-1.5 bg-[#2a7d2f]" />
 
             {/* Step Circles and Content */}
             {steps.map((step, index) => {
