@@ -14,6 +14,10 @@ import ContactSection from "@/components/home/ContactSection/ContactSection";
 import Volunteer from "@/components/home/Volunteer";
 import EventsSection from "@/components/home/EventsSection";
 import PartnersMarquee from "@/components/home/partnersMarquee/PartnersMarquee";
+import EmergencyHotlineMarquee from "@/components/home/emergencyHotlineMarquee/EmergencyHotlineMarquee";
+import Testimonials from "@/components/testimonials/Testimonials";
+import CountUpSection from "@/components/countUp/Count";
+import GreenFutureCard from "@/components/home/greenFutureCard/GreenFutureCard";
 
 // Help section
 const data = [
@@ -121,7 +125,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="bg-[#002E2E] text-white py-16">
+      {/* <section className="bg-[#002E2E] text-white py-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
@@ -142,6 +146,10 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </section> */}
+
+      <section>
+        <CountUpSection></CountUpSection>
       </section>
 
       {/* Routes & Features Section */}
@@ -495,6 +503,16 @@ export default function Home() {
       <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
         <EventsSection></EventsSection>
       </section>
+      <section className="container mx-auto px-6 lg:px-0 overflow-hidden">
+        <EmergencyHotlineMarquee></EmergencyHotlineMarquee>
+      </section>
+      <section className="pt-24 pb-20">
+        <Testimonials></Testimonials>
+      </section>
+      <section>
+        <GreenFutureCard></GreenFutureCard>
+      </section>
+      
     </>
   );
 }
