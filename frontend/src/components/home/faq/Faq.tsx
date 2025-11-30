@@ -26,6 +26,13 @@ const faqs = [
   },
 ];
 
+
+const avatars = [
+  "https://i.pravatar.cc/40?img=3",
+  "https://i.pravatar.cc/40?img=5",
+  "https://i.pravatar.cc/40?img=7",
+];
+
 export default function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -34,7 +41,7 @@ export default function FaqSection() {
   };
 
   return (
-    <section className="bg-base-300 mt-10 md:mt-0 px-4 md:px-10">
+    <section  className="bg-base-300 mt-10 md:mt-0 px-4 md:px-10">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center py-6 md:py-8 ">
         {/* LEFT FAQ */}
         <div className="space-y-4">
@@ -93,19 +100,24 @@ export default function FaqSection() {
 
           {/* REGISTERED */}
           <div className="flex items-center gap-3 mt-6">
-            <div className="flex -space-x-3">
-              <img
-                src="https://i.pravatar.cc/40?img=3"
-                className="w-10 h-10 rounded-full border-2 border-white"
-              />
-              <img
-                src="https://i.pravatar.cc/40?img=5"
-                className="w-10 h-10 rounded-full border-2 border-white"
-              />
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
-                +
-              </div>
+             <div className="flex -space-x-3">
+              {avatars.map((avatar, i) => (
+                <div key={i} className="relative">
+                  <img
+                    src={avatar}
+                    alt="User"
+                    className="w-10 h-10 rounded-full border-[2px] border-white object-cover"
+                  />
+                  {/* Plus Icon on last avatar */}
+                  {i === avatars.length - 1 && (
+                    <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center border-[2px] border-white text-white text-[10px] font-bold">
+                      +
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
+
             <div>
               <h4 className="font-semibold text-info">2603</h4>
               <p className="text-sm text-neutral">Peoples Registered</p>
