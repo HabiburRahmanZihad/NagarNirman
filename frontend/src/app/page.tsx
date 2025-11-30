@@ -147,7 +147,9 @@ export default function Home() {
         </div>
       </section> */}
 
-      <CountUpSection></CountUpSection>
+      <section>
+        <CountUpSection></CountUpSection>
+      </section>
 
       {/* Routes & Features Section */}
       <section className="container mx-auto px-4 py-16 bg-white">
@@ -503,7 +505,7 @@ export default function Home() {
       <section className="overflow-hidden">
         <EmergencyHotlineMarquee></EmergencyHotlineMarquee>
       </section>
-      <section className="pt-24">
+      <section className="pt-24 pb-20">
         <Testimonials></Testimonials>
       </section>
       

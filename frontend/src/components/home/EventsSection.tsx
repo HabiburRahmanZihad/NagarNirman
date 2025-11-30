@@ -1,13 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  MapPin,
-  Clock,
-  ArrowRight,
-  Sprout,
-  Calendar
-} from "lucide-react";
+import { MapPin, Clock, ArrowRight, Sprout, Calendar } from "lucide-react";
 
 // --- EVENT DATA ---
 const events = [
@@ -21,12 +15,13 @@ const events = [
     time: "8:30am - 4:00pm",
     joinedCount: "236",
     category: "Tree Plantation",
-    image: "https://img.freepik.com/free-photo/group-happy-diverse-volunteers-planting-tree-park_1150-13639.jpg",
+    image:
+      "https://img.freepik.com/free-photo/group-happy-diverse-volunteers-planting-tree-park_1150-13639.jpg",
     avatars: [
       "https://i.pravatar.cc/100?img=11",
       "https://i.pravatar.cc/100?img=12",
-      "https://i.pravatar.cc/100?img=13"
-    ]
+      "https://i.pravatar.cc/100?img=13",
+    ],
   },
   {
     id: 2,
@@ -38,25 +33,27 @@ const events = [
     time: "10:30am - 4:00pm",
     joinedCount: "49",
     category: "Forest",
-    image: "https://img.freepik.com/free-photo/volunteers-collecting-trash-park_1150-13725.jpg",
+    image:
+      "https://img.freepik.com/free-photo/volunteers-collecting-trash-park_1150-13725.jpg",
     avatars: [
       "https://i.pravatar.cc/100?img=33",
       "https://i.pravatar.cc/100?img=32",
-      "https://i.pravatar.cc/100?img=31"
-    ]
-  }
+      "https://i.pravatar.cc/100?img=31",
+    ],
+  },
 ];
 
 export default function EventsSection() {
   return (
     <section className="bg-white py-24 px-4 font-sans">
       <div className="max-w-7xl mx-auto">
-
         {/* --- HEADER --- */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-2 mb-3">
             <Sprout className="w-5 h-5 text-[#004d40]" />
-            <span className="text-[#555555] text-lg font-medium">Upcoming Event</span>
+            <span className="text-[#555555] text-lg font-medium">
+              Upcoming Event
+            </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-[#004d40]">
             Our Events, Let&apos;s All Participate
@@ -71,13 +68,10 @@ export default function EventsSection() {
               // Changed structure: Flex-col allows separate padding for content vs image
               className="flex flex-col bg-white rounded-[30px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 group overflow-hidden hover:shadow-2xl transition-all duration-300"
             >
-
               {/* === CONTENT SECTION (With Padding) === */}
               <div className="p-8 pb-0 flex-grow">
-
                 {/* 1. TOP ROW: Date & Avatars */}
                 <div className="flex justify-between items-center mb-6">
-
                   {/* Left: Date Block */}
                   <div className="flex items-center gap-4">
                     <Calendar className="w-10 h-10 text-[#777777] stroke-[1.5]" />
@@ -86,7 +80,9 @@ export default function EventsSection() {
                         {event.day}
                       </span>
                       <div className="flex flex-col text-sm font-medium text-[#777777] leading-tight">
-                        <span className="text-base text-[#333]">{event.month}</span>
+                        <span className="text-base text-[#333]">
+                          {event.month}
+                        </span>
                         <span>in {event.year}</span>
                       </div>
                     </div>
@@ -112,8 +108,12 @@ export default function EventsSection() {
                       ))}
                     </div>
                     <div>
-                      <span className="block font-bold text-[#004d40] text-lg leading-none">{event.joinedCount}</span>
-                      <span className="text-xs text-[#777777]">Joined People</span>
+                      <span className="block font-bold text-[#004d40] text-lg leading-none">
+                        {event.joinedCount}
+                      </span>
+                      <span className="text-xs text-[#777777]">
+                        Joined People
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -153,7 +153,6 @@ export default function EventsSection() {
               {/* === 4. IMAGE SECTION (Full Width, No Padding) === */}
               {/* This container is a direct child of the card, so it naturally fills the width */}
               <div className="relative h-[280px] w-full mt-auto">
-
                 {/* SHAPE DIVIDER (The Brush Stroke) */}
                 {/* Placed absolutely at the top of the image container to blend with the card background */}
                 <div className="absolute top-[-1px] left-0 w-full z-10 leading-none">
@@ -184,13 +183,10 @@ export default function EventsSection() {
                     </div>
                   </div>
                 </div>
-
               </div>
-
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );
