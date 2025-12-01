@@ -161,8 +161,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   href={link.href}
                   onClick={() => onClose()}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${active
-                      ? 'bg-primary text-white shadow-md'
-                      : 'text-gray-700 hover:bg-gray-100'
+                    ? 'bg-primary text-white shadow-md'
+                    : 'text-gray-700 hover:bg-gray-100'
                     }`}
                 >
                   <span className="text-xl">{link.icon}</span>

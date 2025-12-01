@@ -412,3 +412,61 @@ export const problemSolverAPI = {
     });
   },
 };
+
+// Notification API functions
+export const notificationAPI = {
+  // Get user's notifications with pagination and filters
+  getAll: (filters?: { page?: number; limit?: number; unreadOnly?: boolean; type?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.page) params.append('page', filters.page.toString());
+    if (filters?.limit) params.append('limit', filters.limit.toString());
+    if (filters?.unreadOnly) params.append('unreadOnly', 'true');
+    if (filters?.type) params.append('type', filters.type);
+
+    const queryString = params.toString();
+    const url = queryString
+      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications?${queryString}`
+      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications`;
+
+    return apiClient(url, { requiresAuth: true });
+  },
+
+  // Get unread notification count
+  getUnreadCount: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications/unread-count`, {
+      requiresAuth: true,
+    });
+  },
+
+  // Mark notification as read
+  markAsRead: (notificationId: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications/${notificationId}/read`, {
+      method: 'PUT',
+      requiresAuth: true,
+    });
+  },
+
+  // Mark all notifications as read
+  markAllAsRead: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications/mark-all-read`, {
+      method: 'PUT',
+      requiresAuth: true,
+    });
+  },
+
+  // Delete a notification
+  delete: (notificationId: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications/${notificationId}`, {
+      method: 'DELETE',
+      requiresAuth: true,
+    });
+  },
+
+  // Delete all notifications
+  deleteAll: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications/all`, {
+      method: 'DELETE',
+      requiresAuth: true,
+    });
+  },
+};

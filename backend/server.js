@@ -26,6 +26,7 @@ import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import mapRoutes from './routes/mapRoutes.js';
 import statisticsRoutes from './routes/statisticsRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 // Initialize Express app
@@ -36,7 +37,9 @@ connectDB().then(async () => {
   // Create indexes for better performance
   try {
     const { createTaskIndexes } = await import('./models/Task.js');
+    const { createNotificationIndexes } = await import('./models/Notification.js');
     await createTaskIndexes();
+    await createNotificationIndexes();
   } catch (error) {
     console.error('Error creating indexes:', error);
   }
@@ -58,6 +61,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/map', mapRoutes);
 app.use('/api/statistics', statisticsRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
