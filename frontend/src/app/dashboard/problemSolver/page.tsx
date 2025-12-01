@@ -184,12 +184,12 @@ export default function SolverDashboard() {
                     <span className="mr-2">📋</span> My Tasks
                   </Button>
                 </Link>
-                <Link href="/reports">
+                <Link href="/dashboard/problemSolver/all-reports">
                   <Button variant="secondary" className="w-full justify-start">
                     <span className="mr-2">🔍</span> Browse Reports
                   </Button>
                 </Link>
-                <Link href="/map-search">
+                <Link href="/dashboard/problemSolver/map-search">
                   <Button variant="outline" className="w-full justify-start">
                     <span className="mr-2">🗺️</span> Map Search
                   </Button>
