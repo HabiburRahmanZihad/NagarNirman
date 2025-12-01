@@ -98,7 +98,7 @@ export default function SolverTasksPage() {
 
   // Fetch tasks on mount (no toast)
   useEffect(() => {
-    if (user && (user.role === 'problemSolver' || user.role === 'ngo')) {
+    if (user && user.role === 'problemSolver') {
       fetchTasks(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

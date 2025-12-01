@@ -47,13 +47,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         // { href: '/reports', icon: '📋', label: 'All Reports' },
         { href: '/dashboard/authority/assign-task', icon: '🛠️', label: 'Assign Task' },
         { href: '/dashboard/authority/review-tasks', icon: '✅', label: 'Review Tasks' },
-        { href: '/dashboard/authority/solvers', icon: '💡', label: 'Solvers & NGOs' },
+        { href: '/dashboard/authority/solvers', icon: '💡', label: 'Problem Solvers' },
         { href: '/dashboard/authority/applications', icon: '📄', label: 'Applications' },
         { href: '/dashboard/authority/manage-users', icon: '👥', label: 'Manage Users' },
       ];
     }
 
-    if (role === 'problemSolver' || role === 'ngo') {
+    if (role === 'problemSolver') {
       return [
         ...commonLinks,
         { href: '/dashboard/problemSolver/tasks', icon: '📋', label: 'My Tasks' },

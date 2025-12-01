@@ -77,9 +77,9 @@ export const authorize = (...roles) => {
   };
 };
 
-// Check if user is approved (for problem solvers/NGOs)
+// Check if user is approved (for problem solvers)
 export const checkApproved = (req, res, next) => {
-  if (req.user.role === 'problemSolver' || req.user.role === 'ngo') {
+  if (req.user.role === 'problemSolver') {
     if (!req.user.approved) {
       return res.status(403).json({
         success: false,

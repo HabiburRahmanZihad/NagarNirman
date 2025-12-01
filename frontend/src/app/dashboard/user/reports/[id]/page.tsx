@@ -544,7 +544,7 @@ export default function ReportDetailsPage() {
                             <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                               comment.user.role === 'authority' ? 'bg-blue-100 text-blue-800' :
                               comment.user.role === 'problemSolver' ? 'bg-purple-100 text-purple-800' :
-                              comment.user.role === 'ngo' ? 'bg-green-100 text-green-800' :
+
                               'bg-gray-100 text-gray-800'
                             }`}>
                               {comment.user.role === 'problemSolver' ? 'Problem Solver' :

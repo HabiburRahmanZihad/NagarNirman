@@ -13,7 +13,7 @@ interface Solver {
   _id: string;
   name: string;
   email: string;
-  role: 'problemSolver' | 'ngo';
+  role: 'problemSolver';
   division: string;
   district?: string;
   organization?: string;
@@ -42,7 +42,7 @@ export default function SolversPage() {
   const { user: authUser, isLoading, isAuthenticated } = useAuth();
   const [solvers, setSolvers] = useState<Solver[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver' | 'ngo'>('all');
+  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver'>('all');
   const [filterDistrict, setFilterDistrict] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'completedTasks' | 'successRate' | 'createdAt'>('rating');
@@ -94,7 +94,7 @@ export default function SolversPage() {
   const getRoleIcon = (role: string) => {
     switch (role) {
       case 'problemSolver': return '💡';
-      case 'ngo': return '🏢';
+
       default: return '👤';
     }
   };
@@ -103,8 +103,7 @@ export default function SolversPage() {
     switch (role) {
       case 'problemSolver':
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'ngo':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -113,7 +112,7 @@ export default function SolversPage() {
   const getRoleLabel = (role: string) => {
     switch (role) {
       case 'problemSolver': return 'Problem Solver';
-      case 'ngo': return 'NGO';
+
       default: return role;
     }
   };
@@ -259,7 +258,7 @@ export default function SolversPage() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">NGOs</p>
                 <p className="text-2xl font-bold text-purple-600">
-                  {solvers.filter(s => s.role === 'ngo').length}
+                  0
                 </p>
               </div>
             </div>
@@ -312,7 +311,7 @@ export default function SolversPage() {
               >
                 <option value="all">All Types</option>
                 <option value="problemSolver">💡 Problem Solvers</option>
-                <option value="ngo">🏢 NGOs</option>
+
               </select>
             </div>
 

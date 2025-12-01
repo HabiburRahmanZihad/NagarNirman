@@ -10,7 +10,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: 'problemSolver' | 'ngo';
+  role: 'problemSolver';
   division: string;
   district?: string;
   organization?: string;
@@ -67,7 +67,7 @@ export default function AssignSolversPage() {
   const [selectedReport, setSelectedReport] = useState<string>('');
   const [assignmentNotes, setAssignmentNotes] = useState('');
   const [assigning, setAssigning] = useState(false);
-  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver' | 'ngo'>('all');
+  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -142,7 +142,7 @@ export default function AssignSolversPage() {
   const getRoleIcon = (role: string) => {
     switch (role) {
       case 'problemSolver': return '💡';
-      case 'ngo': return '🏢';
+
       default: return '👤';
     }
   };
@@ -161,7 +161,7 @@ export default function AssignSolversPage() {
   const getRoleLabel = (role: string) => {
     switch (role) {
       case 'problemSolver': return 'Problem Solver';
-      case 'ngo': return 'NGO';
+
       default: return role;
     }
   };
@@ -253,7 +253,7 @@ export default function AssignSolversPage() {
               >
                 <option value="all">All Types</option>
                 <option value="problemSolver">💡 Problem Solvers</option>
-                <option value="ngo">🏢 NGOs</option>
+
               </select>
             </div>
           </div>

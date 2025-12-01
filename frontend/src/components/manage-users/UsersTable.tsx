@@ -11,7 +11,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "problemSolver" | "ngo" | "authority" | "superAdmin";
+  role: "user" | "problemSolver" | "authority" | "superAdmin";
   division: string;
   district: string;
   points: number;
@@ -75,7 +75,7 @@ export default function UsersTable({
     switch (role) {
       case 'authority': return 'bg-red-500/10 text-red-700 border border-red-200';
       case 'problemSolver': return 'bg-blue-500/10 text-blue-700 border border-blue-200';
-      case 'ngo': return 'bg-purple-500/10 text-purple-700 border border-purple-200';
+
       default: return 'bg-gray-500/10 text-gray-700 border border-gray-200';
     }
   };
@@ -84,7 +84,7 @@ export default function UsersTable({
     switch (role) {
       case 'authority': return '👑';
       case 'problemSolver': return '💡';
-      case 'ngo': return '🏢';
+
       default: return '👤';
     }
   };
@@ -93,7 +93,7 @@ export default function UsersTable({
     switch (role) {
       case 'authority': return 'Authority';
       case 'problemSolver': return 'Problem Solver';
-      case 'ngo': return 'NGO';
+
       case 'user': return 'User';
       default: return role;
     }

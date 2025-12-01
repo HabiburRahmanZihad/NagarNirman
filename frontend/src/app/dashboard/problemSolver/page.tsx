@@ -64,13 +64,13 @@ export default function SolverDashboard() {
   const [recentTasks, setRecentTasks] = useState<Task[]>([]);
 
   useEffect(() => {
-    if (!isLoading && (!isAuthenticated || (user?.role !== 'problemSolver' && user?.role !== 'ngo'))) {
+    if (!isLoading && (!isAuthenticated || user?.role !== 'problemSolver')) {
       router.push('/auth/login');
     }
   }, [isAuthenticated, isLoading, user, router]);
 
   useEffect(() => {
-    if (user?.role === 'problemSolver' || user?.role === 'ngo') {
+    if (user?.role === 'problemSolver') {
       fetchDashboardData();
     }
   }, [user]);

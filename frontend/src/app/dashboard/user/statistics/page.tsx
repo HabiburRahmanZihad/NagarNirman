@@ -12,7 +12,7 @@ const StatisticsAccessDenied = () => {
 
   useEffect(() => {
     if (user) {
-      toast.error('Statistics page is only available for NGO and Problem Solvers');
+      toast.error('Statistics page is only available for Problem Solvers');
       const timer = setTimeout(() => {
         router.push('/dashboard/user');
       }, 3000);
@@ -31,7 +31,7 @@ const StatisticsAccessDenied = () => {
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
           <p className="text-gray-600 mb-6">
-            Statistics page is only available for NGO and Problem Solvers.
+            Statistics page is only available for Problem Solvers.
             Redirecting to your dashboard...
           </p>
           <div className="flex justify-center">

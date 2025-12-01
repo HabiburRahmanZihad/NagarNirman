@@ -77,7 +77,7 @@ export default function UserFilterBar({
   const roles = [
     { value: "user", label: "User" },
     { value: "problemSolver", label: "Problem Solver" },
-    { value: "ngo", label: "NGO" },
+
     { value: "authority", label: "Authority" }
   ];
   const statusOptions = ["active", "inactive"];

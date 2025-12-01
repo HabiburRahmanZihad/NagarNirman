@@ -76,9 +76,7 @@ export default function LoginPage() {
             router.push('/dashboard/authority');
             break;
           case 'problemSolver':
-          case 'ngo':
-            router.push('/dashboard/problemSolver');
-            break;
+
           default:
             router.push('/dashboard/user');
         }

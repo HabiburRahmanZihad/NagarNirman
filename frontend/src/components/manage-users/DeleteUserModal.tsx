@@ -8,7 +8,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "problemSolver" | "ngo" | "authority";
+  role: "user" | "problemSolver" | "authority";
   district: string;
   points: number;
   approved: boolean;
@@ -38,7 +38,7 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
     switch (role) {
       case 'authority': return 'bg-red-500/20 text-red-700 border-red-200';
       case 'problemSolver': return 'bg-blue-500/20 text-blue-700 border-blue-200';
-      case 'ngo': return 'bg-purple-500/20 text-purple-700 border-purple-200';
+
       default: return 'bg-gray-500/20 text-gray-700 border-gray-200';
     }
   };

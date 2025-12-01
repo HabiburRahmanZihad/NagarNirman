@@ -16,7 +16,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "problemSolver" | "ngo" | "authority" | "superAdmin";
+  role: "user" | "problemSolver" | "authority" | "superAdmin";
   division: string;
   district: string;
   points: number;

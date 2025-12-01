@@ -104,8 +104,8 @@ const AnalyticsPage = () => {
 
   // Check if user has access to statistics page (NGO, Problem Solver, and SuperAdmin)
   useEffect(() => {
-    if (user && user.role !== 'ngo' && user.role !== 'problemSolver' && user.role !== 'superAdmin') {
-      toast.error('Access denied. Statistics are only available for NGO, Problem Solvers, and SuperAdmin.');
+    if (user && user.role !== 'problemSolver' && user.role !== 'superAdmin') {
+      toast.error('Access denied. Statistics are only available for Problem Solvers and SuperAdmin.');
       router.push(`/dashboard/${user.role === 'authority' ? 'authority' : 'user'}`);
     }
   }, [user, router]);

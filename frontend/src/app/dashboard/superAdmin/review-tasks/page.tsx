@@ -277,7 +277,7 @@ export default function TaskReviewPage() {
                         </div>
                         <div>
                           <p className="font-semibold text-gray-900">{task.solver.name}</p>
-                          <p className="text-sm text-gray-600">{task.solver.email} • {task.solver.role === 'ngo' ? 'NGO' : 'Problem Solver'}</p>
+                          <p className="text-sm text-gray-600">{task.solver.email} • Problem Solver</p>
                         </div>
                       </div>
                     </div>

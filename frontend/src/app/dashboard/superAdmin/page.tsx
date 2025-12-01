@@ -19,7 +19,7 @@ export default function SuperAdminDashboard() {
     totalReports: 0,
     authorities: 0,
     problemSolvers: 0,
-    ngos: 0,
+
     pendingApplications: 0,
     pendingReviewTasks: 0,
     totalTasks: 0,
@@ -30,7 +30,7 @@ export default function SuperAdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showRoleModal, setShowRoleModal] = useState(false);
-  const [newRole, setNewRole] = useState<'user' | 'authority' | 'problemSolver' | 'ngo'>('user');
+  const [newRole, setNewRole] = useState<'user' | 'authority' | 'problemSolver'>('user');
   const [filterRole, setFilterRole] = useState<string>('all');
 
   useEffect(() => {
@@ -225,7 +225,7 @@ export default function SuperAdminDashboard() {
           <StatCard title="Total Tasks" value={stats.totalTasks} icon="📝" color="indigo" badge={stats.pendingReviewTasks} />
           <StatCard title="Authorities" value={stats.authorities} icon="🏛️" color="purple" />
           <StatCard title="Problem Solvers" value={stats.problemSolvers} icon="💡" color="yellow" />
-          <StatCard title="NGOs" value={stats.ngos} icon="🏢" color="cyan" />
+
         </div>
 
         {/* Task Workflow Stats */}
@@ -338,7 +338,7 @@ export default function SuperAdminDashboard() {
               <option value="user">Users</option>
               <option value="authority">Authorities</option>
               <option value="problemSolver">Problem Solvers</option>
-              <option value="ngo">NGOs</option>
+
               <option value="superAdmin">Super Admins</option>
             </select>
           </div>
@@ -527,7 +527,7 @@ export default function SuperAdminDashboard() {
 
             <div className="space-y-2 mb-6">
               <p className="text-sm font-semibold text-gray-700 mb-3">Select New Role</p>
-              {['user', 'authority', 'problemSolver', 'ngo'].map((role) => (
+              {['user', 'authority', 'problemSolver'].map((role) => (
                 <button
                   key={role}
                   onClick={() => setNewRole(role as any)}
@@ -633,7 +633,7 @@ function getRoleBadgeColor(role: string) {
     user: 'bg-gray-100 text-gray-800',
     authority: 'bg-purple-100 text-purple-800',
     problemSolver: 'bg-blue-100 text-blue-800',
-    ngo: 'bg-green-100 text-green-800',
+
     superAdmin: 'bg-red-100 text-red-800',
   };
   return colors[role] || 'bg-gray-100 text-gray-800';
