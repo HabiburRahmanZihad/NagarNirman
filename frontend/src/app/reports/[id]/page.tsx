@@ -556,14 +556,13 @@ export default function ReportDetailsPage() {
 
                           {/* Role Badge */}
                           {comment.user?.role && (
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                              comment.user.role === 'authority' ? 'bg-blue-100 text-blue-800' :
-                              comment.user.role === 'problemSolver' ? 'bg-purple-100 text-purple-800' :
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${comment.user.role === 'authority' ? 'bg-blue-100 text-blue-800' :
+                                comment.user.role === 'problemSolver' ? 'bg-purple-100 text-purple-800' :
 
-                              'bg-gray-100 text-gray-800'
-                            }`}>
+                                  'bg-gray-100 text-gray-800'
+                              }`}>
                               {comment.user.role === 'problemSolver' ? 'Problem Solver' :
-                               comment.user.role.charAt(0).toUpperCase() + comment.user.role.slice(1)}
+                                comment.user.role.charAt(0).toUpperCase() + comment.user.role.slice(1)}
                             </span>
                           )}
 
@@ -608,11 +607,10 @@ export default function ReportDetailsPage() {
                   <button
                     onClick={handleUpvote}
                     disabled={isUpvoting || !isAuthenticated}
-                    className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition ${
-                      isUpvoted
+                    className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition ${isUpvoted
                         ? 'bg-[#2a7d2f] text-white'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     <FaThumbsUp />
                     {isUpvoted ? 'Upvoted' : 'Upvote'} ({report.upvotes.length})

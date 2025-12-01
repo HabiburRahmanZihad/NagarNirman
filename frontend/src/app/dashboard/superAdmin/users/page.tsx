@@ -310,11 +310,10 @@ export default function SuperAdminUsersPage() {
                         <button
                           key={pageNum}
                           onClick={() => setCurrentPage(pageNum)}
-                          className={`px-4 py-2 rounded-lg transition-colors ${
-                            currentPage === pageNum
+                          className={`px-4 py-2 rounded-lg transition-colors ${currentPage === pageNum
                               ? 'bg-[#2a7d2f] text-white'
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                          }`}
+                            }`}
                         >
                           {pageNum}
                         </button>

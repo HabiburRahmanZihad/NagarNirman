@@ -468,11 +468,10 @@ export default function TaskReviewPage() {
                               className="focus:outline-none"
                             >
                               <Star
-                                className={`w-8 h-8 ${
-                                  star <= reviewData.rating
+                                className={`w-8 h-8 ${star <= reviewData.rating
                                     ? 'fill-yellow-400 text-yellow-400'
                                     : 'text-gray-300'
-                                } transition-colors`}
+                                  } transition-colors`}
                               />
                             </button>
                           ))}
@@ -520,11 +519,10 @@ export default function TaskReviewPage() {
                     <button
                       onClick={handleReview}
                       disabled={submitting}
-                      className={`flex-1 px-6 py-3 rounded-lg transition-all font-semibold text-white ${
-                        reviewAction === 'approve'
+                      className={`flex-1 px-6 py-3 rounded-lg transition-all font-semibold text-white ${reviewAction === 'approve'
                           ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800'
                           : 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800'
-                      } ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        } ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       {submitting ? 'Processing...' : reviewAction === 'approve' ? 'Approve & Award Points' : 'Send for Revision'}
                     </button>

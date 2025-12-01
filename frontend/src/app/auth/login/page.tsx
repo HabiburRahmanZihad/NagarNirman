@@ -130,9 +130,8 @@ export default function LoginPage() {
                   onChange={handleChange}
                   placeholder="Enter your password"
                   required
-                  className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent ${
-                    errors.password ? 'border-red-500' : ''
-                  }`}
+                  className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent ${errors.password ? 'border-red-500' : ''
+                    }`}
                 />
                 <button
                   type="button"

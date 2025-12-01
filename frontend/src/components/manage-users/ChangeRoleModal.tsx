@@ -125,12 +125,11 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
               <div className="flex-1">
                 <div className="flex items-center space-x-3">
                   <h3 className="text-xl font-bold text-gray-900">{user.name}</h3>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    currentRole === 'authority' ? 'bg-red-100 text-red-700' :
-                    currentRole === 'problemSolver' ? 'bg-blue-100 text-blue-700' :
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${currentRole === 'authority' ? 'bg-red-100 text-red-700' :
+                      currentRole === 'problemSolver' ? 'bg-blue-100 text-blue-700' :
 
-                    'bg-gray-100 text-gray-700'
-                  }`}>
+                        'bg-gray-100 text-gray-700'
+                    }`}>
                     {currentRole}
                   </span>
                 </div>
@@ -154,11 +153,10 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                     key={role.value}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`relative p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
-                      isSelected
+                    className={`relative p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${isSelected
                         ? 'border-[#2a7d2f] bg-green-50 shadow-lg'
                         : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                    } ${isCurrent ? 'ring-2 ring-yellow-400 ring-opacity-50' : ''}`}
+                      } ${isCurrent ? 'ring-2 ring-yellow-400 ring-opacity-50' : ''}`}
                   >
                     <input
                       type="radio"
