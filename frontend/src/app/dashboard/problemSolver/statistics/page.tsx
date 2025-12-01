@@ -104,8 +104,8 @@ const AnalyticsPage = () => {
 
   // Check if user has access to statistics page (NGO, Problem Solver, and SuperAdmin)
   useEffect(() => {
-    if (user && user.role !== 'ngo' && user.role !== 'problemSolver' && user.role !== 'superAdmin') {
-      toast.error('Access denied. Statistics are only available for NGO, Problem Solvers, and SuperAdmin.');
+    if (user && user.role !== 'problemSolver' && user.role !== 'superAdmin') {
+      toast.error('Access denied. Statistics are only available for Problem Solvers and SuperAdmin.');
       router.push(`/dashboard/${user.role === 'authority' ? 'authority' : 'user'}`);
     }
   }, [user, router]);
@@ -164,47 +164,47 @@ const AnalyticsPage = () => {
         throw new Error('No data received from API');
       }
 
-         // Transform data to match component expectations with null checks
-        const transformedData = {
-          totalReports: data.totalReports || 0,
-          completedReports: data.completedReports || 0,
-          ongoingReports: data.ongoingReports || 0,
-          pendingReports: data.pendingReports || 0,
-          averageResolutionTime: data.averageResolutionTime || 0,
-          completionRate: data.completionRate || 0,
-          lastUpdated: data.lastUpdated || new Date().toISOString(),
-          // Add percentages to category stats
-          categoryStats: (data.categoryStats || []).map((cat: any) => ({
-            category: cat.category,
-            count: cat.count,
-            percentage: data.totalReports > 0 ? (cat.count / data.totalReports) * 100 : 0
-          })),
-          // Add percentages to status stats
-          statusStats: (data.statusStats || []).map((stat: any) => ({
-            status: stat.status,
-            count: stat.count,
-            color: stat.color,
-            percentage: data.totalReports > 0 ? (stat.count / data.totalReports) * 100 : 0
-          })),
-          // Rename fields for monthly stats to match component
-          monthlyStats: (data.monthlyStats || []).map((stat: any) => ({
-            month: stat.month,
-            reports: stat.reports,
-            completed: stat.resolved || 0, // Rename resolved to completed
-            pending: stat.pending || 0
-          })),
-          // Transform district stats to match component
-          districtStats: (data.districtStats || []).map((stat: any) => ({
-            district: stat.district,
-            division: stat.division,
-            reports: stat.total || 0, // Rename total to reports
-            pending: stat.pending || 0,
-            completed: stat.resolved || 0, // Rename resolved to completed
-            ongoing: stat.ongoing || 0
-          })),
-          // Ensure solver performance exists
-          solverPerformance: data.solverPerformance || []
-        };
+      // Transform data to match component expectations with null checks
+      const transformedData = {
+        totalReports: data.totalReports || 0,
+        completedReports: data.completedReports || 0,
+        ongoingReports: data.ongoingReports || 0,
+        pendingReports: data.pendingReports || 0,
+        averageResolutionTime: data.averageResolutionTime || 0,
+        completionRate: data.completionRate || 0,
+        lastUpdated: data.lastUpdated || new Date().toISOString(),
+        // Add percentages to category stats
+        categoryStats: (data.categoryStats || []).map((cat: any) => ({
+          category: cat.category,
+          count: cat.count,
+          percentage: data.totalReports > 0 ? (cat.count / data.totalReports) * 100 : 0
+        })),
+        // Add percentages to status stats
+        statusStats: (data.statusStats || []).map((stat: any) => ({
+          status: stat.status,
+          count: stat.count,
+          color: stat.color,
+          percentage: data.totalReports > 0 ? (stat.count / data.totalReports) * 100 : 0
+        })),
+        // Rename fields for monthly stats to match component
+        monthlyStats: (data.monthlyStats || []).map((stat: any) => ({
+          month: stat.month,
+          reports: stat.reports,
+          completed: stat.resolved || 0, // Rename resolved to completed
+          pending: stat.pending || 0
+        })),
+        // Transform district stats to match component
+        districtStats: (data.districtStats || []).map((stat: any) => ({
+          district: stat.district,
+          division: stat.division,
+          reports: stat.total || 0, // Rename total to reports
+          pending: stat.pending || 0,
+          completed: stat.resolved || 0, // Rename resolved to completed
+          ongoing: stat.ongoing || 0
+        })),
+        // Ensure solver performance exists
+        solverPerformance: data.solverPerformance || []
+      };
 
       setAnalyticsData(transformedData as any);
       setLastUpdated(new Date());
@@ -263,44 +263,44 @@ const AnalyticsPage = () => {
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-green-50/30 p-6">
       <div className="max-w-7xl mx-auto">
-<motion.div
-  initial={{ opacity: 0, y: -20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6 }}
-  className="mb-8"
->
-  <div className="flex items-center justify-between">
-    <div>
-      <div className="flex items-center gap-3 mb-2">
-        <div className="p-2 bg-linear-to-r from-[#f2a921] to-[#2a7d2f] rounded-lg">
-          <BarChart3 className="w-6 h-6 text-white" />
-        </div>
-        <h1 className="text-4xl font-bold bg-linear-to-r from-[#1f2937] via-[#f2a921] to-[#2a7d2f] bg-clip-text text-transparent">
-          Performance Analytics
-        </h1>
-      </div>
-      <p className="text-gray-600 text-lg">
-        Comprehensive insights and real-time performance metrics
-      </p>
-    </div>
-    <motion.div
-      whileHover={{ scale: 1.05 }}
-      className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20"
-    >
-      <div className="text-right">
-        <div className="text-2xl font-bold bg-linear-to-r from-[#f2a921] to-[#2a7d2f] bg-clip-text text-transparent">
-          Live Dashboard
-        </div>
-        <div className="flex items-center gap-2 justify-end">
-          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-          <span className="text-sm text-green-600">
-            Updated {lastUpdated.toLocaleTimeString()}
-          </span>
-        </div>
-      </div>
-    </motion.div>
-  </div>
-</motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-linear-to-r from-[#f2a921] to-[#2a7d2f] rounded-lg">
+                  <BarChart3 className="w-6 h-6 text-white" />
+                </div>
+                <h1 className="text-4xl font-bold bg-linear-to-r from-[#1f2937] via-[#f2a921] to-[#2a7d2f] bg-clip-text text-transparent">
+                  Performance Analytics
+                </h1>
+              </div>
+              <p className="text-gray-600 text-lg">
+                Comprehensive insights and real-time performance metrics
+              </p>
+            </div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20"
+            >
+              <div className="text-right">
+                <div className="text-2xl font-bold bg-linear-to-r from-[#f2a921] to-[#2a7d2f] bg-clip-text text-transparent">
+                  Live Dashboard
+                </div>
+                <div className="flex items-center gap-2 justify-end">
+                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-green-600">
+                    Updated {lastUpdated.toLocaleTimeString()}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -322,11 +322,10 @@ const AnalyticsPage = () => {
                   <button
                     key={range.value}
                     onClick={() => setTimeRange(range.value)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      timeRange === range.value
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${timeRange === range.value
                         ? 'bg-[#2a7d2f] text-white shadow-md'
                         : 'text-gray-600 hover:text-gray-900'
-                    }`}
+                      }`}
                   >
                     {range.label}
                   </button>

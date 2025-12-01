@@ -98,7 +98,7 @@ export default function SolverTasksPage() {
 
   // Fetch tasks on mount (no toast)
   useEffect(() => {
-    if (user && (user.role === 'problemSolver' || user.role === 'ngo')) {
+    if (user && user.role === 'problemSolver') {
       fetchTasks(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -492,33 +492,31 @@ export default function SolverTasksPage() {
                     initial={{ width: 0 }}
                     animate={{ width: `${task.progress || 50}%` }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className={`h-full ${
-                      (task.progress || 50) === 100 ? 'bg-green-500' :
-                      (task.progress || 50) >= 90 ? 'bg-blue-500' :
-                      (task.progress || 50) >= 75 ? 'bg-yellow-500' :
-                      'bg-orange-500'
-                    }`}
+                    className={`h-full ${(task.progress || 50) === 100 ? 'bg-green-500' :
+                        (task.progress || 50) >= 90 ? 'bg-blue-500' :
+                          (task.progress || 50) >= 75 ? 'bg-yellow-500' :
+                            'bg-orange-500'
+                      }`}
                   />
                 </div>
 
                 <div className="p-5">
                   {/* Header */}
                   <div className="flex justify-between items-start mb-4">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      task.status === 'completed' || task.status === 'verified' ? 'bg-green-100 text-green-700' :
-                      task.status === 'submitted' ? 'bg-blue-100 text-blue-700' :
-                      task.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                      task.status === 'in-progress' ? 'bg-purple-100 text-purple-700' :
-                      task.status === 'accepted' ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-gray-100 text-gray-700'
-                    }`}>
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${task.status === 'completed' || task.status === 'verified' ? 'bg-green-100 text-green-700' :
+                        task.status === 'submitted' ? 'bg-blue-100 text-blue-700' :
+                          task.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                            task.status === 'in-progress' ? 'bg-purple-100 text-purple-700' :
+                              task.status === 'accepted' ? 'bg-yellow-100 text-yellow-700' :
+                                'bg-gray-100 text-gray-700'
+                      }`}>
                       {task.status === 'assigned' ? 'New Assignment' :
-                       task.status === 'accepted' ? 'Accepted' :
-                       task.status === 'in-progress' ? 'In Progress' :
-                       task.status === 'submitted' ? 'Under Review' :
-                       task.status === 'rejected' ? 'Needs Resubmission' :
-                       task.status === 'completed' ? 'Completed' :
-                       task.status === 'verified' ? 'Verified' : task.status}
+                        task.status === 'accepted' ? 'Accepted' :
+                          task.status === 'in-progress' ? 'In Progress' :
+                            task.status === 'submitted' ? 'Under Review' :
+                              task.status === 'rejected' ? 'Needs Resubmission' :
+                                task.status === 'completed' ? 'Completed' :
+                                  task.status === 'verified' ? 'Verified' : task.status}
                     </span>
                     <span className="text-lg font-bold text-gray-700">{task.progress || 50}%</span>
                   </div>
@@ -787,11 +785,10 @@ export default function SolverTasksPage() {
                   <button
                     onClick={handleSubmitProof}
                     disabled={submittingProof || proofImages.length === 0 || !proofDescription.trim()}
-                    className={`flex-1 px-6 py-3 rounded-lg font-semibold text-white flex items-center justify-center space-x-2 transition-all duration-300 ${
-                      submittingProof || proofImages.length === 0 || !proofDescription.trim()
+                    className={`flex-1 px-6 py-3 rounded-lg font-semibold text-white flex items-center justify-center space-x-2 transition-all duration-300 ${submittingProof || proofImages.length === 0 || !proofDescription.trim()
                         ? 'bg-gray-400 cursor-not-allowed'
                         : 'bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                    }`}
+                      }`}
                   >
                     {submittingProof ? (
                       <>

@@ -87,7 +87,7 @@ const StepsProgress = () => {
           <div className="relative">
             {/* Vertical Line */}
             <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-[#2a7d2f]"></div>
-            
+
             {steps.map((step, index) => (
               <div key={step.id} className="relative flex items-start mb-8 pl-16">
                 {/* Step Circle */}
@@ -96,7 +96,7 @@ const StepsProgress = () => {
                     {step.icon}
                   </div>
                 </div>
-                
+
                 {/* Step Content */}
                 <div className="flex-1">
                   <h3 className="font-bold text-[#002E2E] text-lg mb-2">
@@ -116,12 +116,12 @@ const StepsProgress = () => {
           <div className="relative h-[500px]">
             {/* Top Horizontal Line */}
             <div className="absolute top-5 left-5 right-0 h-1.5 bg-[#2a7d2f]" />
-            
+
             {/* S-Curve Path */}
             <div className="absolute border-[#2a7d2f] border-t-5 border-b-6 border-r-6 rounded-r-full top-5 -right-9 lg:-right-20 w-45 h-45.5 " />
             <div className="absolute top-49 rounded-full right-10 lg:right-0 left-0 md:left-8 h-1.5 bg-[#2a7d2f]" />
             <div className="absolute border-[#2a7d2f] border-t-6 border-b-6 border-l-6 rounded-l-full top-49 -left-9 lg:-left-20 w-45 h-44 " />
-            
+
             {/* Bottom Horizontal Line */}
             <div className="absolute bottom-32 left-0 right-0 h-1.5 bg-[#2a7d2f]" />
 

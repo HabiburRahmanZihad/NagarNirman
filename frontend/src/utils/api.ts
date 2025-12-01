@@ -327,7 +327,7 @@ export const userAPI = {
     });
   },
 
-  // Get all NGOs and Problem Solvers (Authority only)
+  // Get all Problem Solvers (Authority only)
   getSolvers: (filters?: { division?: string; district?: string; page?: number; limit?: number }) => {
     const params = new URLSearchParams();
     if (filters?.division) params.append('division', filters.division);
@@ -404,7 +404,7 @@ export const problemSolverAPI = {
   },
 
   // Update user role (SuperAdmin only)
-  updateRole: (userId: string, newRole: 'user' | 'authority' | 'problemSolver' | 'ngo') => {
+  updateRole: (userId: string, newRole: 'user' | 'authority' | 'problemSolver') => {
     return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}/role`, {
       method: 'PATCH',
       body: JSON.stringify({ role: newRole }),

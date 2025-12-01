@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
   const getDashboardPath = () => {
     if (user?.role === "superAdmin") return "/dashboard/superAdmin";
     if (user?.role === "authority") return "/dashboard/authority";
-    if (user?.role === "problemSolver" || user?.role === "ngo") return "/dashboard/problemSolver";
+    if (user?.role === "problemSolver") return "/dashboard/problemSolver";
     if (user?.role === "user") return "/dashboard/user";
     return "/dashboard";
   };
@@ -62,11 +62,10 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center gap-8">
             <Link
               href="/"
-              className={`font-medium transition-colors duration-200 ${
-                isActiveLink("/")
+              className={`font-medium transition-colors duration-200 ${isActiveLink("/")
                   ? "text-[#2a7d2f] font-semibold"
                   : "text-[#374151] hover:text-[#81d586]"
-              }`}
+                }`}
             >
               Home
             </Link>
@@ -74,11 +73,10 @@ const Navbar: React.FC = () => {
             {isAuthenticated && (
               <Link
                 href={getDashboardPath()}
-                className={`font-medium transition-colors duration-200 ${
-                  isActiveLink("/dashboard")
+                className={`font-medium transition-colors duration-200 ${isActiveLink("/dashboard")
                     ? "text-[#2a7d2f] font-semibold"
                     : "text-[#374151] hover:text-[#81d586]"
-                }`}
+                  }`}
               >
                 Dashboard
               </Link>
@@ -86,22 +84,20 @@ const Navbar: React.FC = () => {
 
             <Link
               href="/reports"
-              className={`font-medium transition-colors duration-200 ${
-                isActiveLink("/reports")
+              className={`font-medium transition-colors duration-200 ${isActiveLink("/reports")
                   ? "text-[#2a7d2f] font-semibold"
                   : "text-[#374151] hover:text-[#81d586]"
-              }`}
+                }`}
             >
               All Reports
             </Link>
 
             <Link
               href="/map-search"
-              className={`font-medium transition-colors duration-200 ${
-                isActiveLink("/map-search")
+              className={`font-medium transition-colors duration-200 ${isActiveLink("/map-search")
                   ? "text-[#2a7d2f] font-semibold"
                   : "text-[#374151] hover:text-[#81d586]"
-              }`}
+                }`}
             >
               Map Search
             </Link>
@@ -109,11 +105,10 @@ const Navbar: React.FC = () => {
             <div className="relative group">
               <Link
                 href="/about"
-                className={`font-medium transition-colors duration-200 ${
-                  isActiveLink("/about")
+                className={`font-medium transition-colors duration-200 ${isActiveLink("/about")
                     ? "text-[#2a7d2f] font-semibold"
                     : "text-[#374151] hover:text-[#81d586]"
-                }`}
+                  }`}
               >
                 About
               </Link>
@@ -135,11 +130,10 @@ const Navbar: React.FC = () => {
 
             <Link
               href="/gallery"
-              className={`font-medium transition-colors duration-200 ${
-                isActiveLink("/gallery")
+              className={`font-medium transition-colors duration-200 ${isActiveLink("/gallery")
                   ? "text-[#2a7d2f] font-semibold"
                   : "text-[#374151] hover:text-[#81d586]"
-              }`}
+                }`}
             >
               Gallery
             </Link>
@@ -150,7 +144,7 @@ const Navbar: React.FC = () => {
             {isAuthenticated && user ? (
               <>
                 <NotificationCenter />
-                
+
                 {/* User Profile with Dropdown */}
                 <div className="relative" ref={userMenuRef}>
                   <button
@@ -180,10 +174,9 @@ const Navbar: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                    <FaChevronDown 
-                      className={`w-3 h-3 text-gray-500 transition-transform duration-200 ${
-                        isUserMenuOpen ? "rotate-180" : ""
-                      }`}
+                    <FaChevronDown
+                      className={`w-3 h-3 text-gray-500 transition-transform duration-200 ${isUserMenuOpen ? "rotate-180" : ""
+                        }`}
                     />
                   </button>
 

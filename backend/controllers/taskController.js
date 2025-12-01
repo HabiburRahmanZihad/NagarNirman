@@ -324,13 +324,13 @@ export const getSolverStatistics = asyncHandler(async (req, res) => {
     const usersCollection = getUsersCollection();
     const tasksCollection = getTasksCollection();
 
-    // Get all problem solvers and NGOs with their task statistics in ONE aggregation query
+    // Get all problem solvers with their task statistics in ONE aggregation query
     const statistics = await usersCollection
       .aggregate([
-        // Match approved solvers and NGOs
+        // Match approved solvers
         {
           $match: {
-            role: { $in: ['problemSolver', 'ngo'] },
+            role: 'problemSolver',
             approved: true,
           },
         },

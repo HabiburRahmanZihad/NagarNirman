@@ -10,7 +10,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: 'problemSolver' | 'ngo';
+  role: 'problemSolver';
   division: string;
   district?: string;
   organization?: string;
@@ -67,7 +67,7 @@ export default function AssignSolversPage() {
   const [selectedReport, setSelectedReport] = useState<string>('');
   const [assignmentNotes, setAssignmentNotes] = useState('');
   const [assigning, setAssigning] = useState(false);
-  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver' | 'ngo'>('all');
+  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -142,7 +142,7 @@ export default function AssignSolversPage() {
   const getRoleIcon = (role: string) => {
     switch (role) {
       case 'problemSolver': return '💡';
-      case 'ngo': return '🏢';
+
       default: return '👤';
     }
   };
@@ -161,7 +161,7 @@ export default function AssignSolversPage() {
   const getRoleLabel = (role: string) => {
     switch (role) {
       case 'problemSolver': return 'Problem Solver';
-      case 'ngo': return 'NGO';
+
       default: return role;
     }
   };
@@ -253,7 +253,7 @@ export default function AssignSolversPage() {
               >
                 <option value="all">All Types</option>
                 <option value="problemSolver">💡 Problem Solvers</option>
-                <option value="ngo">🏢 NGOs</option>
+
               </select>
             </div>
           </div>
@@ -373,11 +373,10 @@ export default function AssignSolversPage() {
                   <button
                     onClick={() => handleAssignTask(solver)}
                     disabled={!solver.isActive || reports.length === 0}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      solver.isActive && reports.length > 0
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${solver.isActive && reports.length > 0
                         ? 'bg-green-600 text-white hover:bg-green-700'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
+                      }`}
                   >
                     Assign Task
                   </button>
@@ -439,11 +438,10 @@ export default function AssignSolversPage() {
                           <div
                             key={report._id}
                             onClick={() => setSelectedReport(report._id)}
-                            className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                              selectedReport === report._id
+                            className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedReport === report._id
                                 ? 'border-green-500 bg-green-50'
                                 : 'border-gray-200 hover:border-green-300'
-                            }`}
+                              }`}
                           >
                             <div className="flex items-start justify-between mb-2">
                               <h3 className="font-semibold text-gray-900">{report.title}</h3>
@@ -488,11 +486,10 @@ export default function AssignSolversPage() {
                     <button
                       onClick={handleSubmitAssignment}
                       disabled={!selectedReport || assigning}
-                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
-                        selectedReport && !assigning
+                      className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${selectedReport && !assigning
                           ? 'bg-green-600 text-white hover:bg-green-700'
                           : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      }`}
+                        }`}
                     >
                       {assigning ? 'Assigning...' : 'Assign Task'}
                     </button>

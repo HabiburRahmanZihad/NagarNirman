@@ -406,7 +406,7 @@ export default function TaskDetailPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Description</p>
-                  <p className="text-gray-700 leading-relaxed">{task.report.description}</p>
+                  <p className="text-gray-700   mb-3  break-all leading-relaxed ">{task.report.description}</p>
                 </div>
 
                 {/* Problem Classification - Highlighted Section */}

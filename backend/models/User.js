@@ -25,7 +25,7 @@ export const isValidEmail = (email) => {
 
 // Validate role
 export const isValidRole = (role) => {
-  const validRoles = ['user', 'authority', 'problemSolver', 'ngo', 'superAdmin'];
+  const validRoles = ['user', 'authority', 'problemSolver', 'superAdmin'];
   return validRoles.includes(role);
 };
 

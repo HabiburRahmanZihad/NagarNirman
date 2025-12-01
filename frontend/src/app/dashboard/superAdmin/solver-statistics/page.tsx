@@ -29,7 +29,7 @@ interface SolverStats {
   _id: string;
   name: string;
   email: string;
-  role: 'problemSolver' | 'ngo';
+  role: 'problemSolver';
   division: string;
   district: string;
   points: number;
@@ -65,7 +65,7 @@ export default function SolverStatisticsPage() {
   const [statistics, setStatistics] = useState<SolverStats[]>([]);
   const [filteredStats, setFilteredStats] = useState<SolverStats[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver' | 'ngo'>('all');
+  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'free'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('total');
@@ -190,13 +190,11 @@ export default function SolverStatisticsPage() {
   };
 
   const getRoleColor = (role: string) => {
-    return role === 'ngo'
-      ? 'bg-purple-100 text-purple-700'
-      : 'bg-blue-100 text-blue-700';
+    return 'bg-blue-100 text-blue-700';
   };
 
   const getRoleBadge = (role: string) => {
-    return role === 'ngo' ? 'NGO' : 'Problem Solver';
+    return 'Problem Solver';
   };
 
   const handleAssignTask = (solver: SolverStats) => {
@@ -235,7 +233,7 @@ export default function SolverStatisticsPage() {
                 Solver Performance Statistics
               </h1>
               <p className="text-gray-600">
-                Track task assignments, completion rates, and availability of problem solvers and NGOs
+                Track task assignments, completion rates, and availability of problem solvers
               </p>
             </div>
             <button
@@ -393,7 +391,7 @@ export default function SolverStatisticsPage() {
             >
               <option value="all">All Roles</option>
               <option value="problemSolver">Problem Solvers</option>
-              <option value="ngo">NGOs</option>
+
             </select>
 
             {/* Status Filter */}
@@ -461,7 +459,7 @@ export default function SolverStatisticsPage() {
               <p className="text-gray-600">
                 {searchQuery || filterRole !== 'all' || filterStatus !== 'all'
                   ? 'Try adjusting your filters'
-                  : 'No problem solvers or NGOs registered yet'}
+                  : 'No problem solvers registered yet'}
               </p>
             </div>
           ) : (

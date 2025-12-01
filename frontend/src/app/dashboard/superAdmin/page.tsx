@@ -19,7 +19,7 @@ export default function SuperAdminDashboard() {
     totalReports: 0,
     authorities: 0,
     problemSolvers: 0,
-    ngos: 0,
+
     pendingApplications: 0,
     pendingReviewTasks: 0,
     totalTasks: 0,
@@ -30,7 +30,7 @@ export default function SuperAdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showRoleModal, setShowRoleModal] = useState(false);
-  const [newRole, setNewRole] = useState<'user' | 'authority' | 'problemSolver' | 'ngo'>('user');
+  const [newRole, setNewRole] = useState<'user' | 'authority' | 'problemSolver'>('user');
   const [filterRole, setFilterRole] = useState<string>('all');
 
   useEffect(() => {
@@ -225,7 +225,7 @@ export default function SuperAdminDashboard() {
           <StatCard title="Total Tasks" value={stats.totalTasks} icon="📝" color="indigo" badge={stats.pendingReviewTasks} />
           <StatCard title="Authorities" value={stats.authorities} icon="🏛️" color="purple" />
           <StatCard title="Problem Solvers" value={stats.problemSolvers} icon="💡" color="yellow" />
-          <StatCard title="NGOs" value={stats.ngos} icon="🏢" color="cyan" />
+
         </div>
 
         {/* Task Workflow Stats */}
@@ -338,7 +338,7 @@ export default function SuperAdminDashboard() {
               <option value="user">Users</option>
               <option value="authority">Authorities</option>
               <option value="problemSolver">Problem Solvers</option>
-              <option value="ngo">NGOs</option>
+
               <option value="superAdmin">Super Admins</option>
             </select>
           </div>
@@ -393,9 +393,8 @@ export default function SuperAdminDashboard() {
                       {user.district || 'N/A'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${
-                        user.approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                      <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${user.approved ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                        }`}>
                         {user.approved ? '✓ Active' : '⏱ Pending'}
                       </span>
                     </td>
@@ -467,7 +466,7 @@ export default function SuperAdminDashboard() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
                 className="flex items-center justify-between p-4 border-2 border-gray-100 rounded-lg hover:border-[#81d586] hover:shadow-md cursor-pointer transition-all group"
-                // onClick={() => router.push(`/reports/${report._id}`)}
+              // onClick={() => router.push(`/reports/${report._id}`)}
               >
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-900 group-hover:text-[#81d586] transition-colors">
@@ -527,15 +526,14 @@ export default function SuperAdminDashboard() {
 
             <div className="space-y-2 mb-6">
               <p className="text-sm font-semibold text-gray-700 mb-3">Select New Role</p>
-              {['user', 'authority', 'problemSolver', 'ngo'].map((role) => (
+              {['user', 'authority', 'problemSolver'].map((role) => (
                 <button
                   key={role}
                   onClick={() => setNewRole(role as any)}
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    newRole === role
+                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${newRole === role
                       ? 'border-[#81d586] bg-green-50 shadow-md'
                       : 'border-gray-200 hover:border-[#81d586] hover:bg-gray-50'
-                  }`}
+                    }`}
                   disabled={selectedUser.role === role}
                 >
                   <span className="font-semibold capitalize text-gray-900">{role}</span>
@@ -633,7 +631,7 @@ function getRoleBadgeColor(role: string) {
     user: 'bg-gray-100 text-gray-800',
     authority: 'bg-purple-100 text-purple-800',
     problemSolver: 'bg-blue-100 text-blue-800',
-    ngo: 'bg-green-100 text-green-800',
+
     superAdmin: 'bg-red-100 text-red-800',
   };
   return colors[role] || 'bg-gray-100 text-gray-800';
