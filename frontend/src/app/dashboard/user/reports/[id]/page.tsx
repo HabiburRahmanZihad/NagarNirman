@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, Loading } from '@/components/common';
+import { Card, Button, Loading, NotFoundDisplay } from '@/components/common';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
@@ -281,14 +281,12 @@ export default function ReportDetailsPage() {
   if (!report) {
     return (
       <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-12 flex items-center justify-center">
-        <Card className="p-12 text-center max-w-md">
-          <div className="text-6xl mb-4">😕</div>
-          <h2 className="text-2xl font-bold text-[#002E2E] mb-2">Report Not Found</h2>
-          <p className="text-[#6B7280] mb-6">The report you're looking for doesn't exist or has been removed.</p>
-          <Link href="/reports">
-            <Button variant="primary">Back to Reports</Button>
-          </Link>
-        </Card>
+        <NotFoundDisplay
+          title="Report Not Found"
+          message="The report you're looking for doesn't exist or has been removed."
+          showHomeButton={true}
+          showBackButton={true}
+        />
       </div>
     );
   }
@@ -326,7 +324,7 @@ export default function ReportDetailsPage() {
               </div>
 
               {/* Problem Classification */}
-              <div className="mb-4 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+              <div className="mb-4 p-4 bg-linear-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
                 <h4 className="text-sm font-semibold text-gray-700 mb-2">Problem Classification</h4>
                 <div className="flex flex-wrap gap-2">
                   <div>
@@ -541,14 +539,13 @@ export default function ReportDetailsPage() {
 
                           {/* Role Badge */}
                           {comment.user?.role && (
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                              comment.user.role === 'authority' ? 'bg-blue-100 text-blue-800' :
-                              comment.user.role === 'problemSolver' ? 'bg-purple-100 text-purple-800' :
-                              comment.user.role === 'ngo' ? 'bg-green-100 text-green-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
+                            <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${comment.user.role === 'authority' ? 'bg-blue-100 text-blue-800' :
+                                comment.user.role === 'problemSolver' ? 'bg-purple-100 text-purple-800' :
+
+                                  'bg-gray-100 text-gray-800'
+                              }`}>
                               {comment.user.role === 'problemSolver' ? 'Problem Solver' :
-                               comment.user.role.charAt(0).toUpperCase() + comment.user.role.slice(1)}
+                                comment.user.role.charAt(0).toUpperCase() + comment.user.role.slice(1)}
                             </span>
                           )}
 
@@ -593,11 +590,10 @@ export default function ReportDetailsPage() {
                   <button
                     onClick={handleUpvote}
                     disabled={isUpvoting || !isAuthenticated}
-                    className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition ${
-                      isUpvoted
+                    className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition ${isUpvoted
                         ? 'bg-[#2a7d2f] text-white'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     <FaThumbsUp />
                     {isUpvoted ? 'Upvoted' : 'Upvote'} ({report.upvotes.length})

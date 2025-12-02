@@ -47,13 +47,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         // { href: '/reports', icon: '📋', label: 'All Reports' },
         { href: '/dashboard/authority/assign-task', icon: '🛠️', label: 'Assign Task' },
         { href: '/dashboard/authority/review-tasks', icon: '✅', label: 'Review Tasks' },
-        { href: '/dashboard/authority/solvers', icon: '💡', label: 'Solvers & NGOs' },
+        { href: '/dashboard/authority/solvers', icon: '💡', label: 'Problem Solvers' },
         { href: '/dashboard/authority/applications', icon: '📄', label: 'Applications' },
         { href: '/dashboard/authority/manage-users', icon: '👥', label: 'Manage Users' },
       ];
     }
 
-    if (role === 'problemSolver' || role === 'ngo') {
+    if (role === 'problemSolver') {
       return [
         ...commonLinks,
         { href: '/dashboard/problemSolver/tasks', icon: '📋', label: 'My Tasks' },
@@ -99,24 +99,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 z-50 overflow-y-auto transition-transform duration-300 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 lg:sticky lg:top-0`}
+        className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 z-50 overflow-y-auto transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0 lg:sticky lg:top-0`}
       >
         <div className="flex flex-col min-h-screen">
           {/* Header */}
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/">
-            <Image
-              src="/logo/logo.png"
-              alt="NagarNirman Logo"
-              width={150}
-              height={150}
-              priority
-            />
-          </Link>
+              {/* Logo */}
+              <Link href="/">
+                <Image
+                  src="/logo/logo.png"
+                  alt="NagarNirman Logo"
+                  width={150}
+                  height={150}
+                  priority
+                />
+              </Link>
               <button
                 onClick={onClose}
                 className="lg:hidden text-gray-500 hover:text-gray-700"
@@ -161,11 +160,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   key={link.href}
                   href={link.href}
                   onClick={() => onClose()}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
-                    active
-                      ? 'bg-primary text-white shadow-md'
-                      : 'text-gray-700 hover:bg-gray-100'
-                  }`}
+                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${active
+                    ? 'bg-primary text-white shadow-md'
+                    : 'text-gray-700 hover:bg-gray-100'
+                    }`}
                 >
                   <span className="text-xl">{link.icon}</span>
                   <span className="font-medium">{link.label}</span>

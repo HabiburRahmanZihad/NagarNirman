@@ -18,6 +18,7 @@ import {
 } from '../models/ProblemSolverApplication.js';
 import { uploadToImgBB, validateImage } from '../utils/imageUpload.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+import { sendApprovalEmail } from '../services/emailService.js';
 
 // @desc    Get all users
 // @route   GET /api/users
@@ -306,7 +307,7 @@ export const getUserStats = asyncHandler(async (req, res) => {
 
     // Get tasks assigned to user (if problem solver)
     let tasksStats = null;
-    if (user.role === 'problemSolver' || user.role === 'ngo') {
+    if (user.role === 'problemSolver') {
       const tasksResult = await findTasks({ assignedTo: userId });
       const totalTasks = tasksResult.pagination.total;
 
@@ -356,7 +357,7 @@ export const getLeaderboard = asyncHandler(async (req, res) => {
     const leaderboard = await getUsersCollection()
       .find(
         {
-          $or: [{ role: 'problemSolver' }, { role: 'ngo' }],
+          role: 'problemSolver',
           approved: true,
         },
         { projection: { password: 0 } }
@@ -618,6 +619,15 @@ export const reviewApplication = asyncHandler(async (req, res) => {
       console.log('User updated successfully:', updatedUser);
     }
 
+    // Get user details for email
+    const user = await getUserById(application.userId.toString());
+    if (user) {
+      // Send approval/rejection email (non-blocking)
+      sendApprovalEmail(user, status === 'approved').catch(err =>
+        console.error('Failed to send approval email:', err)
+      );
+    }
+
     res.status(200).json({
       success: true,
       message: `Application ${status} successfully`,
@@ -658,7 +668,7 @@ export const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get all NGOs and Problem Solvers
+// @desc    Get all Problem Solvers
 // @route   GET /api/users/solvers
 // @access  Private (Authority)
 export const getSolvers = asyncHandler(async (req, res) => {
@@ -673,7 +683,7 @@ export const getSolvers = asyncHandler(async (req, res) => {
     } = req.query;
 
     const filter = {
-      role: { $in: ['problemSolver', 'ngo'] },
+      role: 'problemSolver',
       approved: true,
       isActive: true,
     };
@@ -813,7 +823,7 @@ export const updateUserRole = asyncHandler(async (req, res) => {
     }
 
     // Validate role
-    const validRoles = ['user', 'authority', 'problemSolver', 'ngo'];
+    const validRoles = ['user', 'authority', 'problemSolver'];
     if (!validRoles.includes(role)) {
       return res.status(400).json({
         success: false,

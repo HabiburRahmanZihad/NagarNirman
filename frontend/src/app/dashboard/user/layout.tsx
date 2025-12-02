@@ -1,5 +1,6 @@
 'use client';
 
+import { FullPageLoading } from '@/components/common';
 import { useUserDashboardProtection } from '@/hooks/useRoleProtection';
 
 export default function UserDashboardLayout({
@@ -11,11 +12,7 @@ export default function UserDashboardLayout({
 
   // Show loading state while checking authentication or if not authorized
   if (isLoading || !isAuthorized) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2a7d2f]"></div>
-      </div>
-    );
+    return <FullPageLoading text="Checking authorization..." />;
   }
 
   // Only render when authorized

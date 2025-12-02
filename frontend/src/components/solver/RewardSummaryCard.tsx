@@ -36,7 +36,7 @@ export default function RewardSummaryCard({ user }: RewardSummaryCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-br from-green-600 to-green-700 rounded-2xl shadow-xl text-white p-6"
+      className="bg-linear-to-br from-green-600 to-green-700 rounded-2xl shadow-xl text-white p-6"
     >
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
         <div className="flex-1">

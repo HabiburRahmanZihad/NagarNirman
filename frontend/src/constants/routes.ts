@@ -90,7 +90,6 @@ export const getDashboardRoute = (role: string): string => {
     case 'authority':
       return AUTHORITY_ROUTES.DASHBOARD;
     case 'problemSolver':
-    case 'ngo':
       return SOLVER_ROUTES.DASHBOARD;
     default:
       return USER_ROUTES.DASHBOARD;

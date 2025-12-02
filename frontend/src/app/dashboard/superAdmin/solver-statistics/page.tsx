@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { FullPageLoading } from '@/components/common';
 import { taskAPI } from '@/utils/api';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
@@ -29,7 +30,7 @@ interface SolverStats {
   _id: string;
   name: string;
   email: string;
-  role: 'problemSolver' | 'ngo';
+  role: 'problemSolver';
   division: string;
   district: string;
   points: number;
@@ -65,7 +66,7 @@ export default function SolverStatisticsPage() {
   const [statistics, setStatistics] = useState<SolverStats[]>([]);
   const [filteredStats, setFilteredStats] = useState<SolverStats[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver' | 'ngo'>('all');
+  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'free'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('total');
@@ -190,13 +191,11 @@ export default function SolverStatisticsPage() {
   };
 
   const getRoleColor = (role: string) => {
-    return role === 'ngo'
-      ? 'bg-purple-100 text-purple-700'
-      : 'bg-blue-100 text-blue-700';
+    return 'bg-blue-100 text-blue-700';
   };
 
   const getRoleBadge = (role: string) => {
-    return role === 'ngo' ? 'NGO' : 'Problem Solver';
+    return 'Problem Solver';
   };
 
   const handleAssignTask = (solver: SolverStats) => {
@@ -204,23 +203,12 @@ export default function SolverStatisticsPage() {
     router.push(`/dashboard/superAdmin/assign-task?solverId=${solver._id}&solverName=${encodeURIComponent(solver.name)}`);
   };
 
-  if (authLoading || loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-blue-50/30 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-green-500 border-r-transparent"></div>
-          <p className="mt-4 text-gray-600 font-medium">Loading solver statistics...</p>
-        </motion.div>
-      </div>
-    );
+  if (loading) {
+    return <FullPageLoading text="Loading solver statistics..." />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-blue-50/30 py-8 px-4">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/30 to-blue-50/30 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -235,7 +223,7 @@ export default function SolverStatisticsPage() {
                 Solver Performance Statistics
               </h1>
               <p className="text-gray-600">
-                Track task assignments, completion rates, and availability of problem solvers and NGOs
+                Track task assignments, completion rates, and availability of problem solvers
               </p>
             </div>
             <button
@@ -257,7 +245,7 @@ export default function SolverStatisticsPage() {
             className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
           >
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl">
+              <div className="p-3 bg-linear-to-br from-blue-500 to-blue-600 rounded-xl">
                 <Users className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -274,7 +262,7 @@ export default function SolverStatisticsPage() {
             className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
           >
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl">
+              <div className="p-3 bg-linear-to-br from-green-500 to-green-600 rounded-xl">
                 <UserCheck className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -291,7 +279,7 @@ export default function SolverStatisticsPage() {
             className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
           >
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl">
+              <div className="p-3 bg-linear-to-br from-yellow-500 to-yellow-600 rounded-xl">
                 <UserX className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -308,7 +296,7 @@ export default function SolverStatisticsPage() {
             className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
           >
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl">
+              <div className="p-3 bg-linear-to-br from-purple-500 to-purple-600 rounded-xl">
                 <BarChart3 className="w-7 h-7 text-white" />
               </div>
               <div>
@@ -393,7 +381,7 @@ export default function SolverStatisticsPage() {
             >
               <option value="all">All Roles</option>
               <option value="problemSolver">Problem Solvers</option>
-              <option value="ngo">NGOs</option>
+
             </select>
 
             {/* Status Filter */}
@@ -461,13 +449,13 @@ export default function SolverStatisticsPage() {
               <p className="text-gray-600">
                 {searchQuery || filterRole !== 'all' || filterStatus !== 'all'
                   ? 'Try adjusting your filters'
-                  : 'No problem solvers or NGOs registered yet'}
+                  : 'No problem solvers registered yet'}
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-green-50 to-blue-50">
+                <thead className="bg-linear-to-r from-green-50 to-blue-50">
                   <tr>
                     <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">Solver</th>
                     <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">Role</th>
@@ -493,7 +481,7 @@ export default function SolverStatisticsPage() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold">
+                          <div className="w-10 h-10 rounded-full bg-linear-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold">
                             {solver.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
@@ -571,7 +559,7 @@ export default function SolverStatisticsPage() {
                         {solver.isFree ? (
                           <button
                             onClick={() => handleAssignTask(solver)}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:from-green-600 hover:to-blue-600 transition-all shadow-md hover:shadow-lg font-medium text-sm"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-green-500 to-blue-500 text-white rounded-lg hover:from-green-600 hover:to-blue-600 transition-all shadow-md hover:shadow-lg font-medium text-sm"
                             title="Assign a task to this solver"
                           >
                             <PlusCircle className="w-4 h-4" />

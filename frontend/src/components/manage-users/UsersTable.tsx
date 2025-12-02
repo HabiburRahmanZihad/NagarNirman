@@ -6,12 +6,13 @@ import { Edit, Trash2, Users, Loader2 } from "lucide-react";
 import ChangeRoleModal from "./ChangeRoleModal";
 import DeleteUserModal from "./DeleteUserModal";
 import ToggleStatusSwitch from "./ToggleStatusSwitch";
+import { InlineLoading } from "@/components/common";
 
 interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "problemSolver" | "ngo" | "authority" | "superAdmin";
+  role: "user" | "problemSolver" | "authority" | "superAdmin";
   division: string;
   district: string;
   points: number;
@@ -75,7 +76,7 @@ export default function UsersTable({
     switch (role) {
       case 'authority': return 'bg-red-500/10 text-red-700 border border-red-200';
       case 'problemSolver': return 'bg-blue-500/10 text-blue-700 border border-blue-200';
-      case 'ngo': return 'bg-purple-500/10 text-purple-700 border border-purple-200';
+
       default: return 'bg-gray-500/10 text-gray-700 border border-gray-200';
     }
   };
@@ -84,7 +85,7 @@ export default function UsersTable({
     switch (role) {
       case 'authority': return '👑';
       case 'problemSolver': return '💡';
-      case 'ngo': return '🏢';
+
       default: return '👤';
     }
   };
@@ -93,24 +94,14 @@ export default function UsersTable({
     switch (role) {
       case 'authority': return 'Authority';
       case 'problemSolver': return 'Problem Solver';
-      case 'ngo': return 'NGO';
+
       case 'user': return 'User';
       default: return role;
     }
   };
 
   if (isLoading) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center"
-      >
-        <Loader2 className="w-12 h-12 text-[#2a7d2f] animate-spin mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Loading Users</h3>
-        <p className="text-gray-500">Please wait while we load the user data...</p>
-      </motion.div>
-    );
+    return <InlineLoading text="Loading users..." />;
   }
 
   return (
@@ -277,11 +268,10 @@ export default function UsersTable({
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => onPageChange(page)}
-                      className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
-                        currentPage === page
-                          ? 'bg-[#2a7d2f] text-white shadow-lg'
-                          : 'text-gray-700 hover:bg-gray-100 border border-transparent'
-                      }`}
+                      className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${currentPage === page
+                        ? 'bg-[#2a7d2f] text-white shadow-lg'
+                        : 'text-gray-700 hover:bg-gray-100 border border-transparent'
+                        }`}
                     >
                       {page}
                     </motion.button>

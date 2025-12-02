@@ -19,7 +19,9 @@ import {
 } from '../models/Task.js';
 import { getReportById, updateReportStatus } from '../models/Report.js';
 import { getUserById, incrementUserPoints, getUsersCollection } from '../models/User.js';
+import { createNotification } from '../models/Notification.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+import { sendTaskAssignmentEmail, sendRewardEmail } from '../services/emailService.js';
 
 // @desc    Get all tasks
 // @route   GET /api/tasks
@@ -139,6 +141,25 @@ export const assignTask = asyncHandler(async (req, res) => {
 
     // Update report status to approved when task is assigned
     await updateReportStatus(report, 'approved', `Task assigned: ${title}`, req.user.id);
+
+    // Create notification for assigned solver
+    await createNotification({
+      userId: assignedTo,
+      title: 'New Task Assigned',
+      message: `You have been assigned a new task: "${title}"`,
+      type: 'task_assigned',
+      actionUrl: `/dashboard/problemSolver/tasks`,
+      metadata: {
+        taskId: task._id.toString(),
+        taskTitle: title,
+        priority: priority || 'medium',
+      },
+    });
+
+    // Send email notification (non-blocking)
+    sendTaskAssignmentEmail(user, task, reportExists).catch(err =>
+      console.error('Failed to send task assignment email:', err)
+    );
 
     res.status(201).json({
       success: true,
@@ -324,13 +345,13 @@ export const getSolverStatistics = asyncHandler(async (req, res) => {
     const usersCollection = getUsersCollection();
     const tasksCollection = getTasksCollection();
 
-    // Get all problem solvers and NGOs with their task statistics in ONE aggregation query
+    // Get all problem solvers with their task statistics in ONE aggregation query
     const statistics = await usersCollection
       .aggregate([
-        // Match approved solvers and NGOs
+        // Match approved solvers
         {
           $match: {
-            role: { $in: ['problemSolver', 'ngo'] },
+            role: 'problemSolver',
             approved: true,
           },
         },
@@ -559,6 +580,26 @@ export const acceptTaskAssignment = asyncHandler(async (req, res) => {
       console.error('Failed to update report status on accept:', reportError);
     }
 
+    // Create notification for authority who assigned the task
+    try {
+      if (task.assignedBy) {
+        const assignerId = typeof task.assignedBy === 'object' ? task.assignedBy._id : task.assignedBy;
+        await createNotification({
+          userId: assignerId.toString(),
+          title: 'Task Accepted',
+          message: `${req.user.name} has accepted the task: "${task.title}"`,
+          type: 'task_accepted',
+          actionUrl: `/dashboard/authority/review-tasks`,
+          metadata: {
+            taskId: task._id.toString(),
+            solverName: req.user.name,
+          },
+        });
+      }
+    } catch (notifError) {
+      console.error('Failed to create notification:', notifError);
+    }
+
     res.status(200).json({
       success: true,
       message: 'Task accepted successfully',
@@ -674,6 +715,26 @@ export const submitTaskProofHandler = asyncHandler(async (req, res) => {
       }
     } catch (reportError) {
       console.error('Failed to update report status on proof submit:', reportError);
+    }
+
+    // Create notification for authority who assigned the task
+    try {
+      if (task.assignedBy) {
+        const assignerId = typeof task.assignedBy === 'object' ? task.assignedBy._id : task.assignedBy;
+        await createNotification({
+          userId: assignerId.toString(),
+          title: 'Task Submitted for Review',
+          message: `${req.user.name} has submitted proof for task: "${task.title}"`,
+          type: 'task_submitted',
+          actionUrl: `/dashboard/authority/review-tasks`,
+          metadata: {
+            taskId: task._id.toString(),
+            solverName: req.user.name,
+          },
+        });
+      }
+    } catch (notifError) {
+      console.error('Failed to create notification:', notifError);
     }
 
     res.status(200).json({
@@ -837,6 +898,37 @@ export const approveTaskSubmission = asyncHandler(async (req, res) => {
       console.error('❌ Failed to update report status:', reportError);
     }
 
+    // Create notification for solver
+    try {
+      if (task.assignedTo) {
+        const solverId = typeof task.assignedTo === 'object' ? task.assignedTo._id : task.assignedTo;
+        await createNotification({
+          userId: solverId.toString(),
+          title: 'Task Approved! 🎉',
+          message: `Your task "${task.title}" has been approved! You earned ${awardPoints} points.`,
+          type: 'task_approved',
+          actionUrl: `/dashboard/problemSolver/tasks`,
+          metadata: {
+            taskId: task._id.toString(),
+            points: awardPoints,
+            rating,
+            feedback,
+          },
+        });
+
+        // Send reward email (non-blocking)
+        getUserById(solverId.toString()).then(solverUser => {
+          if (solverUser) {
+            sendRewardEmail(solverUser, task, awardPoints).catch(err =>
+              console.error('Failed to send reward email:', err)
+            );
+          }
+        }).catch(err => console.error('Failed to get solver user:', err));
+      }
+    } catch (notifError) {
+      console.error('Failed to create notification:', notifError);
+    }
+
     // Always return success response
     return res.status(200).json({
       success: true,
@@ -956,6 +1048,26 @@ export const rejectTaskSubmission = asyncHandler(async (req, res) => {
       }
     } catch (reportError) {
       console.error('Failed to update report status on rejection:', reportError);
+    }
+
+    // Create notification for solver
+    try {
+      if (task.assignedTo) {
+        const solverId = typeof task.assignedTo === 'object' ? task.assignedTo._id : task.assignedTo;
+        await createNotification({
+          userId: solverId.toString(),
+          title: 'Task Rejected',
+          message: `Your task "${task.title}" was rejected. Reason: ${rejectionReason}`,
+          type: 'task_rejected',
+          actionUrl: `/dashboard/problemSolver/tasks`,
+          metadata: {
+            taskId: task._id.toString(),
+            rejectionReason,
+          },
+        });
+      }
+    } catch (notifError) {
+      console.error('Failed to create notification:', notifError);
     }
 
     res.status(200).json({

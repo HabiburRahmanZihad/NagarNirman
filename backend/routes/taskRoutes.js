@@ -27,11 +27,11 @@ router.get('/my-tasks', protect, checkApproved, getMyTasks);
 router.get('/:id', protect, getTask);
 router.patch('/:id/status', protect, changeTaskStatus);
 
-// Problem solver/NGO routes - Task workflow
-router.post('/:id/accept', protect, authorize('problemSolver', 'ngo'), checkApproved, acceptTaskAssignment);
-router.post('/:id/start', protect, authorize('problemSolver', 'ngo'), checkApproved, startWorkingOnTask);
-router.post('/:id/submit-proof', protect, authorize('problemSolver', 'ngo'), checkApproved, submitTaskProofHandler);
-router.post('/:id/complete', protect, authorize('problemSolver', 'ngo'), checkApproved, completeTask);
+// Problem solver routes - Task workflow
+router.post('/:id/accept', protect, authorize('problemSolver'), checkApproved, acceptTaskAssignment);
+router.post('/:id/start', protect, authorize('problemSolver'), checkApproved, startWorkingOnTask);
+router.post('/:id/submit-proof', protect, authorize('problemSolver'), checkApproved, submitTaskProofHandler);
+router.post('/:id/complete', protect, authorize('problemSolver'), checkApproved, completeTask);
 
 // Authority and SuperAdmin routes
 router.get('/', protect, authorize('authority', 'superAdmin'), getTasks);

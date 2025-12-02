@@ -15,7 +15,7 @@ interface User {
   _id: string;
   name: string;
   email: string;
-  role: "user" | "problemSolver" | "ngo" | "authority";
+  role: "user" | "problemSolver" | "authority";
   division: string;
   district: string;
   points: number;
@@ -230,7 +230,7 @@ export default function ManageUsersPage() {
               </div>
             </div>
           </div>
-          <RefreshButton onClick={loadUsers} className="ml-2" tooltip="Refresh Users" />
+          <RefreshButton onClick={loadUsers} className="ml-2" label="Refresh Users" />
         </div>
       </div>
 

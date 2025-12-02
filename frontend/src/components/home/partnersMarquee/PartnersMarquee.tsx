@@ -1,4 +1,5 @@
 "use client";
+import { Sprout } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
@@ -14,9 +15,15 @@ const logos = [
 export default function PartnersMarquee() {
   return (
     <section className="container mx-auto">
-      <h2 className="text-center text-4xl md:text-5xl font-bold mb-10 text-[#003B31]">
-        Major Partners
-      </h2>
+      <div className="text-center mb-16">
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <Sprout className="w-5 h-5 text-[#3C6E59]" />
+          <span className="text-[#555555] text-lg font-medium tracking-wide">          Trusted By The Best</span>
+        </div>
+        <h2 className="text-4xl md:text-5xl font-bold text-[#003B31]">
+          Our Major Partners
+        </h2>
+      </div>
       <div className="relative overflow-hidden whitespace-nowrap">
         {/* Scrolling Wrapper */}
         <div className="flex animate-scroll gap-10">

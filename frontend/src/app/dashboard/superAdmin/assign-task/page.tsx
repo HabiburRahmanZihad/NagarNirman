@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
+import { FullPageLoading } from '@/components/common';
 import { reportAPI, userAPI, taskAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
 import { FaCheckDouble } from 'react-icons/fa';
@@ -244,15 +245,8 @@ export default function SuperAdminAssignTaskPage() {
     return badges[status as keyof typeof badges] || 'bg-gray-100 text-gray-800';
   };
 
-  if (authLoading || loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
+  if (loading) {
+    return <FullPageLoading text="Loading..." />;
   }
 
   return (
@@ -377,20 +371,18 @@ export default function SuperAdminAssignTaskPage() {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     whileHover={{ scale: 1.02 }}
-                    className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${
-                      report.status === 'pending'
+                    className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${report.status === 'pending'
                         ? 'border-gray-300 hover:border-green-500 hover:shadow-lg bg-white'
                         : 'border-gray-200 bg-gray-50 opacity-60'
-                    }`}
+                      }`}
                     onClick={() => report.status === 'pending' && setSelectedReport(report)}
                   >
                     <div className="flex justify-between items-start mb-2">
                       <h3 className="font-bold text-gray-900 text-lg">{report.title}</h3>
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        report.severity === 'high' ? 'bg-red-500 text-white' :
-                        report.severity === 'medium' ? 'bg-orange-500 text-white' :
-                        'bg-yellow-500 text-white'
-                      }`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${report.severity === 'high' ? 'bg-red-500 text-white' :
+                          report.severity === 'medium' ? 'bg-orange-500 text-white' :
+                            'bg-yellow-500 text-white'
+                        }`}>
                         {report.severity.toUpperCase()}
                       </span>
                     </div>
@@ -443,7 +435,7 @@ export default function SuperAdminAssignTaskPage() {
 
             {/* Pre-Selected Solver Info */}
             {preSelectedSolver && (
-              <div className="mb-4 p-4 bg-gradient-to-r from-green-50 to-blue-50 border-2 border-green-400 rounded-lg">
+              <div className="mb-4 p-4 bg-linear-to-r from-green-50 to-blue-50 border-2 border-green-400 rounded-lg">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-green-600 text-xl">✓</span>
                   <p className="text-sm font-semibold text-green-700">Solver Pre-Selected from Statistics:</p>
@@ -493,68 +485,65 @@ export default function SuperAdminAssignTaskPage() {
                 solvers.map((solver) => {
                   const isPreSelected = preSelectedSolver?.id === solver._id;
                   return (
-                  <motion.div
-                    key={solver._id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.05 }}
-                    className={`border-2 rounded-xl p-4 cursor-pointer transition-all bg-white hover:shadow-xl ${
-                      isPreSelected
-                        ? 'border-green-500 bg-gradient-to-br from-green-50 to-blue-50 shadow-lg ring-2 ring-green-300'
-                        : 'border-gray-300 hover:border-blue-500'
-                    }`}
-                    onClick={() => setSelectedSolver(solver._id)}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-12 h-12 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
-                          {solver.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-gray-900">{solver.name}</h3>
-                          <p className="text-xs text-gray-500">{solver.email}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="text-xs text-gray-600 space-y-2 mb-3">
-                      <p className="font-medium">📍 {solver.district}, {solver.division}</p>
-                      {solver.organization && <p className="font-medium">🏢 {solver.organization}</p>}
-                      <div className="flex items-center gap-1 flex-wrap">
-                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                          solver.role === 'problemSolver'
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-purple-500 text-white'
-                        }`}>
-                          {solver.role === 'problemSolver' ? '💡 Solver' : '🏢 NGO'}
-                        </span>
-                        {solver.rating && (
-                          <span className="bg-yellow-400 text-white px-2 py-1 rounded-full font-bold">
-                            ⭐ {solver.rating.toFixed(1)}
-                          </span>
-                        )}
-                        {solver.completedTasks !== undefined && (
-                          <span className="bg-green-500 text-white px-2 py-1 rounded-full font-bold">
-                            ✓ {solver.completedTasks}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedSolver(solver._id);
-                      }}
-                      className={`w-full px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all ${
-                        isPreSelected
-                          ? 'bg-gradient-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700'
-                          : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700'
-                      }`}
+                    <motion.div
+                      key={solver._id}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      whileHover={{ scale: 1.05 }}
+                      className={`border-2 rounded-xl p-4 cursor-pointer transition-all bg-white hover:shadow-xl ${isPreSelected
+                          ? 'border-green-500 bg-linear-to-br from-green-50 to-blue-50 shadow-lg ring-2 ring-green-300'
+                          : 'border-gray-300 hover:border-blue-500'
+                        }`}
+                      onClick={() => setSelectedSolver(solver._id)}
                     >
-                      {isPreSelected ? '✓ Pre-Selected Solver →' : 'Select This Solver →'}
-                    </button>
-                  </motion.div>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-12 h-12 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
+                            {solver.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-gray-900">{solver.name}</h3>
+                            <p className="text-xs text-gray-500">{solver.email}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-xs text-gray-600 space-y-2 mb-3">
+                        <p className="font-medium">📍 {solver.district}, {solver.division}</p>
+                        {solver.organization && <p className="font-medium">🏢 {solver.organization}</p>}
+                        <div className="flex items-center gap-1 flex-wrap">
+                          <span className={`px-2 py-1 rounded-full text-xs font-bold ${solver.role === 'problemSolver'
+                              ? 'bg-blue-500 text-white'
+                              : 'bg-purple-500 text-white'
+                            }`}>
+                            {solver.role === 'problemSolver' ? '💡 Solver' : '🏢 NGO'}
+                          </span>
+                          {solver.rating && (
+                            <span className="bg-yellow-400 text-white px-2 py-1 rounded-full font-bold">
+                              ⭐ {solver.rating.toFixed(1)}
+                            </span>
+                          )}
+                          {solver.completedTasks !== undefined && (
+                            <span className="bg-green-500 text-white px-2 py-1 rounded-full font-bold">
+                              ✓ {solver.completedTasks}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedSolver(solver._id);
+                        }}
+                        className={`w-full px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all ${isPreSelected
+                            ? 'bg-linear-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700'
+                            : 'bg-linear-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700'
+                          }`}
+                      >
+                        {isPreSelected ? '✓ Pre-Selected Solver →' : 'Select This Solver →'}
+                      </button>
+                    </motion.div>
                   );
                 })
               )}
@@ -583,11 +572,10 @@ export default function SuperAdminAssignTaskPage() {
                 <h3 className="text-xl font-bold text-gray-900 mb-1">{selectedReport.title}</h3>
                 <p className="text-sm text-gray-600 mb-2">{selectedReport.description}</p>
                 <div className="flex items-center gap-3 text-sm">
-                  <span className={`px-3 py-1 rounded-full font-bold ${
-                    selectedReport.severity === 'high' ? 'bg-red-500 text-white' :
-                    selectedReport.severity === 'medium' ? 'bg-orange-500 text-white' :
-                    'bg-yellow-500 text-white'
-                  }`}>
+                  <span className={`px-3 py-1 rounded-full font-bold ${selectedReport.severity === 'high' ? 'bg-red-500 text-white' :
+                      selectedReport.severity === 'medium' ? 'bg-orange-500 text-white' :
+                        'bg-yellow-500 text-white'
+                    }`}>
                     {selectedReport.severity.toUpperCase()} Priority
                   </span>
                   <span className="text-gray-700 font-medium">📍 {selectedReport.location.district}, {selectedReport.location.division}</span>
@@ -603,11 +591,10 @@ export default function SuperAdminAssignTaskPage() {
                     </h3>
                     <p className="text-sm text-gray-600 mb-2">{solvers.find(s => s._id === selectedSolver)?.email}</p>
                     <div className="flex items-center gap-3 text-sm">
-                      <span className={`px-3 py-1 rounded-full font-bold ${
-                        solvers.find(s => s._id === selectedSolver)?.role === 'problemSolver'
+                      <span className={`px-3 py-1 rounded-full font-bold ${solvers.find(s => s._id === selectedSolver)?.role === 'problemSolver'
                           ? 'bg-blue-500 text-white'
                           : 'bg-purple-500 text-white'
-                      }`}>
+                        }`}>
                         {solvers.find(s => s._id === selectedSolver)?.role === 'problemSolver' ? '💡 Problem Solver' : '🏢 NGO'}
                       </span>
                       <span className="text-gray-700 font-medium">
@@ -620,14 +607,14 @@ export default function SuperAdminAssignTaskPage() {
             </div>
 
             {/* Deadline Input */}
-            <div className="p-5 bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-300 rounded-xl mb-6">
+            <div className="p-5 bg-linear-to-r from-orange-50 to-red-50 border-2 border-orange-300 rounded-xl mb-6">
               <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
                 <span className="text-lg">⏰</span>
                 Set Task Deadline (Required)
               </p>
               <div className="space-y-3">
-                    <input
-                      aria-label="Set task deadline"
+                <input
+                  aria-label="Set task deadline"
                   type="datetime-local"
                   value={deadline}
                   onChange={(e) => setDeadline(e.target.value)}

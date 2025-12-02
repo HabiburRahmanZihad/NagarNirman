@@ -17,7 +17,12 @@ import PartnersMarquee from "@/components/home/partnersMarquee/PartnersMarquee";
 import EmergencyHotlineMarquee from "@/components/home/emergencyHotlineMarquee/EmergencyHotlineMarquee";
 import Testimonials from "@/components/testimonials/Testimonials";
 import CountUpSection from "@/components/countUp/Count";
+
 import AboutSection from "@/components/home/aboutSection/AboutSection";
+// import GreenFutureCard from "@/components/home/greenFutureCard/GreenFutureCard";
+import HowToReport from "@/components/home/HowToReport/HowToReport";
+import { ErrorDisplay, FullPageLoading, Loading, NotFoundDisplay } from "@/components/common";
+
 
 
 // Help section
@@ -502,6 +507,9 @@ export default function Home() {
       </section>
 
       <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
+        <HowToReport></HowToReport>
+      </section>
+      <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
         <EventsSection></EventsSection>
       </section>
       <section className="container mx-auto px-6 lg:px-0 overflow-hidden">
@@ -513,7 +521,7 @@ export default function Home() {
       <section className="container mx-auto">
       <AboutSection></AboutSection>
       </section>
-      
+
     </>
   );
 }

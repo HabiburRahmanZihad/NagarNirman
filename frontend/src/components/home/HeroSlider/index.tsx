@@ -111,7 +111,7 @@ export default function HeroSlider() {
               className="absolute inset-0 z-0 bg-cover bg-center"
               style={{ backgroundImage: `url(${slide.bgImage})` }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40 z-0" />
+            <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/60 to-black/40 z-0" />
 
             <div className="container mx-auto px-4 lg:px-0 h-full flex items-center justify-center lg:justify-center py-8 lg:py-0 relative z-10">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center w-full">

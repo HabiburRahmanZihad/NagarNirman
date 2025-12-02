@@ -7,6 +7,7 @@ import Image from "next/image";
 import { FaUpload, FaMapMarkerAlt, FaTimes, FaLock } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { Loading, FullPageError } from "@/components/common";
 import categoryOptions from "@/data/categoryOptions.json";
 import divisionData from "@/data/divisionsData.json";
 
@@ -250,10 +251,7 @@ export default function NewReportPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-12 px-4 flex justify-center items-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#2a7d2f] mx-auto mb-4"></div>
-          <p className="text-[#6B7280] text-lg">Loading...</p>
-        </div>
+        <Loading size="lg" text="Loading..." />
       </div>
     );
   }
@@ -261,49 +259,14 @@ export default function NewReportPage() {
   // Show access denied if not a user
   if (!isAuthenticated || user?.role !== "user") {
     return (
-      <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-12 px-4 flex justify-center items-center">
-        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-10 text-center">
-          <div className="mb-6">
-            <FaLock className="text-6xl text-red-500 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-[#002E2E] mb-3">
-              Access Restricted
-            </h1>
-            <p className="text-[#6B7280] text-lg mb-6">
-              Only registered users can submit reports.
-              {user?.role && user.role !== "user" && (
-                <span className="block mt-2 text-red-600 font-semibold">
-                  You are logged in as {user.role}. Please use a user account to submit reports.
-                </span>
-              )}
-            </p>
-          </div>
-          <div className="flex gap-4 justify-center">
-            {!isAuthenticated ? (
-              <>
-                <button
-                  onClick={() => router.push("/auth/login")}
-                  className="bg-[#2a7d2f] hover:bg-[#1e5d22] text-white px-6 py-3 rounded-lg font-semibold transition"
-                >
-                  Login as User
-                </button>
-                <button
-                  onClick={() => router.push("/auth/register")}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-3 rounded-lg font-semibold transition"
-                >
-                  Register
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => router.push("/")}
-                className="bg-[#2a7d2f] hover:bg-[#1e5d22] text-white px-6 py-3 rounded-lg font-semibold transition"
-              >
-                Go to Homepage
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+      <FullPageError
+        errorCode={403}
+        title="Access Restricted"
+        message="Only regular users can submit reports. Please login as a user to continue."
+        icon={<FaLock className="w-24 h-24 text-red-500" />}
+        showHomeButton={true}
+        showBackButton={false}
+      />
     );
   }
 
@@ -344,9 +307,8 @@ export default function NewReportPage() {
               </label>
               <select
                 {...register("category", { required: "Category is required" })}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
-                  errors.category ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${errors.category ? "border-red-500" : "border-gray-300"
+                  }`}
               >
                 <option value="">Select category</option>
                 {Object.keys(categoryOptions).map((cat) => (
@@ -367,9 +329,8 @@ export default function NewReportPage() {
               <select
                 {...register("subcategory", { required: "Subcategory is required" })}
                 disabled={!selectedCategory}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                  errors.subcategory ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.subcategory ? "border-red-500" : "border-gray-300"
+                  }`}
               >
                 <option value="">
                   {selectedCategory ? "Select subcategory" : "Select category first"}
@@ -402,9 +363,8 @@ export default function NewReportPage() {
                   maxLength: { value: 100, message: "Title must not exceed 100 characters" }
                 })}
                 placeholder="e.g. Street light not working on Main Road"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
-                  errors.title ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${errors.title ? "border-red-500" : "border-gray-300"
+                  }`}
               />
               {errors.title && (
                 <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
@@ -416,9 +376,8 @@ export default function NewReportPage() {
               </label>
               <select
                 {...register("severity", { required: "Severity is required" })}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
-                  errors.severity ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${errors.severity ? "border-red-500" : "border-gray-300"
+                  }`}
               >
                 <option value="">Select severity</option>
                 <option value="low">🟢 Low - Minor issue</option>
@@ -449,9 +408,8 @@ export default function NewReportPage() {
                   {...register("division", { required: "Division is required" })}
                   value={selectedDivision}
                   onChange={handleDivisionChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition font-medium ${
-                    errors.division ? "border-red-500 bg-red-50" : selectedDivision ? "border-green-500 bg-green-50" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition font-medium ${errors.division ? "border-red-500 bg-red-50" : selectedDivision ? "border-green-500 bg-green-50" : "border-gray-300"
+                    }`}
                 >
                   <option value="">Select division</option>
                   {divisionData.map((div) => (
@@ -477,9 +435,8 @@ export default function NewReportPage() {
                   {...register("district", { required: "District is required" })}
                   onChange={handleDistrictChange}
                   disabled={!selectedDivision}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition font-medium disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                    errors.district ? "border-red-500 bg-red-50" : watch("district") ? "border-green-500 bg-green-50" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition font-medium disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.district ? "border-red-500 bg-red-50" : watch("district") ? "border-green-500 bg-green-50" : "border-gray-300"
+                    }`}
                 >
                   <option value="">
                     {selectedDivision ? "Select district" : "Select division first"}
@@ -509,9 +466,8 @@ export default function NewReportPage() {
                   minLength: { value: 10, message: "Address must be at least 10 characters" }
                 })}
                 placeholder="e.g. House 27, Road 5, Dhanmondi, Dhaka"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
-                  errors.address ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${errors.address ? "border-red-500" : "border-gray-300"
+                  }`}
               />
               {errors.address && (
                 <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
@@ -527,9 +483,8 @@ export default function NewReportPage() {
                   {...register("latitude", { required: "Please fetch your location" })}
                   placeholder="Click 'Get Current Location' button below"
                   readOnly
-                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed ${
-                    errors.latitude ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed ${errors.latitude ? "border-red-500" : "border-gray-300"
+                    }`}
                 />
                 {errors.latitude && (
                   <p className="text-red-500 text-sm mt-1">{errors.latitude.message}</p>
@@ -543,9 +498,8 @@ export default function NewReportPage() {
                   {...register("longitude", { required: "Please fetch your location" })}
                   placeholder="Click 'Get Current Location' button below"
                   readOnly
-                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed ${
-                    errors.longitude ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed ${errors.longitude ? "border-red-500" : "border-gray-300"
+                    }`}
                 />
                 {errors.longitude && (
                   <p className="text-red-500 text-sm mt-1">{errors.longitude.message}</p>
@@ -582,9 +536,8 @@ export default function NewReportPage() {
               })}
               placeholder="Describe the issue clearly... (minimum 20 characters)"
               rows={5}
-              className={`w-full px-4 py-3 border rounded-lg resize-none focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
-                errors.description ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full px-4 py-3 border rounded-lg resize-none focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${errors.description ? "border-red-500" : "border-gray-300"
+                }`}
             ></textarea>
             {errors.description && (
               <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
@@ -600,9 +553,8 @@ export default function NewReportPage() {
               Upload Images <span className="text-red-500">* (Required - Maximum 5 images, 5MB each)</span>
             </label>
             <div className="space-y-4">
-              <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition ${
-                errors.image ? "border-red-500 bg-red-50" : "border-gray-300"
-              }`}>
+              <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition ${errors.image ? "border-red-500 bg-red-50" : "border-gray-300"
+                }`}>
                 <FaUpload className="text-gray-500 text-2xl mb-2" />
                 <p className="text-sm text-gray-500 font-semibold">Click to upload images (Required)</p>
                 <p className="text-xs text-gray-400 mt-1">PNG, JPG, GIF, WebP up to 5MB each</p>

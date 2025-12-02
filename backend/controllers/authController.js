@@ -10,6 +10,7 @@ import {
   matchPassword,
 } from '../models/User.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+import { sendWelcomeEmail } from '../services/emailService.js';
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -38,6 +39,11 @@ export const register = asyncHandler(async (req, res) => {
 
     const token = generateToken(user._id);
     const userProfile = getPublicProfile(user);
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail(user).catch(err =>
+      console.error('Failed to send welcome email:', err)
+    );
 
     res.status(201).json({
       success: true,

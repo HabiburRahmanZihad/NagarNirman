@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
 
-type UserRole = 'user' | 'authority' | 'superAdmin' | 'problemSolver' | 'ngo';
+type UserRole = 'user' | 'authority' | 'superAdmin' | 'problemSolver';
 
 interface UseRoleProtectionOptions {
   allowedRoles: UserRole[];
@@ -75,8 +75,7 @@ export const getRoleDashboardPath = (role: string): string => {
       return '/dashboard/problemSolver';
     case 'user':
       return '/dashboard/user';
-    case 'ngo':
-      return '/dashboard/ngo';
+
     default:
       return '/dashboard/user';
   }
@@ -101,15 +100,13 @@ export const useProblemSolverDashboardProtection = () => {
   return useRoleProtection({ allowedRoles: ['problemSolver'] });
 };
 
-export const useNGODashboardProtection = () => {
-  return useRoleProtection({ allowedRoles: ['ngo'] });
-};
+
 
 /**
  * Hook for routes that require authentication but allow multiple roles
  */
 export const useAuthProtection = () => {
   return useRoleProtection({
-    allowedRoles: ['user', 'authority', 'superAdmin', 'problemSolver', 'ngo'],
+    allowedRoles: ['user', 'authority', 'superAdmin', 'problemSolver'],
   });
 };

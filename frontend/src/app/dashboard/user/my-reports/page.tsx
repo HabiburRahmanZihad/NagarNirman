@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, Loading, ReportCard, RefreshButton } from '@/components/common';
+import { Card, Button, FullPageLoading, ReportCard, RefreshButton } from '@/components/common';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -111,7 +111,7 @@ export default function MyReportsPage() {
   };
 
   if (authLoading || (isLoading && !reports.length)) {
-    return <Loading />;
+    return <FullPageLoading message="Loading Your Reports" />;
   }
 
   if (!isAuthenticated || user?.role !== 'user') {
@@ -218,11 +218,10 @@ export default function MyReportsPage() {
                 <button
                   key={status.value}
                   onClick={() => setStatusFilter(status.value)}
-                  className={`px-4 py-2 rounded-lg font-semibold text-sm transition ${
-                    statusFilter === status.value
+                  className={`px-4 py-2 rounded-lg font-semibold text-sm transition ${statusFilter === status.value
                       ? 'bg-[#2a7d2f] text-white'
                       : `${status.color} hover:opacity-80`
-                  }`}
+                    }`}
                 >
                   {status.label}
                 </button>

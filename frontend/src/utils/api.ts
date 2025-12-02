@@ -24,6 +24,11 @@ export const apiClient = async <T = any>(
   }
 
   try {
+    // Ensure endpoint is a valid string
+    if (!endpoint || typeof endpoint !== 'string') {
+      throw new Error('Invalid endpoint provided to apiClient');
+    }
+
     const response = await fetch(endpoint, {
       ...restOptions,
       headers: defaultHeaders,
@@ -43,7 +48,8 @@ export const apiClient = async <T = any>(
       throw error;
     }
 
-    return await response.json();
+    const data = await response.json();
+    return data || {};
   } catch (error) {
     // Only log unexpected errors
     if (!(error as any).status) {
@@ -111,8 +117,8 @@ export const taskAPI = {
     const params = new URLSearchParams();
     if (filters?.status) params.append('status', filters.status);
     if (filters?.priority) params.append('priority', filters.priority);
-    if (filters?.page) params.append('page', filters.page.toString());
-    if (filters?.limit) params.append('limit', filters.limit.toString());
+    if (filters?.page !== undefined && filters?.page !== null) params.append('page', String(filters.page));
+    if (filters?.limit !== undefined && filters?.limit !== null) params.append('limit', String(filters.limit));
 
     const queryString = params.toString();
     const url = queryString ? `${API_ENDPOINTS.TASKS}?${queryString}` : API_ENDPOINTS.TASKS;
@@ -289,9 +295,9 @@ export const userAPI = {
     if (filters?.role) params.append('role', filters.role);
     if (filters?.division) params.append('division', filters.division);
     if (filters?.district) params.append('district', filters.district);
-    if (filters?.approved !== undefined) params.append('approved', filters.approved.toString());
-    if (filters?.page) params.append('page', filters.page.toString());
-    if (filters?.limit) params.append('limit', filters.limit.toString());
+    if (filters?.approved !== undefined) params.append('approved', String(filters.approved));
+    if (filters?.page !== undefined && filters?.page !== null) params.append('page', String(filters.page));
+    if (filters?.limit !== undefined && filters?.limit !== null) params.append('limit', String(filters.limit));
 
     const queryString = params.toString();
     const url = queryString
@@ -327,13 +333,13 @@ export const userAPI = {
     });
   },
 
-  // Get all NGOs and Problem Solvers (Authority only)
+  // Get all Problem Solvers (Authority only)
   getSolvers: (filters?: { division?: string; district?: string; page?: number; limit?: number }) => {
     const params = new URLSearchParams();
     if (filters?.division) params.append('division', filters.division);
     if (filters?.district) params.append('district', filters.district);
-    if (filters?.page) params.append('page', filters.page.toString());
-    if (filters?.limit) params.append('limit', filters.limit.toString());
+    if (filters?.page !== undefined && filters?.page !== null) params.append('page', String(filters.page));
+    if (filters?.limit !== undefined && filters?.limit !== null) params.append('limit', String(filters.limit));
 
     const queryString = params.toString();
     const url = queryString
@@ -376,8 +382,8 @@ export const problemSolverAPI = {
     if (filters?.status) params.append('status', filters.status);
     if (filters?.division) params.append('division', filters.division);
     if (filters?.district) params.append('district', filters.district);
-    if (filters?.page) params.append('page', filters.page.toString());
-    if (filters?.limit) params.append('limit', filters.limit.toString());
+    if (filters?.page !== undefined && filters?.page !== null) params.append('page', String(filters.page));
+    if (filters?.limit !== undefined && filters?.limit !== null) params.append('limit', String(filters.limit));
 
     const queryString = params.toString();
     const url = queryString
@@ -404,10 +410,92 @@ export const problemSolverAPI = {
   },
 
   // Update user role (SuperAdmin only)
-  updateRole: (userId: string, newRole: 'user' | 'authority' | 'problemSolver' | 'ngo') => {
+  updateRole: (userId: string, newRole: 'user' | 'authority' | 'problemSolver') => {
     return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/${userId}/role`, {
       method: 'PATCH',
       body: JSON.stringify({ role: newRole }),
+      requiresAuth: true,
+    });
+  },
+};
+
+// Notification API functions
+export const notificationAPI = {
+  // Get user's notifications with pagination and filters
+  getAll: (filters?: { page?: number; limit?: number; unreadOnly?: boolean; type?: string }) => {
+    try {
+      let queryString = '';
+
+      if (filters) {
+        try {
+          const params = new URLSearchParams();
+
+          if (typeof filters.page === 'number' && filters.page > 0) {
+            params.append('page', filters.page.toString());
+          }
+          if (typeof filters.limit === 'number' && filters.limit > 0) {
+            params.append('limit', filters.limit.toString());
+          }
+          if (filters.unreadOnly === true) {
+            params.append('unreadOnly', 'true');
+          }
+          if (typeof filters.type === 'string' && filters.type.trim().length > 0) {
+            params.append('type', filters.type.trim());
+          }
+
+          queryString = params.toString();
+        } catch (paramError) {
+          console.error('Error building query parameters:', paramError);
+          queryString = '';
+        }
+      }
+
+      const url = queryString
+        ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications?${queryString}`
+        : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications`;
+
+      return apiClient(url, { requiresAuth: true });
+    } catch (error) {
+      console.error('Error in notificationAPI.getAll:', error);
+      return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications`, { requiresAuth: true });
+    }
+  },
+
+  // Get unread notification count
+  getUnreadCount: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications/unread-count`, {
+      requiresAuth: true,
+    });
+  },
+
+  // Mark notification as read
+  markAsRead: (notificationId: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications/${notificationId}/read`, {
+      method: 'PUT',
+      requiresAuth: true,
+    });
+  },
+
+  // Mark all notifications as read
+  markAllAsRead: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications/mark-all-read`, {
+      method: 'PUT',
+      requiresAuth: true,
+    });
+  },
+
+  // Delete a notification
+  delete: (notificationId: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications/${notificationId}`, {
+      method: 'DELETE',
+      requiresAuth: true,
+    });
+  },
+
+  // Delete all notifications
+  deleteAll: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications/all`, {
+      method: 'DELETE',
       requiresAuth: true,
     });
   },

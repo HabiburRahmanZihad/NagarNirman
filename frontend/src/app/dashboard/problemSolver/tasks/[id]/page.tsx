@@ -9,6 +9,7 @@ import { taskAPI } from "@/utils/api";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import Image from "next/image";
+import { InlineError } from "@/components/common";
 
 interface Task {
   _id: string;
@@ -76,12 +77,14 @@ export default function TaskDetailPage() {
   const { user, isLoading: authLoading } = useAuth();
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   const [showProofModal, setShowProofModal] = useState(false);
   const [proofImages, setProofImages] = useState<string[]>([]);
   const [proofDescription, setProofDescription] = useState('');
   const [submittingProof, setSubmittingProof] = useState(false);
+  const [proofError, setProofError] = useState<string | null>(null);
 
   useEffect(() => {
     if (params.id && user) {
@@ -91,18 +94,23 @@ export default function TaskDetailPage() {
 
   const fetchTaskDetails = async () => {
     try {
+      setError(null);
       setLoading(true);
       const response = await taskAPI.getById(params.id as string);
 
-      if (response.success) {
+      if (response && response.success) {
         setTask(response.data);
       } else {
-        toast.error('Failed to load task details');
+        const errorMsg = response?.message || 'Failed to load task details';
+        setError(errorMsg);
+        toast.error(errorMsg);
         router.push('/dashboard/problemSolver/tasks');
       }
     } catch (error: any) {
+      const errorMsg = error?.message || 'Failed to load task details';
+      setError(errorMsg);
       console.error('Error fetching task:', error);
-      toast.error(error.message || 'Failed to load task');
+      toast.error(errorMsg);
       router.push('/dashboard/problemSolver/tasks');
     } finally {
       setLoading(false);
@@ -165,13 +173,19 @@ export default function TaskDetailPage() {
   const handleSubmitProof = async () => {
     if (!task) return;
 
+    setProofError(null);
+
     if (proofImages.length === 0) {
-      toast.error('Please upload at least one proof image');
+      const msg = 'Please upload at least one proof image';
+      setProofError(msg);
+      toast.error(msg);
       return;
     }
 
     if (!proofDescription.trim()) {
-      toast.error('Please provide a description of your work');
+      const msg = 'Please provide a description of your work';
+      setProofError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -182,18 +196,23 @@ export default function TaskDetailPage() {
         description: proofDescription,
       });
 
-      if (response.success) {
+      if (response && response.success) {
         toast.success('Proof submitted successfully! Waiting for review. ✅');
         setShowProofModal(false);
         setProofImages([]);
         setProofDescription('');
+        setProofError(null);
         fetchTaskDetails();
       } else {
-        toast.error(response.message || 'Failed to submit proof');
+        const errorMsg = response?.message || 'Failed to submit proof';
+        setProofError(errorMsg);
+        toast.error(errorMsg);
       }
     } catch (error: any) {
+      const errorMsg = error?.message || 'Failed to submit proof';
+      setProofError(errorMsg);
       console.error('Error submitting proof:', error);
-      toast.error(error.message || 'Failed to submit proof');
+      toast.error(errorMsg);
     } finally {
       setSubmittingProof(false);
     }
@@ -217,7 +236,7 @@ export default function TaskDetailPage() {
       const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${searchQuery}`;
       window.open(mapsUrl, '_blank');
     }
-  };  const getSeverityConfig = (severity: string) => {
+  }; const getSeverityConfig = (severity: string) => {
     const configs: Record<string, any> = {
       low: {
         color: 'text-green-700',
@@ -296,6 +315,9 @@ export default function TaskDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
+        {/* Error Display */}
+        {error && <InlineError message={error} />}
+
         {/* Back Button */}
         <Link
           href="/dashboard/problemSolver/tasks"
@@ -309,7 +331,7 @@ export default function TaskDetailPage() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`bg-gradient-to-r ${severityConfig.headerBg} rounded-xl shadow-lg p-6 mb-6 text-white`}
+          className={`bg-linear-to-r ${severityConfig.headerBg} rounded-xl shadow-lg p-6 mb-6 text-white`}
         >
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center space-x-3">
@@ -406,11 +428,11 @@ export default function TaskDetailPage() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 mb-1">Description</p>
-                  <p className="text-gray-700 leading-relaxed">{task.report.description}</p>
+                  <p className="text-gray-700   mb-3  break-all leading-relaxed ">{task.report.description}</p>
                 </div>
 
                 {/* Problem Classification - Highlighted Section */}
-                <div className="p-3 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+                <div className="p-3 bg-linear-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
                   <p className="text-xs font-semibold text-gray-700 mb-2">🏷️ Problem Classification</p>
                   <div className="flex flex-wrap gap-2">
                     <div>
@@ -453,7 +475,7 @@ export default function TaskDetailPage() {
               </h2>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                  <div className="shrink-0 w-2 h-2 rounded-full bg-green-500 mt-2"></div>
                   <div>
                     <p className="font-semibold text-gray-800">Task Assigned</p>
                     <p className="text-sm text-gray-500">{formatDate(task.createdAt)}</p>
@@ -461,7 +483,7 @@ export default function TaskDetailPage() {
                 </div>
                 {task.acceptedAt && (
                   <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
+                    <div className="shrink-0 w-2 h-2 rounded-full bg-blue-500 mt-2"></div>
                     <div>
                       <p className="font-semibold text-gray-800">Accepted by You</p>
                       <p className="text-sm text-gray-500">{formatDate(task.acceptedAt)}</p>
@@ -470,7 +492,7 @@ export default function TaskDetailPage() {
                 )}
                 {task.startedAt && (
                   <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-2 h-2 rounded-full bg-indigo-500 mt-2"></div>
+                    <div className="shrink-0 w-2 h-2 rounded-full bg-indigo-500 mt-2"></div>
                     <div>
                       <p className="font-semibold text-gray-800">Work Started</p>
                       <p className="text-sm text-gray-500">{formatDate(task.startedAt)}</p>
@@ -479,7 +501,7 @@ export default function TaskDetailPage() {
                 )}
                 {task.submittedAt && (
                   <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-2 h-2 rounded-full bg-purple-500 mt-2"></div>
+                    <div className="shrink-0 w-2 h-2 rounded-full bg-purple-500 mt-2"></div>
                     <div>
                       <p className="font-semibold text-gray-800">Proof Submitted</p>
                       <p className="text-sm text-gray-500">{formatDate(task.submittedAt)}</p>
@@ -488,7 +510,7 @@ export default function TaskDetailPage() {
                 )}
                 {task.completedAt && (
                   <div className="flex items-start space-x-3">
-                    <div className="flex-shrink-0 w-2 h-2 rounded-full bg-emerald-500 mt-2"></div>
+                    <div className="shrink-0 w-2 h-2 rounded-full bg-emerald-500 mt-2"></div>
                     <div>
                       <p className="font-semibold text-gray-800">Task Completed</p>
                       <p className="text-sm text-gray-500">{formatDate(task.completedAt)}</p>
@@ -555,7 +577,7 @@ export default function TaskDetailPage() {
                 )}
                 <button
                   onClick={handleOpenInMaps}
-                  className="w-full mt-4 py-2.5 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center space-x-2 shadow-md hover:shadow-lg active:scale-95 transform transition-all"
+                  className="w-full mt-4 py-2.5 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-all flex items-center justify-center space-x-2 shadow-md hover:shadow-lg active:scale-95 transform"
                 >
                   <MapPin className="w-4 h-4" />
                   <span>Open in Maps</span>
@@ -590,9 +612,8 @@ export default function TaskDetailPage() {
                       {[1, 2, 3, 4, 5].map((star) => (
                         <Star
                           key={star}
-                          className={`w-5 h-5 ${
-                            star <= task.rating! ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
-                          }`}
+                          className={`w-5 h-5 ${star <= task.rating! ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
+                            }`}
                         />
                       ))}
                     </div>
@@ -623,30 +644,27 @@ export default function TaskDetailPage() {
                   <p className="font-semibold text-gray-800">{formatDate(task.createdAt)}</p>
                 </div>
                 {task.deadline && (
-                  <div className={`p-3 rounded-lg border-2 ${
-                    new Date(task.deadline) < new Date()
-                      ? 'bg-red-50 border-red-300'
-                      : new Date(task.deadline) < new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
+                  <div className={`p-3 rounded-lg border-2 ${new Date(task.deadline) < new Date()
+                    ? 'bg-red-50 border-red-300'
+                    : new Date(task.deadline) < new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
                       ? 'bg-orange-50 border-orange-300'
                       : 'bg-blue-50 border-blue-300'
-                  }`}>
+                    }`}>
                     <div className="flex items-center justify-between mb-1">
                       <p className="text-xs font-semibold text-gray-600">Deadline (Set by Authority)</p>
-                      <Clock className={`w-4 h-4 ${
-                        new Date(task.deadline) < new Date()
-                          ? 'text-red-600'
-                          : new Date(task.deadline) < new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
+                      <Clock className={`w-4 h-4 ${new Date(task.deadline) < new Date()
+                        ? 'text-red-600'
+                        : new Date(task.deadline) < new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
                           ? 'text-orange-600'
                           : 'text-blue-600'
-                      }`} />
+                        }`} />
                     </div>
-                    <p className={`font-bold ${
-                      new Date(task.deadline) < new Date()
-                        ? 'text-red-700'
-                        : new Date(task.deadline) < new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
+                    <p className={`font-bold ${new Date(task.deadline) < new Date()
+                      ? 'text-red-700'
+                      : new Date(task.deadline) < new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
                         ? 'text-orange-700'
                         : 'text-blue-700'
-                    }`}>
+                      }`}>
                       {formatDate(task.deadline)}
                     </p>
                     {new Date(task.deadline) < new Date() && (
@@ -678,8 +696,8 @@ export default function TaskDetailPage() {
                 {task.priority === 'high'
                   ? 'This is a critical issue requiring immediate attention and should be resolved as soon as possible.'
                   : task.priority === 'medium'
-                  ? 'This issue requires attention and should be addressed in a timely manner.'
-                  : 'This is a standard issue that can be resolved within the normal workflow.'}
+                    ? 'This issue requires attention and should be addressed in a timely manner.'
+                    : 'This is a standard issue that can be resolved within the normal workflow.'}
               </p>
             </motion.div>
           </div>
@@ -695,7 +713,7 @@ export default function TaskDetailPage() {
           {task.status === 'assigned' && (
             <button
               onClick={handleAcceptTask}
-              className="px-8 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-bold hover:from-green-600 hover:to-green-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-green-500 to-green-600 text-white rounded-xl font-bold hover:from-green-600 hover:to-green-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
             >
               <CheckCircle className="w-5 h-5" />
               <span>Accept This Task</span>
@@ -704,7 +722,7 @@ export default function TaskDetailPage() {
           {task.status === 'accepted' && (
             <button
               onClick={handleStartTask}
-              className="px-8 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
             >
               <TrendingUp className="w-5 h-5" />
               <span>Start Working</span>
@@ -713,7 +731,7 @@ export default function TaskDetailPage() {
           {task.status === 'in-progress' && (
             <button
               onClick={() => setShowProofModal(true)}
-              className="px-8 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-purple-500 to-purple-600 text-white rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
             >
               <Upload className="w-5 h-5" />
               <span>Submit Proof</span>
@@ -722,7 +740,7 @@ export default function TaskDetailPage() {
           {task.status === 'rejected' && (
             <button
               onClick={() => setShowProofModal(true)}
-              className="px-8 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
             >
               <Upload className="w-5 h-5" />
               <span>Resubmit Proof</span>
@@ -856,12 +874,15 @@ export default function TaskDetailPage() {
                 />
               </div>
 
+              {/* Error Display */}
+              {proofError && <InlineError message={proofError} />}
+
               {/* Submit Button */}
               <div className="flex space-x-3">
                 <button
                   onClick={handleSubmitProof}
                   disabled={submittingProof || proofImages.length === 0 || !proofDescription.trim()}
-                  className="flex-1 py-3 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  className="flex-1 py-3 bg-linear-to-r from-purple-500 to-purple-600 text-white rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                 >
                   {submittingProof ? (
                     <>

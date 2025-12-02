@@ -217,11 +217,11 @@ export const getSummaryStatistics = async (req, res) => {
  */
 export const getAnalytics = async (req, res) => {
   try {
-    // Check if user is NGO, Problem Solver, or SuperAdmin
-    if (req.user.role !== 'ngo' && req.user.role !== 'problemSolver' && req.user.role !== 'superAdmin') {
+    // Check if user is Problem Solver or SuperAdmin
+    if (req.user.role !== 'problemSolver' && req.user.role !== 'superAdmin') {
       return res.status(403).json({
         success: false,
-        message: 'Access denied. Statistics are only available for NGO, Problem Solvers, and SuperAdmin.'
+        message: 'Access denied. Statistics are only available for Problem Solvers and SuperAdmin.'
       });
     }
 
@@ -245,7 +245,7 @@ export const getAnalytics = async (req, res) => {
     const reports = await db.collection('reports').find(filter).toArray();
     const tasks = await db.collection('tasks').find({}).toArray();
     const users = await db.collection('users').find({
-      role: { $in: ['problemSolver', 'ngo'] },
+      role: 'problemSolver',
       approved: true,
       isActive: true
     }).toArray();
@@ -432,7 +432,6 @@ export const getAdminDashboardStats = async (req, res) => {
       totalReports,
       authorities,
       problemSolvers,
-      ngos,
       pendingApplications,
       recentReports
     ] = await Promise.all([
@@ -440,7 +439,6 @@ export const getAdminDashboardStats = async (req, res) => {
       reportsCollection.countDocuments(),
       usersCollection.countDocuments({ role: 'authority' }),
       usersCollection.countDocuments({ role: 'problemSolver' }),
-      usersCollection.countDocuments({ role: 'ngo' }),
       applicationsCollection.countDocuments({ status: 'pending' }),
       reportsCollection.find()
         .sort({ createdAt: -1 })
@@ -456,7 +454,6 @@ export const getAdminDashboardStats = async (req, res) => {
           totalReports,
           authorities,
           problemSolvers,
-          ngos,
           pendingApplications
         },
         recentReports

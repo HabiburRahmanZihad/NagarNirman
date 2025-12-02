@@ -8,12 +8,13 @@ import { useAuth } from '@/context/AuthContext';
 import { userAPI } from '@/utils/api';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { FullPageLoading } from '@/components/common';
 
 interface Solver {
   _id: string;
   name: string;
   email: string;
-  role: 'problemSolver' | 'ngo';
+  role: 'problemSolver';
   division: string;
   district?: string;
   organization?: string;
@@ -42,7 +43,7 @@ export default function SolversPage() {
   const { user: authUser, isLoading, isAuthenticated } = useAuth();
   const [solvers, setSolvers] = useState<Solver[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver' | 'ngo'>('all');
+  const [filterRole, setFilterRole] = useState<'all' | 'problemSolver'>('all');
   const [filterDistrict, setFilterDistrict] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'completedTasks' | 'successRate' | 'createdAt'>('rating');
@@ -94,7 +95,7 @@ export default function SolversPage() {
   const getRoleIcon = (role: string) => {
     switch (role) {
       case 'problemSolver': return '💡';
-      case 'ngo': return '🏢';
+
       default: return '👤';
     }
   };
@@ -103,8 +104,7 @@ export default function SolversPage() {
     switch (role) {
       case 'problemSolver':
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'ngo':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -113,7 +113,7 @@ export default function SolversPage() {
   const getRoleLabel = (role: string) => {
     switch (role) {
       case 'problemSolver': return 'Problem Solver';
-      case 'ngo': return 'NGO';
+
       default: return role;
     }
   };
@@ -182,14 +182,7 @@ export default function SolversPage() {
     });
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading solvers...</p>
-        </div>
-      </div>
-    );
+    return <FullPageLoading text="Loading solvers..." />;
   }
 
   return (
@@ -259,7 +252,7 @@ export default function SolversPage() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">NGOs</p>
                 <p className="text-2xl font-bold text-purple-600">
-                  {solvers.filter(s => s.role === 'ngo').length}
+                  0
                 </p>
               </div>
             </div>
@@ -312,7 +305,7 @@ export default function SolversPage() {
               >
                 <option value="all">All Types</option>
                 <option value="problemSolver">💡 Problem Solvers</option>
-                <option value="ngo">🏢 NGOs</option>
+
               </select>
             </div>
 
@@ -350,11 +343,10 @@ export default function SolversPage() {
                 <button
                   key={option.value}
                   onClick={() => setSortBy(option.value as any)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    sortBy === option.value
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${sortBy === option.value
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
                 >
                   {option.label}
                 </button>
@@ -509,11 +501,10 @@ export default function SolversPage() {
                       <span className={`w-2 h-2 rounded-full mr-2 ${solver.isActive ? 'bg-green-600' : 'bg-gray-400'}`}></span>
                       {solver.isActive ? 'Active' : 'Inactive'}
                     </span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      solver.taskStats?.isBusy
-                        ? 'bg-orange-100 text-orange-800'
-                        : 'bg-green-100 text-green-800'
-                    }`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${solver.taskStats?.isBusy
+                      ? 'bg-orange-100 text-orange-800'
+                      : 'bg-green-100 text-green-800'
+                      }`}>
                       {solver.taskStats?.status || 'Free'}
                     </span>
                   </div>
