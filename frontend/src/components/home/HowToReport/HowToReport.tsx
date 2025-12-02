@@ -167,7 +167,7 @@ const StepsProgress = () => {
 
                   {/* Step Circle */}
                   <div
-                    className={`relative z-10 w-14 h-14 rounded-full bg-white border border-[#004d40] shadow-lg flex items-center justify-center ${
+                    className={`relative z-10 w-14 h-14 rounded-full bg-white border border-accent shadow-lg flex items-center justify-center ${
                       isTopRow ? "order-1" : "order-1"
                     }`}
                   >
