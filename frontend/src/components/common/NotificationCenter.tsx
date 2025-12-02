@@ -68,7 +68,7 @@ export const NotificationCenter: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
       >
-        <span className="text-2xl text-primary">
+        <span className="text-2xl text-accent">
           <FaBell></FaBell>
         </span>
         {unreadCount > 0 && (
