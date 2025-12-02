@@ -13,6 +13,8 @@ import {
 } from '../models/Report.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { uploadToImgBB, uploadMultipleToImgBB } from '../utils/imageUpload.js';
+import { getUserById } from '../models/User.js';
+import { sendReportStatusEmail } from '../services/emailService.js';
 
 // @desc    Get all reports
 // @route   GET /api/reports
@@ -229,6 +231,18 @@ export const changeReportStatus = asyncHandler(async (req, res) => {
         success: false,
         message: 'Report not found',
       });
+    }
+
+    // Send status update email to report creator (non-blocking)
+    if (report.createdBy) {
+      const creatorId = typeof report.createdBy === 'object' ? report.createdBy._id : report.createdBy;
+      getUserById(creatorId.toString()).then(creator => {
+        if (creator) {
+          sendReportStatusEmail(creator, report, status).catch(err =>
+            console.error('Failed to send report status email:', err)
+          );
+        }
+      }).catch(err => console.error('Failed to get report creator:', err));
     }
 
     res.status(200).json({

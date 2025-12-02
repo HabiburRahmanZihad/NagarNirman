@@ -18,6 +18,7 @@ import {
 } from '../models/ProblemSolverApplication.js';
 import { uploadToImgBB, validateImage } from '../utils/imageUpload.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+import { sendApprovalEmail } from '../services/emailService.js';
 
 // @desc    Get all users
 // @route   GET /api/users
@@ -616,6 +617,15 @@ export const reviewApplication = asyncHandler(async (req, res) => {
       console.log('Updating user with data:', updateData);
       const updatedUser = await updateUser(application.userId.toString(), updateData);
       console.log('User updated successfully:', updatedUser);
+    }
+
+    // Get user details for email
+    const user = await getUserById(application.userId.toString());
+    if (user) {
+      // Send approval/rejection email (non-blocking)
+      sendApprovalEmail(user, status === 'approved').catch(err =>
+        console.error('Failed to send approval email:', err)
+      );
     }
 
     res.status(200).json({

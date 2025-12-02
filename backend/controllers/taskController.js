@@ -21,6 +21,7 @@ import { getReportById, updateReportStatus } from '../models/Report.js';
 import { getUserById, incrementUserPoints, getUsersCollection } from '../models/User.js';
 import { createNotification } from '../models/Notification.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+import { sendTaskAssignmentEmail, sendRewardEmail } from '../services/emailService.js';
 
 // @desc    Get all tasks
 // @route   GET /api/tasks
@@ -154,6 +155,11 @@ export const assignTask = asyncHandler(async (req, res) => {
         priority: priority || 'medium',
       },
     });
+
+    // Send email notification (non-blocking)
+    sendTaskAssignmentEmail(user, task, reportExists).catch(err =>
+      console.error('Failed to send task assignment email:', err)
+    );
 
     res.status(201).json({
       success: true,
@@ -909,6 +915,15 @@ export const approveTaskSubmission = asyncHandler(async (req, res) => {
             feedback,
           },
         });
+
+        // Send reward email (non-blocking)
+        getUserById(solverId.toString()).then(solverUser => {
+          if (solverUser) {
+            sendRewardEmail(solverUser, task, awardPoints).catch(err =>
+              console.error('Failed to send reward email:', err)
+            );
+          }
+        }).catch(err => console.error('Failed to get solver user:', err));
       }
     } catch (notifError) {
       console.error('Failed to create notification:', notifError);
