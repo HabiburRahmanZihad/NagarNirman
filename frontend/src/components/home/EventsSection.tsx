@@ -41,12 +41,31 @@ const events = [
       "https://i.pravatar.cc/100?img=31",
     ],
   },
+  {
+  id: 3,
+  day: "12",
+  month: "April",
+  year: "2025",
+  title: "City Drain Cleanup Drive",
+  location: "Mirpur 10, Dhaka",
+  time: "9:00am - 1:00pm",
+  joinedCount: "184",
+  category: "Drainage & Sanitation",
+  image:
+    "https://cdn.pixabay.com/photo/2012/01/16/07/16/water-11699_960_720.jpg",
+  avatars: [
+    "https://i.pravatar.cc/100?img=44",
+    "https://i.pravatar.cc/100?img=45",
+    "https://i.pravatar.cc/100?img=46",
+  ],
+},
+
 ];
 
 export default function EventsSection() {
   return (
     <section className="bg-white py-24 px-4 font-sans">
-      <div className="max-w-7xl mx-auto">
+      <div className="container mx-auto">
         {/* --- HEADER --- */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-2 mb-3">
@@ -61,7 +80,7 @@ export default function EventsSection() {
         </div>
 
         {/* --- EVENTS GRID --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {events.map((event) => (
             <div
               key={event.id}

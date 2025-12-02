@@ -10,7 +10,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <>
-      <header>
+      <header className="sticky z-99999 top-0">
         {!isDashboard && <Navbar />}
       </header>
       <main>

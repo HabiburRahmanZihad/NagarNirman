@@ -70,7 +70,7 @@ export default function HeroSlider() {
   }, []);
 
   return (
-    <section className="lg:h-[700px] relative overflow-hidden">
+    <section className="md:-mt-20 lg:h-[780px] relative overflow-hidden">
       <div className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30">
         <button
           ref={prevRef}

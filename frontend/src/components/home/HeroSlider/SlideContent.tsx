@@ -68,7 +68,7 @@ export default function SlideContent({
         
         <motion.h3
           variants={itemVariants}
-          className="text-[#81d586] font-semibold text-lg mb-4 tracking-wider uppercase"
+          className="text-[#f2a921] font-semibold text-lg mb-4 tracking-wider uppercase"
         >
           {smallTitle}
         </motion.h3>
@@ -95,7 +95,7 @@ export default function SlideContent({
             variants={itemVariants}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-[#2a7d2f] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#236c27] transition-all duration-300 shadow-lg"
+            className="bg-[#004d40] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#f2a921] transition-all duration-300 shadow-lg"
           >
             {primaryBtn}
           </motion.button>
