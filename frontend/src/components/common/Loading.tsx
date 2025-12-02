@@ -118,8 +118,8 @@ export const FullPageLoading: React.FC<FullPageLoadingProps> = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className={`fixed inset-0 z-9999 flex items-center justify-center ${showOverlay
-          ? 'bg-white/95 backdrop-blur-md'
-          : 'bg-white'
+        ? 'bg-white/95 backdrop-blur-md'
+        : 'bg-white'
         }`}
       style={{
         pointerEvents: 'auto', // Prevent all clicks
