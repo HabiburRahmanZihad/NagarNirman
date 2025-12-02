@@ -13,10 +13,53 @@ import PartnersMarquee from "@/components/home/partnersMarquee/PartnersMarquee";
 import EmergencyHotlineMarquee from "@/components/home/emergencyHotlineMarquee/EmergencyHotlineMarquee";
 import Testimonials from "@/components/testimonials/Testimonials";
 import CountUpSection from "@/components/countUp/Count";
-import GreenFutureCard from "@/components/home/greenFutureCard/GreenFutureCard";
+
+import AboutSection from "@/components/home/aboutSection/AboutSection";
+// import GreenFutureCard from "@/components/home/greenFutureCard/GreenFutureCard";
 import HowToReport from "@/components/home/HowToReport/HowToReport";
 
 
+
+
+// Help section
+const data = [
+  {
+    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-3-150x150.jpg",
+    title: "Aliquam semper diam in",
+    desc: "Proin lobortis mauris sed lorem convallis",
+    badge: "green",
+  },
+  {
+    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-8-150x150.jpg",
+    title: "Vestibulum eleifend lacus",
+    desc: "Proin lobortis mauris sed lorem convallis",
+    badge: "orange",
+  },
+  {
+    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-6-150x150.jpg",
+    title: "Nullam pulvinar massa posuere",
+    desc: "Proin lobortis mauris sed lorem convallis",
+    badge: "orange",
+  },
+  {
+    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-2-150x150.jpg",
+    title: "Donec sed euismod neque",
+    desc: "Proin lobortis mauris sed lorem convallis",
+    badge: "green",
+  },
+  {
+    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-5-150x150.jpg",
+    title: "Suspendisse gravida augue",
+    desc: "Proin lobortis mauris sed lorem convallis",
+    badge: "green",
+  },
+  {
+    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-7-150x150.jpg",
+    title: "Praesent quis maximus libero",
+    desc: "Proin lobortis mauris sed lorem convallis",
+    badge: "orange",
+  },
+];
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
@@ -73,9 +116,13 @@ export default function Home() {
         <Testimonials></Testimonials>
       </section>
 
+      <section className="container mx-auto">
+      <AboutSection></AboutSection>
       <section>
         <GreenFutureCard></GreenFutureCard>
       </section>
+
+       
 
     </>
   );

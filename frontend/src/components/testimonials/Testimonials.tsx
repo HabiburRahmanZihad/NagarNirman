@@ -2,10 +2,6 @@
 import Image from "next/image";
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-
-import "swiper/css";
-import "swiper/css/autoplay";
-
 import { Autoplay } from "swiper/modules";
 
 const testimonials = [
@@ -81,73 +77,10 @@ export default function Testimonials() {
         </div>
 
         {/* RIGHT SIDE - Custom Cards Effect Auto Slide */}
-        <div className="relative overflow-visible">
-          <Swiper
-            modules={[Autoplay]}
-            slidesPerView={1}
-            loop={true}
-            autoplay={{
-              delay: 2200,
-              disableOnInteraction: false,
-            }}
-            speed={800}
-            className="max-w-[760px] mx-auto"
-            style={{ width: "100%", height: "420px" }}
-          >
-            {testimonials.map((t) => (
-              <SwiperSlide key={t.id}>
-                <div className="relative transform transition-all duration-300 hover:-rotate-1 hover:scale-[1.02] rounded-2xl bg-primary text-base-100 p-6 md:p-8 shadow-xl min-h-[420px] flex items-stretch gap-6">
-
-                  {/* IMAGE */}
-                  <div className="w-[46%] shrink-0">
-                    <div className="rounded-xl overflow-hidden bg-white">
-                      <div className="relative aspect-[4/5]">
-                        <Image
-                          src={t.image}
-                          alt={t.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* TEXT */}
-                  <div className="w-[50%] flex flex-col justify-between">
-                    <div>
-                      <div className="inline-flex items-center gap-3 px-3 py-1 rounded-full bg-white/10 w-max mb-4">
-                        <span className="text-sm">Rating</span>
-                        <span className="text-accent font-semibold">
-                          ★ {t.rating.toFixed(1)}
-                        </span>
-                      </div>
-
-                      <p className="text-base text-white/90 leading-7 mb-6">
-                        {t.text}
-                      </p>
-                    </div>
-
-                    <div>
-                      <div className="text-white font-bold text-lg">
-                        {t.name}
-                        <span className="text-white/70 font-normal text-sm"> {t.subName}</span>
-                      </div>
-                      <div className="text-white/80 text-sm mt-1">{t.role}</div>
-                    </div>
-                  </div>
-
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-
-          {/* DECORATION */}
-          <div className="hidden md:block pointer-events-none">
-            <div className="absolute -left-8 top-8 w-[360px] h-[260px] rounded-2xl bg-base-200 opacity-60 translate-x-[-40px]" />
-            <div className="absolute -left-4 top-20 w-[360px] h-[260px] rounded-2xl bg-base-300 opacity-50 translate-x-[-20px]" />
-          </div>
-        </div>
-
+     
+      <div>
+        <h2>the gallery</h2>
+      </div>
       </div>
     </section>
   );
