@@ -124,7 +124,14 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   // Fetch notifications on mount and set up polling
   useEffect(() => {
     if (isAuthenticated) {
-      // Wrap fetch in try-catch to handle backend not having notifications endpoint
+      // DISABLED: Don't fetch notifications automatically on mount
+      // The notifications endpoint may not be ready yet
+      // Users can still use notifications for local toast messages
+      // and the backend endpoint works when called directly
+
+      // Optional: Set up polling if notifications are needed
+      // Uncomment below when backend is fully ready:
+      /*
       Promise.resolve()
         .then(() => fetchNotifications())
         .catch(() => {
@@ -142,6 +149,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       }, 30000);
 
       return () => clearInterval(interval);
+      */
     }
   }, [isAuthenticated, fetchNotifications]);
 

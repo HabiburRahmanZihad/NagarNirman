@@ -15,6 +15,14 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 // @route   GET /api/notifications
 // @access  Private
 export const getNotifications = asyncHandler(async (req, res) => {
+  // Ensure user is authenticated
+  if (!req.user || !req.user._id) {
+    return res.status(401).json({
+      success: false,
+      message: 'User not authenticated',
+    });
+  }
+
   const {
     page = 1,
     limit = 20,
@@ -22,9 +30,11 @@ export const getNotifications = asyncHandler(async (req, res) => {
     type = null,
   } = req.query;
 
-  const result = await getUserNotifications(req.user._id.toString(), {
-    page: parseInt(page),
-    limit: parseInt(limit),
+  const userId = req.user._id.toString ? req.user._id.toString() : String(req.user._id);
+
+  const result = await getUserNotifications(userId, {
+    page: parseInt(page) || 1,
+    limit: parseInt(limit) || 20,
     unreadOnly: unreadOnly === 'true',
     type: type || null,
   });
@@ -41,7 +51,16 @@ export const getNotifications = asyncHandler(async (req, res) => {
 // @route   GET /api/notifications/unread-count
 // @access  Private
 export const getUnreadNotificationCount = asyncHandler(async (req, res) => {
-  const count = await getUnreadCount(req.user._id.toString());
+  // Ensure user is authenticated
+  if (!req.user || !req.user._id) {
+    return res.status(401).json({
+      success: false,
+      message: 'User not authenticated',
+    });
+  }
+
+  const userId = req.user._id.toString ? req.user._id.toString() : String(req.user._id);
+  const count = await getUnreadCount(userId);
 
   res.status(200).json({
     success: true,
@@ -53,6 +72,14 @@ export const getUnreadNotificationCount = asyncHandler(async (req, res) => {
 // @route   PUT /api/notifications/:id/read
 // @access  Private
 export const markNotificationAsRead = asyncHandler(async (req, res) => {
+  // Ensure user is authenticated
+  if (!req.user || !req.user._id) {
+    return res.status(401).json({
+      success: false,
+      message: 'User not authenticated',
+    });
+  }
+
   const notification = await getNotificationById(req.params.id);
 
   if (!notification) {
@@ -63,7 +90,10 @@ export const markNotificationAsRead = asyncHandler(async (req, res) => {
   }
 
   // Check if notification belongs to user
-  if (notification.userId.toString() !== req.user._id.toString()) {
+  const userId = req.user._id.toString ? req.user._id.toString() : String(req.user._id);
+  const notificationUserId = notification.userId.toString ? notification.userId.toString() : String(notification.userId);
+
+  if (notificationUserId !== userId) {
     return res.status(403).json({
       success: false,
       message: 'Not authorized to access this notification',
@@ -82,7 +112,16 @@ export const markNotificationAsRead = asyncHandler(async (req, res) => {
 // @route   PUT /api/notifications/mark-all-read
 // @access  Private
 export const markAllNotificationsAsRead = asyncHandler(async (req, res) => {
-  const count = await markAllAsRead(req.user._id.toString());
+  // Ensure user is authenticated
+  if (!req.user || !req.user._id) {
+    return res.status(401).json({
+      success: false,
+      message: 'User not authenticated',
+    });
+  }
+
+  const userId = req.user._id.toString ? req.user._id.toString() : String(req.user._id);
+  const count = await markAllAsRead(userId);
 
   res.status(200).json({
     success: true,
@@ -95,6 +134,14 @@ export const markAllNotificationsAsRead = asyncHandler(async (req, res) => {
 // @route   DELETE /api/notifications/:id
 // @access  Private
 export const deleteNotificationById = asyncHandler(async (req, res) => {
+  // Ensure user is authenticated
+  if (!req.user || !req.user._id) {
+    return res.status(401).json({
+      success: false,
+      message: 'User not authenticated',
+    });
+  }
+
   const notification = await getNotificationById(req.params.id);
 
   if (!notification) {
@@ -105,7 +152,10 @@ export const deleteNotificationById = asyncHandler(async (req, res) => {
   }
 
   // Check if notification belongs to user
-  if (notification.userId.toString() !== req.user._id.toString()) {
+  const userId = req.user._id.toString ? req.user._id.toString() : String(req.user._id);
+  const notificationUserId = notification.userId.toString ? notification.userId.toString() : String(notification.userId);
+
+  if (notificationUserId !== userId) {
     return res.status(403).json({
       success: false,
       message: 'Not authorized to delete this notification',
@@ -124,7 +174,16 @@ export const deleteNotificationById = asyncHandler(async (req, res) => {
 // @route   DELETE /api/notifications/all
 // @access  Private
 export const deleteAllNotifications = asyncHandler(async (req, res) => {
-  const count = await deleteAllUserNotifications(req.user._id.toString());
+  // Ensure user is authenticated
+  if (!req.user || !req.user._id) {
+    return res.status(401).json({
+      success: false,
+      message: 'User not authenticated',
+    });
+  }
+
+  const userId = req.user._id.toString ? req.user._id.toString() : String(req.user._id);
+  const count = await deleteAllUserNotifications(userId);
 
   res.status(200).json({
     success: true,

@@ -6,6 +6,7 @@ import { Edit, Trash2, Users, Loader2 } from "lucide-react";
 import ChangeRoleModal from "./ChangeRoleModal";
 import DeleteUserModal from "./DeleteUserModal";
 import ToggleStatusSwitch from "./ToggleStatusSwitch";
+import { InlineLoading } from "@/components/common";
 
 interface User {
   _id: string;

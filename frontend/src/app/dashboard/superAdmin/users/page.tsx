@@ -7,7 +7,7 @@ import UsersTable from "@/components/manage-users/UsersTable";
 import UserFilterBar from "@/components/manage-users/UserFilterBar";
 import toast from "react-hot-toast";
 import { Users } from "lucide-react";
-import { RefreshButton } from "@/components/common";
+import { FullPageLoading, RefreshButton } from "@/components/common";
 import { useAuth } from "@/context/AuthContext";
 import { userAPI } from "@/utils/api";
 import divisionsData from "@/data/divisionsData.json";
