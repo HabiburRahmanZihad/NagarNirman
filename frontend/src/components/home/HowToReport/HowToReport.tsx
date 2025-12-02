@@ -115,7 +115,7 @@ const StepsProgress = () => {
         <div className="hidden md:block relative">
           <div className="relative h-[500px]">
             {/* Top Horizontal Line */}
-            <div className="absolute top-5 left-5 right-0 h-1.5 bg-[#2a7d2f]" />
+            <div className="absolute top-5 left-0 right-0 h-1.5 bg-[#2a7d2f]" />
 
             {/* S-Curve Path */}
             <div className="absolute border-[#2a7d2f] border-t-5 border-b-6 border-r-6 rounded-r-full top-5 -right-9 lg:-right-20 w-45 h-45.5 " />
@@ -149,7 +149,7 @@ const StepsProgress = () => {
                   className={`absolute ${positionClass} flex flex-col items-center ${
                     isTopRow ? "mb-20" : "mt-20"
                   } ${isLeftColumn ? "items-start" : isRightColumn ? "items-end" : "items-center"}`}
-                  style={{ width: "200px" }}
+                  style={{ width: "220px" }}
                 >
                   {/* Step Content */}
                   <div
