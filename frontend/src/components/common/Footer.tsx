@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#002E2E] text-white mt-auto py-12 footer">
+    <footer className="bg-[#002E2E] text-white mt-auto py-6 md:pt-8 footer">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Section */}
@@ -144,7 +144,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="border-t w-full border-gray-700 mt-8 pt-12 text-center text-sm text-gray-300">
+        <div className="border-t w-full border-gray-700 pt-12 text-center text-sm text-gray-300">
           <p>
             &copy; 2025 NagarNirman. All rights reserved. | Aligned with SDG 11
           </p>

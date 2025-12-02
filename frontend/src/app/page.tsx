@@ -24,8 +24,6 @@ import HowToReport from "@/components/home/HowToReport/HowToReport";
 import { ErrorDisplay, FullPageLoading, Loading, NotFoundDisplay } from "@/components/common";
 
 
-
-
 // Help section
 const data = [
   {
@@ -526,9 +524,6 @@ export default function Home() {
       <section className="container mx-auto">
       <AboutSection></AboutSection>
       </section>
-
-       
-
     </>
   );
 }

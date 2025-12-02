@@ -84,8 +84,7 @@ export default function ContactSection() {
               {/* Map Abstract Background */}
               <div className="absolute inset-0 opacity-20 grayscale mix-blend-overlay group-hover:scale-110 transition-transform duration-700">
 
-
-[Image of dark abstract city map]
+                 [Image of dark abstract city map]
 
                  {/* Fallback pattern if image fails */}
                  <div className="w-full h-full bg-[url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg')] bg-cover bg-center" />

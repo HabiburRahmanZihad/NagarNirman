@@ -69,9 +69,9 @@ export default function AboutSection() {
             ))}
           </div>
 
-          {/* <p className="text-neutral leading-relaxed mb-6">
+          <p className="text-neutral leading-relaxed mb-6">
             {tabContent[activeTab]}
-          </p> */}
+          </p>
 
           <ul className="space-y-3 text-neutral">
             <li className="flex items-center gap-2">• Nature ecologically acceptable, organisms environment</li>
