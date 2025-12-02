@@ -133,7 +133,7 @@ const Navbar: React.FC = () => {
     
     if (active) {
       return isHomePage && isDesktop && !isScrolled
-        ? "text-white bg-[#004d40]/50 font-semibold"
+        ? "text-[#004d40] font-semibold bg-white/60"
         : "text-[#004d40] font-semibold bg-gray-100";
     }
     
@@ -170,11 +170,11 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 ${getNavbarBackground()}`}>
-      <div className="container mx-auto px-4 lg:px-6">
+      <div className="container mx-auto px-4 lg:px-0">
         <div className="flex items-center justify-between h-20">
           {/* Logo - Fixed for all screens */}
           <Link href="/" className="shrink-0">
-            <div className={`relative w-24 h-14 ${isHomePage && isDesktop && !isScrolled ? 'bg-white/10 backdrop-blur-sm rounded-lg p-2' : ''}`}>
+            <div className={`relative w-50 h-15 ${isHomePage && isDesktop && !isScrolled ? 'bg-white/10 backdrop-blur-sm rounded-lg p-2' : ''}`}>
               <Image
                 src="/logo/logo.png"
                 alt="NagarNirman Logo"
