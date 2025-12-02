@@ -86,13 +86,13 @@ const StepsProgress = () => {
         <div className="block md:hidden">
           <div className="relative">
             {/* Vertical Line */}
-            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-[#2a7d2f]"></div>
+            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-[#004d40]"></div>
 
             {steps.map((step, index) => (
               <div key={step.id} className="relative flex items-start mb-8 pl-16">
                 {/* Step Circle */}
-                <div className="absolute left-0 w-12 h-12 rounded-full bg-white border border-[#2a7d2f] shadow-lg flex items-center justify-center z-10">
-                  <div className="text-[#2a7d2f]">
+                <div className="absolute left-0 w-12 h-12 rounded-full bg-white border border-[#004d40] shadow-lg flex items-center justify-center z-10">
+                  <div className="text-[#004d40]">
                     {step.icon}
                   </div>
                 </div>
@@ -115,15 +115,15 @@ const StepsProgress = () => {
         <div className="hidden md:block relative">
           <div className="relative h-[500px]">
             {/* Top Horizontal Line */}
-            <div className="absolute top-5 left-0 right-0 h-1.5 bg-[#2a7d2f]" />
+            <div className="absolute top-5 left-0 right-0 h-1.5 bg-[#004d40]" />
 
             {/* S-Curve Path */}
-            <div className="absolute border-[#2a7d2f] border-t-5 border-b-6 border-r-6 rounded-r-full top-5 -right-9 lg:-right-20 w-45 h-45.5 " />
-            <div className="absolute top-49 rounded-full right-10 lg:right-0 left-0 md:left-8 h-1.5 bg-[#2a7d2f]" />
-            <div className="absolute border-[#2a7d2f] border-t-6 border-b-6 border-l-6 rounded-l-full top-49 -left-9 lg:-left-20 w-45 h-44 " />
+            <div className="absolute border-[#004d40] border-t-5 border-b-6 border-r-6 rounded-r-full top-5 -right-9 lg:-right-20 w-45 h-45.5 " />
+            <div className="absolute top-49 rounded-full right-10 lg:right-0 left-0 md:left-8 h-1.5 bg-[#004d40]" />
+            <div className="absolute border-[#004d40] border-t-6 border-b-6 border-l-6 rounded-l-full top-49 -left-9 lg:-left-20 w-45 h-44 " />
 
             {/* Bottom Horizontal Line */}
-            <div className="absolute bottom-32 left-0 right-0 h-1.5 bg-[#2a7d2f]" />
+            <div className="absolute bottom-32 left-0 right-0 h-1.5 bg-[#004d40]" />
 
             {/* Step Circles and Content */}
             {steps.map((step, index) => {
@@ -167,11 +167,11 @@ const StepsProgress = () => {
 
                   {/* Step Circle */}
                   <div
-                    className={`relative z-10 w-14 h-14 rounded-full bg-white border border-[#2a7d2f] shadow-lg flex items-center justify-center ${
+                    className={`relative z-10 w-14 h-14 rounded-full bg-white border border-[#004d40] shadow-lg flex items-center justify-center ${
                       isTopRow ? "order-1" : "order-1"
                     }`}
                   >
-                    <div className="text-[#2a7d2f]">
+                    <div className="text-[#004d40]">
                       {step.icon}
                     </div>
                   </div>
