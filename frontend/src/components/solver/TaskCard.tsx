@@ -123,7 +123,7 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
       className="group bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300"
     >
       {/* Header Gradient Bar - Same color as details page */}
-      <div className={`h-1.5 bg-gradient-to-r ${severityConfig[severity].headerBg}`}></div>
+      <div className={`h-1.5 bg-linear-to-r ${severityConfig[severity].headerBg}`}></div>
 
       <div className="p-5">
         {/* Header with Status and Severity */}
@@ -152,13 +152,13 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
         {/* Location and Date */}
         <div className="space-y-2 mb-4">
           <div className="flex items-center text-sm text-gray-600">
-            <MapPin className="w-4 h-4 text-green-600 mr-2 flex-shrink-0" />
+            <MapPin className="w-4 h-4 text-green-600 mr-2 shrink-0" />
             <span className="font-medium">{task.report?.location?.district || 'Unknown'}</span>
             <span className="text-gray-400 mx-1">•</span>
             <span className="text-gray-500">{task.report?.location?.division || 'N/A'}</span>
           </div>
           <div className="flex items-center text-sm text-gray-600">
-            <Calendar className="w-4 h-4 text-blue-600 mr-2 flex-shrink-0" />
+            <Calendar className="w-4 h-4 text-blue-600 mr-2 shrink-0" />
             <span>Assigned {formatDate(task.createdAt)}</span>
             <span className="text-gray-400 mx-2">•</span>
             <span className="text-gray-500">{getTimeAgo(task.createdAt)}</span>
@@ -177,7 +177,7 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
                 initial={{ width: 0 }}
                 animate={{ width: '65%' }}
                 transition={{ duration: 1, delay: 0.5 }}
-                className="bg-gradient-to-r from-blue-400 to-blue-500 h-1.5 rounded-full"
+                className="bg-linear-to-r from-blue-400 to-blue-500 h-1.5 rounded-full"
               />
             </div>
           </div>
@@ -186,7 +186,7 @@ export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
         {/* Footer with Points and Action */}
         <div className="flex justify-between items-center pt-3 border-t border-gray-100">
           <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-1 bg-gradient-to-br from-yellow-400 to-yellow-500 px-2.5 py-1 rounded-full text-white font-bold text-sm">
+            <div className="flex items-center space-x-1 bg-linear-to-br from-yellow-400 to-yellow-500 px-2.5 py-1 rounded-full text-white font-bold text-sm">
               <Star className="w-3 h-3" />
               <span>{rewardPoints}</span>
             </div>

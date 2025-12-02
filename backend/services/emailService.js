@@ -115,37 +115,42 @@ export const sendWelcomeEmail = async (user) => {
 export const sendTaskAssignmentEmail = async (user, task, report) => {
   const transporter = createTransporter();
 
+  const deadlineText = task.deadline ? new Date(task.deadline).toLocaleDateString() : 'Not specified';
+  const priorityEmoji = { low: '🟢', medium: '🟡', high: '🔴', urgent: '🚨' };
+
   const content = `
     <p>Hello ${user.name},</p>
-    <p>A new task has been assigned to you!</p>
+    <p>🎯 A new task has been assigned to you!</p>
     <h3>Task Details:</h3>
     <ul>
       <li><strong>Title:</strong> ${task.title}</li>
       <li><strong>Description:</strong> ${task.description}</li>
-      <li><strong>Deadline:</strong> ${new Date(task.deadline).toLocaleDateString()}</li>
-      <li><strong>Reward Points:</strong> ${task.rewardPoints}</li>
+      <li><strong>Priority:</strong> ${priorityEmoji[task.priority] || '🟡'} ${task.priority || 'medium'}</li>
+      <li><strong>Deadline:</strong> ${deadlineText}</li>
     </ul>
     <h3>Related Report:</h3>
     <ul>
-      <li><strong>Problem:</strong> ${report.problemType}</li>
-      <li><strong>Location:</strong> ${report.location.address}</li>
+      <li><strong>Problem Type:</strong> ${report.problemType || 'Infrastructure Issue'}</li>
+      <li><strong>Category:</strong> ${report.category || 'General'}</li>
+      <li><strong>Location:</strong> ${report.location?.address || 'Not specified'}</li>
+      <li><strong>District:</strong> ${report.location?.district || 'Not specified'}</li>
     </ul>
-    <a href="${process.env.FRONTEND_URL}/dashboard/solver/tasks/${task._id}" class="button">View Task</a>
-    <p>Good luck!</p>
+    <a href="${process.env.FRONTEND_URL}/dashboard/problemSolver/tasks" class="button">View Task</a>
+    <p>Good luck solving this issue! Your contribution helps build a better community.</p>
   `;
 
   const mailOptions = {
     from: `"NagarNirman" <${process.env.SMTP_USER}>`,
     to: user.email,
-    subject: 'New Task Assigned - NagarNirman',
+    subject: '🎯 New Task Assigned - NagarNirman',
     html: emailTemplate('New Task Assigned', content),
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('Task assignment email sent to:', user.email);
+    console.log('✅ Task assignment email sent to:', user.email);
   } catch (error) {
-    console.error('Error sending task assignment email:', error);
+    console.error('❌ Error sending task assignment email:', error);
   }
 };
 

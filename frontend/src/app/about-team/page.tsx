@@ -97,7 +97,7 @@ const AboutTeamPage = () => {
 
             <h1 className="text-5xl md:text-8xl font-bold tracking-tight mb-6 text-[#002E2E]">
               Small Team. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2a7d2f] via-[#2a7d2f] to-[#aef452]">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#2a7d2f] via-[#2a7d2f] to-[#aef452]">
                 Massive Impact.
               </span>
             </h1>
@@ -116,7 +116,7 @@ const AboutTeamPage = () => {
             {TEAM_MEMBERS.map((member, index) => (
               <TiltCard key={index} className="group relative h-full">
                 {/* Hover Glow Effect */}
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-[#2a7d2f] to-[#aef452] rounded-[2rem] opacity-0 group-hover:opacity-100 blur transition duration-500" />
+                <div className="absolute -inset-0.5 bg-linear-to-r from-[#2a7d2f] to-[#aef452] rounded-[2rem] opacity-0 group-hover:opacity-100 blur transition duration-500" />
 
                 {/* Card Interior - bg-base-100 (White) */}
                 <div className="relative h-full bg-base-100 border border-gray-200 rounded-[2rem] p-8 flex flex-col overflow-hidden shadow-xl hover:shadow-2xl transition-all">
@@ -128,7 +128,7 @@ const AboutTeamPage = () => {
 
                   {/* Header */}
                   <div className="relative z-10 flex items-start justify-between mb-8">
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#2a7d2f] to-[#aef452] p-1 shadow-lg">
+                    <div className="w-20 h-20 rounded-2xl bg-linear-to-br from-[#2a7d2f] to-[#aef452] p-1 shadow-lg">
                       <div className="w-full h-full bg-white rounded-[12px] flex items-center justify-center text-4xl">
                         {member.avatar}
                       </div>
@@ -185,7 +185,7 @@ const AboutTeamPage = () => {
               {/* Animated Connection Line */}
               <div className="hidden md:block absolute top-1/2 left-0 w-full h-[3px] -translate-y-1/2 z-0 bg-gray-100 overflow-hidden rounded-full">
                 <motion.div
-                   className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#2a7d2f] to-transparent"
+                   className="h-full w-1/3 bg-linear-to-r from-transparent via-[#2a7d2f] to-transparent"
                    animate={{ x: ["-100%", "400%"] }}
                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                 />
@@ -273,9 +273,9 @@ const AboutTeamPage = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-[#aef452]/20 rounded-full opacity-50" />
 
         <div className="container mx-auto px-6 relative z-10">
-          <div className="inline-block p-1 rounded-full bg-gradient-to-r from-[#2a7d2f] to-[#aef452] mb-8">
+          <div className="inline-block p-1 rounded-full bg-linear-to-r from-[#2a7d2f] to-[#aef452] mb-8">
             <div className="bg-white rounded-full px-6 py-2">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#002E2E] to-[#2a7d2f] font-bold tracking-widest text-xs uppercase flex items-center gap-2">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#002E2E] to-[#2a7d2f] font-bold tracking-widest text-xs uppercase flex items-center gap-2">
                 <MousePointer2 className="w-4 h-4 text-[#002E2E]" /> We are Hiring
               </span>
             </div>

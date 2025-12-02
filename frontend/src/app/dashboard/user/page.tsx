@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
+import { Loading } from '@/components/common';
 import { userAPI, reportAPI, problemSolverAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -96,11 +97,7 @@ export default function UserDashboard() {
   };
 
   if (isLoading || !user) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-gray-600">Loading...</p>
-      </div>
-    );
+    return <Loading size="lg" text="Loading your dashboard..." />;
   }
 
   const statsCards = [
@@ -146,155 +143,153 @@ export default function UserDashboard() {
         </p>
       </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {statsCards.map((stat, index) => (
-            <motion.div
-              key={stat.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <div className={`${stat.bgColor} rounded-xl p-6`}>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-3xl">{stat.icon}</span>
-                  <span className={`text-2xl font-bold ${stat.color}`}>
-                    {loadingStats ? '...' : stat.value}
-                  </span>
-                </div>
-                <h3 className="text-sm font-medium text-gray-700">
-                  {stat.title}
-                </h3>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {statsCards.map((stat, index) => (
+          <motion.div
+            key={stat.title}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+          >
+            <div className={`${stat.bgColor} rounded-xl p-6`}>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-3xl">{stat.icon}</span>
+                <span className={`text-2xl font-bold ${stat.color}`}>
+                  {loadingStats ? '...' : stat.value}
+                </span>
               </div>
-            </motion.div>
-          ))}
-        </div>
+              <h3 className="text-sm font-medium text-gray-700">
+                {stat.title}
+              </h3>
+            </div>
+          </motion.div>
+        ))}
+      </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Quick Actions */}
-          <div className="lg:col-span-1">
-            <Card>
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
-                Quick Actions
-              </h2>
-              <div className="space-y-3">
-                <Link href="/dashboard/user/reports/new">
-                  <Button variant="primary" className="w-full justify-start">
-                    <span className="mr-2">📝</span> Report New Issue
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Quick Actions */}
+        <div className="lg:col-span-1">
+          <Card>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Quick Actions
+            </h2>
+            <div className="space-y-3">
+              <Link href="/dashboard/user/reports/new">
+                <Button variant="primary" className="w-full justify-start">
+                  <span className="mr-2">📝</span> Report New Issue
+                </Button>
+              </Link>
+              <Link href="/dashboard/user/my-reports">
+                <Button variant="secondary" className="w-full justify-start">
+                  <span className="mr-2">📋</span> My Reports
+                </Button>
+              </Link>
+              <Link href="/dashboard/user/map-search">
+                <Button variant="outline" className="w-full justify-start">
+                  <span className="mr-2">🗺️</span> Map Search
+                </Button>
+              </Link>
+              {!applicationStatus && (
+                <Link href="/dashboard/user/join-as-a-Problem-Solver">
+                  <Button variant="accent" className="w-full justify-start">
+                    <span className="mr-2">💡</span> Become a Solver
                   </Button>
                 </Link>
-                <Link href="/dashboard/user/my-reports">
-                  <Button variant="secondary" className="w-full justify-start">
-                    <span className="mr-2">📋</span> My Reports
-                  </Button>
-                </Link>
-                <Link href="/dashboard/user/map-search">
-                  <Button variant="outline" className="w-full justify-start">
-                    <span className="mr-2">🗺️</span> Map Search
-                  </Button>
-                </Link>
-                {!applicationStatus && (
-                  <Link href="/dashboard/user/join-as-a-Problem-Solver">
-                    <Button variant="accent" className="w-full justify-start">
-                      <span className="mr-2">💡</span> Become a Solver
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            </Card>
+              )}
+            </div>
+          </Card>
 
-            {/* Application Status */}
-            {applicationStatus && (
-              <Card className="mt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  Solver Application
-                </h3>
-                <div className={`p-3 rounded-lg ${
-                  applicationStatus.status === 'approved'
-                    ? 'bg-green-50 text-green-700'
-                    : applicationStatus.status === 'rejected'
+          {/* Application Status */}
+          {applicationStatus && (
+            <Card className="mt-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Solver Application
+              </h3>
+              <div className={`p-3 rounded-lg ${applicationStatus.status === 'approved'
+                  ? 'bg-green-50 text-green-700'
+                  : applicationStatus.status === 'rejected'
                     ? 'bg-red-50 text-red-700'
                     : 'bg-yellow-50 text-yellow-700'
                 }`}>
-                  <p className="font-medium capitalize">
-                    Status: {applicationStatus.status}
-                  </p>
-                </div>
-                <Link href="/dashboard/user/application-status">
-                  <Button variant="outline" size="sm" className="w-full mt-3">
-                    View Details
-                  </Button>
-                </Link>
-              </Card>
-            )}
-          </div>
-
-          {/* Recent Reports */}
-          <div className="lg:col-span-2">
-            <Card>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">
-                  Recent Reports
-                </h2>
-                <Link href="/dashboard/user/my-reports">
-                  <Button variant="outline" size="sm">
-                    View All
-                  </Button>
-                </Link>
+                <p className="font-medium capitalize">
+                  Status: {applicationStatus.status}
+                </p>
               </div>
+              <Link href="/dashboard/user/application-status">
+                <Button variant="outline" size="sm" className="w-full mt-3">
+                  View Details
+                </Button>
+              </Link>
+            </Card>
+          )}
+        </div>
 
-              {recentReports.length > 0 ? (
-                <div className="space-y-3">
-                  {recentReports.map((report) => (
-                    <Link key={report._id} href={`/reports/${report._id}`}>
-                      <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-medium text-gray-900 mb-1">
-                              {report.title}
-                            </h3>
-                            <p className="text-sm text-gray-600 line-clamp-2">
-                              {report.description}
-                            </p>
-                            <div className="flex items-center gap-4 mt-2">
-                              <span className="text-xs text-gray-500">
-                                {report.district}
-                              </span>
-                              <span className={`text-xs px-2 py-1 rounded-full ${
-                                report.status === 'resolved'
-                                  ? 'bg-green-100 text-green-700'
-                                  : report.status === 'in_progress'
+        {/* Recent Reports */}
+        <div className="lg:col-span-2">
+          <Card>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-900">
+                Recent Reports
+              </h2>
+              <Link href="/dashboard/user/my-reports">
+                <Button variant="outline" size="sm">
+                  View All
+                </Button>
+              </Link>
+            </div>
+
+            {recentReports.length > 0 ? (
+              <div className="space-y-3">
+                {recentReports.map((report) => (
+                  <Link key={report._id} href={`/reports/${report._id}`}>
+                    <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-900 mb-1">
+                            {report.title}
+                          </h3>
+                          <p className="text-sm text-gray-600 line-clamp-2">
+                            {report.description}
+                          </p>
+                          <div className="flex items-center gap-4 mt-2">
+                            <span className="text-xs text-gray-500">
+                              {report.district}
+                            </span>
+                            <span className={`text-xs px-2 py-1 rounded-full ${report.status === 'resolved'
+                                ? 'bg-green-100 text-green-700'
+                                : report.status === 'in_progress'
                                   ? 'bg-blue-100 text-blue-700'
                                   : 'bg-yellow-100 text-yellow-700'
                               }`}>
-                                {report.status.replace('_', ' ')}
-                              </span>
-                            </div>
+                              {report.status.replace('_', ' ')}
+                            </span>
                           </div>
                         </div>
                       </div>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <p className="text-gray-600 mb-2">
-                    No reports yet
-                  </p>
-                  <p className="text-sm text-gray-500 mb-4">
-                    Start by reporting your first issue
-                  </p>
-                  <Link href="/reports/new">
-                    <Button variant="primary" size="sm">
-                      Report an Issue
-                    </Button>
+                    </div>
                   </Link>
-                </div>
-              )}
-            </Card>
-          </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-600 mb-2">
+                  No reports yet
+                </p>
+                <p className="text-sm text-gray-500 mb-4">
+                  Start by reporting your first issue
+                </p>
+                <Link href="/reports/new">
+                  <Button variant="primary" size="sm">
+                    Report an Issue
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </Card>
         </div>
+      </div>
     </div>
   );
 }

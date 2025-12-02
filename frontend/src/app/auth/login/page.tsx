@@ -21,14 +21,24 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [redirectTo, setRedirectTo] = useState<string | null>(null);
+
+  // Get redirect_to from URL query parameters
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirectParam = params.get('redirect_to');
+    if (redirectParam) {
+      setRedirectTo(decodeURIComponent(redirectParam));
+    }
+  }, []);
 
   // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated && user) {
-      const dashboardPath = getRoleDashboardPath(user.role);
-      router.push(dashboardPath);
+      const destination = redirectTo || getRoleDashboardPath(user.role);
+      router.push(destination);
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, user, router, redirectTo]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -67,19 +77,9 @@ export default function LoginPage() {
       const result = await login(formData);
 
       if (result.success && result.user) {
-        // Redirect based on role
-        switch (result.user.role) {
-          case 'superAdmin':
-            router.push('/dashboard/superAdmin');
-            break;
-          case 'authority':
-            router.push('/dashboard/authority');
-            break;
-          case 'problemSolver':
-
-          default:
-            router.push('/dashboard/user');
-        }
+        // Redirect to requested page or role-specific dashboard
+        const destination = redirectTo || getRoleDashboardPath(result.user.role);
+        router.push(destination);
       } else {
         setApiError(result.message || 'Login failed. Please try again.');
       }

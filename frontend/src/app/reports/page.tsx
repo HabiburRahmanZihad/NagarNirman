@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, Loading, ReportCard } from '@/components/common';
+import { Card, Button, FullPageLoading, ReportCard } from '@/components/common';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { FaFilter, FaSearch, FaSync, FaPlus } from 'react-icons/fa';
@@ -133,7 +133,7 @@ export default function AllReportsPage() {
   ).sort();
 
   if (isLoading) {
-    return <Loading />;
+    return <FullPageLoading message="Loading Reports" />;
   }
 
   return (
@@ -180,11 +180,10 @@ export default function AllReportsPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`px-6 py-3 rounded-lg font-semibold transition flex items-center gap-2 ${
-                  showFilters
+                className={`px-6 py-3 rounded-lg font-semibold transition flex items-center gap-2 ${showFilters
                     ? 'bg-[#2a7d2f] text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                  }`}
               >
                 <FaFilter />
                 Filters
@@ -208,7 +207,7 @@ export default function AllReportsPage() {
                   District
                 </label>
                 <select
-                    aria-label="Filter reports by district"
+                  aria-label="Filter reports by district"
                   value={filters.district}
                   onChange={(e) => setFilters({ ...filters, district: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"
@@ -228,7 +227,7 @@ export default function AllReportsPage() {
                   Status
                 </label>
                 <select
-                    aria-label="Filter reports by status"
+                  aria-label="Filter reports by status"
                   value={filters.status}
                   onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"
@@ -248,7 +247,7 @@ export default function AllReportsPage() {
                   Severity
                 </label>
                 <select
-                    aria-label="Filter reports by severity"
+                  aria-label="Filter reports by severity"
                   value={filters.severity}
                   onChange={(e) => setFilters({ ...filters, severity: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"
@@ -267,7 +266,7 @@ export default function AllReportsPage() {
                   Problem Type
                 </label>
                 <select
-                    aria-label="Filter reports by problem type"
+                  aria-label="Filter reports by problem type"
                   value={filters.problemType}
                   onChange={(e) => setFilters({ ...filters, problemType: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f]"

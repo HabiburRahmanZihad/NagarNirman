@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, Loading, ReportCard } from '@/components/common';
+import { Card, Button, FullPageLoading, ReportCard } from '@/components/common';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { FaFilter, FaSearch, FaSync, FaPlus } from 'react-icons/fa';
@@ -133,7 +133,7 @@ export default function AllReportsPage() {
   ).sort();
 
   if (isLoading) {
-    return <Loading />;
+    return <FullPageLoading message="Loading Reports" />;
   }
 
   return (
@@ -180,11 +180,10 @@ export default function AllReportsPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`px-6 py-3 rounded-lg font-semibold transition flex items-center gap-2 ${
-                  showFilters
+                className={`px-6 py-3 rounded-lg font-semibold transition flex items-center gap-2 ${showFilters
                     ? 'bg-[#2a7d2f] text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                  }`}
               >
                 <FaFilter />
                 Filters

@@ -99,7 +99,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
       className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden"
     >
       {/* Header with Gradient - Same color as task card top border */}
-      <div className={`bg-gradient-to-r ${severityConfig[task.severity].headerBg} px-6 py-8 text-white`}>
+      <div className={`bg-linear-to-r ${severityConfig[task.severity].headerBg} px-6 py-8 text-white`}>
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           <div className="flex-1">
             <div className="flex flex-wrap gap-2 mb-4">
@@ -116,7 +116,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
             <p className="text-white/90 text-lg leading-relaxed">{task.description}</p>
           </div>
           
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <div className="inline-flex items-center px-4 py-2.5 rounded-xl text-sm font-bold bg-white/20 backdrop-blur-sm border border-white/30">
               <StatusIcon status={task.status} />
               {statusConfig[task.status].label}
@@ -175,7 +175,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
               </div>
               <div className="space-y-3">
                 <div className="flex items-start space-x-3">
-                  <MapPin className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                  <MapPin className="w-5 h-5 text-green-600 mt-0.5 shrink-0" />
                   <div>
                     <p className="font-semibold text-gray-800 text-sm">{task.address}</p>
                     <p className="text-gray-600 text-sm mt-1">
@@ -219,7 +219,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-5 border border-yellow-100"
+              className="bg-linear-to-br from-yellow-50 to-orange-50 rounded-xl p-5 border border-yellow-100"
             >
               <div className="flex items-center mb-4">
                 <Award className="w-5 h-5 text-yellow-600 mr-2" />

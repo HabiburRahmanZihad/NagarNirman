@@ -6,6 +6,7 @@ import { BarChart3, TrendingUp, RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { statisticsAPI } from '@/utils/api';
+import { ErrorDisplay } from '@/components/common';
 import divisionsData from '@/data/divisionsData.json';
 import toast from 'react-hot-toast';
 import AnalyticsKPI from '@/components/admin/analytics/AnalyticsKPI';
@@ -247,15 +248,14 @@ const AnalyticsPage = () => {
   if (!analyticsData) {
     return (
       <div className="min-h-screen bg-linear-to-br from-gray-50 to-green-50/30 p-6 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-600 text-lg mb-4">Failed to load analytics data</div>
-          <button
-            onClick={() => loadAnalytics()}
-            className="px-6 py-3 bg-[#2a7d2f] text-white rounded-xl font-medium shadow-lg hover:bg-[#3a9d40] transition-all"
-          >
-            Try Again
-          </button>
-        </div>
+        <ErrorDisplay
+          title="Failed to Load Analytics"
+          message="Unable to load analytics data. Please try again."
+          onRetry={() => loadAnalytics()}
+          retryText="Try Again"
+          showHomeButton={true}
+          showBackButton={false}
+        />
       </div>
     );
   }
@@ -323,8 +323,8 @@ const AnalyticsPage = () => {
                     key={range.value}
                     onClick={() => setTimeRange(range.value)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${timeRange === range.value
-                        ? 'bg-[#2a7d2f] text-white shadow-md'
-                        : 'text-gray-600 hover:text-gray-900'
+                      ? 'bg-[#2a7d2f] text-white shadow-md'
+                      : 'text-gray-600 hover:text-gray-900'
                       }`}
                   >
                     {range.label}

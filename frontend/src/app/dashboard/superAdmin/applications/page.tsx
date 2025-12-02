@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import { FullPageLoading } from '@/components/common';
 import {
   FaUser,
   FaEnvelope,
@@ -157,18 +158,11 @@ export default function SuperAdminApplications() {
   };
 
   if (authLoading || loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-t-[#2a7d2f] border-b-[#2a7d2f] border-l-transparent border-r-transparent mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading applications...</p>
-        </div>
-      </div>
-    );
+    return <FullPageLoading text="Loading applications..." />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 p-6">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-purple-50 p-6">
       <div className="max-w-7xl mx-auto">
         <Toaster position="top-right" />
 
@@ -179,11 +173,11 @@ export default function SuperAdminApplications() {
           className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-100 p-6"
         >
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-gradient-to-br from-[#2a7d2f] to-[#1e5a23] rounded-xl shadow-lg">
+            <div className="p-3 bg-linear-to-br from-[#2a7d2f] to-[#1e5a23] rounded-xl shadow-lg">
               <FaShieldAlt className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold bg-linear-to-r from-[#2a7d2f] to-[#1e5a23] bg-clip-text text-transparent">
                 All Applications Management
               </h1>
               <p className="text-gray-600 mt-1 text-lg">
@@ -270,7 +264,7 @@ export default function SuperAdminApplications() {
           className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6"
         >
           <div className="flex items-center space-x-4">
-            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-[#2a7d2f] to-[#1e5a23] rounded-xl shadow-md">
+            <div className="flex items-center justify-center w-10 h-10 bg-linear-to-br from-[#2a7d2f] to-[#1e5a23] rounded-xl shadow-md">
               <FaFilter className="text-white" />
             </div>
             <label className="text-sm font-semibold text-gray-700">Filter by Status:</label>
@@ -339,7 +333,7 @@ export default function SuperAdminApplications() {
 
               <button
                 onClick={() => openModal(app)}
-                className="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] text-white rounded-xl hover:from-[#236b27] hover:to-[#1a4d1f] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-medium"
+                className="w-full flex items-center justify-center px-6 py-3 bg-linear-to-r from-[#2a7d2f] to-[#1e5a23] text-white rounded-xl hover:from-[#236b27] hover:to-[#1a4d1f] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-medium"
               >
                 <FaEye className="mr-2 text-lg" />
                 View Details & Review
@@ -354,7 +348,7 @@ export default function SuperAdminApplications() {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-2xl shadow-lg border border-gray-100 p-16 text-center"
           >
-            <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center">
+            <div className="w-24 h-24 bg-linear-to-br from-gray-100 to-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center">
               <span className="text-5xl">📋</span>
             </div>
             <p className="text-gray-600 text-xl font-medium">No applications found</p>
@@ -373,11 +367,10 @@ export default function SuperAdminApplications() {
               <button
                 key={page}
                 onClick={() => setPagination({ ...pagination, page })}
-                className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg ${
-                  pagination.page === page
-                    ? 'bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] text-white scale-110'
+                className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg ${pagination.page === page
+                    ? 'bg-linear-to-r from-[#2a7d2f] to-[#1e5a23] text-white scale-110'
                     : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-                }`}
+                  }`}
               >
                 {page}
               </button>
@@ -394,7 +387,7 @@ export default function SuperAdminApplications() {
               transition={{ duration: 0.2 }}
               className="bg-white rounded-3xl max-w-4xl w-full my-8 shadow-2xl border border-gray-200 overflow-hidden"
             >
-              <div className="bg-gradient-to-r from-[#2a7d2f] to-[#1e5a23] text-white p-6 flex justify-between items-center">
+              <div className="bg-linear-to-r from-[#2a7d2f] to-[#1e5a23] text-white p-6 flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Application Details</h2>
                 <button
                   onClick={closeModal}
@@ -544,20 +537,20 @@ export default function SuperAdminApplications() {
 
                   <div>
                     <label className="text-sm font-medium text-gray-500">Motivation</label>
-                    <p className="text-gray-900 mt-1 whitespace-pre-wrap break-words bg-gray-50 p-4 rounded-lg">{selectedApp.motivation}</p>
+                    <p className="text-gray-900 mt-1 whitespace-pre-wrap wrap-break-word bg-gray-50 p-4 rounded-lg">{selectedApp.motivation}</p>
                   </div>
 
                   {selectedApp.experience && (
                     <div>
                       <label className="text-sm font-medium text-gray-500">Experience</label>
-                      <p className="text-gray-900 mt-1 whitespace-pre-wrap break-words bg-gray-50 p-4 rounded-lg">{selectedApp.experience}</p>
+                      <p className="text-gray-900 mt-1 whitespace-pre-wrap wrap-break-word bg-gray-50 p-4 rounded-lg">{selectedApp.experience}</p>
                     </div>
                   )}
 
                   {selectedApp.previousVolunteerWork && (
                     <div>
                       <label className="text-sm font-medium text-gray-500">Previous Volunteer Work</label>
-                      <p className="text-gray-900 mt-1 whitespace-pre-wrap break-words bg-green-50 p-4 rounded-lg">{selectedApp.previousVolunteerWork}</p>
+                      <p className="text-gray-900 mt-1 whitespace-pre-wrap wrap-break-word bg-green-50 p-4 rounded-lg">{selectedApp.previousVolunteerWork}</p>
                     </div>
                   )}
 
@@ -636,7 +629,7 @@ export default function SuperAdminApplications() {
                   </div>
 
                   {selectedApp.status === 'pending' && (
-                    <div className="bg-gradient-to-br from-slate-50 to-gray-100 rounded-2xl p-6 border-2 border-dashed border-gray-300">
+                    <div className="bg-linear-to-br from-slate-50 to-gray-100 rounded-2xl p-6 border-2 border-dashed border-gray-300">
                       <label className="text-sm font-bold text-gray-700 mb-3 block">📝 Review Note (Optional)</label>
                       <textarea
                         value={reviewNote}
@@ -654,7 +647,7 @@ export default function SuperAdminApplications() {
                     <button
                       onClick={() => handleReview(selectedApp._id, 'approved')}
                       disabled={isReviewing}
-                      className="flex-1 px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-bold text-lg flex items-center justify-center"
+                      className="flex-1 px-6 py-4 bg-linear-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-bold text-lg flex items-center justify-center"
                     >
                       <FaCheckCircle className="mr-2 text-xl" />
                       {isReviewing ? 'Processing...' : 'Approve Application'}
@@ -662,7 +655,7 @@ export default function SuperAdminApplications() {
                     <button
                       onClick={() => handleReview(selectedApp._id, 'rejected')}
                       disabled={isReviewing}
-                      className="flex-1 px-6 py-4 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-bold text-lg flex items-center justify-center"
+                      className="flex-1 px-6 py-4 bg-linear-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-700 hover:to-rose-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 font-bold text-lg flex items-center justify-center"
                     >
                       <FaTimesCircle className="mr-2 text-xl" />
                       {isReviewing ? 'Processing...' : 'Reject Application'}

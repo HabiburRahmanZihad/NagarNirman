@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
+import { Loading } from '@/components/common';
 import { reportAPI, problemSolverAPI, taskAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
 
@@ -113,11 +114,7 @@ export default function AuthorityDashboard() {
   };
 
   if (isLoading || !user) {
-    return (
-        <div className="flex items-center justify-center h-64">
-          <p className="text-gray-600">Loading...</p>
-        </div>
-    );
+    return <Loading size="lg" text="Loading your dashboard..." />;
   }
 
   const statsCards = [
@@ -365,13 +362,12 @@ export default function AuthorityDashboard() {
                               <span className="text-xs text-gray-500">
                                 📍 {report.district}
                               </span>
-                              <span className={`text-xs px-2 py-1 rounded-full ${
-                                report.status === 'resolved'
+                              <span className={`text-xs px-2 py-1 rounded-full ${report.status === 'resolved'
                                   ? 'bg-green-100 text-green-700'
                                   : report.status === 'in_progress'
-                                  ? 'bg-blue-100 text-blue-700'
-                                  : 'bg-yellow-100 text-yellow-700'
-                              }`}>
+                                    ? 'bg-blue-100 text-blue-700'
+                                    : 'bg-yellow-100 text-yellow-700'
+                                }`}>
                                 {report.status.replace('_', ' ')}
                               </span>
                             </div>

@@ -7,7 +7,7 @@ import UsersTable from "@/components/manage-users/UsersTable";
 import UserFilterBar from "@/components/manage-users/UserFilterBar";
 import toast from "react-hot-toast";
 import { Users } from "lucide-react";
-import { RefreshButton } from "@/components/common";
+import { FullPageLoading, RefreshButton } from "@/components/common";
 import { useAuth } from "@/context/AuthContext";
 import { userAPI } from "@/utils/api";
 import divisionsData from "@/data/divisionsData.json";
@@ -147,14 +147,7 @@ export default function SuperAdminUsersPage() {
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   if (authLoading || isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#81d586] mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading users...</p>
-        </div>
-      </div>
-    );
+    return <FullPageLoading text="Loading users..." />;
   }
 
   return (
@@ -311,8 +304,8 @@ export default function SuperAdminUsersPage() {
                           key={pageNum}
                           onClick={() => setCurrentPage(pageNum)}
                           className={`px-4 py-2 rounded-lg transition-colors ${currentPage === pageNum
-                              ? 'bg-[#2a7d2f] text-white'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            ? 'bg-[#2a7d2f] text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                             }`}
                         >
                           {pageNum}

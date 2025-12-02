@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { FullPageLoading } from '@/components/common';
 import { useNotifications } from '@/context/NotificationContext';
+import { useAuth } from '@/context/AuthContext';
 import { taskAPI } from '@/utils/api';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -180,22 +181,11 @@ export default function TaskReviewPage() {
   };
 
   if (authLoading || loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-blue-50/30 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <RefreshCw className="w-12 h-12 animate-spin text-green-500 mx-auto mb-4" />
-          <p className="text-gray-600 font-medium">Loading pending reviews...</p>
-        </motion.div>
-      </div>
-    );
+    return <FullPageLoading text="Loading pending reviews..." />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-blue-50/30 py-8 px-4">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/30 to-blue-50/30 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -228,7 +218,7 @@ export default function TaskReviewPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl shadow-lg p-6 mb-8 text-white"
+          className="bg-linear-to-r from-orange-500 to-red-500 rounded-2xl shadow-lg p-6 mb-8 text-white"
         >
           <div className="flex items-center gap-4">
             <div className="p-4 bg-white/20 rounded-xl backdrop-blur-sm">
@@ -285,7 +275,7 @@ export default function TaskReviewPage() {
 
                       {/* Solver Info */}
                       <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                        <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
                           {task.solver.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -319,6 +309,7 @@ export default function TaskReviewPage() {
                             href={image}
                             target="_blank"
                             rel="noopener noreferrer"
+                            title={`View proof image ${idx + 1}`}
                             className="relative aspect-square rounded-lg overflow-hidden group cursor-pointer border-2 border-gray-200 hover:border-green-500 transition-all"
                           >
                             <Image
@@ -383,14 +374,14 @@ export default function TaskReviewPage() {
                   <div className="flex gap-3">
                     <button
                       onClick={() => openReviewModal(task, 'approve')}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all font-semibold shadow-lg hover:shadow-xl"
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all font-semibold shadow-lg hover:shadow-xl"
                     >
                       <CheckCircle className="w-5 h-5" />
                       Approve & Reward
                     </button>
                     <button
                       onClick={() => openReviewModal(task, 'reject')}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all font-semibold shadow-lg hover:shadow-xl"
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all font-semibold shadow-lg hover:shadow-xl"
                     >
                       <XCircle className="w-5 h-5" />
                       Request Changes
@@ -436,7 +427,7 @@ export default function TaskReviewPage() {
                     <div className="space-y-4">
                       {/* Points */}
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <label className="flex text-sm font-semibold text-gray-700 mb-2 items-center gap-2">
                           <Award className="w-4 h-4 text-yellow-500" />
                           Reward Points
                         </label>
@@ -454,7 +445,7 @@ export default function TaskReviewPage() {
 
                       {/* Rating */}
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <label className="flex text-sm font-semibold text-gray-700 mb-2 items-center gap-2">
                           <Star className="w-4 h-4 text-yellow-500" />
                           Rating
                         </label>
@@ -469,8 +460,8 @@ export default function TaskReviewPage() {
                             >
                               <Star
                                 className={`w-8 h-8 ${star <= reviewData.rating
-                                    ? 'fill-yellow-400 text-yellow-400'
-                                    : 'text-gray-300'
+                                  ? 'fill-yellow-400 text-yellow-400'
+                                  : 'text-gray-300'
                                   } transition-colors`}
                               />
                             </button>
@@ -520,8 +511,8 @@ export default function TaskReviewPage() {
                       onClick={handleReview}
                       disabled={submitting}
                       className={`flex-1 px-6 py-3 rounded-lg transition-all font-semibold text-white ${reviewAction === 'approve'
-                          ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800'
-                          : 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800'
+                        ? 'bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800'
+                        : 'bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800'
                         } ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       {submitting ? 'Processing...' : reviewAction === 'approve' ? 'Approve & Award Points' : 'Send for Revision'}
