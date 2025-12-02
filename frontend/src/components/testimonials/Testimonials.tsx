@@ -67,7 +67,7 @@ export default function Testimonials() {
           <div className="flex items-center gap-6 mt-6">
             <div className="text-4xl font-extrabold text-info">99%</div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-secondary to-accent flex items-center justify-center text-white">
+              <div className="w-10 h-10 rounded-full bg-linear-to-tr from-secondary to-accent flex items-center justify-center text-white">
                 ★
               </div>
               <div className="text-info font-semibold">Positive Reviews</div>
@@ -99,7 +99,7 @@ export default function Testimonials() {
                 <div className="relative transform transition-all duration-300 hover:-rotate-1 hover:scale-[1.02] rounded-2xl bg-primary text-base-100 p-6 md:p-8 shadow-xl min-h-[420px] flex items-stretch gap-6">
 
                   {/* IMAGE */}
-                  <div className="w-[46%] flex-shrink-0">
+                  <div className="w-[46%] shrink-0">
                     <div className="rounded-xl overflow-hidden bg-white">
                       <div className="relative aspect-[4/5]">
                         <Image

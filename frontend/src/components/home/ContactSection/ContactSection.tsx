@@ -36,7 +36,7 @@ export default function ContactSection() {
             </span>
             <h2 className="text-4xl md:text-5xl font-bold text-[#002E2E] mb-6">
               Let&apos;s Build a <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2a7d2f] to-[#aef452]">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#2a7d2f] to-[#aef452]">
                 Cleaner Future
               </span> Together
             </h2>
@@ -70,7 +70,7 @@ export default function ContactSection() {
               </div>
               <h3 className="text-lg font-bold text-[#002E2E] mb-1">Email Us</h3>
               <p className="text-neutral text-sm font-mono break-all">e241024@ugrad.iiuc.ac.bd</p>
-              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#2a7d2f] to-[#aef452] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+              <div className="absolute bottom-0 left-0 w-full h-1 bg-linear-to-r from-[#2a7d2f] to-[#aef452] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
             </motion.button>
 
             {/* 2. Location Card */}
@@ -188,7 +188,7 @@ export default function ContactSection() {
             </form>
 
             {/* Decorative Corner */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-[#aef452]/20 to-transparent rounded-bl-full -z-0 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-bl from-[#aef452]/20 to-transparent rounded-bl-full -z-0 pointer-events-none" />
           </motion.div>
 
         </div>

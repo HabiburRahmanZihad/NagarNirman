@@ -41,25 +41,81 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
   // Fetch notifications from backend
   const fetchNotifications = useCallback(async () => {
-    if (!isAuthenticated) return;
+    // Skip fetching notifications if not authenticated
+    if (!isAuthenticated) {
+      setNotifications([]);
+      return;
+    }
 
     try {
       setIsLoading(true);
-      const response = await notificationAPI.getAll({ limit: 50 });
-      if (response?.success && Array.isArray(response?.data)) {
-        // Transform backend notifications to match frontend format
-        const transformedNotifications = response.data.map((notif: any) => ({
-          ...notif,
-          _id: notif._id,
-          id: notif._id,
-          timestamp: notif.createdAt ? new Date(notif.createdAt) : new Date(),
-          type: notif.type || 'info',
-        }));
+
+      // Try to fetch notifications with a timeout
+      let response;
+      try {
+        response = await Promise.race([
+          notificationAPI.getAll({ limit: 50 }),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Notification fetch timeout')), 5000)
+          )
+        ]);
+      } catch (fetchError) {
+        // If fetch fails, just set empty notifications and return
+        setNotifications([]);
+        setIsLoading(false);
+        return;
+      }
+
+      // Validate response is an object
+      if (!response || typeof response !== 'object') {
+        setNotifications([]);
+        setIsLoading(false);
+        return;
+      }
+
+      // Handle different response formats safely
+      let dataArray: any[] = [];
+
+      if (Array.isArray(response)) {
+        dataArray = response;
+      } else if (response && typeof response === 'object' && 'data' in response) {
+        if (Array.isArray(response.data)) {
+          dataArray = response.data;
+        }
+      }
+
+      // Transform and set notifications if we have data
+      if (Array.isArray(dataArray) && dataArray.length > 0) {
+        const transformedNotifications = dataArray
+          .filter((notif: any) => notif && typeof notif === 'object')
+          .map((notif: any) => {
+            try {
+              const id = notif._id || notif.id || `notif-${Date.now()}-${Math.random()}`;
+              return {
+                ...notif,
+                _id: id,
+                id: id,
+                title: notif.title || 'Notification',
+                message: notif.message || '',
+                type: (notif.type || 'info') as 'success' | 'error' | 'info' | 'warning',
+                timestamp: notif.createdAt ? new Date(notif.createdAt) : new Date(),
+                read: notif.read ?? false,
+              };
+            } catch (transformError) {
+              console.error('Error transforming notification:', transformError);
+              return null;
+            }
+          })
+          .filter((notif: any) => notif !== null);
+
         setNotifications(transformedNotifications);
+      } else {
+        setNotifications([]);
       }
     } catch (error) {
-      // Silently fail - don't show errors to user for notifications
-      console.error('Failed to fetch notifications:', error);
+      // Silently handle any unexpected errors
+      console.debug('Notification fetch error:', error instanceof Error ? error.message : 'Unknown error');
+      setNotifications([]);
     } finally {
       setIsLoading(false);
     }
@@ -68,11 +124,21 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   // Fetch notifications on mount and set up polling
   useEffect(() => {
     if (isAuthenticated) {
-      fetchNotifications();
+      // Wrap fetch in try-catch to handle backend not having notifications endpoint
+      Promise.resolve()
+        .then(() => fetchNotifications())
+        .catch(() => {
+          // Silently fail if notifications aren't available
+          setIsLoading(false);
+        });
 
       // Poll for new notifications every 30 seconds
       const interval = setInterval(() => {
-        fetchNotifications();
+        Promise.resolve()
+          .then(() => fetchNotifications())
+          .catch(() => {
+            // Silently ignore polling errors
+          });
       }, 30000);
 
       return () => clearInterval(interval);

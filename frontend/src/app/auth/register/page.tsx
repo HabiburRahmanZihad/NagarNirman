@@ -28,14 +28,24 @@ export default function RegisterPage() {
   const [apiError, setApiError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [redirectTo, setRedirectTo] = useState<string | null>(null);
+
+  // Get redirect_to from URL query parameters
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirectParam = params.get('redirect_to');
+    if (redirectParam) {
+      setRedirectTo(decodeURIComponent(redirectParam));
+    }
+  }, []);
 
   // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated && user) {
-      const dashboardPath = getRoleDashboardPath(user.role);
-      router.push(dashboardPath);
+      const destination = redirectTo || getRoleDashboardPath(user.role);
+      router.push(destination);
     }
-  }, [isAuthenticated, user, router]);
+  }, [isAuthenticated, user, router, redirectTo]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -110,8 +120,10 @@ export default function RegisterPage() {
       const { confirmPassword, ...registerData } = formData;
       const result = await register(registerData);
 
-      if (result.success) {
-        router.push('/dashboard/user');
+      if (result.success && result.user) {
+        // Redirect to requested page or role-specific dashboard
+        const destination = redirectTo || getRoleDashboardPath(result.user.role);
+        router.push(destination);
       } else {
         setApiError(result.message || 'Registration failed. Please try again.');
       }
@@ -169,9 +181,8 @@ export default function RegisterPage() {
                 name="division"
                 value={formData.division}
                 onChange={handleDivisionChange}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent ${
-                  errors.division ? 'border-red-500' : ''
-                }`}
+                className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent ${errors.division ? 'border-red-500' : ''
+                  }`}
                 required
               >
                 <option value="">Select your division</option>
@@ -196,9 +207,8 @@ export default function RegisterPage() {
                 value={formData.district}
                 onChange={handleChange}
                 disabled={!formData.division}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                  errors.district ? 'border-red-500' : ''
-                }`}
+                className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.district ? 'border-red-500' : ''
+                  }`}
                 required
               >
                 <option value="">Select your district</option>
@@ -226,9 +236,8 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   placeholder="Create a password (min. 6 characters)"
                   required
-                  className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent ${
-                    errors.password ? 'border-red-500' : ''
-                  }`}
+                  className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent ${errors.password ? 'border-red-500' : ''
+                    }`}
                 />
                 <button
                   type="button"
@@ -265,9 +274,8 @@ export default function RegisterPage() {
                   onChange={handleChange}
                   placeholder="Re-enter your password"
                   required
-                  className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent ${
-                    errors.confirmPassword ? 'border-red-500' : ''
-                  }`}
+                  className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#81d586] focus:border-transparent ${errors.confirmPassword ? 'border-red-500' : ''
+                    }`}
                 />
                 <button
                   type="button"

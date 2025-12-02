@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, Loading } from '@/components/common';
+import { Card, Button, Loading, NotFoundDisplay } from '@/components/common';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
@@ -281,14 +281,12 @@ export default function ReportDetailsPage() {
   if (!report) {
     return (
       <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-12 flex items-center justify-center">
-        <Card className="p-12 text-center max-w-md">
-          <div className="text-6xl mb-4">😕</div>
-          <h2 className="text-2xl font-bold text-[#002E2E] mb-2">Report Not Found</h2>
-          <p className="text-[#6B7280] mb-6">The report you're looking for doesn't exist or has been removed.</p>
-          <Link href="/reports">
-            <Button variant="primary">Back to Reports</Button>
-          </Link>
-        </Card>
+        <NotFoundDisplay
+          title="Report Not Found"
+          message="The report you're looking for doesn't exist or has been removed."
+          showHomeButton={true}
+          showBackButton={true}
+        />
       </div>
     );
   }
@@ -326,7 +324,7 @@ export default function ReportDetailsPage() {
               </div>
 
               {/* Problem Classification */}
-              <div className="mb-4 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+              <div className="mb-4 p-4 bg-linear-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
                 <h4 className="text-sm font-semibold text-gray-700 mb-2">Problem Classification</h4>
                 <div className="flex flex-wrap gap-2">
                   <div>

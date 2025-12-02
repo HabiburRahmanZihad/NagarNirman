@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/common';
 import { PUBLIC_ROUTES } from '@/constants/routes';
-import { motion, AnimatePresence, useInView, animate } from 'framer-motion';
+import { motion, AnimatePresence, useInView, animate, easeOut } from 'framer-motion';
 import {
   Github,
   Linkedin,
@@ -120,7 +120,7 @@ const FAQS = [
 // --- ANIMATION VARIANTS ---
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
 };
 
 const AboutPage = () => {
@@ -142,9 +142,9 @@ const AboutPage = () => {
           className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#aef452] opacity-10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"
         />
         <motion.div
-           animate={{ scale: [1, 1.1, 1], x: [0, -30, 0] }}
-           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-           className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#2a7d2f] opacity-5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"
+          animate={{ scale: [1, 1.1, 1], x: [0, -30, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#2a7d2f] opacity-5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"
         />
 
         <div className="container mx-auto px-6 relative z-10">
@@ -165,7 +165,7 @@ const AboutPage = () => {
 
             <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight tracking-tight">
               We are building the <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2a7d2f] to-[#aef452]">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#2a7d2f] to-[#aef452]">
                 Operating System
               </span>{' '}
               for Cities.
@@ -210,7 +210,7 @@ const AboutPage = () => {
             </motion.div>
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
               <div className="text-4xl font-bold text-[#aef452] mb-1">
-                 <AnimatedCounter from={0} to={89} />%
+                <AnimatedCounter from={0} to={89} />%
               </div>
               <div className="text-sm text-white/70 uppercase tracking-widest">Resolution Rate</div>
             </motion.div>
@@ -247,7 +247,7 @@ const AboutPage = () => {
               {/* Informatic Process Flow */}
               <div className="space-y-6 mt-8">
                 <div className="flex gap-4 group">
-                  <div className="flex-shrink-0 w-12 h-12 bg-[#F6FFF9] rounded-full flex items-center justify-center border border-[#aef452] group-hover:bg-[#2a7d2f] transition-colors duration-300">
+                  <div className="shrink-0 w-12 h-12 bg-[#F6FFF9] rounded-full flex items-center justify-center border border-[#aef452] group-hover:bg-[#2a7d2f] transition-colors duration-300">
                     <Map className="w-5 h-5 text-[#2a7d2f] group-hover:text-white" />
                   </div>
                   <div>
@@ -257,7 +257,7 @@ const AboutPage = () => {
                 </div>
 
                 <div className="flex gap-4 group">
-                  <div className="flex-shrink-0 w-12 h-12 bg-[#F6FFF9] rounded-full flex items-center justify-center border border-[#f2a921] group-hover:bg-[#f2a921] transition-colors duration-300">
+                  <div className="shrink-0 w-12 h-12 bg-[#F6FFF9] rounded-full flex items-center justify-center border border-[#f2a921] group-hover:bg-[#f2a921] transition-colors duration-300">
                     <Server className="w-5 h-5 text-[#f2a921] group-hover:text-white" />
                   </div>
                   <div>
@@ -267,7 +267,7 @@ const AboutPage = () => {
                 </div>
 
                 <div className="flex gap-4 group">
-                  <div className="flex-shrink-0 w-12 h-12 bg-[#F6FFF9] rounded-full flex items-center justify-center border border-[#2a7d2f] group-hover:bg-[#2a7d2f] transition-colors duration-300">
+                  <div className="shrink-0 w-12 h-12 bg-[#F6FFF9] rounded-full flex items-center justify-center border border-[#2a7d2f] group-hover:bg-[#2a7d2f] transition-colors duration-300">
                     <CheckCircle2 className="w-5 h-5 text-[#2a7d2f] group-hover:text-white" />
                   </div>
                   <div>
@@ -314,7 +314,7 @@ const AboutPage = () => {
                 >
                   <div className="flex items-center gap-4 mb-3">
                     <div className="w-10 h-10 rounded-full bg-[#e6f4e7] flex items-center justify-center text-[#2a7d2f]">
-                      <CheckCircle2 className="w-6 h-6"/>
+                      <CheckCircle2 className="w-6 h-6" />
                     </div>
                     <div>
                       <div className="font-bold text-[#2a7d2f]">Issue Resolved</div>
@@ -323,12 +323,12 @@ const AboutPage = () => {
                   </div>
                   {/* Progress Bar Animation */}
                   <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden mt-4">
-                     <motion.div
-                       initial={{ width: "0%" }}
-                       whileInView={{ width: "100%" }}
-                       transition={{ delay: 3, duration: 1 }}
-                       className="h-full bg-[#aef452]"
-                     />
+                    <motion.div
+                      initial={{ width: "0%" }}
+                      whileInView={{ width: "100%" }}
+                      transition={{ delay: 3, duration: 1 }}
+                      className="h-full bg-[#aef452]"
+                    />
                   </div>
                   <p className="text-xs text-right mt-1 text-gray-400">Status: Completed</p>
                 </motion.div>
@@ -365,16 +365,14 @@ const AboutPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.2 }}
-                  className={`relative flex flex-col md:flex-row gap-8 ${
-                    index % 2 === 0 ? 'md:flex-row-reverse' : ''
-                  }`}
+                  className={`relative flex flex-col md:flex-row gap-8 ${index % 2 === 0 ? 'md:flex-row-reverse' : ''
+                    }`}
                 >
                   {/* Content Box */}
                   <div className="flex-1 ml-12 md:ml-0">
                     <div
-                      className={`bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow ${
-                        index % 2 === 0 ? 'md:text-left' : 'md:text-right'
-                      }`}
+                      className={`bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow ${index % 2 === 0 ? 'md:text-left' : 'md:text-right'
+                        }`}
                     >
                       <span className="inline-flex items-center gap-2 py-1 px-3 rounded-full bg-[#f2a921]/10 text-[#f2a921] text-xs font-bold mb-2">
                         <Calendar className="w-3 h-3" /> {event.year}
@@ -386,11 +384,11 @@ const AboutPage = () => {
 
                   {/* Dot on Line */}
                   <div className="absolute left-[11px] md:left-1/2 top-6 w-5 h-5 rounded-full bg-[#2a7d2f] border-4 border-[#F6FFF9] transform md:-translate-x-1/2 z-10 shadow-md">
-                     <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                        className="w-full h-full rounded-full bg-[#2a7d2f]"
-                     />
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="w-full h-full rounded-full bg-[#2a7d2f]"
+                    />
                   </div>
 
                   <div className="flex-1 hidden md:block" />
@@ -409,24 +407,24 @@ const AboutPage = () => {
           </p>
           <div className="flex flex-wrap justify-center gap-12 md:gap-20">
             {[
-              { icon: <Code className="w-10 h-10"/>, name: "Next.js", color: "text-black", desc: "Fast & SEO Ready" },
-              { icon: <Database className="w-10 h-10"/>, name: "MongoDB", color: "text-green-600", desc: "Scalable Data" },
-              { icon: <Zap className="w-10 h-10"/>, name: "Tailwind", color: "text-cyan-500", desc: "Rapid UI" },
-              { icon: <Map className="w-10 h-10"/>, name: "Leaflet", color: "text-blue-500", desc: "Open Mapping" },
+              { icon: <Code className="w-10 h-10" />, name: "Next.js", color: "text-black", desc: "Fast & SEO Ready" },
+              { icon: <Database className="w-10 h-10" />, name: "MongoDB", color: "text-green-600", desc: "Scalable Data" },
+              { icon: <Zap className="w-10 h-10" />, name: "Tailwind", color: "text-cyan-500", desc: "Rapid UI" },
+              { icon: <Map className="w-10 h-10" />, name: "Leaflet", color: "text-blue-500", desc: "Open Mapping" },
             ].map((tech, i) => (
-               <motion.div
-                  key={i}
-                  whileHover={{ y: -5 }}
-                  className="group flex flex-col items-center gap-2 cursor-default"
-               >
-                 <div className={`${tech.color} group-hover:scale-110 transition-transform duration-300`}>
-                    {tech.icon}
-                 </div>
-                 <span className="font-bold text-[#002E2E]">{tech.name}</span>
-                 <span className="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity absolute mt-16 bg-white px-2 py-1 shadow-md rounded border">
-                    {tech.desc}
-                 </span>
-               </motion.div>
+              <motion.div
+                key={i}
+                whileHover={{ y: -5 }}
+                className="group flex flex-col items-center gap-2 cursor-default"
+              >
+                <div className={`${tech.color} group-hover:scale-110 transition-transform duration-300`}>
+                  {tech.icon}
+                </div>
+                <span className="font-bold text-[#002E2E]">{tech.name}</span>
+                <span className="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity absolute mt-16 bg-white px-2 py-1 shadow-md rounded border">
+                  {tech.desc}
+                </span>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -450,9 +448,8 @@ const AboutPage = () => {
                 >
                   <span className="font-semibold text-lg text-[#002E2E]">{faq.question}</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
-                      openFaq === index ? 'rotate-180' : ''
-                    }`}
+                    className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${openFaq === index ? 'rotate-180' : ''
+                      }`}
                   />
                 </button>
                 <AnimatePresence>

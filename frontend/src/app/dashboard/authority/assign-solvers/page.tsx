@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { userAPI, reportAPI, taskAPI } from '@/utils/api';
+import { FullPageLoading } from '@/components/common';
 
 interface User {
   _id: string;
@@ -184,11 +185,7 @@ export default function AssignSolversPage() {
     );
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-      </div>
-    );
+    return <FullPageLoading text="Loading solvers..." />;
   }
 
   return (
@@ -374,8 +371,8 @@ export default function AssignSolversPage() {
                     onClick={() => handleAssignTask(solver)}
                     disabled={!solver.isActive || reports.length === 0}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${solver.isActive && reports.length > 0
-                        ? 'bg-green-600 text-white hover:bg-green-700'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      ? 'bg-green-600 text-white hover:bg-green-700'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                       }`}
                   >
                     Assign Task
@@ -439,8 +436,8 @@ export default function AssignSolversPage() {
                             key={report._id}
                             onClick={() => setSelectedReport(report._id)}
                             className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedReport === report._id
-                                ? 'border-green-500 bg-green-50'
-                                : 'border-gray-200 hover:border-green-300'
+                              ? 'border-green-500 bg-green-50'
+                              : 'border-gray-200 hover:border-green-300'
                               }`}
                           >
                             <div className="flex items-start justify-between mb-2">
@@ -487,8 +484,8 @@ export default function AssignSolversPage() {
                       onClick={handleSubmitAssignment}
                       disabled={!selectedReport || assigning}
                       className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${selectedReport && !assigning
-                          ? 'bg-green-600 text-white hover:bg-green-700'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        ? 'bg-green-600 text-white hover:bg-green-700'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         }`}
                     >
                       {assigning ? 'Assigning...' : 'Assign Task'}

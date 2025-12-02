@@ -8,6 +8,7 @@ import { User } from '@/types';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { FullPageLoading } from '@/components/common';
 
 export default function SuperAdminDashboard() {
   const { user, isLoading } = useAuth();
@@ -126,24 +127,7 @@ export default function SuperAdminDashboard() {
     : allUsers.filter(u => u.role === filterRole);
 
   if (isLoading || loading) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/30 to-blue-50/30 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <div className="relative">
-            <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-[#81d586] mx-auto"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-2xl">🛡️</span>
-            </div>
-          </div>
-          <p className="mt-6 text-gray-700 font-semibold text-lg">Loading SuperAdmin Dashboard...</p>
-          <p className="mt-2 text-gray-500 text-sm">Please wait while we fetch your data</p>
-        </motion.div>
-      </div>
-    );
+    return <FullPageLoading text="Loading SuperAdmin Dashboard..." />;
   }
 
   if (user?.role !== 'superAdmin') {
@@ -531,8 +515,8 @@ export default function SuperAdminDashboard() {
                   key={role}
                   onClick={() => setNewRole(role as any)}
                   className={`w-full p-4 rounded-xl border-2 text-left transition-all ${newRole === role
-                      ? 'border-[#81d586] bg-green-50 shadow-md'
-                      : 'border-gray-200 hover:border-[#81d586] hover:bg-gray-50'
+                    ? 'border-[#81d586] bg-green-50 shadow-md'
+                    : 'border-gray-200 hover:border-[#81d586] hover:bg-gray-50'
                     }`}
                   disabled={selectedUser.role === role}
                 >

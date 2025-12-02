@@ -151,7 +151,7 @@ const GalleryPage = () => {
                 priority
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
 
               <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between text-white">
                 <div className="space-y-1">
@@ -205,6 +205,9 @@ const GalleryPage = () => {
                 const active = activeFilter === label;
                 return (
                   <button
+                    type="button"
+                    aria-label={`Filter by ${label}`}
+                    aria-pressed={active ? "true" : "false"}
                     key={label}
                     onClick={() => {
                       setActiveFilter(label);
@@ -216,7 +219,6 @@ const GalleryPage = () => {
                         ? "bg-primary text-primary-content border-primary shadow-sm"
                         : "border-base-300 bg-base-200 hover:bg-base-300/60",
                     ].join(" ")}
-                    aria-pressed={active}
                   >
                     {label}
                   </button>
@@ -241,7 +243,7 @@ const GalleryPage = () => {
                 <button
                   key={item.id}
                   onClick={() => setSelected(item)}
-                  className="group relative overflow-hidden rounded-2xl shadow-lg bg-base-300/40 aspect-[4/3] text-left
+                  className="group relative overflow-hidden rounded-2xl shadow-lg bg-base-300/40 aspect-4/3 text-left
                              focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   aria-label={`Open photo: ${item.title}`}
                 >
@@ -252,7 +254,7 @@ const GalleryPage = () => {
                     sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover transition duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-80 group-hover:opacity-100 transition duration-500" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent opacity-80 group-hover:opacity-100 transition duration-500" />
 
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <div className="text-white space-y-1">
@@ -322,7 +324,7 @@ const GalleryPage = () => {
       </section>
 
       {/* Banner metrics */}
-      <section className="relative w-full h-[220px] sm:h-[260px] md:h-[320px]">
+      <section className="relative w-full h-[220px] sm:h-[260px] md:h-80">
         <Image
           src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80"
           alt="Impact metrics banner"

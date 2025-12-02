@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { userAPI } from '@/utils/api';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { FullPageLoading } from '@/components/common';
 
 interface Solver {
   _id: string;
@@ -181,14 +182,7 @@ export default function SolversPage() {
     });
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading solvers...</p>
-        </div>
-      </div>
-    );
+    return <FullPageLoading text="Loading solvers..." />;
   }
 
   return (
@@ -350,8 +344,8 @@ export default function SolversPage() {
                   key={option.value}
                   onClick={() => setSortBy(option.value as any)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${sortBy === option.value
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-green-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                 >
                   {option.label}
@@ -508,8 +502,8 @@ export default function SolversPage() {
                       {solver.isActive ? 'Active' : 'Inactive'}
                     </span>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${solver.taskStats?.isBusy
-                        ? 'bg-orange-100 text-orange-800'
-                        : 'bg-green-100 text-green-800'
+                      ? 'bg-orange-100 text-orange-800'
+                      : 'bg-green-100 text-green-800'
                       }`}>
                       {solver.taskStats?.status || 'Free'}
                     </span>

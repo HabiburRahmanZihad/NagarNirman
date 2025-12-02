@@ -19,6 +19,8 @@ import Testimonials from "@/components/testimonials/Testimonials";
 import CountUpSection from "@/components/countUp/Count";
 import GreenFutureCard from "@/components/home/greenFutureCard/GreenFutureCard";
 import HowToReport from "@/components/home/HowToReport/HowToReport";
+import { ErrorDisplay, FullPageLoading, Loading, NotFoundDisplay } from "@/components/common";
+
 
 // Help section
 const data = [
@@ -516,7 +518,7 @@ export default function Home() {
       <section>
         <GreenFutureCard></GreenFutureCard>
       </section>
-      
+
     </>
   );
 }

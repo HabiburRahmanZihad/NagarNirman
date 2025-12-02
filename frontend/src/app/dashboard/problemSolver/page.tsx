@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
 import RefreshButton from '@/components/common/RefreshButton';
+import { FullPageLoading } from '@/components/common';
 import { reportAPI, taskAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
 import {
@@ -125,14 +126,7 @@ export default function SolverDashboard() {
   };
 
   if (isLoading || !user) {
-    return (
-      <div className="min-h-screen bg-linear-to-br from-green-50 to-blue-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#2a7d2f] border-t-transparent mx-auto"></div>
-          <p className="mt-6 text-lg font-medium text-gray-700">Loading Your Dashboard...</p>
-        </div>
-      </div>
-    );
+    return <FullPageLoading text="Loading Your Dashboard..." />;
   }
 
   const getStatusColor = (status: string) => {

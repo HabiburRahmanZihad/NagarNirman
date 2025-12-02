@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import categoryOptions from "@/data/categoryOptions.json";
 import divisionData from "@/data/divisionsData.json";
+import { FullPageLoading, ErrorDisplay } from '@/components/common';
 
 type ReportFormData = {
   category: string;
@@ -261,14 +262,7 @@ export default function NewReportPage() {
 
   // Show loading state
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-12 px-4 flex justify-center items-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#2a7d2f] mx-auto mb-4"></div>
-          <p className="text-[#6B7280] text-lg">Loading...</p>
-        </div>
-      </div>
-    );
+    return <FullPageLoading message="Preparing Form" submessage="Setting up report submission form..." />;
   }
 
   // Show access denied if not a user
@@ -357,9 +351,8 @@ export default function NewReportPage() {
               </label>
               <select
                 {...register("category", { required: "Category is required" })}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
-                  errors.category ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${errors.category ? "border-red-500" : "border-gray-300"
+                  }`}
               >
                 <option value="">Select category</option>
                 {Object.keys(categoryOptions).map((cat) => (
@@ -380,9 +373,8 @@ export default function NewReportPage() {
               <select
                 {...register("subcategory", { required: "Subcategory is required" })}
                 disabled={!selectedCategory}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                  errors.subcategory ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.subcategory ? "border-red-500" : "border-gray-300"
+                  }`}
               >
                 <option value="">
                   {selectedCategory ? "Select subcategory" : "Select category first"}
@@ -415,9 +407,8 @@ export default function NewReportPage() {
                   maxLength: { value: 100, message: "Title must not exceed 100 characters" }
                 })}
                 placeholder="e.g. Street light not working on Main Road"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
-                  errors.title ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${errors.title ? "border-red-500" : "border-gray-300"
+                  }`}
               />
               {errors.title && (
                 <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
@@ -429,9 +420,8 @@ export default function NewReportPage() {
               </label>
               <select
                 {...register("severity", { required: "Severity is required" })}
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
-                  errors.severity ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${errors.severity ? "border-red-500" : "border-gray-300"
+                  }`}
               >
                 <option value="">Select severity</option>
                 <option value="low">🟢 Low - Minor issue</option>
@@ -462,9 +452,8 @@ export default function NewReportPage() {
                   {...register("division", { required: "Division is required" })}
                   value={selectedDivision}
                   onChange={handleDivisionChange}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition font-medium ${
-                    errors.division ? "border-red-500 bg-red-50" : selectedDivision ? "border-green-500 bg-green-50" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition font-medium ${errors.division ? "border-red-500 bg-red-50" : selectedDivision ? "border-green-500 bg-green-50" : "border-gray-300"
+                    }`}
                 >
                   <option value="">Select division</option>
                   {divisionData.map((div) => (
@@ -490,9 +479,8 @@ export default function NewReportPage() {
                   {...register("district", { required: "District is required" })}
                   onChange={handleDistrictChange}
                   disabled={!selectedDivision}
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition font-medium disabled:bg-gray-100 disabled:cursor-not-allowed ${
-                    errors.district ? "border-red-500 bg-red-50" : watch("district") ? "border-green-500 bg-green-50" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition font-medium disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.district ? "border-red-500 bg-red-50" : watch("district") ? "border-green-500 bg-green-50" : "border-gray-300"
+                    }`}
                 >
                   <option value="">
                     {selectedDivision ? "Select district" : "Select division first"}
@@ -522,9 +510,8 @@ export default function NewReportPage() {
                   minLength: { value: 10, message: "Address must be at least 10 characters" }
                 })}
                 placeholder="e.g. House 27, Road 5, Dhanmondi, Dhaka"
-                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
-                  errors.address ? "border-red-500" : "border-gray-300"
-                }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${errors.address ? "border-red-500" : "border-gray-300"
+                  }`}
               />
               {errors.address && (
                 <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
@@ -540,9 +527,8 @@ export default function NewReportPage() {
                   {...register("latitude", { required: "Please fetch your location" })}
                   placeholder="Click 'Get Current Location' button below"
                   readOnly
-                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed ${
-                    errors.latitude ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed ${errors.latitude ? "border-red-500" : "border-gray-300"
+                    }`}
                 />
                 {errors.latitude && (
                   <p className="text-red-500 text-sm mt-1">{errors.latitude.message}</p>
@@ -556,9 +542,8 @@ export default function NewReportPage() {
                   {...register("longitude", { required: "Please fetch your location" })}
                   placeholder="Click 'Get Current Location' button below"
                   readOnly
-                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed ${
-                    errors.longitude ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-4 py-3 border rounded-lg bg-gray-50 cursor-not-allowed ${errors.longitude ? "border-red-500" : "border-gray-300"
+                    }`}
                 />
                 {errors.longitude && (
                   <p className="text-red-500 text-sm mt-1">{errors.longitude.message}</p>
@@ -595,9 +580,8 @@ export default function NewReportPage() {
               })}
               placeholder="Describe the issue clearly... (minimum 20 characters)"
               rows={5}
-              className={`w-full px-4 py-3 border rounded-lg resize-none focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${
-                errors.description ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full px-4 py-3 border rounded-lg resize-none focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition ${errors.description ? "border-red-500" : "border-gray-300"
+                }`}
             ></textarea>
             {errors.description && (
               <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
@@ -613,9 +597,8 @@ export default function NewReportPage() {
               Upload Images <span className="text-red-500">* (Required - Maximum 5 images, 5MB each)</span>
             </label>
             <div className="space-y-4">
-              <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition ${
-                errors.image ? "border-red-500 bg-red-50" : "border-gray-300"
-              }`}>
+              <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition ${errors.image ? "border-red-500 bg-red-50" : "border-gray-300"
+                }`}>
                 <FaUpload className="text-gray-500 text-2xl mb-2" />
                 <p className="text-sm text-gray-500 font-semibold">Click to upload images (Required)</p>
                 <p className="text-xs text-gray-400 mt-1">PNG, JPG, GIF, WebP up to 5MB each</p>

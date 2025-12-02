@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4 lg:px-0 py-2">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
+          <Link href="/" className="shrink-0">
             <Image
               src="/logo/logo.png"
               alt="NagarNirman Logo"

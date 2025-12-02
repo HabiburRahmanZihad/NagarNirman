@@ -101,7 +101,7 @@ export default function LeaderboardTable({ users }: LeaderboardTableProps) {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center space-x-3">
-                    <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-semibold">
+                    <div className="shrink-0 w-10 h-10 bg-linear-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center text-white font-semibold">
                       {user.name.charAt(0)}
                     </div>
                     <div>
@@ -127,7 +127,7 @@ export default function LeaderboardTable({ users }: LeaderboardTableProps) {
                         initial={{ width: 0 }}
                         animate={{ width: `${(user.xp / user.xpRequired) * 100}%` }}
                         transition={{ delay: index * 0.1 + 0.3, duration: 0.5 }}
-                        className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full"
+                        className="bg-linear-to-r from-green-500 to-green-600 h-2 rounded-full"
                       />
                     </div>
                   </div>

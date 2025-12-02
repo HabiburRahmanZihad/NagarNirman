@@ -230,7 +230,7 @@ export default function ManageUsersPage() {
               </div>
             </div>
           </div>
-          <RefreshButton onClick={loadUsers} className="ml-2" tooltip="Refresh Users" />
+          <RefreshButton onClick={loadUsers} className="ml-2" label="Refresh Users" />
         </div>
       </div>
 

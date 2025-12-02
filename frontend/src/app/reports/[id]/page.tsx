@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, Loading } from '@/components/common';
+import { Card, Button, Loading, NotFoundDisplay } from '@/components/common';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
@@ -84,7 +84,7 @@ interface Report {
 export default function ReportDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [report, setReport] = useState<Report | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpvoting, setIsUpvoting] = useState(false);
@@ -92,6 +92,15 @@ export default function ReportDetailsPage() {
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 
   const reportId = params?.id as string;
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      // Store the current page as redirect_to parameter
+      const redirectUrl = `/auth/login?redirect_to=${encodeURIComponent(`/reports/${reportId}`)}`;
+      router.push(redirectUrl);
+    }
+  }, [authLoading, isAuthenticated, router, reportId]);
 
   // Fetch report details
   const fetchReportDetails = async () => {
@@ -275,21 +284,31 @@ export default function ReportDetailsPage() {
     });
   };
 
-  if (isLoading) {
+  if (authLoading || isLoading) {
     return <Loading />;
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-12 flex items-center justify-center">
+        <NotFoundDisplay
+          title="Access Denied"
+          message="Please login to view report details."
+          showHomeButton={true}
+        />
+      </div>
+    );
   }
 
   if (!report) {
     return (
       <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-12 flex items-center justify-center">
-        <Card className="p-12 text-center max-w-md">
-          <div className="text-6xl mb-4">😕</div>
-          <h2 className="text-2xl font-bold text-[#002E2E] mb-2">Report Not Found</h2>
-          <p className="text-[#6B7280] mb-6">The report you're looking for doesn't exist or has been removed.</p>
-          <Link href="/reports">
-            <Button variant="primary">Back to Reports</Button>
-          </Link>
-        </Card>
+        <NotFoundDisplay
+          title="Report Not Found"
+          message="The report you're looking for doesn't exist or has been removed."
+          showHomeButton={true}
+          showBackButton={true}
+        />
       </div>
     );
   }
@@ -304,7 +323,7 @@ export default function ReportDetailsPage() {
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Back Button */}
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push('/reports')}
           className="flex items-center gap-2 text-[#6B7280] hover:text-[#2a7d2f] mb-6 transition"
         >
           <FaArrowLeft />
@@ -327,7 +346,7 @@ export default function ReportDetailsPage() {
               </div>
 
               {/* Problem Classification */}
-              <div className="mb-4 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
+              <div className="mb-4 p-4 bg-linear-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
                 <h4 className="text-sm font-semibold text-gray-700 mb-2">🏷️ Problem Classification</h4>
                 <div className="flex flex-wrap gap-3">
                   <div>
@@ -393,7 +412,7 @@ export default function ReportDetailsPage() {
               {/* Description */}
               <div>
                 <h3 className="text-lg font-bold text-[#002E2E] mb-3">Description</h3>
-                <p className="text-[#6B7280] leading-relaxed whitespace-pre-line">
+                <p className="text-[#6B7280] leading-relaxed whitespace-pre-line break-all">
                   {report.description}
                 </p>
               </div>
@@ -557,9 +576,9 @@ export default function ReportDetailsPage() {
                           {/* Role Badge */}
                           {comment.user?.role && (
                             <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${comment.user.role === 'authority' ? 'bg-blue-100 text-blue-800' :
-                                comment.user.role === 'problemSolver' ? 'bg-purple-100 text-purple-800' :
+                              comment.user.role === 'problemSolver' ? 'bg-purple-100 text-purple-800' :
 
-                                  'bg-gray-100 text-gray-800'
+                                'bg-gray-100 text-gray-800'
                               }`}>
                               {comment.user.role === 'problemSolver' ? 'Problem Solver' :
                                 comment.user.role.charAt(0).toUpperCase() + comment.user.role.slice(1)}
@@ -608,8 +627,8 @@ export default function ReportDetailsPage() {
                     onClick={handleUpvote}
                     disabled={isUpvoting || !isAuthenticated}
                     className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition ${isUpvoted
-                        ? 'bg-[#2a7d2f] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-[#2a7d2f] text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     <FaThumbsUp />

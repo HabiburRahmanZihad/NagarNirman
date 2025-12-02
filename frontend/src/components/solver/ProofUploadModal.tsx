@@ -96,7 +96,7 @@ export default function ProofUploadModal({ task, onClose, onSubmit }: ProofUploa
           className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col"
         >
           {/* Header */}
-          <div className="relative p-6 border-b border-gray-200 bg-gradient-to-r from-green-500 to-green-600 text-white flex-shrink-0">
+          <div className="relative p-6 border-b border-gray-200 bg-linear-to-r from-green-500 to-green-600 text-white shrink-0">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold">Submit Completion Proof</h2>
@@ -246,7 +246,7 @@ export default function ProofUploadModal({ task, onClose, onSubmit }: ProofUploa
           </div>
 
           {/* Footer - Fixed at bottom */}
-          <div className="flex justify-end space-x-3 p-4 border-t border-gray-200 bg-gray-50 flex-shrink-0">
+          <div className="flex justify-end space-x-3 p-4 border-t border-gray-200 bg-gray-50 shrink-0">
             <button
               onClick={onClose}
               className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium"

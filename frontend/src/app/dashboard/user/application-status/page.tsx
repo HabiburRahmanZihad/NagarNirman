@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FullPageLoading, NotFoundDisplay } from '@/components/common';
 import {
   FaCheckCircle,
   FaTimesCircle,
@@ -217,11 +218,7 @@ export default function MyApplicationStatus() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2a7d2f]"></div>
-      </div>
-    );
+    return <FullPageLoading message="Loading Application" submessage="Fetching your application status..." />;
   }
 
   if (notFound) {
@@ -459,86 +456,86 @@ export default function MyApplicationStatus() {
             {/* Social Media Links */}
             {(application.linkedinProfile || application.facebookProfile ||
               application.twitterProfile || application.websiteProfile) && (
-              <div className="border-t pt-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                  Social Media & Online Presence
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {application.linkedinProfile && (
-                    <a
-                      href={application.linkedinProfile}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-lg border border-blue-200 transition-all duration-300 shadow-sm hover:shadow-md"
-                    >
-                      <div className="flex items-center justify-center w-12 h-12 bg-[#0077b5] rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
-                        <FaLinkedin className="text-white text-xl" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-600 mb-0.5">LinkedIn</p>
-                        <p className="text-[#0077b5] font-semibold truncate group-hover:underline">
-                          LinkedIn Profile
-                        </p>
-                      </div>
-                    </a>
-                  )}
-                  {application.facebookProfile && (
-                    <a
-                      href={application.facebookProfile}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center p-4 bg-gradient-to-r from-blue-50 to-indigo-100 hover:from-blue-100 hover:to-indigo-200 rounded-lg border border-indigo-200 transition-all duration-300 shadow-sm hover:shadow-md"
-                    >
-                      <div className="flex items-center justify-center w-12 h-12 bg-[#1877f2] rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
-                        <FaFacebook className="text-white text-xl" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-600 mb-0.5">Facebook</p>
-                        <p className="text-[#1877f2] font-semibold truncate group-hover:underline">
-                          Facebook Profile
-                        </p>
-                      </div>
-                    </a>
-                  )}
-                  {application.twitterProfile && (
-                    <a
-                      href={application.twitterProfile}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center p-4 bg-gradient-to-r from-sky-50 to-cyan-100 hover:from-sky-100 hover:to-cyan-200 rounded-lg border border-sky-200 transition-all duration-300 shadow-sm hover:shadow-md"
-                    >
-                      <div className="flex items-center justify-center w-12 h-12 bg-[#1da1f2] rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
-                        <FaTwitter className="text-white text-xl" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-600 mb-0.5">Twitter</p>
-                        <p className="text-[#1da1f2] font-semibold truncate group-hover:underline">
-                          Twitter Profile
-                        </p>
-                      </div>
-                    </a>
-                  )}
-                  {application.websiteProfile && (
-                    <a
-                      href={application.websiteProfile}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center p-4 bg-gradient-to-r from-purple-50 to-pink-100 hover:from-purple-100 hover:to-pink-200 rounded-lg border border-purple-200 transition-all duration-300 shadow-sm hover:shadow-md"
-                    >
-                      <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
-                        <FaGlobe className="text-white text-xl" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-600 mb-0.5">Website</p>
-                        <p className="text-purple-700 font-semibold truncate group-hover:underline">
-                          Personal Website
-                        </p>
-                      </div>
-                    </a>
-                  )}
+                <div className="border-t pt-6">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                    Social Media & Online Presence
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {application.linkedinProfile && (
+                      <a
+                        href={application.linkedinProfile}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center p-4 bg-linear-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-lg border border-blue-200 transition-all duration-300 shadow-sm hover:shadow-md"
+                      >
+                        <div className="flex items-center justify-center w-12 h-12 bg-[#0077b5] rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
+                          <FaLinkedin className="text-white text-xl" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-600 mb-0.5">LinkedIn</p>
+                          <p className="text-[#0077b5] font-semibold truncate group-hover:underline">
+                            LinkedIn Profile
+                          </p>
+                        </div>
+                      </a>
+                    )}
+                    {application.facebookProfile && (
+                      <a
+                        href={application.facebookProfile}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center p-4 bg-linear-to-r from-blue-50 to-indigo-100 hover:from-blue-100 hover:to-indigo-200 rounded-lg border border-indigo-200 transition-all duration-300 shadow-sm hover:shadow-md"
+                      >
+                        <div className="flex items-center justify-center w-12 h-12 bg-[#1877f2] rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
+                          <FaFacebook className="text-white text-xl" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-600 mb-0.5">Facebook</p>
+                          <p className="text-[#1877f2] font-semibold truncate group-hover:underline">
+                            Facebook Profile
+                          </p>
+                        </div>
+                      </a>
+                    )}
+                    {application.twitterProfile && (
+                      <a
+                        href={application.twitterProfile}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center p-4 bg-linear-to-r from-sky-50 to-cyan-100 hover:from-sky-100 hover:to-cyan-200 rounded-lg border border-sky-200 transition-all duration-300 shadow-sm hover:shadow-md"
+                      >
+                        <div className="flex items-center justify-center w-12 h-12 bg-[#1da1f2] rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
+                          <FaTwitter className="text-white text-xl" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-600 mb-0.5">Twitter</p>
+                          <p className="text-[#1da1f2] font-semibold truncate group-hover:underline">
+                            Twitter Profile
+                          </p>
+                        </div>
+                      </a>
+                    )}
+                    {application.websiteProfile && (
+                      <a
+                        href={application.websiteProfile}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center p-4 bg-linear-to-r from-purple-50 to-pink-100 hover:from-purple-100 hover:to-pink-200 rounded-lg border border-purple-200 transition-all duration-300 shadow-sm hover:shadow-md"
+                      >
+                        <div className="flex items-center justify-center w-12 h-12 bg-linear-to-r from-purple-600 to-pink-600 rounded-full mr-4 group-hover:scale-110 transition-transform duration-300">
+                          <FaGlobe className="text-white text-xl" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-600 mb-0.5">Website</p>
+                          <p className="text-purple-700 font-semibold truncate group-hover:underline">
+                            Personal Website
+                          </p>
+                        </div>
+                      </a>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Documents & Images */}
             {(application.profileImage || application.nidOrIdDoc) && (
@@ -619,7 +616,7 @@ export default function MyApplicationStatus() {
 
             {application.status === 'rejected' && (
               <div className="border-t pt-6">
-                <div className="bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-lg border-2 border-orange-200">
+                <div className="bg-linear-to-r from-orange-50 to-red-50 p-6 rounded-lg border-2 border-orange-200">
                   <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
                     <span className="text-2xl mr-2">💡</span>
                     Want to Reapply?
@@ -631,7 +628,7 @@ export default function MyApplicationStatus() {
                   <button
                     onClick={handleDeleteConfirmClick}
                     disabled={deleting}
-                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-md hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2"
+                    className="w-full bg-linear-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-md hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2"
                   >
                     {deleting ? (
                       <>
@@ -687,7 +684,7 @@ export default function MyApplicationStatus() {
                     </button>
                     <button
                       onClick={handleConfirmDelete}
-                      className="flex-1 px-4 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all font-semibold shadow-md hover:shadow-lg"
+                      className="flex-1 px-4 py-3 bg-linear-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all font-semibold shadow-md hover:shadow-lg"
                     >
                       Yes, Delete
                     </button>

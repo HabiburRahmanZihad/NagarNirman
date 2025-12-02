@@ -100,17 +100,7 @@ export default function UsersTable({
   };
 
   if (isLoading) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12 text-center"
-      >
-        <Loader2 className="w-12 h-12 text-[#2a7d2f] animate-spin mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Loading Users</h3>
-        <p className="text-gray-500">Please wait while we load the user data...</p>
-      </motion.div>
-    );
+    return <InlineLoading text="Loading users..." />;
   }
 
   return (
@@ -278,8 +268,8 @@ export default function UsersTable({
                       whileTap={{ scale: 0.95 }}
                       onClick={() => onPageChange(page)}
                       className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${currentPage === page
-                          ? 'bg-[#2a7d2f] text-white shadow-lg'
-                          : 'text-gray-700 hover:bg-gray-100 border border-transparent'
+                        ? 'bg-[#2a7d2f] text-white shadow-lg'
+                        : 'text-gray-700 hover:bg-gray-100 border border-transparent'
                         }`}
                     >
                       {page}

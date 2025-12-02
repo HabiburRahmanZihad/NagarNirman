@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { userAPI } from '@/utils/api';
-import { Button, Card, Input } from '@/components/common';
+import { Button, Card, Input, InlineError } from '@/components/common';
 import toast from 'react-hot-toast';
 import divisionsData from '@/data/divisionsData.json';
 
@@ -17,6 +17,7 @@ interface ProfileData {
 const ProfilePage = () => {
   const { user, updateUser: updateAuthUser } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [profileData, setProfileData] = useState<ProfileData>({
     phone: '',
     division: '',
@@ -85,11 +86,13 @@ const ProfilePage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
     // Validate phone number
     if (profileData.phone) {
       const phoneRegex = /^01[0-9]{9}$/;
       if (!phoneRegex.test(profileData.phone)) {
+        setError('Phone number must be 11 digits starting with 01');
         toast.error('Phone number must be 11 digits starting with 01');
         return;
       }
@@ -111,7 +114,7 @@ const ProfilePage = () => {
 
       const response = await userAPI.updateProfile(updateData);
 
-      if (response.success) {
+      if (response && response.success) {
         // Dismiss uploading toast
         if (selectedFile) {
           toast.dismiss('upload');
@@ -124,12 +127,18 @@ const ProfilePage = () => {
 
         // Reset selected file after successful upload
         setSelectedFile(null);
+        setError(null);
 
         toast.success('Profile updated successfully!');
+      } else {
+        throw new Error(response?.message || 'Failed to update profile');
       }
     } catch (error: any) {
       toast.dismiss('upload');
-      toast.error(error.message || 'Failed to update profile');
+      const errorMessage = error?.message || error?.data?.message || 'Failed to update profile';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      console.error('Profile update error:', error);
     } finally {
       setLoading(false);
     }
@@ -150,6 +159,9 @@ const ProfilePage = () => {
 
         <Card>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Display */}
+            {error && <InlineError message={error} />}
+
             {/* Profile Picture Section */}
             <div>
               <h2 className="text-xl font-semibold mb-4 text-gray-900">Profile Picture</h2>
