@@ -25,6 +25,7 @@ import { ErrorDisplay, FullPageLoading, Loading, NotFoundDisplay } from "@/compo
 
 
 
+
 // Help section
 const data = [
   {
@@ -509,18 +510,24 @@ export default function Home() {
       <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
         <HowToReport></HowToReport>
       </section>
+
       <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
         <EventsSection></EventsSection>
       </section>
+
       <section className="container mx-auto px-6 lg:px-0 overflow-hidden">
         <EmergencyHotlineMarquee></EmergencyHotlineMarquee>
       </section>
+
       <section className="pt-24 pb-20">
         <Testimonials></Testimonials>
       </section>
+
       <section className="container mx-auto">
       <AboutSection></AboutSection>
       </section>
+
+       
 
     </>
   );

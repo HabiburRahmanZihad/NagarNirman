@@ -61,6 +61,44 @@
 /* ============================
     Global Styling
 ============================ */
+
+/* footer  */
+.footer{
+  border-top-left-radius: 125px;
+}
+
+.underline {
+  width: 35%;
+  height: 5px;
+  background: #767676;
+  border-radius: 3px;
+  position: absolute;
+  margin-top: 2px;
+  left: 0;
+  overflow: hidden;
+}
+
+.underline span {
+  width: 15px;
+  height: 100%;
+  background: #fff;
+  border-radius: 3px;
+  position: absolute;
+  top: 0;
+  left: -20px;
+  animation: moving 2s linear infinite;
+}
+
+@keyframes moving {
+  0% {
+    left: -20px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+
 * {
     box-sizing: border-box;
 }
@@ -68,7 +106,6 @@
 body {
     font-family: var(--font-urbanist), system-ui, -apple-system, sans-serif;
 }
-
 
 .bg-dotted-pattern {
   background-image: radial-gradient(#ffe733 1px, transparent 1px);
