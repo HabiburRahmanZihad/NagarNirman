@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import Loader from "./Loader";
+import { Loading } from "../common";
+
 
 export default function RouteLoader() {
   const pathname = usePathname();
@@ -24,7 +25,7 @@ export default function RouteLoader() {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-md z-[9999]">
-      <Loader></Loader>
+      <Loading></Loading>
     </div>
   );
 }
