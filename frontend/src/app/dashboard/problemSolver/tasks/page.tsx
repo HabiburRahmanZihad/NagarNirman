@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import Button from '@/components/common/Button';
 import { Search, Calendar, MapPin, AlertTriangle, CheckCircle, Clock, Sparkles, Target, TrendingUp, Upload, X, Image as ImageIcon, FileText, Send, AlertCircle, Eye, RefreshCw } from "lucide-react";
 import TaskCard from "@/components/solver/TaskCard";
 import TaskFilterBar from "@/components/solver/TaskFilterBar";
@@ -352,15 +353,17 @@ export default function SolverTasksPage() {
             <p className="text-gray-600 mt-2">Manage and complete your assigned cleanup tasks</p>
           </div>
           <div className="flex items-center gap-3">
-            <button
+            <Button
               onClick={() => fetchTasks(true)}
               disabled={loading}
-              className="flex items-center space-x-2 px-4 py-2 bg-white border-2 border-green-500 text-green-600 rounded-full hover:bg-green-50 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              variant="outline"
+              size="md"
+              iconPosition="left"
               title="Refresh tasks"
             >
               <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
               <span className="font-semibold">Refresh</span>
-            </button>
+            </Button>
             <div className="flex items-center space-x-2 px-4 py-2 bg-linear-to-r from-green-500 to-green-600 rounded-full text-white shadow-lg">
               <Sparkles className="w-5 h-5" />
               <span className="font-semibold">{stats.totalPoints} Points Earned</span>
@@ -493,9 +496,9 @@ export default function SolverTasksPage() {
                     animate={{ width: `${task.progress || 50}%` }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                     className={`h-full ${(task.progress || 50) === 100 ? 'bg-green-500' :
-                        (task.progress || 50) >= 90 ? 'bg-blue-500' :
-                          (task.progress || 50) >= 75 ? 'bg-yellow-500' :
-                            'bg-orange-500'
+                      (task.progress || 50) >= 90 ? 'bg-blue-500' :
+                        (task.progress || 50) >= 75 ? 'bg-yellow-500' :
+                          'bg-orange-500'
                       }`}
                   />
                 </div>
@@ -504,11 +507,11 @@ export default function SolverTasksPage() {
                   {/* Header */}
                   <div className="flex justify-between items-start mb-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${task.status === 'completed' || task.status === 'verified' ? 'bg-green-100 text-green-700' :
-                        task.status === 'submitted' ? 'bg-blue-100 text-blue-700' :
-                          task.status === 'rejected' ? 'bg-red-100 text-red-700' :
-                            task.status === 'in-progress' ? 'bg-purple-100 text-purple-700' :
-                              task.status === 'accepted' ? 'bg-yellow-100 text-yellow-700' :
-                                'bg-gray-100 text-gray-700'
+                      task.status === 'submitted' ? 'bg-blue-100 text-blue-700' :
+                        task.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                          task.status === 'in-progress' ? 'bg-purple-100 text-purple-700' :
+                            task.status === 'accepted' ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-gray-100 text-gray-700'
                       }`}>
                       {task.status === 'assigned' ? 'New Assignment' :
                         task.status === 'accepted' ? 'Accepted' :
@@ -563,13 +566,15 @@ export default function SolverTasksPage() {
                     {/* Start Working Button with See Details */}
                     {task.status === 'accepted' && (
                       <div className="flex gap-2">
-                        <button
+                        <Button
                           onClick={() => handleStartTask(task._id)}
-                          className="flex-1 py-2.5 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                          variant="primary"
+                          size="md"
+                          iconPosition="right"
+                          className="flex-1"
                         >
-                          <TrendingUp className="w-5 h-5" />
-                          <span>Start Working</span>
-                        </button>
+                          Start Working
+                        </Button>
                         <Link
                           href={`/dashboard/problemSolver/tasks/${task._id}`}
                           className="px-4 py-2.5 bg-white border-2 border-blue-500 text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 flex items-center justify-center"
@@ -583,13 +588,15 @@ export default function SolverTasksPage() {
                     {/* Submit Proof Button with See Details */}
                     {task.status === 'in-progress' && (
                       <div className="flex gap-2">
-                        <button
+                        <Button
                           onClick={() => handleOpenProofModal(task._id)}
-                          className="flex-1 py-2.5 bg-linear-to-r from-purple-500 to-purple-600 text-white rounded-lg font-semibold hover:from-purple-600 hover:to-purple-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                          variant="primary"
+                          size="md"
+                          iconPosition="right"
+                          className="flex-1"
                         >
-                          <Upload className="w-5 h-5" />
-                          <span>Submit Proof</span>
-                        </button>
+                          Submit Proof
+                        </Button>
                         <Link
                           href={`/dashboard/problemSolver/tasks/${task._id}`}
                           className="px-4 py-2.5 bg-white border-2 border-purple-500 text-purple-600 rounded-lg font-semibold hover:bg-purple-50 transition-all duration-300 flex items-center justify-center"
@@ -603,13 +610,15 @@ export default function SolverTasksPage() {
                     {/* Resubmit Button with See Details */}
                     {task.status === 'rejected' && (
                       <div className="flex gap-2">
-                        <button
+                        <Button
                           onClick={() => handleOpenProofModal(task._id)}
-                          className="flex-1 py-2.5 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 flex items-center justify-center space-x-2"
+                          variant="accent"
+                          size="md"
+                          iconPosition="right"
+                          className="flex-1"
                         >
-                          <Upload className="w-5 h-5" />
-                          <span>Resubmit Proof</span>
-                        </button>
+                          Resubmit Proof
+                        </Button>
                         <Link
                           href={`/dashboard/problemSolver/tasks/${task._id}`}
                           className="px-4 py-2.5 bg-white border-2 border-orange-500 text-orange-600 rounded-lg font-semibold hover:bg-orange-50 transition-all duration-300 flex items-center justify-center"
@@ -700,13 +709,15 @@ export default function SolverTasksPage() {
                   <h3 className="text-2xl font-bold text-gray-800">Submit Work Proof</h3>
                   <p className="text-sm text-gray-600 mt-1">Upload images and description of completed work</p>
                 </div>
-                <button
+                <Button
                   onClick={() => setShowProofModal(false)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  variant="ghost"
+                  size="sm"
+                  className="p-2 min-w-0 w-10 h-10 rounded-full"
                   aria-label="Close modal"
                 >
-                  <X className="w-6 h-6 text-gray-600" />
-                </button>
+                  <X className="w-6 h-6" />
+                </Button>
               </div>
 
               {/* Modal Body */}
@@ -726,13 +737,15 @@ export default function SolverTasksPage() {
                           alt={`Proof ${index + 1}`}
                           className="w-full h-32 object-cover rounded-lg border-2 border-gray-300"
                         />
-                        <button
+                        <Button
                           onClick={() => handleRemoveImage(index)}
-                          className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          variant="danger"
+                          size="sm"
+                          className="absolute top-1 right-1 min-w-0 w-8 h-8 p-0 opacity-0 group-hover:opacity-100"
                           aria-label="Remove image"
                         >
                           <X className="w-4 h-4" />
-                        </button>
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -776,32 +789,25 @@ export default function SolverTasksPage() {
 
                 {/* Action Buttons */}
                 <div className="flex space-x-3 pt-4">
-                  <button
+                  <Button
                     onClick={() => setShowProofModal(false)}
-                    className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                    variant="ghost"
+                    size="lg"
+                    className="flex-1"
                   >
                     Cancel
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={handleSubmitProof}
                     disabled={submittingProof || proofImages.length === 0 || !proofDescription.trim()}
-                    className={`flex-1 px-6 py-3 rounded-lg font-semibold text-white flex items-center justify-center space-x-2 transition-all duration-300 ${submittingProof || proofImages.length === 0 || !proofDescription.trim()
-                        ? 'bg-gray-400 cursor-not-allowed'
-                        : 'bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                      }`}
+                    variant="primary"
+                    size="lg"
+                    iconPosition="right"
+                    isLoading={submittingProof}
+                    className="flex-1"
                   >
-                    {submittingProof ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        <span>Submitting...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-5 h-5" />
-                        <span>Submit Proof</span>
-                      </>
-                    )}
-                  </button>
+                    Submit Proof
+                  </Button>
                 </div>
               </div>
             </motion.div>

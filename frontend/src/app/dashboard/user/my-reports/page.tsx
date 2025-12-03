@@ -215,16 +215,15 @@ export default function MyReportsPage() {
                 { value: 'resolved', label: 'Resolved', color: 'bg-green-200 text-green-800' },
                 { value: 'rejected', label: 'Rejected', color: 'bg-red-200 text-red-800' },
               ].map((status) => (
-                <button
+                <Button
                   key={status.value}
                   onClick={() => setStatusFilter(status.value)}
-                  className={`px-4 py-2 rounded-lg font-semibold text-sm transition ${statusFilter === status.value
-                      ? 'bg-[#2a7d2f] text-white'
-                      : `${status.color} hover:opacity-80`
-                    }`}
+                  variant={statusFilter === status.value ? 'primary' : 'ghost'}
+                  size="sm"
+                  className={statusFilter === status.value ? '' : status.color}
                 >
                   {status.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>

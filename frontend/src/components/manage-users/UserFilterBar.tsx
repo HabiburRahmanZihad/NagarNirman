@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Filter, X, Users, MapPin, Shield } from "lucide-react";
 import divisionsData from '@/data/divisionsData.json';
+import Button from '@/components/common/Button';
 
 interface UserFilterBarProps {
   searchTerm?: string;
@@ -212,15 +213,21 @@ export default function UserFilterBar({
 
           {/* Clear Filters */}
           {activeFilters > 0 && (
-            <motion.button
+            <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              onClick={clearAllFilters}
-              className="flex items-center space-x-1 px-3 py-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-colors border border-red-200"
             >
-              <X size={16} />
-              <span className="text-sm font-medium">Clear All</span>
-            </motion.button>
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={clearAllFilters}
+                icon={<X size={16} />}
+                iconPosition="left"
+                className="border border-red-200"
+              >
+                Clear All
+              </Button>
+            </motion.div>
           )}
         </div>
       </div>

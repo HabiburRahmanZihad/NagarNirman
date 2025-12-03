@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import Button from '@/components/common/Button';
 
 const images = [
   "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/09/cause-1.jpg",
@@ -50,9 +51,9 @@ export default function DonationSection() {
           eos optio <br className="md:block" /> aspernatur fugit soluta
           accusantium corrupti architecto.
         </p>
-        <button className="bg-primary text-white px-6 py-3 rounded-md font-semibold hover:opacity-90 transition">
+        <Button variant="primary" size="lg" iconPosition="right">
           DETAILS
-        </button>
+        </Button>
       </div>
 
       {/* RIGHT SLIDER */}
@@ -115,9 +116,9 @@ export default function DonationSection() {
               {icon.title}
             </h3>
             <p className="text-neutral text-sm mb-4">{icon.text}</p>
-            <button className="text-primary font-semibold hover:underline">
+            <Button variant="ghost" size="sm">
               MORE INFO
-            </button>
+            </Button>
           </div>
         ))}
       </div>

@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
+import Button from "@/components/common/Button";
 
 export default function AboutSection() {
   const [activeTab, setActiveTab] = useState("history");
@@ -23,11 +24,11 @@ export default function AboutSection() {
   return (
     <section className=" w-full bg-base-100 py-20 px-4 md:px-10 lg:px-20 mb-20">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-        
+
         {/* LEFT IMAGES */}
         <div className="relative w-full flex items-center justify-center">
-          
-         
+
+
 
 
           {/* Badge */}
@@ -58,11 +59,10 @@ export default function AboutSection() {
               <button
                 key={t.id}
                 onClick={() => setActiveTab(t.id)}
-                className={`pb-1 font-medium text-lg  ${
-                  activeTab === t.id
+                className={`pb-1 font-medium text-lg  ${activeTab === t.id
                     ? "text-primary border-b-2 border-accent"
                     : "text-neutral hover:text-primary"
-                }`}
+                  }`}
               >
                 {t.label}
               </button>
@@ -80,9 +80,13 @@ export default function AboutSection() {
           </ul>
 
           <div className="mt-8 flex items-center gap-6">
-            <button className="flex items-center gap-2 bg-accent text-primary px-7 py-3 rounded-full font-semibold shadow-md">
-              Explore More →
-            </button>
+            <Button
+              variant="accent"
+              size="lg"
+              iconPosition="right"
+            >
+              Explore More
+            </Button>
 
             <div className="text-neutral text-sm">
               <p className="font-semibold flex items-center gap-2">

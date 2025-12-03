@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, AlertTriangle, User, Trash2, Shield } from "lucide-react";
 import { useState } from "react";
+import Button from '@/components/common/Button';
 
 interface User {
   _id: string;
@@ -150,31 +151,26 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
 
           {/* Actions */}
           <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
-            <button
+            <Button
+              variant="ghost"
+              size="md"
               onClick={onClose}
-              className="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium rounded-xl hover:bg-white transition-colors"
+              className="text-gray-600 hover:text-gray-800 hover:bg-white"
             >
               Cancel
-            </button>
-            <motion.button
-              whileHover={{ scale: !isDeleting ? 1.05 : 1 }}
-              whileTap={{ scale: !isDeleting ? 0.95 : 1 }}
+            </Button>
+            <Button
+              variant="danger"
+              size="md"
               onClick={handleConfirm}
               disabled={isDeleting}
-              className="px-8 py-3 bg-linear-to-r from-red-600 to-red-700 text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
+              isLoading={isDeleting}
+              icon={!isDeleting ? <Trash2 size={18} /> : undefined}
+              iconPosition="left"
+              className="shadow-lg"
             >
-              {isDeleting ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Deleting...</span>
-                </>
-              ) : (
-                <>
-                  <Trash2 size={18} />
-                  <span>Delete User</span>
-                </>
-              )}
-            </motion.button>
+              {isDeleting ? 'Deleting...' : 'Delete User'}
+            </Button>
           </div>
         </motion.div>
       </motion.div>

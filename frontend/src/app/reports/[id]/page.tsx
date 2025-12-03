@@ -530,13 +530,16 @@ export default function ReportDetailsPage() {
                         disabled={isSubmittingComment}
                       />
                       <div className="flex justify-end mt-2">
-                        <button
+                        <Button
                           type="submit"
-                          disabled={isSubmittingComment || !newComment.trim()}
-                          className="px-4 py-2 bg-[#2a7d2f] text-white rounded-lg font-semibold hover:bg-[#1f5f23] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                          variant="primary"
+                          size="md"
+                          iconPosition="right"
+                          isLoading={isSubmittingComment}
+                          disabled={!newComment.trim()}
                         >
-                          {isSubmittingComment ? 'Posting...' : 'Post Comment'}
-                        </button>
+                          Post Comment
+                        </Button>
                       </div>
                     </div>
                   </div>

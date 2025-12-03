@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, User, Shield, HelpCircle, Check } from "lucide-react";
 import { useState } from "react";
+import Button from '@/components/common/Button';
 
 interface User {
   _id: string;
@@ -126,9 +127,9 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                 <div className="flex items-center space-x-3">
                   <h3 className="text-xl font-bold text-gray-900">{user.name}</h3>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${currentRole === 'authority' ? 'bg-red-100 text-red-700' :
-                      currentRole === 'problemSolver' ? 'bg-blue-100 text-blue-700' :
+                    currentRole === 'problemSolver' ? 'bg-blue-100 text-blue-700' :
 
-                        'bg-gray-100 text-gray-700'
+                      'bg-gray-100 text-gray-700'
                     }`}>
                     {currentRole}
                   </span>
@@ -154,8 +155,8 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className={`relative p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${isSelected
-                        ? 'border-[#2a7d2f] bg-green-50 shadow-lg'
-                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                      ? 'border-[#2a7d2f] bg-green-50 shadow-lg'
+                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                       } ${isCurrent ? 'ring-2 ring-yellow-400 ring-opacity-50' : ''}`}
                   >
                     <input
@@ -207,31 +208,26 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
 
           {/* Actions */}
           <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
-            <button
+            <Button
+              variant="ghost"
+              size="md"
               onClick={onClose}
-              className="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium rounded-xl hover:bg-white transition-colors"
+              className="text-gray-600 hover:text-gray-800 hover:bg-white"
             >
               Cancel
-            </button>
-            <motion.button
-              whileHover={{ scale: selectedRole !== currentRole && !isSaving ? 1.05 : 1 }}
-              whileTap={{ scale: selectedRole !== currentRole && !isSaving ? 0.95 : 1 }}
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
               onClick={handleSave}
               disabled={selectedRole === currentRole || isSaving}
-              className="px-8 py-3 bg-linear-to-r from-[#2a7d2f] to-[#1e5c22] text-white font-medium rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition-all duration-200 flex items-center space-x-2"
+              isLoading={isSaving}
+              icon={!isSaving ? <Shield size={18} /> : undefined}
+              iconPosition="left"
+              className="shadow-lg"
             >
-              {isSaving ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Updating...</span>
-                </>
-              ) : (
-                <>
-                  <Shield size={18} />
-                  <span>Update Role</span>
-                </>
-              )}
-            </motion.button>
+              {isSaving ? 'Updating...' : 'Update Role'}
+            </Button>
           </div>
         </motion.div>
       </motion.div>

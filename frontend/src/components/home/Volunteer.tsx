@@ -10,6 +10,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import Link from "next/link";
+import Button from "@/components/common/Button";
 
 // --- TEAM DATA ---
 const teamMembers = [
@@ -122,11 +123,14 @@ export default function TeamSection() {
         <div className="flex justify-center">
           <div className="bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.08)] py-3 px-4 flex flex-col md:flex-row items-center gap-6 border border-gray-100">
 
-            <Link href="/volunteer" className="flex items-center gap-3 bg-[#F7CE50] hover:bg-[#eac140] text-[#003B31] px-8 py-3 rounded-full font-bold text-base transition-colors">
-              If you want, you can join us
-              <div className="w-6 h-6 bg-[#003B31] rounded-full flex items-center justify-center">
-                <ArrowRight className="w-3 h-3 text-white -rotate-45" />
-              </div>
+            <Link href="/volunteer">
+              <Button
+                variant="primary"
+                size="lg"
+                iconPosition="right"
+              >
+                If you want, you can join us
+              </Button>
             </Link>
 
           </div>

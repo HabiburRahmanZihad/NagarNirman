@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import Button from '@/components/common/Button';
 import {
   FaUser,
   FaEnvelope,
@@ -320,13 +321,15 @@ export default function ProblemSolverApplications() {
                     </div>
                   </div>
 
-                  <button
+                  <Button
                     onClick={() => openModal(app)}
-                    className="ml-4 bg-linear-to-r from-[#2a7d2f] to-[#1e5a23] text-white px-6 py-3 rounded-xl hover:from-[#236b27] hover:to-[#1a4d1f] transition-all duration-300 flex items-center space-x-2 shadow-lg hover:shadow-xl hover:scale-105 font-medium"
+                    variant="primary"
+                    size="md"
+                    iconPosition="right"
+                    className="ml-4"
                   >
-                    <FaEye className="text-lg" />
-                    <span>View Details</span>
-                  </button>
+                    View Details
+                  </Button>
                 </div>
               </motion.div>
             ))}
@@ -341,16 +344,15 @@ export default function ProblemSolverApplications() {
             className="mt-8 flex justify-center space-x-3"
           >
             {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((page) => (
-              <button
+              <Button
                 key={page}
                 onClick={() => setPagination({ ...pagination, page })}
-                className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 shadow-md hover:shadow-lg ${pagination.page === page
-                    ? 'bg-linear-to-r from-[#2a7d2f] to-[#1e5a23] text-white scale-110'
-                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-                  }`}
+                variant={pagination.page === page ? 'primary' : 'ghost'}
+                size="sm"
+                className={pagination.page === page ? 'scale-110' : ''}
               >
                 {page}
-              </button>
+              </Button>
             ))}
           </motion.div>
         )}
@@ -632,22 +634,28 @@ export default function ProblemSolverApplications() {
                     </div>
 
                     <div className="flex space-x-4">
-                      <button
+                      <Button
                         onClick={() => handleReview(selectedApp._id, 'approved')}
                         disabled={isReviewing}
-                        className="flex-1 bg-linear-to-r from-green-600 to-emerald-600 text-white py-4 rounded-xl hover:from-green-700 hover:to-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                        variant="primary"
+                        size="xl"
+                        iconPosition="right"
+                        isLoading={isReviewing}
+                        className="flex-1"
                       >
-                        <FaCheckCircle className="text-xl" />
-                        <span>Approve Application</span>
-                      </button>
-                      <button
+                        Approve Application
+                      </Button>
+                      <Button
                         onClick={() => handleReview(selectedApp._id, 'rejected')}
                         disabled={isReviewing}
-                        className="flex-1 bg-linear-to-r from-red-600 to-rose-600 text-white py-4 rounded-xl hover:from-red-700 hover:to-rose-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                        variant="danger"
+                        size="xl"
+                        iconPosition="right"
+                        isLoading={isReviewing}
+                        className="flex-1"
                       >
-                        <FaTimesCircle className="text-xl" />
-                        <span>Reject Application</span>
-                      </button>
+                        Reject Application
+                      </Button>
                     </div>
                   </div>
                 )}
