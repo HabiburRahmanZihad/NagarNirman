@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import DonationSection from "./DonationSection";
+import Button from '@/components/common/Button';
 
 type GalleryItem = {
   id: number;
@@ -130,9 +131,9 @@ const GalleryPage = () => {
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
-              <button className="btn btn-primary shadow-lg hover:shadow-xl transition">
+              <Button variant="primary" size="lg" iconPosition="right">
                 Join the next drive
-              </button>
+              </Button>
 
               <div className="flex items-center gap-3 text-sm md:text-base">
                 <span className="h-2 w-2 rounded-full bg-success" />
@@ -166,8 +167,10 @@ const GalleryPage = () => {
                   </p>
                 </div>
 
-                <button
-                  className="btn btn-sm btn-outline border-white/50 text-white hover:bg-white/10"
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-white/50 text-white hover:bg-white/10"
                   onClick={() =>
                     setSelected({
                       id: 999,
@@ -180,7 +183,7 @@ const GalleryPage = () => {
                   }
                 >
                   View log
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -282,12 +285,14 @@ const GalleryPage = () => {
           {/* Load more */}
           {hasMore && (
             <div className="flex justify-center pt-2">
-              <button
-                className="btn btn-outline btn-primary"
+              <Button
+                variant="outline"
+                size="md"
+                iconPosition="right"
                 onClick={() => setVisibleCount((c) => c + 8)}
               >
                 Load more
-              </button>
+              </Button>
             </div>
           )}
 
@@ -315,9 +320,9 @@ const GalleryPage = () => {
                 </div>
               </div>
 
-              <button className="btn btn-outline btn-primary">
+              <Button variant="outline" size="md" iconPosition="right">
                 Submit your photo
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -380,13 +385,15 @@ const GalleryPage = () => {
                 fill
                 className="object-contain"
               />
-              <button
+              <Button
                 onClick={() => setSelected(null)}
-                className="btn btn-sm btn-circle absolute top-3 right-3 bg-black/60 text-white border-none hover:bg-black"
+                variant="ghost"
+                size="sm"
+                className="absolute top-3 right-3 bg-black/60 text-white border-none hover:bg-black min-w-0 w-10 h-10 p-0 rounded-full"
                 aria-label="Close preview"
               >
                 ✕
-              </button>
+              </Button>
             </div>
 
             <div className="p-5 md:p-6 space-y-2">
@@ -409,8 +416,8 @@ const GalleryPage = () => {
               </p>
 
               <div className="pt-3 flex gap-2">
-                <button className="btn btn-primary">Support similar drives</button>
-                <button className="btn btn-ghost">Share</button>
+                <Button variant="primary" size="md" iconPosition="right">Support similar drives</Button>
+                <Button variant="ghost" size="md">Share</Button>
               </div>
             </div>
           </div>

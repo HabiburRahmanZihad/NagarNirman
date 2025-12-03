@@ -1,6 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Button from '@/components/common/Button';
+import { ArrowRight, PlayCircle } from 'lucide-react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -65,7 +67,7 @@ export default function SlideContent({
     >
       <div className="relative">
         <div className="absolute -inset-4 bg-black/20 rounded-2xl blur-lg -z-10" />
-        
+
         <motion.h3
           variants={itemVariants}
           className="text-[#f2a921] font-semibold text-lg mb-4 tracking-wider uppercase"
@@ -91,23 +93,25 @@ export default function SlideContent({
           variants={containerVariants}
           className="flex flex-col justify-center lg:justify-start sm:flex-row gap-4"
         >
-          <motion.button
-            variants={itemVariants}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-[#004d40] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#f2a921] transition-all duration-300 shadow-lg"
-          >
-            {primaryBtn}
-          </motion.button>
+          <motion.div variants={itemVariants}>
+            <Button
+              variant="primary"
+              size="lg"
+              iconPosition="right"
+            >
+              {primaryBtn}
+            </Button>
+          </motion.div>
 
-          <motion.button
-            variants={itemVariants}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-[#002E2E] transition-all duration-300"
-          >
-            {secondaryBtn}
-          </motion.button>
+          <motion.div variants={itemVariants}>
+            <Button
+              variant="outline"
+              size="lg"
+              iconPosition="right"
+            >
+              {secondaryBtn}
+            </Button>
+          </motion.div>
         </motion.div>
       </div>
     </motion.div>

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { MapPin, Calendar, AlertTriangle, User, Award, Clock, Navigation, Clock3, CheckCircle2, Image as ImageIcon } from "lucide-react";
+import Button from '@/components/common/Button';
 
 interface Task {
   _id: string;
@@ -30,26 +31,26 @@ interface TaskDetailsProps {
 }
 
 const severityConfig = {
-  low: { 
-    color: "text-green-600", 
-    bgColor: "bg-green-100", 
-    label: "Low", 
+  low: {
+    color: "text-green-600",
+    bgColor: "bg-green-100",
+    label: "Low",
     headerBg: "from-green-500 to-green-600",
     lightBg: "bg-green-50",
     borderColor: "border-green-200"
   },
-  medium: { 
-    color: "text-yellow-600", 
-    bgColor: "bg-yellow-100", 
-    label: "Medium", 
+  medium: {
+    color: "text-yellow-600",
+    bgColor: "bg-yellow-100",
+    label: "Medium",
     headerBg: "from-yellow-500 to-yellow-600",
     lightBg: "bg-yellow-50",
     borderColor: "border-yellow-200"
   },
-  high: { 
-    color: "text-red-600", 
-    bgColor: "bg-red-100", 
-    label: "High", 
+  high: {
+    color: "text-red-600",
+    bgColor: "bg-red-100",
+    label: "High",
     headerBg: "from-red-500 to-red-600",
     lightBg: "bg-red-50",
     borderColor: "border-red-200"
@@ -84,7 +85,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return "Today";
     if (diffDays === 1) return "Yesterday";
     if (diffDays < 7) return `${diffDays} days ago`;
@@ -115,7 +116,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
             <h1 className="text-2xl lg:text-3xl font-bold mb-3 leading-tight">{task.title}</h1>
             <p className="text-white/90 text-lg leading-relaxed">{task.description}</p>
           </div>
-          
+
           <div className="shrink-0">
             <div className="inline-flex items-center px-4 py-2.5 rounded-xl text-sm font-bold bg-white/20 backdrop-blur-sm border border-white/30">
               <StatusIcon status={task.status} />
@@ -183,10 +184,9 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
                     </p>
                   </div>
                 </div>
-                <button className="w-full mt-3 px-4 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium flex items-center justify-center text-sm">
-                  <MapPin className="w-4 h-4 mr-2" />
+                <Button variant="primary" size="md" fullWidth iconPosition="right" className="mt-3">
                   Open in Maps
-                </button>
+                </Button>
               </div>
             </motion.div>
 
@@ -230,7 +230,7 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
                 <p className="text-gray-600 text-sm mb-3">Points upon verification</p>
                 <div className="p-3 bg-yellow-100 rounded-lg border border-yellow-200">
                   <p className="text-xs text-yellow-800">
-                    {task.status === "completed" 
+                    {task.status === "completed"
                       ? "Points have been awarded for this completed task"
                       : "Points will be awarded after admin verification of your submitted proof"
                     }
@@ -284,10 +284,9 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
                 className="flex items-start space-x-3"
               >
                 <div className="flex flex-col items-center pt-0.5">
-                  <div className={`w-3 h-3 rounded-full ${
-                    historyItem.status === 'pending' ? 'bg-yellow-400' :
-                    historyItem.status === 'ongoing' ? 'bg-blue-400' : 'bg-green-400'
-                  }`} />
+                  <div className={`w-3 h-3 rounded-full ${historyItem.status === 'pending' ? 'bg-yellow-400' :
+                      historyItem.status === 'ongoing' ? 'bg-blue-400' : 'bg-green-400'
+                    }`} />
                   {index < task.history.length - 1 && (
                     <div className="w-0.5 h-8 bg-gray-200 mt-1" />
                   )}

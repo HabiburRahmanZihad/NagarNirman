@@ -2,6 +2,7 @@
 
 import React from "react";
 import { MapPin, Clock, ArrowRight, Sprout, Calendar } from "lucide-react";
+import Button from "@/components/common/Button";
 
 // --- EVENT DATA ---
 const events = [
@@ -42,23 +43,23 @@ const events = [
     ],
   },
   {
-  id: 3,
-  day: "12",
-  month: "April",
-  year: "2025",
-  title: "City Drain Cleanup Drive",
-  location: "Mirpur 10, Dhaka",
-  time: "9:00am - 1:00pm",
-  joinedCount: "184",
-  category: "Drainage & Sanitation",
-  image:
-    "https://cdn.pixabay.com/photo/2012/01/16/07/16/water-11699_960_720.jpg",
-  avatars: [
-    "https://i.pravatar.cc/100?img=44",
-    "https://i.pravatar.cc/100?img=45",
-    "https://i.pravatar.cc/100?img=46",
-  ],
-},
+    id: 3,
+    day: "12",
+    month: "April",
+    year: "2025",
+    title: "City Drain Cleanup Drive",
+    location: "Mirpur 10, Dhaka",
+    time: "9:00am - 1:00pm",
+    joinedCount: "184",
+    category: "Drainage & Sanitation",
+    image:
+      "https://cdn.pixabay.com/photo/2012/01/16/07/16/water-11699_960_720.jpg",
+    avatars: [
+      "https://i.pravatar.cc/100?img=44",
+      "https://i.pravatar.cc/100?img=45",
+      "https://i.pravatar.cc/100?img=46",
+    ],
+  },
 
 ];
 
@@ -160,12 +161,13 @@ export default function EventsSection() {
                   </div>
 
                   {/* Button */}
-                  <button className="flex items-center gap-3 bg-[#eab308] text-[#004d40] pl-6 pr-2 py-2 rounded-full font-bold text-base transition-all duration-300 hover:bg-[#004d40] hover:text-white group/btn">
+                  <Button
+                    variant="accent"
+                    size="lg"
+                    iconPosition="right"
+                  >
                     Join Event
-                    <div className="w-10 h-10 bg-[#004d40] rounded-full flex items-center justify-center group-hover/btn:bg-[#eab308] transition-colors duration-300">
-                      <ArrowRight className="w-4 h-4 text-white group-hover/btn:text-[#004d40]" />
-                    </div>
-                  </button>
+                  </Button>
                 </div>
               </div>
 

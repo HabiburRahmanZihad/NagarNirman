@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
+import Button from '@/components/common/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 import Select from 'react-select';
 import {
@@ -1517,45 +1518,26 @@ export default function ApplyProblemSolver() {
                     </motion.button>
 
                     <div className="flex space-x-4">
-                      <motion.button
+                      <Button
                         type="button"
                         onClick={onSaveDraft}
-                        disabled={isSavingDraft}
-                        variants={buttonVariants}
-                        initial="initial"
-                        whileHover="hover"
-                        whileTap="tap"
-                        className="bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 transition-colors hover:bg-gray-300"
+                        variant="ghost"
+                        size="lg"
+                        isLoading={isSavingDraft}
                       >
-                        {isSavingDraft ? (
-                          <div className="w-4 h-4 border-2 border-gray-700 border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <FaSave className="w-4 h-4" />
-                        )}
-                        <span>Save Draft</span>
-                      </motion.button>
+                        Save Draft
+                      </Button>
 
-                      <motion.button
+                      <Button
                         type="submit"
-                        disabled={!isValid || isSubmitting}
-                        variants={buttonVariants}
-                        initial="initial"
-                        whileHover="hover"
-                        whileTap="tap"
-                        className="bg-[#2a7d2f] text-white font-semibold py-3 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 transition-colors hover:bg-[#236b27]"
+                        variant="primary"
+                        size="lg"
+                        iconPosition="right"
+                        disabled={!isValid}
+                        isLoading={isSubmitting}
                       >
-                        {isSubmitting ? (
-                          <>
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            <span>Submitting...</span>
-                          </>
-                        ) : (
-                          <>
-                            <FaPaperPlane className="w-4 h-4" />
-                            <span>Submit Application</span>
-                          </>
-                        )}
-                      </motion.button>
+                        Submit Application
+                      </Button>
                     </div>
                   </div>
                 </motion.div>

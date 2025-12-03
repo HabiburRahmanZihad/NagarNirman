@@ -6,6 +6,7 @@ import {
   Mail, MapPin, Phone, Send,
   Copy, Check, ArrowRight, MessageSquare
 } from "lucide-react";
+import Button from "@/components/common/Button";
 
 export default function ContactSection() {
   const [copied, setCopied] = useState(false);
@@ -35,7 +36,7 @@ export default function ContactSection() {
               Get in Touch
             </span>
             <h2 className="text-4xl md:text-5xl font-bold text-[#002E2E] mb-6">
-              Let&apos;s Build a <br/>
+              Let&apos;s Build a <br />
               <span className="text-transparent bg-clip-text bg-linear-to-r from-[#2a7d2f] to-[#aef452]">
                 Cleaner Future
               </span> Together
@@ -84,10 +85,10 @@ export default function ContactSection() {
               {/* Map Abstract Background */}
               <div className="absolute inset-0 opacity-20 grayscale mix-blend-overlay group-hover:scale-110 transition-transform duration-700">
 
-                 [Image of dark abstract city map]
+                [Image of dark abstract city map]
 
-                 {/* Fallback pattern if image fails */}
-                 <div className="w-full h-full bg-[url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg')] bg-cover bg-center" />
+                {/* Fallback pattern if image fails */}
+                <div className="w-full h-full bg-[url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg')] bg-cover bg-center" />
               </div>
 
               <div className="relative z-10">
@@ -96,7 +97,7 @@ export default function ContactSection() {
                 </div>
                 <h3 className="text-lg font-bold mb-1">Our HQ</h3>
                 <p className="text-white/70 text-sm">
-                  IIUC Campus, Kumira,<br/> Chittagong, Bangladesh
+                  IIUC Campus, Kumira,<br /> Chittagong, Bangladesh
                 </p>
               </div>
             </motion.div>
@@ -178,12 +179,14 @@ export default function ContactSection() {
                 />
               </div>
 
-              <button className="group w-full bg-[#002E2E] text-white font-bold text-lg rounded-2xl py-5 flex items-center justify-center gap-3 shadow-lg hover:bg-[#2a7d2f] transition-all duration-300 relative overflow-hidden">
-                <span className="relative z-10">Send Message</span>
-                <Send className="w-5 h-5 relative z-10 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                {/* Button Shine Effect */}
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-2xl" />
-              </button>
+              <Button
+                variant="primary"
+                size="xl"
+                iconPosition="right"
+                fullWidth
+              >
+                Send Message
+              </Button>
             </form>
 
             {/* Decorative Corner */}

@@ -484,8 +484,12 @@ const AboutPage = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/register">
-              <Button className="bg-[#aef452] hover:bg-[#9de045] text-[#002E2E] font-bold h-14 px-8 rounded-full text-lg border-none flex items-center gap-2">
-                Get Started Free <ArrowRight className="w-5 h-5" />
+              <Button
+                variant="accent"
+                size="xl"
+                iconPosition="right"
+              >
+                Get Started Free
               </Button>
             </Link>
           </div>

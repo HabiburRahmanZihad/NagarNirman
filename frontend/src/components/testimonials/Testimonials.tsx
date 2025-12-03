@@ -3,6 +3,7 @@ import Image from "next/image";
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
+import Button from "@/components/common/Button";
 
 const testimonials = [
   {
@@ -70,17 +71,21 @@ export default function Testimonials() {
             </div>
           </div>
 
-          <button className="mt-6 inline-flex items-center gap-3 border border-base-200 px-4 py-3 rounded-xl shadow-sm hover:shadow-md transition">
-            <span className="p-2 rounded-full bg-accent/30">●</span>
-            <span className="text-info font-medium">Write your honest review →</span>
-          </button>
+          <Button
+            variant="outline"
+            size="md"
+            iconPosition="right"
+            className="mt-6"
+          >
+            Write your honest review
+          </Button>
         </div>
 
         {/* RIGHT SIDE - Custom Cards Effect Auto Slide */}
-     
-      <div>
-        <h2>the gallery</h2>
-      </div>
+
+        <div>
+          <h2>the gallery</h2>
+        </div>
       </div>
     </section>
   );

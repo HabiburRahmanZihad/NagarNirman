@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FullPageLoading } from '@/components/common';
+import Button from '@/components/common/Button';
 
 export default function SuperAdminDashboard() {
   const { user, isLoading } = useAuth();
@@ -194,9 +195,9 @@ export default function SuperAdminDashboard() {
                 </div>
               </div>
               <Link href="/dashboard/superAdmin/review-tasks">
-                <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold text-sm">
+                <Button variant="primary" size="md" iconPosition="right">
                   Review Now
-                </button>
+                </Button>
               </Link>
             </div>
           </motion.div>

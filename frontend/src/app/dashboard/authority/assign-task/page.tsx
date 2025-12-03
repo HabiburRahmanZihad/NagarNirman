@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
+import Button from '@/components/common/Button';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { reportAPI, problemSolverAPI, taskAPI, userAPI } from '@/utils/api';
@@ -788,16 +789,18 @@ const AssignTaskPage = () => {
               )}
             </div>
             <div className="flex items-center space-x-4">
-              <button
+              <Button
                 onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-[#81d586] text-white rounded-lg hover:bg-[#65b869] transition-colors flex items-center space-x-2"
+                variant="primary"
+                size="md"
+                iconPosition="left"
                 title="Refresh data"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
                 <span>Refresh</span>
-              </button>
+              </Button>
               <div className="text-right">
                 <div className="text-2xl font-bold text-[#81d586]">{filteredReports.length}</div>
                 <div className="text-sm text-gray-500">Tasks Found</div>
@@ -1120,16 +1123,15 @@ const AssignTaskPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                         {report.status === 'pending' && (
-                          <button
+                          <Button
                             onClick={() => setSelectedReport(report)}
                             disabled={!canAssign}
-                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${canAssign
-                                ? 'bg-[#81d586] text-white hover:bg-[#65b869]'
-                                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                              }`}
+                            variant="primary"
+                            size="sm"
+                            iconPosition="right"
                           >
                             {canAssign ? 'Assign' : 'No Solvers'}
-                          </button>
+                          </Button>
                         )}
 
                         {report.status !== 'pending' && (
@@ -1189,18 +1191,20 @@ const AssignTaskPage = () => {
                 <h3 className="text-xl font-semibold text-[#002E2E]">
                   Assign Task
                 </h3>
-                <button
+                <Button
                   aria-label="Close modal"
                   onClick={() => {
                     setSelectedReport(null);
                     setSelectedSolver('');
                   }}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  variant="ghost"
+                  size="sm"
+                  className="min-w-0 w-10 h-10 p-0"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                </button>
+                </Button>
               </div>
 
               {/* Task Details */}
@@ -1248,8 +1252,8 @@ const AssignTaskPage = () => {
                       key={option.value}
                       onClick={() => setSortBy(option.value as any)}
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${sortBy === option.value
-                          ? 'bg-[#81d586] text-white'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        ? 'bg-[#81d586] text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                         }`}
                     >
                       {option.label}
@@ -1279,8 +1283,8 @@ const AssignTaskPage = () => {
                       <div
                         key={solver._id}
                         className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedSolver === solver._id
-                            ? 'border-[#81d586] bg-[#F6FFF9] ring-2 ring-[#81d586] ring-opacity-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-[#81d586] bg-[#F6FFF9] ring-2 ring-[#81d586] ring-opacity-50'
+                          : 'border-gray-200 hover:border-gray-300'
                           }`}
                         onClick={() => setSelectedSolver(solver._id)}
                       >
@@ -1288,8 +1292,8 @@ const AssignTaskPage = () => {
                           <div className="flex items-center space-x-4 flex-1">
                             {/* Rank Badge */}
                             <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${index === 0 ? 'bg-yellow-500' :
-                                index === 1 ? 'bg-gray-400' :
-                                  index === 2 ? 'bg-orange-500' : 'bg-[#81d586]'
+                              index === 1 ? 'bg-gray-400' :
+                                index === 2 ? 'bg-orange-500' : 'bg-[#81d586]'
                               }`}>
                               {index + 1}
                             </div>
@@ -1370,8 +1374,8 @@ const AssignTaskPage = () => {
                           {/* Selection Indicator */}
                           <div className="shrink-0 ml-4">
                             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${selectedSolver === solver._id
-                                ? 'bg-[#81d586] border-[#81d586]'
-                                : 'bg-white border-gray-300'
+                              ? 'bg-[#81d586] border-[#81d586]'
+                              : 'bg-white border-gray-300'
                               }`}>
                               {selectedSolver === solver._id && (
                                 <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1388,17 +1392,18 @@ const AssignTaskPage = () => {
               </div>
 
               <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-                <button
+                <Button
                   onClick={() => {
                     setSelectedReport(null);
                     setSelectedSolver('');
                   }}
-                  className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  variant="ghost"
+                  size="lg"
                   disabled={assigning}
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => {
                     if (!selectedSolver) {
                       toast.error('Please select a problem solver');
@@ -1410,7 +1415,10 @@ const AssignTaskPage = () => {
                     }
                   }}
                   disabled={!selectedSolver || assigning || getAvailableSolvers(selectedReport).length === 0}
-                  className="px-6 py-2 bg-[#81d586] text-white rounded-lg hover:bg-[#65b869] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center space-x-2"
+                  variant="primary"
+                  size="lg"
+                  iconPosition="right"
+                  isLoading={assigning}
                 >
                   {assigning ? (
                     <>

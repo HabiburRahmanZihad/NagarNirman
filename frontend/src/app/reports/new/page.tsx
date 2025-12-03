@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import categoryOptions from "@/data/categoryOptions.json";
 import divisionData from "@/data/divisionsData.json";
 import { FullPageLoading, ErrorDisplay } from '@/components/common';
+import Button from '@/components/common/Button';
 
 type ReportFormData = {
   category: string;
@@ -681,13 +682,16 @@ export default function NewReportPage() {
                 ⚠️ All fields are mandatory including images and location coordinates
               </p>
             </div>
-            <button
-              type="submit"
+            <Button
+              variant="primary"
+              size="xl"
+              iconPosition="right"
+              fullWidth
               disabled={isSubmitting}
-              className="bg-[#2a7d2f] hover:bg-[#1e5d22] disabled:bg-gray-400 disabled:cursor-not-allowed w-full transition font-bold text-white px-10 py-4 rounded-lg shadow-lg text-lg"
+              isLoading={isSubmitting}
             >
               {isSubmitting ? "Submitting..." : "Submit Report"}
-            </button>
+            </Button>
             <p className="text-gray-500 text-sm mt-3">
               By submitting, you agree to our terms and conditions
             </p>

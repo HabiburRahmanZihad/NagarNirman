@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FullPageLoading } from '@/components/common';
 import { useNotifications } from '@/context/NotificationContext';
+import Button from '@/components/common/Button';
 import { useAuth } from '@/context/AuthContext';
 import { taskAPI } from '@/utils/api';
 import toast from 'react-hot-toast';
@@ -203,13 +204,15 @@ export default function TaskReviewPage() {
                 Review submitted work, approve or request improvements
               </p>
             </div>
-            <button
+            <Button
               onClick={fetchPendingTasks}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              variant="outline"
+              size="md"
+              iconPosition="left"
             >
               <RefreshCw className="w-5 h-5" />
               <span>Refresh</span>
-            </button>
+            </Button>
           </div>
         </motion.div>
 
@@ -372,20 +375,24 @@ export default function TaskReviewPage() {
 
                   {/* Action Buttons */}
                   <div className="flex gap-3">
-                    <button
+                    <Button
                       onClick={() => openReviewModal(task, 'approve')}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all font-semibold shadow-lg hover:shadow-xl"
+                      variant="primary"
+                      size="lg"
+                      iconPosition="right"
+                      className="flex-1"
                     >
-                      <CheckCircle className="w-5 h-5" />
                       Approve & Reward
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={() => openReviewModal(task, 'reject')}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-red-600 to-red-700 text-white rounded-lg hover:from-red-700 hover:to-red-800 transition-all font-semibold shadow-lg hover:shadow-xl"
+                      variant="danger"
+                      size="lg"
+                      iconPosition="right"
+                      className="flex-1"
                     >
-                      <XCircle className="w-5 h-5" />
                       Request Changes
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </motion.div>
@@ -500,23 +507,26 @@ export default function TaskReviewPage() {
                   )}
 
                   <div className="flex gap-3 mt-6">
-                    <button
+                    <Button
                       onClick={() => setShowReviewModal(false)}
                       disabled={submitting}
-                      className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+                      variant="ghost"
+                      size="lg"
+                      className="flex-1"
                     >
                       Cancel
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={handleReview}
                       disabled={submitting}
-                      className={`flex-1 px-6 py-3 rounded-lg transition-all font-semibold text-white ${reviewAction === 'approve'
-                        ? 'bg-linear-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800'
-                        : 'bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800'
-                        } ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      variant={reviewAction === 'approve' ? 'primary' : 'danger'}
+                      size="lg"
+                      iconPosition="right"
+                      isLoading={submitting}
+                      className="flex-1"
                     >
-                      {submitting ? 'Processing...' : reviewAction === 'approve' ? 'Approve & Award Points' : 'Send for Revision'}
-                    </button>
+                      {reviewAction === 'approve' ? 'Approve & Award Points' : 'Send for Revision'}
+                    </Button>
                   </div>
                 </div>
               </motion.div>

@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { FaMapMarkerAlt, FaClock, FaThumbsUp, FaEye, FaExclamationCircle } from 'react-icons/fa';
+import Button from '@/components/common/Button';
 
 interface ReportCardProps {
   report: {
@@ -104,10 +105,9 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
                 <span>{report.upvotes?.length || 0}</span>
               </div>
             </div>
-            <button className="text-[#2a7d2f] hover:text-[#1e5d22] font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-              <FaEye />
+            <Button variant="ghost" size="sm" iconPosition="right" className="self-start">
               View Details
-            </button>
+            </Button>
           </div>
         </div>
       </div>

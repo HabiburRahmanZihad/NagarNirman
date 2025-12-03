@@ -5,6 +5,7 @@ import { Search, Filter, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import divisionsData from "@/data/divisionsData.json";
 import categoryOptions from "@/data/categoryOptions.json";
+import Button from "@/components/common/Button";
 
 interface Filters {
   status: string;
@@ -141,7 +142,7 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
               aria-label="Filter tasks by category"
               value={filters.category}
               onChange={(e) => onFiltersChange({ ...filters, category: e.target.value })}
-              className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 bg-white min-w-[160px] text-sm"
+              className="px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 bg-white min-w-40 text-sm"
             >
               {categoryOptionsList.map(option => (
                 <option key={option.value} value={option.value}>
@@ -151,7 +152,9 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
             </select>
 
             {activeFiltersCount > 0 && (
-              <button
+              <Button
+                variant="danger"
+                size="sm"
                 onClick={() => {
                   onFiltersChange({
                     status: 'all',
@@ -161,27 +164,31 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
                   });
                   setSearchTerm('');
                 }}
-                className="px-4 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium flex items-center gap-2"
+                icon={<X className="w-4 h-4" />}
+                iconPosition="left"
               >
-                <X className="w-4 h-4" />
                 Clear All
-              </button>
+              </Button>
             )}
           </div>
 
           {/* Mobile Filter Button */}
-          <button
-            onClick={() => setShowMobileFilters(true)}
-            className="lg:hidden flex items-center space-x-2 px-4 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors relative text-sm"
-          >
-            <Filter className="w-4 h-4" />
-            <span>Filters</span>
+          <div className="lg:hidden relative">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setShowMobileFilters(true)}
+              icon={<Filter className="w-4 h-4" />}
+              iconPosition="left"
+            >
+              Filters
+            </Button>
             {activeFiltersCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
                 {activeFiltersCount}
               </span>
             )}
-          </button>
+          </div>
         </div>
 
         {/* Active Filters Tags */}
@@ -271,11 +278,10 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
                           onFiltersChange({ ...filters, status: option.value });
                           if (option.value === 'all') setShowMobileFilters(false);
                         }}
-                        className={`p-3 rounded-lg border transition-all text-sm ${
-                          filters.status === option.value
+                        className={`p-3 rounded-lg border transition-all text-sm ${filters.status === option.value
                             ? 'border-green-500 bg-green-50 text-green-700'
                             : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                        }`}
+                          }`}
                       >
                         {option.label}
                       </button>
@@ -293,11 +299,10 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
                           onFiltersChange({ ...filters, severity: option.value });
                           if (option.value === 'all') setShowMobileFilters(false);
                         }}
-                        className={`p-3 rounded-lg border transition-all text-sm ${
-                          filters.severity === option.value
+                        className={`p-3 rounded-lg border transition-all text-sm ${filters.severity === option.value
                             ? 'border-orange-500 bg-orange-50 text-orange-700'
                             : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                        }`}
+                          }`}
                       >
                         {option.label}
                       </button>

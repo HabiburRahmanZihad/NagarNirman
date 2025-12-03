@@ -494,13 +494,16 @@ export default function ReportDetailsPage() {
                         disabled={isSubmittingComment}
                       />
                       <div className="flex justify-end mt-2">
-                        <button
+                        <Button
                           type="submit"
-                          disabled={isSubmittingComment || !newComment.trim()}
-                          className="px-4 py-2 bg-[#2a7d2f] text-white rounded-lg font-semibold hover:bg-[#1f5f23] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                          variant="primary"
+                          size="md"
+                          iconPosition="right"
+                          isLoading={isSubmittingComment}
+                          disabled={!newComment.trim()}
                         >
-                          {isSubmittingComment ? 'Posting...' : 'Post Comment'}
-                        </button>
+                          Post Comment
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -540,9 +543,9 @@ export default function ReportDetailsPage() {
                           {/* Role Badge */}
                           {comment.user?.role && (
                             <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${comment.user.role === 'authority' ? 'bg-blue-100 text-blue-800' :
-                                comment.user.role === 'problemSolver' ? 'bg-purple-100 text-purple-800' :
+                              comment.user.role === 'problemSolver' ? 'bg-purple-100 text-purple-800' :
 
-                                  'bg-gray-100 text-gray-800'
+                                'bg-gray-100 text-gray-800'
                               }`}>
                               {comment.user.role === 'problemSolver' ? 'Problem Solver' :
                                 comment.user.role.charAt(0).toUpperCase() + comment.user.role.slice(1)}
@@ -591,8 +594,8 @@ export default function ReportDetailsPage() {
                     onClick={handleUpvote}
                     disabled={isUpvoting || !isAuthenticated}
                     className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold transition ${isUpvoted
-                        ? 'bg-[#2a7d2f] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-[#2a7d2f] text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       } disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     <FaThumbsUp />
