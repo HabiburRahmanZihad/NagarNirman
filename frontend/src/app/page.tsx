@@ -15,8 +15,7 @@ import Testimonials from "@/components/testimonials/Testimonials";
 import CountUpSection from "@/components/countUp/Count";
 import AboutSection from "@/components/home/aboutSection/AboutSection";
 import HowToReport from "@/components/home/HowToReport/HowToReport";
-import GreenFutureCard from "@/components/home/GreenFutureCard";
-
+import OurImpact from "@/components/home/ourImpact/OurImpact";
 
 
 
@@ -115,13 +114,13 @@ export default function Home() {
         <Testimonials></Testimonials>
       </section>
 
-      {/* <section className="container mx-auto"> */}
-      <AboutSection></AboutSection>
       <section>
-        <GreenFutureCard></GreenFutureCard>
+        <AboutSection></AboutSection>
       </section>
 
-
+      <section className="container mx-auto">
+        <OurImpact></OurImpact>
+      </section>
 
     </>
   );

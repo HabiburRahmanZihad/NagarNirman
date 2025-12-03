@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#002E2E] text-white mt-auto py-12 footer">
+    <footer className="bg-[#002E2E] text-white mt-auto py-6 md:pt-8 footer">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Section */}
@@ -128,23 +128,12 @@ const Footer: React.FC = () => {
               Join us in making Bangladesh&apos;s cities better for everyone.
             </p>
             <div className="space-y-2">
-              <Link
-                href="/auth/register"
-                className="block bg-[#81d586] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#67c173] transition-colors text-center"
-              >
-                Register Now
-              </Link>
-              <Link
-                href="/auth/login"
-                className="block border border-[#81d586] text-[#81d586] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#81d586] hover:text-white transition-colors text-center"
-              >
-                Login
-              </Link>
+              
             </div>
           </div>
         </div>
 
-        <div className="border-t w-full border-gray-700 mt-8 pt-12 text-center text-sm text-gray-300">
+        <div className="border-t w-full border-gray-700 pt-12 text-center text-sm text-gray-300">
           <p>
             &copy; 2025 NagarNirman. All rights reserved. | Aligned with SDG 11
           </p>
