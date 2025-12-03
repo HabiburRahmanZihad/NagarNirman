@@ -1,4 +1,4 @@
-import { Sprout } from "lucide-react";
+import { Sprout, Users } from "lucide-react";
 import { FaHandHoldingHeart } from "react-icons/fa";
 
 const logos = [
@@ -7,6 +7,7 @@ const logos = [
 
 const images = [
   "https://i.postimg.cc/xdgfM2W6/pexels-fauxels-3184357.jpg",
+  "https://i.postimg.cc/7ZqH5pYg/pexels-tomfisk-3856433.jpg",
   "https://i.postimg.cc/h4ZXN9Zy/pexels-rdne-6646967.jpg",
 ];
 
@@ -45,8 +46,8 @@ export default function OurImpact() {
         </div>
       </div>
 
-      {/* Images + Middle Icon */}
-      <div className="relative max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Images + Icons */}
+      <div className="relative container mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {/* Left Image */}
         <div className="rounded-xl overflow-hidden shadow-md">
@@ -57,20 +58,35 @@ export default function OurImpact() {
           />
         </div>
 
+        {/* Middle Image */}
+        <div className="rounded-xl overflow-hidden shadow-md">
+          <img
+            src={images[0]}
+            alt="Impact Middle"
+            className="w-full h-80 object-cover"
+          />
+        </div>
+
         {/* Right Image */}
         <div className="rounded-xl overflow-hidden shadow-md">
           <img
-            src={images[1]}
+            src={images[2]}
             alt="Impact Right"
             className="w-full h-80 object-cover"
           />
         </div>
 
-        {/* Center Circle Icon */}
-        <div className="hidden md:flex items-center justify-center ">
-          <div className="absolute top-32 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                          bg-white w-20 h-20 rounded-full shadow-xl flex items-center justify-center">
-            <FaHandHoldingHeart size={45}/>
+        {/* Left Icon - Between Left and Middle */}
+        <div className="hidden md:block absolute top-1/2 left-[33.33%] -translate-x-1/2 -translate-y-1/2 z-10">
+          <div className="bg-white w-20 h-20 rounded-full shadow-xl flex items-center justify-center">
+            <FaHandHoldingHeart size={40} className="text-[#3C6E59]" />
+          </div>
+        </div>
+
+        {/* Right Icon - Between Middle and Right */}
+        <div className="hidden md:block absolute top-1/2 left-[66.66%] -translate-x-1/2 -translate-y-1/2 z-10">
+          <div className="bg-white w-20 h-20 rounded-full shadow-xl flex items-center justify-center">
+            <Users size={40} className="text-[#3C6E59]" />
           </div>
         </div>
 

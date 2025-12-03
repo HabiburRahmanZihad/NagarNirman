@@ -18,49 +18,7 @@ import HowToReport from "@/components/home/HowToReport/HowToReport";
 import OurImpact from "@/components/home/ourImpact/OurImpact";
 
 
-
-// Help section
-const data = [
-  {
-    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-3-150x150.jpg",
-    title: "Aliquam semper diam in",
-    desc: "Proin lobortis mauris sed lorem convallis",
-    badge: "green",
-  },
-  {
-    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-8-150x150.jpg",
-    title: "Vestibulum eleifend lacus",
-    desc: "Proin lobortis mauris sed lorem convallis",
-    badge: "orange",
-  },
-  {
-    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-6-150x150.jpg",
-    title: "Nullam pulvinar massa posuere",
-    desc: "Proin lobortis mauris sed lorem convallis",
-    badge: "orange",
-  },
-  {
-    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-2-150x150.jpg",
-    title: "Donec sed euismod neque",
-    desc: "Proin lobortis mauris sed lorem convallis",
-    badge: "green",
-  },
-  {
-    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-5-150x150.jpg",
-    title: "Suspendisse gravida augue",
-    desc: "Proin lobortis mauris sed lorem convallis",
-    badge: "green",
-  },
-  {
-    img: "https://www.nicdarkthemes.com/themes/donation/wp/demo/wildlife/wp-content/uploads/sites/5/2020/06/team-7-150x150.jpg",
-    title: "Praesent quis maximus libero",
-    desc: "Proin lobortis mauris sed lorem convallis",
-    badge: "orange",
-  },
-];
-
 export default function Home() {
-  const { isAuthenticated } = useAuth();
 
   return (
     <>
@@ -118,7 +76,7 @@ export default function Home() {
         <AboutSection></AboutSection>
       </section>
 
-      <section className="container mx-auto">
+      <section className="container mx-auto pt-24 pb-20">
         <OurImpact></OurImpact>
       </section>
 
