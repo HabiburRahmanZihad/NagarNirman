@@ -79,7 +79,7 @@ export default function ImpactCards() {
               key={card.id}
               variants={cardVariants}
               whileHover={{ y: -5 }}
-              className="relative bg-[#F7F6F2] rounded-2xl p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-[#EFEDE8]"
+              className="relative bg-[#F7F6F2] rounded-2xl p-8 shadow-sm hover:shadow-md transition-all duration-300 border border-[#EFEDE8] group"
             >
 
               {/* Number Background */}
@@ -87,10 +87,16 @@ export default function ImpactCards() {
                 {card.number}
               </span>
 
-              {/* Icon Section */}
-              <div className="w-16 h-16 rounded-full border border-accent flex items-center justify-center bg-white mb-6">
-                {card.icon}
-              </div>
+              {/* Icon Section with Hover Effect */}
+              <motion.div 
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                className="w-16 h-16 rounded-full border border-accent flex items-center justify-center bg-white mb-6 
+                         group-hover:border-[#0A4D3C] group-hover:bg-[#0A4D3C]/10 transition-all duration-300"
+              >
+                <div className="group-hover:scale-110 group-hover:text-[#0A4D3C] transition-all duration-300">
+                  {card.icon}
+                </div>
+              </motion.div>
 
               {/* Title */}
               <h3 className="text-xl font-semibold text-[#0A4D3C] leading-snug mb-3">
