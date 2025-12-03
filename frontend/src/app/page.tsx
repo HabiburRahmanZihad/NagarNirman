@@ -15,6 +15,7 @@ import Testimonials from "@/components/testimonials/Testimonials";
 import CountUpSection from "@/components/countUp/Count";
 import AboutSection from "@/components/home/aboutSection/AboutSection";
 import HowToReport from "@/components/home/HowToReport/HowToReport";
+import OurImpact from "@/components/home/ourImpact/OurImpact";
 
 
 
@@ -115,6 +116,10 @@ export default function Home() {
 
       <section>
         <AboutSection></AboutSection>
+      </section>
+
+      <section>
+        <OurImpact></OurImpact>
       </section>
 
     </>
