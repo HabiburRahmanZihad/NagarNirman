@@ -3,10 +3,13 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { CiLocationOn } from "react-icons/ci";
+import { SiMinutemailer } from "react-icons/si";
+import { FaPhoneAlt } from "react-icons/fa";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#002E2E] text-white mt-auto py-6 md:pt-8 footer">
+    <footer className="bg-[#002E2E] text-white py-6 md:pt-8 footer mt-20">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* About Section */}
@@ -25,11 +28,20 @@ const Footer: React.FC = () => {
               Report. Resolve. Rebuild. Building smarter, cleaner, and more
               transparent cities across Bangladesh.
             </p>
+            <h3 className="text-lg pt-2 text-gray-300">We Are Available !!</h3>
+            <h5 className="text-sm pt-2 text-gray-300">
+              Mon-Sat: 10:00am to 07:30pm
+            </h5>
           </div>
 
           {/* Quick Links */}
           <div className="relative">
-            <h3 className="text-lg font-bold mb-6">Quick Links<div className="underline"><span></span></div></h3>
+            <h3 className="text-lg font-bold mb-6 ">
+              Quick Links
+              <div className="underline w-[26%]">
+                <span></span>
+              </div>
+            </h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
@@ -76,7 +88,12 @@ const Footer: React.FC = () => {
 
           {/* User Resources */}
           <div className="relative">
-            <h3 className="text-lg font-bold mb-6">For Users<div className="underline"><span></span></div></h3>
+            <h3 className="text-lg font-bold mb-6">
+              For Users
+              <div className="underline w-[21%]">
+                <span></span>
+              </div>
+            </h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
@@ -122,21 +139,58 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Get Started Section */}
-          <div className="relative">
-            <h3 className="text-lg font-bold mb-6">Get Started<div className="underline"><span></span></div></h3>
-            <p className="text-sm text-gray-300 mb-4">
-              Join us in making Bangladesh&apos;s cities better for everyone.
-            </p>
+          <div className="relative text-gray-300">
+            <h3 className="text-lg font-bold mb-6">
+              Get in Touch
+              <div className="underline w-[29%]">
+                <span></span>
+              </div>
+            </h3>
             <div className="space-y-2">
-              
+              {/* location */}
+              <div className="flex items-center gap-3">
+                <div className="bg-gray-500 w-10 h-10 flex items-center justify-center rounded-full">
+                  <CiLocationOn size={26} className="" />
+                </div>
+                <div className="">
+                  <h3 className="text-lg">Address</h3>
+                  <p className="text-sm text-gray-300">
+                    Kalabagan Lake, Savar, Dhaka
+                  </p>
+                </div>
+              </div>
+              {/* Email */}
+              <div className="flex items-center gap-3 pt-2">
+                <div className="bg-gray-500 w-10 h-10 flex items-center justify-center rounded-full">
+                  <SiMinutemailer size={26} className="" />
+                </div>
+                <div className="">
+                  <h3 className="text-lg">Email</h3>
+                  <p className="text-sm text-gray-300">Support@example.com</p>
+                </div>
+              </div>
+              {/* location */}
+              <div className="flex items-center gap-3 pt-2 mb-8">
+                <div className="bg-gray-500 w-10 h-10 flex items-center justify-center rounded-full">
+                  <FaPhoneAlt size={20} className="" />
+                </div>
+                <div className="">
+                  <h3 className="text-lg">Phone</h3>
+                  <p className="text-sm text-gray-300">+880 1950719346</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t w-full border-gray-700 pt-12 text-center text-sm text-gray-300">
-          <p>
-            &copy; 2025 NagarNirman. All rights reserved. | Aligned with SDG 11
-          </p>
+        <div className="w-full py-4 md:py-5 bg-[#2a7d2f] text-sm text-gray-300 rounded-2xl">
+          <div className="md:flex justify-around py-2 md:py-0">
+            <p>
+              &copy; 2025 NagarNirman. All rights reserved. | Aligned with SDG
+              11
+            </p>
+            <p className="pt-1">Terms & Condition · Privacy Policy</p>
+          </div>
         </div>
       </div>
     </footer>
