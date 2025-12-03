@@ -12,7 +12,7 @@ const images = [
 
 export default function OurImpact() {
   return (
-    <section className="py-16">
+    <section className="">
       {/* Text & Logo Section */}
       <div className="text-center mb-12">
         <div className="flex items-center justify-center gap-2 mb-3">

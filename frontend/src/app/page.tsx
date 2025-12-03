@@ -118,7 +118,7 @@ export default function Home() {
         <AboutSection></AboutSection>
       </section>
 
-      <section>
+      <section className="container mx-auto">
         <OurImpact></OurImpact>
       </section>
 

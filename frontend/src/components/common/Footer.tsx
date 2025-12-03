@@ -128,18 +128,7 @@ const Footer: React.FC = () => {
               Join us in making Bangladesh&apos;s cities better for everyone.
             </p>
             <div className="space-y-2">
-              <Link
-                href="/auth/register"
-                className="block bg-[#81d586] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#67c173] transition-colors text-center"
-              >
-                Register Now
-              </Link>
-              <Link
-                href="/auth/login"
-                className="block border border-[#81d586] text-[#81d586] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#81d586] hover:text-white transition-colors text-center"
-              >
-                Login
-              </Link>
+              
             </div>
           </div>
         </div>
