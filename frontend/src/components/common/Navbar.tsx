@@ -93,13 +93,13 @@ const Navbar: React.FC = () => {
 
   const navLinks = [
     { href: "/", label: "Home", icon: <FaHome className="w-4 h-4" /> },
+    { href: "/map-search", label: "Map Search", icon: <FaMapMarkedAlt className="w-4 h-4" /> },
+    { href: "/reports", label: "All Reports", icon: <FaFileAlt className="w-4 h-4" /> },
     ...(isAuthenticated ? [{
       href: getDashboardPath(),
       label: "Dashboard",
       icon: <FaTachometerAlt className="w-4 h-4" />
     }] : []),
-    { href: "/reports", label: "All Reports", icon: <FaFileAlt className="w-4 h-4" /> },
-    { href: "/map-search", label: "Map Search", icon: <FaMapMarkedAlt className="w-4 h-4" /> },
     { 
       href: "/about", 
       label: "About", 
@@ -174,7 +174,7 @@ const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-20">
           {/* Logo - Fixed for all screens */}
           <Link href="/" className="shrink-0">
-            <div className={`relative w-50 h-15 ${isHomePage && isDesktop && !isScrolled ? 'bg-white/10 backdrop-blur-sm rounded-lg p-2' : ''}`}>
+            <div className={`relative w-50 h-15 ${isHomePage && isDesktop && !isScrolled ? 'bg-white/35 backdrop-blur-sm rounded-lg p-2' : ''}`}>
               <Image
                 src="/logo/logo.png"
                 alt="NagarNirman Logo"
@@ -369,16 +369,15 @@ const Navbar: React.FC = () => {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className={`h-10 ${isHomePage && !isScrolled ? 'border-white/30 text-white hover:bg-white/20' : 'border-gray-300 text-gray-700 hover:border-[#004d40] hover:text-[#004d40]'}`}
+                        className={`h-10 ${isHomePage && !isScrolled ? 'border-white/30 text-white hover:bg-white/20' : 'border-gray-300 text-gray-700 hover:border-[#004d40] hover:text-[#004d40] hover:bg-primary'}`}
                       >
                         Login
                       </Button>
                     </Link>
                     <Link href="/auth/register">
                       <Button 
-                        variant="primary" 
                         size="sm" 
-                        className="h-10 bg-[#004d40] hover:bg-[#004d40]/90 text-white"
+                        className="h-10 bg-primary hover:bg-accent text-white"
                       >
                         Register
                       </Button>
