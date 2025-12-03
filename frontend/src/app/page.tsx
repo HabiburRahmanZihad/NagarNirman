@@ -13,10 +13,9 @@ import PartnersMarquee from "@/components/home/partnersMarquee/PartnersMarquee";
 import EmergencyHotlineMarquee from "@/components/home/emergencyHotlineMarquee/EmergencyHotlineMarquee";
 import Testimonials from "@/components/testimonials/Testimonials";
 import CountUpSection from "@/components/countUp/Count";
-
 import AboutSection from "@/components/home/aboutSection/AboutSection";
-// import GreenFutureCard from "@/components/home/greenFutureCard/GreenFutureCard";
 import HowToReport from "@/components/home/HowToReport/HowToReport";
+
 
 
 // Help section
@@ -114,11 +113,10 @@ export default function Home() {
         <Testimonials></Testimonials>
       </section>
 
-      <section className="container mx-auto">
-      <AboutSection></AboutSection>
       <section>
-        <GreenFutureCard></GreenFutureCard>
+        <AboutSection></AboutSection>
       </section>
+
     </>
   );
 }
