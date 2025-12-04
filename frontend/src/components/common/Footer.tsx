@@ -10,9 +10,9 @@ import { LucideArrowUpRight } from "lucide-react";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#002E2E] text-white py-6 md:pt-8 mt-20">
+    <footer className="bg-[#002E2E] text-white py-6 md:pt-8 ">
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:mb-12 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:mb-12 mb-6 md:px-30">
           {/* About Section */}
           <div>
             <Link href="/" className="">
@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Quick Links */}
-          <div className="">
+          <div className="md:pl-20">
             <h3 className="text-xl font-bold mb-6 text-gray-300">
               <span className="text-xl">🌿</span>Quick Links
             </h3>
@@ -122,7 +122,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* User Resources */}
-          <div className="">
+          <div className="md:pl-12">
             <h3 className="text-xl font-bold mb-6 text-gray-300">
               <span className="text-xl">🌿</span>Our Service
             </h3>
