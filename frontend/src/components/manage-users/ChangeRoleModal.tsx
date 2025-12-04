@@ -71,7 +71,7 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
     }
   };
 
-  const getRoleColor = (role: string) => {
+  const getRoleColor = (role: any) => {
     switch (role) {
       case 'authority': return 'from-red-500 to-red-600';
       case 'problemSolver': return 'from-blue-500 to-blue-600';
