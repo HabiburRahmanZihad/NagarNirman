@@ -5,146 +5,223 @@ import Link from "next/link";
 import Image from "next/image";
 import { CiLocationOn } from "react-icons/ci";
 import { SiMinutemailer } from "react-icons/si";
-import { FaPhoneAlt } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaPhoneAlt } from "react-icons/fa";
+import { LucideArrowUpRight } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#002E2E] text-white py-6 md:pt-8 footer mt-20">
+    <footer className="bg-[#002E2E] text-white py-6 md:pt-8 ">
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:mb-12 mb-6 md:px-30">
           {/* About Section */}
           <div>
-            <Link href="/" className="shrink-0">
-              <Image
-                src="/logo/logo.png"
-                alt="NagarNirman Logo"
-                width={160}
-                height={50}
-                className="object-contain"
-                priority
-              />
+            <Link href="/" className="">
+              <div className="flex items-center gap-[10px]">
+                <Image
+                  src="https://i.postimg.cc/VNNxsGXy/favicon.webp"
+                  alt="NagarNirman Logo"
+                  width={40}
+                  height={30}
+                  className="object-contain"
+                />
+                <h3 className="text-2xl md:text-[27px] font-bold text-gray-300">Econest</h3>
+              </div>
             </Link>
-            <p className="text-sm text-gray-300 pt-4">
-              Report. Resolve. Rebuild. Building smarter, cleaner, and more
-              transparent cities across Bangladesh.
+
+            <p className="text-sm md:text-[15px] text-gray-300 pt-4">
+              Introducing our team of talented and skilled professionals who are
+              ready to increase your productivity and bring your business.
             </p>
-            <h3 className="text-lg pt-2 text-gray-300">We Are Available !!</h3>
+            <h3 className="text-lg pt-3 md:pt-4 text-gray-300">
+              We Are Available !!
+            </h3>
             <h5 className="text-sm pt-2 text-gray-300">
               Mon-Sat: 10:00am to 07:30pm
             </h5>
+            {/* icon */}
+            <div className="flex gap-3 pt-7">
+              <div className="bg-gray-500 w-10 h-10 flex items-center justify-center rounded-full">
+                  <FaFacebookF size={20} className="" />
+                </div>
+              <div className="bg-gray-500 w-10 h-10 flex items-center justify-center rounded-full">
+                  <FaXTwitter size={20} className="" />
+                </div>
+              <div className="bg-gray-500 w-10 h-10 flex items-center justify-center rounded-full">
+                  <FaInstagram  size={20} className="" />
+                </div>
+              <div className="bg-gray-500 w-10 h-10 flex items-center justify-center rounded-full">
+                  <FaLinkedinIn size={20} className="" />
+                </div>
+            </div>
           </div>
 
           {/* Quick Links */}
-          <div className="relative">
-            <h3 className="text-lg font-bold mb-6 ">
-              Quick Links
-              <div className="underline w-[26%]">
-                <span></span>
-              </div>
+          <div className="md:pl-20">
+            <h3 className="text-xl font-bold mb-6 text-gray-300">
+              <span className="text-xl">🌿</span>Quick Links
             </h3>
-            <ul className="space-y-2 text-sm">
-              <li>
+            <ul className="space-y-2">
+              <li className="flex items-center group">
                 <Link
                   href="/"
-                  className="text-gray-300 hover:text-[#81d586] transition-colors"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
                 >
-                  Home
+                  About Company
                 </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
               </li>
-              <li>
+              <li className="flex items-center group pt-1">
                 <Link
-                  href="/reports"
-                  className="text-gray-300 hover:text-[#81d586] transition-colors"
+                  href="/"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
                 >
-                  Browse Reports
+                  Our causes
                 </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
               </li>
-              <li>
+              <li className="flex items-center group pt-1">
                 <Link
-                  href="/reports/new"
-                  className="text-gray-300 hover:text-[#81d586] transition-colors"
+                  href="/"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
                 >
-                  Report Issue
+                  Investor Presentation
                 </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
               </li>
-              <li>
+              <li className="flex items-center group pt-1">
                 <Link
-                  href="/about"
-                  className="text-gray-300 hover:text-[#81d586] transition-colors"
+                  href="/"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
                 >
-                  About Us
+                  Pricing Plan
                 </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
               </li>
-              <li>
+              <li className="flex items-center group pt-1">
                 <Link
-                  href="/contact"
-                  className="text-gray-300 hover:text-[#81d586] transition-colors"
+                  href="/"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
                 >
-                  Contact
+                  Meet Our Team
                 </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
+              </li>
+              <li className="flex items-center group pt-1">
+                <Link
+                  href="/"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
+                >
+                  Contact Us
+                </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
               </li>
             </ul>
           </div>
 
           {/* User Resources */}
-          <div className="relative">
-            <h3 className="text-lg font-bold mb-6">
-              For Users
-              <div className="underline w-[21%]">
-                <span></span>
-              </div>
+          <div className="md:pl-12">
+            <h3 className="text-xl font-bold mb-6 text-gray-300">
+              <span className="text-xl">🌿</span>Our Service
             </h3>
-            <ul className="space-y-2 text-sm">
-              <li>
+            <ul className="space-y-2">
+              <li className="flex items-center group">
                 <Link
-                  href="/dashboard/user"
-                  className="text-gray-300 hover:text-[#81d586] transition-colors"
+                  href="/"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
                 >
-                  User Dashboard
+                  Tree Plantatio
                 </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
               </li>
-              <li>
+              <li className="flex items-center group pt-1">
                 <Link
-                  href="/dashboard/authority"
-                  className="text-gray-300 hover:text-[#81d586] transition-colors"
+                  href="/"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
                 >
-                  Authority Panel
+                  Forest Cleaning
                 </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
               </li>
-              <li>
+              <li className="flex items-center group pt-1">
                 <Link
-                  href="/dashboard/problemSolver"
-                  className="text-gray-300 hover:text-[#81d586] transition-colors"
+                  href="/"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
                 >
-                  Problem Solver
+                  Plastic Recycling
                 </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
               </li>
-              <li>
+              <li className="flex items-center group pt-1">
                 <Link
-                  href="/apply"
-                  className="text-gray-300 hover:text-[#81d586] transition-colors"
+                  href="/"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
                 >
-                  Become Solver
+                  Natural Power
                 </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
               </li>
-              <li>
+              <li className="flex items-center group pt-1">
                 <Link
-                  href="/privacy"
-                  className="text-gray-300 hover:text-[#81d586] transition-colors"
+                  href="/"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
                 >
-                  Privacy Policy
+                  Renewable Energy
                 </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
+              </li>
+              <li className="flex items-center group pt-1">
+                <Link
+                  href="/"
+                  className="text-gray-300 hover:text-[#81d586] transition-colors md:text-[16px]"
+                >
+                  Water Refine
+                </Link>
+
+                <span className="ml-1 opacity-0 text-[#81d586] group-hover:opacity-100 transition-opacity duration-300">
+                  <LucideArrowUpRight size={20} />
+                </span>
               </li>
             </ul>
           </div>
 
           {/* Get Started Section */}
-          <div className="relative text-gray-300">
-            <h3 className="text-lg font-bold mb-6">
-              Get in Touch
-              <div className="underline w-[29%]">
-                <span></span>
-              </div>
+          <div className="text-gray-300">
+            <h3 className="text-xl font-bold mb-6">
+              <span className="text-xl">🌿</span>Get in Touch
             </h3>
             <div className="space-y-2">
               {/* location */}
@@ -154,7 +231,7 @@ const Footer: React.FC = () => {
                 </div>
                 <div className="">
                   <h3 className="text-lg">Address</h3>
-                  <p className="text-sm text-gray-300">
+                  <p className="md:text-[16px] text-gray-300">
                     Kalabagan Lake, Savar, Dhaka
                   </p>
                 </div>
@@ -166,7 +243,9 @@ const Footer: React.FC = () => {
                 </div>
                 <div className="">
                   <h3 className="text-lg">Email</h3>
-                  <p className="text-sm text-gray-300">Support@example.com</p>
+                  <p className="md:text-[16px] text-gray-300">
+                    Support@example.com
+                  </p>
                 </div>
               </div>
               {/* location */}
@@ -176,7 +255,9 @@ const Footer: React.FC = () => {
                 </div>
                 <div className="">
                   <h3 className="text-lg">Phone</h3>
-                  <p className="text-sm text-gray-300">+880 1950719346</p>
+                  <p className="md:text-[16px] text-gray-300">
+                    +880 1950719346
+                  </p>
                 </div>
               </div>
             </div>
@@ -185,11 +266,13 @@ const Footer: React.FC = () => {
 
         <div className="w-full py-4 md:py-5 bg-[#2a7d2f] text-sm text-gray-300 rounded-2xl">
           <div className="md:flex justify-around py-2 md:py-0">
-            <p>
+            <p className="text-[16px]">
               &copy; 2025 NagarNirman. All rights reserved. | Aligned with SDG
               11
             </p>
-            <p className="pt-1">Terms & Condition · Privacy Policy</p>
+            <p className="pt-1 text-[16px]">
+              Terms & Condition · Privacy Policy
+            </p>
           </div>
         </div>
       </div>
