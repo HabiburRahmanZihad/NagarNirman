@@ -8,10 +8,9 @@ import { formatRole } from "@/utils/helpers";
 import Button from "./Button";
 import Image from "next/image";
 import { NotificationCenter } from "./NotificationCenter";
-import { 
-  FaBell, 
-  FaUser, 
-  FaChevronDown, 
+import {
+  FaUser,
+  FaChevronDown,
   FaHome,
   FaTachometerAlt,
   FaFileAlt,
@@ -39,15 +38,15 @@ const Navbar: React.FC = () => {
     const checkWidth = () => {
       setWindowWidth(window.innerWidth);
     };
-    
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    
+
     checkWidth();
     window.addEventListener('resize', checkWidth);
     window.addEventListener('scroll', handleScroll);
-    
+
     return () => {
       window.removeEventListener('resize', checkWidth);
       window.removeEventListener('scroll', handleScroll);
@@ -63,9 +62,9 @@ const Navbar: React.FC = () => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setIsUserMenuOpen(false);
       }
-      if (mobileMenuRef.current && 
-          !mobileMenuRef.current.contains(event.target as Node) &&
-          !(event.target as Element).closest('[data-mobile-toggle]')) {
+      if (mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node) &&
+        !(event.target as Element).closest('[data-mobile-toggle]')) {
         setIsMobileMenuOpen(false);
       }
     };
@@ -100,9 +99,9 @@ const Navbar: React.FC = () => {
       label: "Dashboard",
       icon: <FaTachometerAlt className="w-4 h-4" />
     }] : []),
-    { 
-      href: "/about", 
-      label: "About", 
+    {
+      href: "/about",
+      label: "About",
       icon: <FaInfoCircle className="w-4 h-4" />,
       subLinks: [
         { href: "/about", label: "About Us" },
@@ -130,17 +129,17 @@ const Navbar: React.FC = () => {
   // Get link colors with primary color highlight
   const getLinkColor = (href: string) => {
     const active = isActiveLink(href);
-    
+
     if (active) {
       return isHomePage && isDesktop && !isScrolled
         ? "text-[#004d40] font-semibold bg-white/60"
         : "text-[#004d40] font-semibold bg-gray-100";
     }
-    
+
     if (isHomePage && isDesktop && !isScrolled) {
       return "text-gray-100 hover:text-white hover:bg-white/20";
     }
-    
+
     return "text-gray-700 hover:text-[#004d40] hover:bg-gray-50";
   };
 
@@ -202,7 +201,7 @@ const Navbar: React.FC = () => {
                           <FaChevronDown className="w-3 h-3 ml-1" />
                         )}
                       </Link>
-                      
+
                       {/* Submenu for About */}
                       {link.subLinks && (
                         <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-1 w-48 bg-white/90 backdrop-blur-md rounded-lg shadow-lg border border-white/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -234,7 +233,7 @@ const Navbar: React.FC = () => {
                           <FaChevronDown className="w-3 h-3 ml-1" />
                         )}
                       </Link>
-                      
+
                       {/* Submenu for About */}
                       {link.subLinks && (
                         <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
@@ -366,17 +365,18 @@ const Navbar: React.FC = () => {
                 ) : (
                   <>
                     <Link href="/auth/login">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className={`h-10 ${isHomePage && !isScrolled ? 'border-white/30 text-white hover:bg-white/20' : 'border-gray-300 text-gray-700 hover:border-[#004d40] hover:text-[#004d40] hover:bg-primary'}`}
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="h-10 border-primary text-primary hover:bg-primary hover:text-white"
                       >
                         Login
                       </Button>
                     </Link>
                     <Link href="/auth/register">
-                      <Button 
-                        size="sm" 
+                      <Button
+                        variant="primary"
+                        size="sm"
                         className="h-10 bg-primary hover:bg-accent text-white"
                       >
                         Register
@@ -393,7 +393,7 @@ const Navbar: React.FC = () => {
                 {isAuthenticated && (
                   <NotificationCenter />
                 )}
-                
+
                 {/* Hamburger Menu Toggle */}
                 <button
                   data-mobile-toggle
@@ -414,7 +414,7 @@ const Navbar: React.FC = () => {
 
         {/* Mobile & Tablet Menu (< 1024px) */}
         {isMobile && isMobileMenuOpen && (
-          <div 
+          <div
             ref={mobileMenuRef}
             className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-100 shadow-lg z-40"
           >
@@ -444,7 +444,7 @@ const Navbar: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Quick User Links */}
                   <div className="mt-4 grid grid-cols-2 gap-2">
                     <Link
@@ -479,7 +479,7 @@ const Navbar: React.FC = () => {
                       {link.icon}
                       <span>{link.label}</span>
                     </Link>
-                    
+
                     {/* Submenu for About */}
                     {link.subLinks && (
                       <div className="ml-8 mt-1 space-y-1">
@@ -498,7 +498,7 @@ const Navbar: React.FC = () => {
                     )}
                   </div>
                 ))}
-                
+
                 {/* Auth Buttons - Inside hamburger menu */}
                 {!isAuthenticated && (
                   <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-gray-100">
@@ -520,7 +520,7 @@ const Navbar: React.FC = () => {
                     </Link>
                   </div>
                 )}
-                
+
                 {/* Logout Button - Inside hamburger menu */}
                 {isAuthenticated && user && (
                   <div className="mt-4 pt-4 border-t border-gray-100">

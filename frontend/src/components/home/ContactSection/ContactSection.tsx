@@ -162,7 +162,9 @@ export default function ContactSection() {
 
               <div className="space-y-2">
                 <label className="text-xs font-bold text-[#2a7d2f] uppercase tracking-wide ml-3">Subject</label>
-                <select className="w-full bg-[#F6FFF9] border border-gray-200 rounded-2xl px-6 py-4 text-[#002E2E] focus:outline-none focus:border-[#2a7d2f] focus:ring-4 focus:ring-[#2a7d2f]/10 transition-all appearance-none cursor-pointer">
+                <select
+                  title="contact"
+                  className="w-full bg-[#F6FFF9] border border-gray-200 rounded-2xl px-6 py-4 text-[#002E2E] focus:outline-none focus:border-[#2a7d2f] focus:ring-4 focus:ring-[#2a7d2f]/10 transition-all appearance-none cursor-pointer">
                   <option>I want to report an issue</option>
                   <option>Partnership Inquiry</option>
                   <option>Technical Support</option>
