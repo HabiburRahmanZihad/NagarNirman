@@ -5,8 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { CiLocationOn } from "react-icons/ci";
 import { SiMinutemailer } from "react-icons/si";
-import { FaPhoneAlt } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaPhoneAlt } from "react-icons/fa";
 import { LucideArrowUpRight } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 
 const Footer: React.FC = () => {
   return (
@@ -38,6 +39,21 @@ const Footer: React.FC = () => {
             <h5 className="text-sm pt-2 text-gray-300">
               Mon-Sat: 10:00am to 07:30pm
             </h5>
+            {/* icon */}
+            <div className="flex gap-3 pt-7">
+              <div className="bg-gray-500 w-10 h-10 flex items-center justify-center rounded-full">
+                  <FaFacebookF size={20} className="" />
+                </div>
+              <div className="bg-gray-500 w-10 h-10 flex items-center justify-center rounded-full">
+                  <FaXTwitter size={20} className="" />
+                </div>
+              <div className="bg-gray-500 w-10 h-10 flex items-center justify-center rounded-full">
+                  <FaInstagram  size={20} className="" />
+                </div>
+              <div className="bg-gray-500 w-10 h-10 flex items-center justify-center rounded-full">
+                  <FaLinkedinIn size={20} className="" />
+                </div>
+            </div>
           </div>
 
           {/* Quick Links */}
