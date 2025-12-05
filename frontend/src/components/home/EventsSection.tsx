@@ -65,7 +65,7 @@ const events = [
 
 export default function EventsSection() {
   return (
-    <section className="bg-white py-24 px-4 font-sans">
+    <section className="py-24 px-4 font-sans">
       <div className="container mx-auto">
         {/* --- HEADER --- */}
         <div className="text-center mb-16">
@@ -75,7 +75,7 @@ export default function EventsSection() {
               Upcoming Event
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-[#004d40]">
+          <h2 className="text-4xl md:text-5xl font-bold text-primary">
             Our Events, Let&apos;s All Participate
           </h2>
         </div>

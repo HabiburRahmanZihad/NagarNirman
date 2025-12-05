@@ -81,7 +81,7 @@ export default function AboutSection() {
   ];
 
   return (
-    <section className="w-full bg-gray-50 py-20 px-4 md:px-10 lg:px-20">
+    <section className="w-full bg-base-100 py-20 px-4 md:px-10 lg:px-20">
       <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
         {/* LEFT IMAGES */}
@@ -170,7 +170,7 @@ export default function AboutSection() {
                 <FaTrophy />
               </div>
               <div>
-                <p className="text-xs font-medium">2024 - We are the</p>
+                <p className="text-xs font-medium">2025 - We are the</p>
                 <p className="text-sm font-bold">best award winner</p>
               </div>
             </div>

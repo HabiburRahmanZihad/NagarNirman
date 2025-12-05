@@ -16,27 +16,27 @@ import Button from "@/components/common/Button";
 const teamMembers = [
   {
     id: 1,
-    name: "Joshua Sendu",
-    role: "CEO-Founder",
-    image: "https://img.freepik.com/free-photo/young-beautiful-woman-pink-warm-sweater-natural-look-smiling-portrait-isolated-long-hair_285396-896.jpg",
+    name: "Habibur Rahman Zihad",
+    role: "Team Leader",
+    image: "https://avatars.githubusercontent.com/u/158202166?v=4",
   },
   {
     id: 2,
-    name: "John Maxwell",
-    role: "Team Leader",
-    image: "https://img.freepik.com/free-photo/portrait-young-woman-with-natural-make-up_23-2149084945.jpg",
+    name: "Md. Shahariar Hafiz",
+    role: "CEO-Founder",
+    image: "https://avatars.githubusercontent.com/u/102473526?v=4",
   },
   {
     id: 3,
-    name: "Bm Ashik (Moni)",
-    role: "Sr. Volunteer",
-    image: "https://img.freepik.com/free-photo/close-up-portrait-curly-haired-young-woman-isolated_273609-40305.jpg",
+    name: "Mizanur Malita",
+    role: "Volunteer",
+    image: "https://avatars.githubusercontent.com/u/193724330?v=4",
   },
   {
     id: 4,
-    name: "Denial Pasha",
+    name: "Mohammad Bin Amin",
     role: "Volunteer",
-    image: "https://img.freepik.com/free-photo/handsome-young-man-with-new-stylish-haircut_176420-19637.jpg",
+    image: "https://avatars.githubusercontent.com/u/108111892?v=4",
   },
 ];
 
