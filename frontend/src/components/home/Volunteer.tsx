@@ -123,7 +123,7 @@ export default function TeamSection() {
         <div className="flex justify-center">
           <div className="bg-white rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.08)] py-3 px-4 flex flex-col md:flex-row items-center gap-6 border border-gray-100">
 
-            <Link href="/volunteer">
+            <Link href="/about">
               <Button
                 variant="primary"
                 size="lg"
