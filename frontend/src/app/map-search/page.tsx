@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Search, X, MapPin, Activity, CheckCircle, Clock, Info, TrendingUp, BarChart3, Users } from 'lucide-react';
+import { Search, X, MapPin, Activity, CheckCircle, Clock, Info, Filter, AlertCircle, Zap } from 'lucide-react';
 import divisionsDataJson from '@/data/divisionsData.json';
 import { statisticsAPI } from '@/utils/api';
 import 'leaflet/dist/leaflet.css';
@@ -44,17 +44,16 @@ interface DynamicMapProps {
   showDistricts: boolean;
 }
 
-// Transform JSON data to match Division structure
 const transformDivisionsData = (): Division[] => {
   const colors = [
-    '#3B82F6', // Blue
-    '#10B981', // Green
-    '#F59E0B', // Amber
-    '#8B5CF6', // Purple
-    '#EC4899', // Pink
-    '#14B8A6', // Teal
-    '#EF4444', // Red
-    '#06B6D4'  // Cyan
+    '#3B82F6',
+    '#10B981',
+    '#F59E0B',
+    '#8B5CF6',
+    '#EC4899',
+    '#14B8A6',
+    '#EF4444',
+    '#06B6D4'
   ];
 
   return divisionsDataJson.map((divisionData, index) => ({
@@ -63,11 +62,11 @@ const transformDivisionsData = (): Division[] => {
     lat: divisionData.latitude,
     lng: divisionData.longitude,
     color: colors[index % colors.length],
-    intensity: 0, // Will be calculated from reports
+    intensity: 0,
     trend: '+0%',
     districts: divisionData.districts.map((district) => ({
       name: district.name,
-      total: 0, // Will be populated from actual report data
+      total: 0,
       pending: 0,
       completed: 0,
       priority: 'low' as 'high' | 'medium' | 'low',
@@ -78,10 +77,8 @@ const transformDivisionsData = (): Division[] => {
   }));
 };
 
-// Enhanced data structure with district coordinates
 const DIVISIONS_DATA: Division[] = transformDivisionsData();
 
-// Helper function to add markers to map
 const addMarkersToMap = (
   L: any,
   mapInstance: any,
@@ -94,8 +91,6 @@ const addMarkersToMap = (
 ) => {
   const markers: any[] = [];
   const circles: any[] = [];
-
-  // Always show all divisions and districts when there's a search query
   const shouldShowAllMarkers = searchQuery.length > 0;
 
   divisions.forEach((division) => {
@@ -104,9 +99,7 @@ const addMarkersToMap = (
       d.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Show division if it matches search OR if there's no search query
     if (!shouldShowAllMarkers || divisionMatchesSearch || districtMatchesSearch) {
-      // Enhanced division marker with multiple pulse rings
       const divisionMarkerHtml = `
         <div style="position: relative; width: 40px; height: 40px;">
           <div class="pulse-ring" style="
@@ -165,60 +158,10 @@ const addMarkersToMap = (
 
       const divisionMarker = L.marker([division.lat, division.lng], { icon: divisionIcon })
         .addTo(mapInstance)
-        .bindTooltip(`
-          <div style="
-            background: ${isDark ? 'rgba(17, 24, 39, 0.98)' : 'rgba(255, 255, 255, 0.98)'};
-            padding: 12px 16px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            border: none;
-            backdrop-filter: blur(10px);
-            font-family: system-ui;
-          ">
-            <div style="
-              font-weight: 700;
-              font-size: 14px;
-              color: ${isDark ? '#fff' : '#111827'};
-              margin-bottom: 6px;
-              letter-spacing: -0.02em;
-            ">${division.name}</div>
-            <div style="
-              font-size: 11px;
-              color: ${isDark ? '#9CA3AF' : '#6B7280'};
-              display: flex;
-              align-items: center;
-              gap: 6px;
-            ">
-              <span style="
-                width: 8px;
-                height: 8px;
-                background: ${division.color};
-                border-radius: 50%;
-                display: inline-block;
-              "></span>
-              ${division.districts.length} Districts • ${division.intensity} Reports
-            </div>
-            <div style="
-              font-size: 10px;
-              color: ${isDark ? '#6B7280' : '#9CA3AF'};
-              margin-top: 4px;
-            ">
-              Total: ${division.districts.reduce((a, d) => a + d.total, 0)} •
-              Resolved: ${division.districts.reduce((a, d) => a + d.completed, 0)}
-            </div>
-          </div>
-        `, {
-          permanent: false,
-          direction: 'top',
-          offset: [0, -10],
-          className: 'custom-tooltip',
-          opacity: 1
-        })
         .on('click', () => onDivisionClick(division));
 
       markers.push(divisionMarker);
 
-      // Ambient glow circle for divisions
       const circle = L.circle([division.lat, division.lng], {
         color: division.color,
         fillColor: division.color,
@@ -231,17 +174,14 @@ const addMarkersToMap = (
       circles.push(circle);
     }
 
-    // Show districts if they match search OR if showDistricts is true OR if there's a search query
     division.districts.forEach((district) => {
       const districtMatchesSearch = district.name.toLowerCase().includes(searchQuery.toLowerCase());
 
       if (shouldShowAllMarkers || showDistricts || districtMatchesSearch) {
-        // Only show district if it matches search when there's a search query
         if (searchQuery.length > 0 && !districtMatchesSearch && !division.name.toLowerCase().includes(searchQuery.toLowerCase())) {
           return;
         }
 
-        // District marker with different styling
         const districtMarkerHtml = `
           <div style="position: relative; width: 30px; height: 30px;">
             <div style="
@@ -281,53 +221,6 @@ const addMarkersToMap = (
 
         const districtMarker = L.marker([district.lat, district.lng], { icon: districtIcon })
           .addTo(mapInstance)
-          .bindTooltip(`
-            <div style="
-              background: ${isDark ? 'rgba(17, 24, 39, 0.98)' : 'rgba(255, 255, 255, 0.98)'};
-              padding: 10px 12px;
-              border-radius: 8px;
-              box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-              border: none;
-              backdrop-filter: blur(10px);
-              font-family: system-ui;
-            ">
-              <div style="
-                font-weight: 600;
-                font-size: 12px;
-                color: ${isDark ? '#fff' : '#111827'};
-                margin-bottom: 4px;
-              ">${district.name}</div>
-              <div style="
-                font-size: 10px;
-                color: ${isDark ? '#9CA3AF' : '#6B7280'};
-                display: flex;
-                align-items: center;
-                gap: 4px;
-              ">
-                <span style="
-                  width: 6px;
-                  height: 6px;
-                  background: ${district.color};
-                  border-radius: 50%;
-                  display: inline-block;
-                "></span>
-                ${district.total} Reports • ${district.priority} Priority
-              </div>
-              <div style="
-                font-size: 9px;
-                color: ${isDark ? '#6B7280' : '#9CA3AF'};
-                margin-top: 3px;
-              ">
-                Resolved: ${district.completed} • Pending: ${district.pending}
-              </div>
-            </div>
-          `, {
-            permanent: false,
-            direction: 'top',
-            offset: [0, -15],
-            className: 'custom-tooltip',
-            opacity: 1
-          })
           .on('click', () => onDistrictClick(district, division));
 
         markers.push(districtMarker);
@@ -338,7 +231,6 @@ const addMarkersToMap = (
   return { markers, circles };
 };
 
-// Dynamic Leaflet component with proper instance management
 const DynamicMap: React.FC<DynamicMapProps> = ({
   divisions,
   selectedItem,
@@ -358,7 +250,6 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
     setMounted(true);
   }, []);
 
-  // Cleanup function
   const cleanupMap = () => {
     if (markersRef.current.length > 0) {
       markersRef.current.forEach((marker) => {
@@ -388,12 +279,10 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
     if (!mounted || typeof window === 'undefined') return;
 
     const initMap = async () => {
-      // Clean up any existing map first
       cleanupMap();
 
       const L = await import('leaflet');
 
-      // Fix for default markers - using any to bypass TypeScript checks
       delete (L.Icon.Default.prototype as any)._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -404,7 +293,6 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       const container = document.getElementById('map');
       if (!container) return;
 
-      // Check if container already has a map
       if ((container as any)._leaflet_id) {
         (container as any)._leaflet_id = null;
       }
@@ -416,18 +304,14 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
 
       mapRef.current = mapInstance;
 
-      const tileLayer = isDark
-        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-        : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+      const tileLayer = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
 
       L.tileLayer(tileLayer, {
         maxZoom: 18,
       }).addTo(mapInstance);
 
-      // Custom zoom control
       L.control.zoom({ position: 'bottomleft' }).addTo(mapInstance);
 
-      // Add markers to the map
       const { markers, circles } = addMarkersToMap(
         L,
         mapInstance,
@@ -441,281 +325,21 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
 
       markersRef.current = markers;
       circlesRef.current = circles;
-
-      // Enhanced legend with glassmorphism
-      const legend = new L.Control({ position: 'bottomright' });
-      legend.onAdd = function() {
-        const div = L.DomUtil.create('div', 'info legend');
-        div.style.cssText = `
-          background: ${isDark ? 'rgba(17, 24, 39, 0.85)' : 'rgba(255, 255, 255, 0.85)'};
-          backdrop-filter: blur(20px) saturate(180%);
-          padding: 16px 20px;
-          border-radius: 16px;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-          border: 1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
-          font-family: system-ui;
-          min-width: 200px;
-          max-height: 500px;
-          overflow-y: auto;
-        `;
-        const totalMapped = divisions.reduce((sum, d) => sum + d.intensity, 0);
-        div.innerHTML = `
-          <h4 style="
-            margin: 0 0 8px 0;
-            font-weight: 700;
-            font-size: 13px;
-            color: ${isDark ? '#F9FAFB' : '#111827'};
-            letter-spacing: -0.01em;
-            text-transform: uppercase;
-            font-size: 11px;
-            opacity: 0.7;
-          ">Division Status</h4>
-          <div style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            margin-bottom: 12px;
-            background: ${isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)'};
-            border-radius: 8px;
-            border: 1px solid ${isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)'};
-          ">
-            <span style="
-              font-size: 12px;
-              font-weight: 600;
-              color: ${isDark ? '#93C5FD' : '#3B82F6'};
-            ">Mapped Reports</span>
-            <span style="
-              font-size: 14px;
-              font-weight: 700;
-              color: ${isDark ? '#F9FAFB' : '#111827'};
-              background: ${isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)'};
-              padding: 3px 10px;
-              border-radius: 6px;
-            ">${totalMapped}</span>
-          </div>
-          ${divisions
-            .sort((a, b) => b.intensity - a.intensity) // Sort by highest reports
-            .map(d => {
-              // Calculate priority level based on intensity
-              let priorityLabel = 'Low';
-              let priorityColor = d.color;
-              if (d.intensity >= 10) {
-                priorityLabel = 'Urgent';
-                priorityColor = '#EF4444'; // Red
-              } else if (d.intensity >= 5) {
-                priorityLabel = 'High';
-                priorityColor = '#F59E0B'; // Orange
-              } else if (d.intensity >= 3) {
-                priorityLabel = 'Medium';
-                priorityColor = '#10B981'; // Green
-              }
-
-              return `
-                <div style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-between;
-                  margin: 8px 0;
-                  padding: 6px 0;
-                  border-bottom: 1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'};
-                ">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="
-                      width: 10px;
-                      height: 10px;
-                      background: ${d.color};
-                      border-radius: 50%;
-                      box-shadow: 0 0 10px ${d.color}77;
-                    "></div>
-                    <span style="
-                      font-size: 12px;
-                      font-weight: 500;
-                      color: ${isDark ? '#E5E7EB' : '#374151'};
-                    ">${d.name.replace(' Division', '')}</span>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="
-                      font-size: 11px;
-                      font-weight: 600;
-                      color: ${priorityColor};
-                      background: ${priorityColor}22;
-                      padding: 2px 8px;
-                      border-radius: 6px;
-                    ">${priorityLabel}</span>
-                    <span style="
-                      font-size: 12px;
-                      font-weight: 700;
-                      color: ${isDark ? '#F9FAFB' : '#111827'};
-                      background: ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
-                      padding: 2px 8px;
-                      border-radius: 6px;
-                    ">${d.intensity}</span>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-        `;
-        return div;
-      };
-      legend.addTo(mapInstance);
-      legendRef.current = legend;
     };
 
     initMap();
 
     return () => {
-      if (legendRef.current && mapRef.current) {
-        mapRef.current.removeControl(legendRef.current);
-        legendRef.current = null;
-      }
       cleanupMap();
     };
-  }, [mounted, isDark]); // Only depend on mounted and isDark
+  }, [mounted, isDark]);
 
-  // Separate effect to update legend when divisions data changes
-  useEffect(() => {
-    if (!mounted || !mapRef.current || !legendRef.current || typeof window === 'undefined') return;
-
-    const updateLegend = async () => {
-      const L = await import('leaflet');
-
-      // Remove old legend
-      if (legendRef.current) {
-        mapRef.current.removeControl(legendRef.current);
-      }
-
-      // Create new legend with updated data
-      const legend = new L.Control({ position: 'bottomright' });
-      legend.onAdd = function() {
-        const div = L.DomUtil.create('div', 'info legend');
-        div.style.cssText = `
-          background: ${isDark ? 'rgba(17, 24, 39, 0.85)' : 'rgba(255, 255, 255, 0.85)'};
-          backdrop-filter: blur(20px) saturate(180%);
-          padding: 16px 20px;
-          border-radius: 16px;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-          border: 1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
-          font-family: system-ui;
-          min-width: 200px;
-          max-height: 500px;
-          overflow-y: auto;
-        `;
-        const totalMapped = divisions.reduce((sum, d) => sum + d.intensity, 0);
-        div.innerHTML = `
-          <h4 style="
-            margin: 0 0 8px 0;
-            font-weight: 700;
-            font-size: 13px;
-            color: ${isDark ? '#F9FAFB' : '#111827'};
-            letter-spacing: -0.01em;
-            text-transform: uppercase;
-            font-size: 11px;
-            opacity: 0.7;
-          ">Division Status</h4>
-          <div style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            margin-bottom: 12px;
-            background: ${isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)'};
-            border-radius: 8px;
-            border: 1px solid ${isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)'};
-          ">
-            <span style="
-              font-size: 12px;
-              font-weight: 600;
-              color: ${isDark ? '#93C5FD' : '#3B82F6'};
-            ">Mapped Reports</span>
-            <span style="
-              font-size: 14px;
-              font-weight: 700;
-              color: ${isDark ? '#F9FAFB' : '#111827'};
-              background: ${isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)'};
-              padding: 3px 10px;
-              border-radius: 6px;
-            ">${totalMapped}</span>
-          </div>
-          ${divisions
-            .sort((a, b) => b.intensity - a.intensity) // Sort by highest reports
-            .map(d => {
-              // Calculate priority level based on intensity
-              let priorityLabel = 'Low';
-              let priorityColor = d.color;
-              if (d.intensity >= 10) {
-                priorityLabel = 'Urgent';
-                priorityColor = '#EF4444'; // Red
-              } else if (d.intensity >= 5) {
-                priorityLabel = 'High';
-                priorityColor = '#F59E0B'; // Orange
-              } else if (d.intensity >= 3) {
-                priorityLabel = 'Medium';
-                priorityColor = '#10B981'; // Green
-              }
-
-              return `
-                <div style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-between;
-                  margin: 8px 0;
-                  padding: 6px 0;
-                  border-bottom: 1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'};
-                ">
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <div style="
-                      width: 10px;
-                      height: 10px;
-                      background: ${d.color};
-                      border-radius: 50%;
-                      box-shadow: 0 0 10px ${d.color}77;
-                    "></div>
-                    <span style="
-                      font-size: 12px;
-                      font-weight: 500;
-                      color: ${isDark ? '#E5E7EB' : '#374151'};
-                    ">${d.name.replace(' Division', '')}</span>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <span style="
-                      font-size: 11px;
-                      font-weight: 600;
-                      color: ${priorityColor};
-                      background: ${priorityColor}22;
-                      padding: 2px 8px;
-                      border-radius: 6px;
-                    ">${priorityLabel}</span>
-                    <span style="
-                      font-size: 12px;
-                      font-weight: 700;
-                      color: ${isDark ? '#F9FAFB' : '#111827'};
-                      background: ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)'};
-                      padding: 2px 8px;
-                      border-radius: 6px;
-                    ">${d.intensity}</span>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-        `;
-        return div;
-      };
-      legend.addTo(mapRef.current);
-      legendRef.current = legend;
-    };
-
-    updateLegend();
-  }, [divisions, isDark, mounted]); // Update when divisions data changes
-
-  // Separate effect for markers and search query
   useEffect(() => {
     if (!mounted || !mapRef.current || typeof window === 'undefined') return;
 
     const updateMarkers = async () => {
       const L = await import('leaflet');
 
-      // Clear existing markers and circles
       if (markersRef.current.length > 0) {
         markersRef.current.forEach((marker) => {
           if (marker && mapRef.current) {
@@ -734,7 +358,6 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
         circlesRef.current = [];
       }
 
-      // Add updated markers
       const { markers, circles } = addMarkersToMap(
         L,
         mapRef.current,
@@ -753,7 +376,6 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
     updateMarkers();
   }, [divisions, searchQuery, showDistricts, onDivisionClick, onDistrictClick, mounted, isDark]);
 
-  // Fly to selected item
   useEffect(() => {
     if (mapRef.current && selectedItem) {
       const zoomLevel = selectedItem.type === 'district' ? 12 : 10;
@@ -765,76 +387,39 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
     }
   }, [selectedItem]);
 
-  // Search fly to - Improved search functionality
-  useEffect(() => {
-    if (mapRef.current && searchQuery) {
-      // Find matching division or district
-      let matchedItem: SelectedItem | null = null;
-      let targetZoom = 9;
-
-      // First try to find exact district match
-      for (const division of divisions) {
-        for (const district of division.districts) {
-          if (district.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-            matchedItem = { type: 'district', data: district, division };
-            targetZoom = 12;
-            break;
-          }
-        }
-
-        if (matchedItem) break;
-
-        // If no district found, try division
-        if (division.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-          matchedItem = { type: 'division', data: division };
-          targetZoom = 10;
-          break;
-        }
-      }
-
-      if (matchedItem) {
-        const data = matchedItem.data as Division | District;
-        mapRef.current.flyTo([data.lat, data.lng], targetZoom, {
-          duration: 1.5,
-          easeLinearity: 0.25
-        });
-      }
-    }
-  }, [searchQuery, divisions]);
-
   if (!mounted) return (
-    <div className="w-full h-full bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 animate-pulse" />
+    <div className="w-full h-full bg-gradient-to-br from-base-200 to-base-300 animate-pulse" />
   );
 
   return <div id="map" className="w-full h-full z-0" />;
 };
 
-//
 export default function MapSearchPage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null);
-  const [isDark] = useState<boolean>(false); // Always light theme
+  const [isDark] = useState<boolean>(false);
   const [showDistricts, setShowDistricts] = useState<boolean>(false);
   const [divisionsData, setDivisionsData] = useState<Division[]>(DIVISIONS_DATA);
   const [loading, setLoading] = useState<boolean>(true);
-  const [divisionStats, setDivisionStats] = useState<any>(null);
+  const [sidebarSearch, setSidebarSearch] = useState<string>('');
+  const [filterPriority, setFilterPriority] = useState<'all' | 'high' | 'medium' | 'low'>('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'completed'>('all');
+  const [filterCompletion, setFilterCompletion] = useState<number>(0);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [showFilters, setShowFilters] = useState<boolean>(false);
 
-  // Fetch all divisions stats on mount using comprehensive statistics API
+  // Fetch divisions stats
   useEffect(() => {
     const fetchDivisionsStats = async () => {
       try {
         const response = await statisticsAPI.getCompleteMapData();
-        console.log('📊 Complete Map Data Response:', response);
 
         if (response.success && response.data) {
-          // Merge API stats with static coordinate data
           const updatedDivisions = DIVISIONS_DATA.map(division => {
-            // Extract division name without " Division" suffix
             const divisionName = division.name.replace(' Division', '');
             const stats = response.data[divisionName];
 
             if (stats) {
-              // Map districts with real data
               const updatedDistricts = division.districts.map(district => {
                 const districtStats = stats.districts?.find((d: any) =>
                   d.name.toLowerCase() === district.name.toLowerCase()
@@ -862,12 +447,10 @@ export default function MapSearchPage() {
             return division;
           });
 
-          console.log('✅ Updated Divisions Data:', updatedDivisions);
           setDivisionsData(updatedDivisions);
         }
       } catch (error) {
-        console.error('❌ Error fetching divisions stats:', error);
-        // Use static data as fallback
+        console.error('Error fetching divisions stats:', error);
         setDivisionsData(DIVISIONS_DATA);
       } finally {
         setLoading(false);
@@ -875,6 +458,40 @@ export default function MapSearchPage() {
     };
 
     fetchDivisionsStats();
+  }, []);
+
+  // Fetch summary stats
+  const [summaryStats, setSummaryStats] = useState({
+    total: 0,
+    pending: 0,
+    inProgress: 0,
+    completed: 0,
+    completionRate: 0
+  });
+
+  useEffect(() => {
+    const fetchSummaryStats = async () => {
+      try {
+        const response = await statisticsAPI.getSummary();
+
+        if (response.success && response.data) {
+          setSummaryStats({
+            total: response.data.totalReports || 0,
+            pending: response.data.totalPending || 0,
+            inProgress: response.data.totalInProgress || 0,
+            completed: response.data.totalResolved || 0,
+            completionRate: response.data.overallCompletionRate || 0
+          });
+          setLastUpdated(new Date());
+        }
+      } catch (error) {
+        console.error('Error fetching summary stats:', error);
+      }
+    };
+
+    fetchSummaryStats();
+    const interval = setInterval(fetchSummaryStats, 15 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const filteredDivisions = useMemo(() => {
@@ -886,26 +503,64 @@ export default function MapSearchPage() {
     );
   }, [searchQuery, divisionsData]);
 
+  // Filter districts in sidebar
+  const filteredDistricts = useMemo(() => {
+    if (!selectedItem || selectedItem.type === 'district') return [];
+
+    const division = selectedItem.data as Division;
+    let filtered = division.districts;
+
+    if (sidebarSearch) {
+      filtered = filtered.filter(d =>
+        d.name.toLowerCase().includes(sidebarSearch.toLowerCase())
+      );
+    }
+
+    if (filterPriority !== 'all') {
+      filtered = filtered.filter(d => d.priority === filterPriority);
+    }
+
+    if (filterStatus !== 'all') {
+      if (filterStatus === 'pending') {
+        filtered = filtered.filter(d => d.pending > 0);
+      } else if (filterStatus === 'completed') {
+        filtered = filtered.filter(d => d.completed > 0);
+      }
+    }
+
+    if (filterCompletion > 0) {
+      filtered = filtered.filter(d => {
+        const completion = d.total > 0 ? (d.completed / d.total) * 100 : 0;
+        return completion >= filterCompletion;
+      });
+    }
+
+    return filtered.sort((a, b) => {
+      const aCompletion = a.total > 0 ? (a.completed / a.total) * 100 : 0;
+      const bCompletion = b.total > 0 ? (b.completed / b.total) * 100 : 0;
+      return bCompletion - aCompletion;
+    });
+  }, [selectedItem, sidebarSearch, filterPriority, filterStatus, filterCompletion]);
+
   const handleClearSearch = () => {
     setSearchQuery('');
     setShowDistricts(false);
     setSelectedItem(null);
-    setDivisionStats(null);
   };
 
   const handleDivisionClick = useCallback(async (division: Division) => {
     setSelectedItem({ type: 'division', data: division });
     setShowDistricts(true);
+    setSidebarSearch('');
+    setFilterPriority('all');
+    setFilterStatus('all');
+    setFilterCompletion(0);
 
-    // Fetch real stats for this division using comprehensive statistics API
     try {
       const divisionName = division.name.replace(' Division', '');
       const response = await statisticsAPI.getDivisionDistricts(divisionName);
 
-      console.log(`📍 Division Click - ${divisionName}:`, response);
-
       if (response.success && response.data && response.data.length > 0) {
-        // Update division with real district stats from comprehensive API
         const updatedDivision: Division = {
           ...division,
           districts: division.districts.map(district => {
@@ -921,7 +576,6 @@ export default function MapSearchPage() {
                 priority: stats.priority || 'low' as 'high' | 'medium' | 'low',
               };
             }
-            // Keep existing data if no stats found
             return {
               ...district,
               total: 0,
@@ -931,47 +585,18 @@ export default function MapSearchPage() {
             };
           })
         };
-        setDivisionStats(updatedDivision);
         setSelectedItem({ type: 'division', data: updatedDivision });
 
-        // Also update the global divisionsData state to keep data in sync
         setDivisionsData(prev => prev.map(d =>
           d.id === division.id ? updatedDivision : d
         ));
-      } else {
-        // No data in database, show zeros
-        const updatedDivision: Division = {
-          ...division,
-          districts: division.districts.map(district => ({
-            ...district,
-            total: 0,
-            pending: 0,
-            completed: 0,
-            priority: 'low' as 'high' | 'medium' | 'low',
-          }))
-        };
-        setSelectedItem({ type: 'division', data: updatedDivision });
       }
     } catch (error) {
       console.error('Error fetching division stats:', error);
-      // On error, show zeros
-      const updatedDivision: Division = {
-        ...division,
-        districts: division.districts.map(district => ({
-          ...district,
-          total: 0,
-          pending: 0,
-          completed: 0,
-          priority: 'low' as 'high' | 'medium' | 'low',
-        }))
-      };
-      setSelectedItem({ type: 'division', data: updatedDivision });
     }
   }, []);
 
   const handleDistrictClick = useCallback((district: District, division: Division) => {
-    // District data is already available from the division's districts array
-    // No need to make an additional API call
     const updatedDistrict: District = {
       ...district,
       total: district.total || 0,
@@ -985,190 +610,67 @@ export default function MapSearchPage() {
   const handleCloseSidebar = () => {
     setSelectedItem(null);
     setShowDistricts(false);
-    setDivisionStats(null);
+    setSidebarSearch('');
+    setFilterPriority('all');
+    setFilterStatus('all');
+    setFilterCompletion(0);
+    setShowFilters(false);
   };
 
-  // Use real summary statistics from API instead of calculated from divisions
-  const [summaryStats, setSummaryStats] = useState({
-    total: 0,
-    pending: 0,
-    inProgress: 0,
-    completed: 0,
-    completionRate: 0
-  });
-
-  // Fetch summary statistics
-  useEffect(() => {
-    const fetchSummaryStats = async () => {
-      try {
-        const response = await statisticsAPI.getSummary();
-        console.log('📈 Summary Stats Response:', response);
-
-        if (response.success && response.data) {
-          setSummaryStats({
-            total: response.data.totalReports || 0,
-            pending: response.data.totalPending || 0,
-            inProgress: response.data.totalInProgress || 0,
-            completed: response.data.totalResolved || 0,
-            completionRate: response.data.overallCompletionRate || 0
-          });
-        }
-      } catch (error) {
-        console.error('❌ Error fetching summary stats:', error);
-      }
-    };
-
-    fetchSummaryStats();
-  }, []);
-
-  // Keep totalStats for backward compatibility but use summaryStats as source
-  const totalStats = {
-    total: summaryStats.total,
-    pending: summaryStats.pending + summaryStats.inProgress, // Combine pending and in-progress
-    completed: summaryStats.completed
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high':
+        return 'bg-error/10 text-error border-error/30';
+      case 'medium':
+        return 'bg-warning/10 text-warning border-warning/30';
+      default:
+        return 'bg-primary/10 text-primary border-primary/30';
+    }
   };
 
-  const completionRate = summaryStats.completionRate;
-
-  // Function to create dummy data for searched locations not in database
-  const getSearchedLocationData = (query: string): SelectedItem | null => {
-    if (!query.trim()) return null;
-
-    // Check if the query matches any existing division or district
-    const existingMatch = DIVISIONS_DATA.find(division =>
-      division.name.toLowerCase().includes(query.toLowerCase()) ||
-      division.districts.some(d => d.name.toLowerCase().includes(query.toLowerCase()))
-    );
-
-    if (existingMatch) return null;
-
-    // Create dummy data for non-existing locations
-    const dummyDivision: Division = {
-      id: query.toLowerCase().replace(/\s+/g, '-'),
-      name: query,
-      lat: 23.685,
-      lng: 90.3563,
-      color: '#6B7280',
-      intensity: 0,
-      trend: '+0%',
-      districts: [
-        {
-          name: query,
-          total: 0,
-          pending: 0,
-          completed: 0,
-          priority: 'low',
-          lat: 23.685,
-          lng: 90.3563,
-          color: '#6B7280'
-        }
-      ]
-    };
-
-    return {
-      type: 'division',
-      data: dummyDivision
-    };
+  const getCompletionColor = (completion: number) => {
+    if (completion >= 80) return 'from-success to-info';
+    if (completion >= 50) return 'from-warning to-success';
+    return 'from-error to-warning';
   };
-
-  const searchedLocationData = useMemo(() => {
-    return getSearchedLocationData(searchQuery);
-  }, [searchQuery]);
-
-  const displayItem = selectedItem || searchedLocationData;
 
   return (
-    <div className={`container mx-auto min-h-screen transition-all duration-500 ${
-      isDark
-        ? 'bg-linear-to-br from-gray-950 via-gray-900 to-gray-950'
-        : 'bg-linear-to-br from-gray-50 via-blue-50/30 to-gray-50'
-    }`}>
-      {/* Animated background gradient overlay */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0" />
-      </div>
-
-      {/* Premium Header */}
-      <header
-        className={`relative backdrop-blur-xl ${
-          isDark
-            ? 'bg-gray-900/80 border-gray-800/50'
-            : 'bg-white/80 border-gray-200/50'
-        } border-b px-4 md:px-8 py-4 shadow-lg`}
-      >
-        <div>
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-            {/* Logo & Title */}
-            <div className="flex items-center gap-4">
-              <div>
-                <h1 className={`text-2xl font-bold tracking-tight ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>
-                  Search your area
-                </h1>
-                <p className={`text-sm font-medium ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                }`}>
-                  Bangladesh Municipal Issue Tracking & Analytics
-                </p>
-              </div>
+    <div className="relative min-h-screen overflow-hidden bg-base-100">
+      {/* Header */}
+      <header className="relative z-40 border-b border-base-200/60 bg-base-100/95 backdrop-blur-2xl sticky top-0">
+        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-8">
+            {/* Title */}
+            <div className="w-full lg:w-auto">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-info">
+                Search Your Area
+              </h1>
+              <p className="mt-1 sm:mt-2 text-sm sm:text-lg font-medium text-neutral">
+                Bangladesh Municipal Issue Tracking • Real-time Analytics
+              </p>
             </div>
 
-            {/* Stats Cards - Using Real Summary Data */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full lg:w-auto">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 w-full lg:w-auto">
               {[
-                {
-                  label: 'Total Reports',
-                  value: summaryStats.total,
-                  icon: Activity,
-                  color: 'from-blue-500 to-blue-600',
-                  bgDark: 'bg-blue-500/10',
-                  bgLight: 'bg-blue-50'
-                },
-                {
-                  label: 'Pending',
-                  value: summaryStats.pending,
-                  icon: Clock,
-                  color: 'from-orange-500 to-amber-500',
-                  bgDark: 'bg-orange-500/10',
-                  bgLight: 'bg-orange-50'
-                },
-                {
-                  label: 'In Progress',
-                  value: summaryStats.inProgress,
-                  icon: Activity,
-                  color: 'from-yellow-500 to-orange-500',
-                  bgDark: 'bg-yellow-500/10',
-                  bgLight: 'bg-yellow-50'
-                },
-                {
-                  label: 'Resolved',
-                  value: summaryStats.completed,
-                  icon: CheckCircle,
-                  color: 'from-green-500 to-emerald-600',
-                  bgDark: 'bg-green-500/10',
-                  bgLight: 'bg-green-50'
-                }
+                { label: "Total", value: summaryStats.total, icon: Activity },
+                { label: "Pending", value: summaryStats.pending, icon: Clock },
+                { label: "In Progress", value: summaryStats.inProgress, icon: Zap },
+                { label: "Resolved", value: summaryStats.completed, icon: CheckCircle },
               ].map((stat, i) => (
                 <div
                   key={stat.label}
-                  className={`${
-                    isDark ? stat.bgDark : stat.bgLight
-                  } backdrop-blur-sm rounded-xl p-3 border ${
-                    isDark ? 'border-gray-800/50' : 'border-gray-200/50'
-                  }`}
+                  className="p-3 sm:p-6 rounded-xl sm:rounded-2xl bg-base-200 border border-base-300/60 hover:border-primary/30 transition-all duration-500 hover:shadow-lg"
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <stat.icon className={`w-4 h-4 bg-linear-to-r ${stat.color} bg-clip-text text-transparent`} strokeWidth={2.5} />
-                    <div className={`w-2 h-2 rounded-full bg-linear-to-r ${stat.color}`} />
+                  <div className="flex items-center justify-between mb-2 sm:mb-3">
+                    <stat.icon className="w-4 h-4 sm:w-6 sm:h-6 text-primary" strokeWidth={2.5} />
+                    <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                   </div>
-                  <p className={`text-xs font-medium mb-1 ${
-                    isDark ? 'text-gray-400' : 'text-gray-600'
-                  }`}>
+                  <p className="text-xs sm:text-sm font-semibold text-neutral uppercase tracking-wider">
                     {stat.label}
                   </p>
-                  <p className={`text-xl font-bold bg-linear-to-r ${stat.color} bg-clip-text text-transparent`}>
-                    {stat.value}
+                  <p className="text-lg sm:text-3xl font-black text-info mt-1">
+                    {stat.value.toLocaleString()}
                   </p>
                 </div>
               ))}
@@ -1177,48 +679,35 @@ export default function MapSearchPage() {
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="relative h-[calc(100vh-140px)]">
-        {/* Premium Search Bar - Moved to right side */}
-        <div className="absolute top-6 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-[1000] flex gap-3">
-          <div className={`flex-1 relative backdrop-blur-xl ${
-            isDark
-              ? 'bg-gray-900/90 border-gray-700/50'
-              : 'bg-white/90 border-gray-200/50'
-          } rounded-2xl shadow-2xl border`}>
-            <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
-              isDark ? 'text-gray-400' : 'text-gray-500'
-            }`} strokeWidth={2.5} />
-            <input
-              type="text"
-              placeholder="Search divisions or districts (e.g., Narayanganj, Dhaka)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-12 pr-12 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all ${
-                isDark
-                  ? 'bg-transparent text-white placeholder-gray-500'
-                  : 'bg-transparent text-gray-900 placeholder-gray-400'
-              } font-medium`}
-            />
-            {searchQuery && (
-              <button
-                onClick={handleClearSearch}
-                title="Clear search"
-                aria-label="Clear search"
-                className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 rounded-lg ${
-                  isDark
-                    ? 'text-gray-400 hover:text-white hover:bg-gray-800'
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
-                } transition-all`}
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
+      {/* Main View */}
+      <div className="relative h-[calc(100vh-180px)] sm:h-[calc(100vh-160px)] md:h-[calc(100vh-180px)] mb-6 sm:mb-12 mx-4 sm:mx-6 rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border border-base-200/60">
+        {/* Floating Search - Moved to LEFT */}
+        <div className="absolute top-4 sm:top-8 left-4 sm:left-8 w-full max-w-xs sm:max-w-sm z-[100] px-0 sm:px-0">
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-secondary/10 to-primary/20 rounded-2xl sm:rounded-3xl blur-2xl opacity-70 group-hover:opacity-100 transition duration-700" />
+            <div className="relative bg-base-100/95 backdrop-blur-3xl border border-base-300/80 rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden">
+              <Search className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-6 sm:h-6 text-neutral" strokeWidth={2.5} />
+              <input
+                type="text"
+                placeholder="Search division, district..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 sm:pl-16 pr-12 sm:pr-16 py-3 sm:py-6 text-sm sm:text-lg font-medium bg-transparent focus:outline-none text-info placeholder:text-neutral/60"
+              />
+              {searchQuery && (
+                <button
+                  onClick={handleClearSearch}
+                  className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 p-2 sm:p-3 rounded-full hover:bg-base-200/60 transition"
+                >
+                  <X className="w-4 h-4 sm:w-5 sm:h-5 text-neutral" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Map Container - Fixed blur issue */}
-        <div className="w-full h-full">
+        {/* Map */}
+        <div className="absolute inset-0">
           <DynamicMap
             divisions={filteredDivisions}
             selectedItem={selectedItem}
@@ -1230,467 +719,274 @@ export default function MapSearchPage() {
           />
         </div>
 
-        {/* Premium Sidebar - Now on LEFT side */}
-          {displayItem && (
-            <>
-              {/* Glassmorphic Overlay with reduced opacity */}
-              <div
-                onClick={handleCloseSidebar}
-                className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[999]"
-              />
-
-              {/* Sidebar Content - Now on LEFT */}
-              <div
-                className={`absolute top-0 left-0 w-full md:w-[460px] h-full ${
-                  isDark
-                    ? 'bg-linear-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
-                    : 'bg-linear-to-b from-white/98 via-white/95 to-gray-50/98'
-                } backdrop-blur-2xl shadow-2xl z-[1000] overflow-hidden flex flex-col border-r ${
-                  isDark ? 'border-gray-800/50' : 'border-gray-200/50'
-                }`}
-              >
-                {/* Sidebar Header with Gradient */}
-                <div className="relative p-6 pb-8">
-                  <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                      background: `linear-gradient(135deg, ${
-                        displayItem.type === 'district'
-                          ? (displayItem.division as Division)?.color || '#6B7280'
-                          : (displayItem.data as Division).color
-                      }44 0%, transparent 100%)`
-                    }}
-                  />
-
-                  <div className="relative flex justify-between items-start mb-6">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl"
-                        style={{
-                          background: `linear-gradient(135deg, ${
-                            displayItem.type === 'district'
-                              ? (displayItem.division as Division)?.color || '#6B7280'
-                              : (displayItem.data as Division).color
-                          } 0%, ${
-                            displayItem.type === 'district'
-                              ? (displayItem.division as Division)?.color || '#6B7280'
-                              : (displayItem.data as Division).color
-                          }dd 100%)`
-                        }}
-                      >
-                        <MapPin className="w-7 h-7 text-white" strokeWidth={2.5} />
-                      </div>
-                      <div>
-                        <h2 className={`text-2xl font-bold tracking-tight ${
-                          isDark ? 'text-white' : 'text-gray-900'
-                        }`}>
-                          {displayItem.data.name}
-                        </h2>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className={`text-sm font-medium ${
-                            isDark ? 'text-gray-400' : 'text-gray-600'
-                          }`}>
-                            {displayItem.type === 'division'
-                              ? `${(displayItem.data as Division).districts.length} Districts`
-                              : `District of ${(displayItem.division as Division)?.name || 'Unknown'}`
-                            }
-                          </span>
-                          <span className="text-gray-400">•</span>
-                          <span
-                            className="text-sm font-semibold flex items-center gap-1"
-                            style={{
-                              color: displayItem.type === 'district'
-                                ? (displayItem.division as Division)?.color || '#6B7280'
-                                : (displayItem.data as Division).color
-                            }}
-                          >
-                            <TrendingUp className="w-3 h-3" />
-                            {displayItem.type === 'division'
-                              ? (displayItem.data as Division).trend
-                              : '+0%'
-                            }
-                          </span>
-                        </div>
-                      </div>
+        {/* Sidebar */}
+        {selectedItem && (
+          <>
+            <div
+              onClick={handleCloseSidebar}
+              className="fixed inset-0 bg-black/40 backdrop-blur-xl z-40 animate-fadeIn"
+            />
+            {/* Mobile Sidebar */}
+            <aside className="md:hidden fixed inset-0 left-0 top-[108px] h-[calc(100vh-108px)] w-80 z-[98] bg-base-100/98 backdrop-blur-3xl border-r border-base-300/60 shadow-2xl animate-slideInLeft flex flex-col overflow-y-auto custom-scrollbar">
+              {/* Header */}
+              <div className="shrink-0 p-4 sm:p-8 border-b border-base-300/40 bg-gradient-to-br from-primary/5 to-secondary/5">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-3 sm:gap-5 flex-1 min-w-0">
+                    <div className="relative w-12 h-12 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary to-secondary shadow-lg flex-shrink-0 flex items-center justify-center">
+                      <MapPin className="w-6 h-6 sm:w-10 sm:h-10 text-white" strokeWidth={3} />
+                      <div className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-white/20 animate-pulse" />
                     </div>
-                    <button
-                      onClick={handleCloseSidebar}
-                      title="Close sidebar"
-                      aria-label="Close sidebar"
-                      className={`p-2.5 rounded-xl ${
-                        isDark
-                          ? 'hover:bg-gray-800/80 text-gray-400 hover:text-white'
-                          : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
-                      } transition-all`}
-                    >
-                      <X className="w-5 h-5" strokeWidth={2.5} />
-                    </button>
+                    <div className="min-w-0">
+                      <h2 className="text-xl sm:text-3xl font-black text-info tracking-tight truncate">
+                        {selectedItem.data.name}
+                      </h2>
+                      <p className="text-xs sm:text-sm font-medium text-neutral mt-1">
+                        {selectedItem.type === "division"
+                          ? `${(selectedItem.data as Division).districts.length} Districts`
+                          : `District • ${(selectedItem.division as Division)?.name.replace(' Division', '')}`}
+                      </p>
+                    </div>
                   </div>
-
-                  {/* Stats Grid */}
-                  <div className="relative grid grid-cols-3 gap-3">
-                    {[
-                      {
-                        label: 'Total',
-                        value: displayItem.type === 'division'
-                          ? (displayItem.data as Division).districts.reduce((a, d) => a + d.total, 0)
-                          : (displayItem.data as District).total,
-                        icon: BarChart3,
-                        gradient: 'from-blue-500 to-blue-600',
-                        bgDark: 'bg-blue-500/10',
-                        bgLight: 'bg-blue-50'
-                      },
-                      {
-                        label: 'Pending',
-                        value: displayItem.type === 'division'
-                          ? (displayItem.data as Division).districts.reduce((a, d) => a + d.pending, 0)
-                          : (displayItem.data as District).pending,
-                        icon: Clock,
-                        gradient: 'from-orange-500 to-amber-500',
-                        bgDark: 'bg-orange-500/10',
-                        bgLight: 'bg-orange-50'
-                      },
-                      {
-                        label: 'Resolved',
-                        value: displayItem.type === 'division'
-                          ? (displayItem.data as Division).districts.reduce((a, d) => a + d.completed, 0)
-                          : (displayItem.data as District).completed,
-                        icon: CheckCircle,
-                        gradient: 'from-green-500 to-emerald-600',
-                        bgDark: 'bg-green-500/10',
-                        bgLight: 'bg-green-50'
-                      }
-                    ].map((stat, i) => (
-                      <div
-                        key={stat.label}
-                        className={`p-4 rounded-xl ${
-                          isDark ? stat.bgDark : stat.bgLight
-                        } border ${
-                          isDark ? 'border-gray-800/50' : 'border-gray-200/30'
-                        } backdrop-blur-sm`}
-                      >
-                        <stat.icon className={`w-4 h-4 mb-2 bg-linear-to-r ${stat.gradient} bg-clip-text text-transparent`} strokeWidth={2.5} />
-                        <p className={`text-xs font-medium mb-1 ${
-                          isDark ? 'text-gray-400' : 'text-gray-600'
-                        }`}>
-                          {stat.label}
-                        </p>
-                        <p className={`text-2xl font-bold bg-linear-to-r ${stat.gradient} bg-clip-text text-transparent`}>
-                          {stat.value}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+                  <button
+                    onClick={handleCloseSidebar}
+                    className="p-2 sm:p-4 rounded-xl sm:rounded-2xl bg-base-200/60 hover:bg-base-300/80 transition flex-shrink-0"
+                  >
+                    <X className="w-4 h-4 sm:w-6 sm:h-6 text-neutral" />
+                  </button>
                 </div>
 
-                {/* Content based on selection type */}
-                {displayItem.type === 'division' ? (
-                  <>
-                    {/* Districts Section Header */}
-                    <div className={`px-6 pb-3 border-b ${
-                      isDark ? 'border-gray-800/50' : 'border-gray-200/50'
-                    }`}>
-                      <div className="flex items-center justify-between">
-                        <h3 className={`text-sm font-semibold uppercase tracking-wider ${
-                          isDark ? 'text-gray-400' : 'text-gray-600'
-                        }`}>
-                          District Overview
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs">
-                          <Users className={`w-3 h-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
-                          <span className={isDark ? 'text-gray-500' : 'text-gray-500'}>
-                            {(displayItem.data as Division).districts.length} Locations
-                          </span>
-                        </div>
+                {/* Key Stats */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-8">
+                  {[
+                    { label: "Total", value: selectedItem.type === "division" ? (selectedItem.data as Division).districts.reduce((a,d)=>a+d.total,0) : (selectedItem.data as District).total },
+                    { label: "Pending", value: selectedItem.type === "division" ? (selectedItem.data as Division).districts.reduce((a,d)=>a+d.pending,0) : (selectedItem.data as District).pending },
+                    { label: "Resolved", value: selectedItem.type === "division" ? (selectedItem.data as Division).districts.reduce((a,d)=>a+d.completed,0) : (selectedItem.data as District).completed },
+                  ].map((s) => (
+                    <div key={s.label} className="p-3 sm:p-5 rounded-lg sm:rounded-2xl bg-base-200/50 border border-base-300/60">
+                      <p className="text-xs font-bold uppercase tracking-wider text-neutral">{s.label}</p>
+                      <p className="text-2xl sm:text-3xl font-black text-info mt-1">{s.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sidebar Search & Filters */}
+              {selectedItem.type === 'division' && (
+                <div className="flex-shrink-0 p-4 sm:p-6 border-b border-base-300/40 space-y-3 sm:space-y-4">
+                  {/* Search in sidebar */}
+                  <div className="relative">
+                    <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-neutral" strokeWidth={2.5} />
+                    <input
+                      type="text"
+                      placeholder="Filter districts..."
+                      value={sidebarSearch}
+                      onChange={(e) => setSidebarSearch(e.target.value)}
+                      className="w-full pl-9 sm:pl-12 pr-4 py-2 sm:py-3 text-xs sm:text-sm rounded-lg sm:rounded-xl bg-base-200 border border-base-300/60 focus:outline-none focus:border-primary/50 text-info placeholder:text-neutral/60"
+                    />
+                  </div>
+
+                  {/* Filter Toggle */}
+                  <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="w-full flex items-center justify-between px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-primary/10 border border-primary/30 hover:bg-primary/20 transition text-primary font-semibold text-sm sm:text-base"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Filter className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <span>Filters</span>
+                    </div>
+                    {showFilters ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5" />}
+                  </button>
+
+                  {/* Filters */}
+                  {showFilters && (
+                    <div className="space-y-3 p-3 sm:p-4 rounded-lg sm:rounded-xl bg-base-200/50 border border-base-300/60">
+                      {/* Priority Filter */}
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wider text-neutral block mb-2">Priority</label>
+                        <select
+                          value={filterPriority}
+                          onChange={(e) => setFilterPriority(e.target.value as any)}
+                          className="w-full px-3 py-2 rounded-lg text-xs sm:text-sm bg-base-100 border border-base-300/60 focus:outline-none focus:border-primary text-info"
+                        >
+                          <option value="all">All Priorities</option>
+                          <option value="high">High Priority</option>
+                          <option value="medium">Medium Priority</option>
+                          <option value="low">Low Priority</option>
+                        </select>
+                      </div>
+
+                      {/* Status Filter */}
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wider text-neutral block mb-2">Status</label>
+                        <select
+                          value={filterStatus}
+                          onChange={(e) => setFilterStatus(e.target.value as any)}
+                          className="w-full px-3 py-2 rounded-lg text-xs sm:text-sm bg-base-100 border border-base-300/60 focus:outline-none focus:border-primary text-info"
+                        >
+                          <option value="all">All Status</option>
+                          <option value="pending">Pending Issues</option>
+                          <option value="completed">Completed Issues</option>
+                        </select>
+                      </div>
+
+                      {/* Completion Filter */}
+                      <div>
+                        <label className="text-xs font-bold uppercase tracking-wider text-neutral block mb-2">Min. Completion: {filterCompletion}%</label>
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          step="10"
+                          value={filterCompletion}
+                          onChange={(e) => setFilterCompletion(Number(e.target.value))}
+                          className="w-full accent-primary"
+                        />
                       </div>
                     </div>
+                  )}
 
-                    {/* Districts List */}
-                    <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3 custom-scrollbar">
-                      {(displayItem.data as Division).districts.map((district, index) => {
-                        const completionPercent = district.total > 0
-                          ? Math.round((district.completed / district.total) * 100)
-                          : 0;
-                        const priorityColors = {
-                          high: { bg: 'bg-red-500/10', text: 'text-red-500', border: 'border-red-500/20' },
-                          medium: { bg: 'bg-yellow-500/10', text: 'text-yellow-500', border: 'border-yellow-500/20' },
-                          low: { bg: 'bg-green-500/10', text: 'text-green-500', border: 'border-green-500/20' }
-                        };
-                        const priority = priorityColors[district.priority] || priorityColors.low;
+                  {/* Live Update Indicator */}
+                  <div className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-success/10 border border-success/30">
+                    <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                    <span className="text-xs font-semibold text-success">Live • {lastUpdated.toLocaleTimeString()}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6 custom-scrollbar">
+                {selectedItem.type === "division" ? (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg sm:text-xl font-bold text-info flex items-center gap-3">
+                        <div className="w-1 h-6 sm:h-8 bg-primary rounded-full" />
+                        Districts ({filteredDistricts.length})
+                      </h3>
+                    </div>
+
+                    {filteredDistricts.length > 0 ? (
+                      filteredDistricts.map((district) => {
+                        const completion = district.total > 0 ? Math.round((district.completed / district.total) * 100) : 0;
 
                         return (
                           <div
                             key={district.name}
-                            className={`group relative p-5 rounded-2xl border ${
-                              isDark
-                                ? 'bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/80'
-                                : 'bg-white/80 border-gray-200/50 hover:bg-white'
-                            } backdrop-blur-sm transition-all cursor-pointer overflow-hidden`}
-                            onClick={() => handleDistrictClick(district, displayItem.data as Division)}
+                            onClick={() => handleDistrictClick(district, selectedItem.data as Division)}
+                            className="group p-4 sm:p-6 rounded-lg sm:rounded-2xl bg-base-200/50 border border-base-300/60 hover:border-primary/50 shadow-sm hover:shadow-lg cursor-pointer transition-all duration-300 hover:scale-[1.01]"
                           >
-                            {/* Gradient overlay on hover */}
-                            <div
-                              className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity"
-                              style={{
-                                background: `linear-gradient(135deg, ${(displayItem.data as Division).color} 0%, transparent 100%)`
-                              }}
-                            />
-
-                            <div className="relative">
-                              {/* Header */}
-                              <div className="flex justify-between items-start mb-4">
-                                <div>
-                                  <h3 className={`font-bold text-lg mb-1 ${
-                                    isDark ? 'text-white' : 'text-gray-900'
-                                  }`}>
-                                    {district.name}
-                                  </h3>
-                                  <div className="flex items-center gap-2">
-                                    <span className={`text-xs px-2 py-1 rounded-md font-medium uppercase ${priority.bg} ${priority.text} ${priority.border} border`}>
-                                      {district.priority} Priority
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="text-right">
-                                  <div className={`text-sm font-medium ${
-                                    isDark ? 'text-gray-400' : 'text-gray-600'
-                                  }`}>
-                                    Completion
-                                  </div>
-                                  <div className="text-2xl font-bold" style={{ color: (displayItem.data as Division).color }}>
-                                    {completionPercent}%
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Stats Row */}
-                              <div className="grid grid-cols-3 gap-3 mb-4">
-                                <div className={`text-center p-2 rounded-lg ${
-                                  isDark ? 'bg-gray-900/50' : 'bg-gray-50'
-                                }`}>
-                                  <Activity className={`w-4 h-4 mx-auto mb-1 ${
-                                    isDark ? 'text-blue-400' : 'text-blue-600'
-                                  }`} strokeWidth={2.5} />
-                                  <div className={`text-xs font-medium ${
-                                    isDark ? 'text-gray-500' : 'text-gray-600'
-                                  }`}>
-                                    Total
-                                  </div>
-                                  <div className={`text-lg font-bold ${
-                                    isDark ? 'text-white' : 'text-gray-900'
-                                  }`}>
-                                    {district.total}
-                                  </div>
-                                </div>
-                                <div className={`text-center p-2 rounded-lg ${
-                                  isDark ? 'bg-gray-900/50' : 'bg-gray-50'
-                                }`}>
-                                  <Clock className={`w-4 h-4 mx-auto mb-1 ${
-                                    isDark ? 'text-orange-400' : 'text-orange-600'
-                                  }`} strokeWidth={2.5} />
-                                  <div className={`text-xs font-medium ${
-                                    isDark ? 'text-gray-500' : 'text-gray-600'
-                                  }`}>
-                                    Pending
-                                  </div>
-                                  <div className={`text-lg font-bold ${
-                                    isDark ? 'text-white' : 'text-gray-900'
-                                  }`}>
-                                    {district.pending}
-                                  </div>
-                                </div>
-                                <div className={`text-center p-2 rounded-lg ${
-                                  isDark ? 'bg-gray-900/50' : 'bg-gray-50'
-                                }`}>
-                                  <CheckCircle className={`w-4 h-4 mx-auto mb-1 ${
-                                    isDark ? 'text-green-400' : 'text-green-600'
-                                  }`} strokeWidth={2.5} />
-                                  <div className={`text-xs font-medium ${
-                                    isDark ? 'text-gray-500' : 'text-gray-600'
-                                  }`}>
-                                    Done
-                                  </div>
-                                  <div className={`text-lg font-bold ${
-                                    isDark ? 'text-white' : 'text-gray-900'
-                                  }`}>
-                                    {district.completed}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Progress Bar */}
-                              <div className={`relative w-full h-2 rounded-full overflow-hidden ${
-                                isDark ? 'bg-gray-900/50' : 'bg-gray-200'
-                              }`}>
-                                <div
-                                  className="absolute left-0 top-0 h-full rounded-full transition-all duration-1000"
-                                  style={{
-                                    width: `${completionPercent}%`,
-                                    background: `linear-gradient(90deg, ${(displayItem.data as Division).color} 0%, ${(displayItem.data as Division).color}cc 100%)`
-                                  }}
-                                />
-                              </div>
-
-                              {/* View Details Link */}
-                              <div className="mt-4 flex items-center justify-between">
-                                <span className={`text-xs ${
-                                  isDark ? 'text-gray-500' : 'text-gray-500'
-                                }`}>
-                                  Click to view details
+                            <div className="flex justify-between items-start mb-3 sm:mb-5 gap-2">
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-sm sm:text-xl font-bold text-info truncate">{district.name}</h4>
+                                <span className={`mt-1 sm:mt-2 inline-block px-2 sm:px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${getPriorityColor(district.priority)}`}>
+                                  {district.priority}
                                 </span>
-                                <button
-                                  className={`text-xs font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all ${
-                                    isDark
-                                      ? 'text-blue-400 hover:bg-blue-500/10'
-                                      : 'text-blue-600 hover:bg-blue-50'
-                                  }`}
-                                  style={{ color: (displayItem.data as Division).color }}
-                                >
-                                  View Map
-                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-                                  </svg>
-                                </button>
                               </div>
+                              <div className="text-right flex-shrink-0">
+                                <p className="text-2xl sm:text-4xl font-black text-primary">{completion}%</p>
+                                <p className="text-xs text-neutral">Resolved</p>
+                              </div>
+                            </div>
+
+                            {/* Mini Stats */}
+                            <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-3 sm:mb-5 text-center">
+                              {[
+                                { label: "Total", value: district.total },
+                                { label: "Pending", value: district.pending },
+                                { label: "Done", value: district.completed },
+                              ].map((st) => (
+                                <div key={st.label}>
+                                  <p className="text-lg sm:text-2xl font-black text-info">{st.value}</p>
+                                  <p className="text-xs text-neutral mt-1">{st.label}</p>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Progress Bar */}
+                            <div className="h-2 sm:h-3 bg-base-300/60 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full transition-all duration-1500 ease-out bg-gradient-to-r ${getCompletionColor(completion)}`}
+                                style={{
+                                  width: `${completion}%`
+                                }}
+                              />
                             </div>
                           </div>
                         );
-                      })}
-                    </div>
+                      })
+                    ) : (
+                      <div className="p-6 sm:p-8 rounded-lg sm:rounded-2xl bg-base-200/50 border border-base-300/60 text-center">
+                        <AlertCircle className="w-8 h-8 sm:w-12 sm:h-12 text-neutral/40 mx-auto mb-3" />
+                        <p className="text-neutral font-medium text-xs sm:text-sm">No districts match your filters</p>
+                      </div>
+                    )}
                   </>
                 ) : (
-                  /* District Details View */
-                  <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
-                    <div className={`p-6 rounded-2xl border ${
-                        isDark
-                          ? 'bg-gray-800/50 border-gray-700/50'
-                          : 'bg-white/80 border-gray-200/50'
-                      } backdrop-blur-sm`}
-                    >
-                      <h3 className={`text-lg font-bold mb-4 ${
-                        isDark ? 'text-white' : 'text-gray-900'
-                      }`}>
-                        District Performance
-                      </h3>
+                  <div className="p-6 sm:p-8 rounded-lg sm:rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20 space-y-6">
+                    <h3 className="text-xl sm:text-2xl font-bold text-info">District Insights</h3>
 
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                            Report Resolution Rate
-                          </span>
-                          <span className="font-bold" style={{ color: (displayItem.division as Division)?.color || '#6B7280' }}>
-                            {(displayItem.data as District).total > 0
-                              ? Math.round(((displayItem.data as District).completed / (displayItem.data as District).total) * 100)
-                              : 0}%
-                          </span>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                          <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                            Average Resolution Time
-                          </span>
-                          <span className={`font-bold ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {(displayItem.data as District).total > 0 ? '3.2 days' : 'No data'}
-                          </span>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                          <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                            Citizen Satisfaction
-                          </span>
-                          <span className={`font-bold ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {(displayItem.data as District).total > 0 ? '87%' : 'No data'}
-                          </span>
-                        </div>
+                    {/* Detailed Stats */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between p-3 sm:p-4 rounded-lg bg-base-100/50">
+                        <span className="font-medium text-sm sm:text-base text-neutral">Resolution Rate</span>
+                        <span className="font-black text-xl sm:text-3xl text-primary">
+                          {((selectedItem.data as District).completed / (selectedItem.data as District).total * 100 || 0).toFixed(0)}%
+                        </span>
                       </div>
 
-                      {(displayItem.data as District).total > 0 && (
-                        <div className="mt-6 pt-6 border-t border-gray-700/50">
-                          <h4 className={`text-sm font-semibold mb-3 ${
-                            isDark ? 'text-gray-400' : 'text-gray-600'
-                          }`}>
-                            Recent Activities
-                          </h4>
-                          <div className="space-y-2">
-                            {['Road repair completed', 'New complaint registered', 'Water supply issue resolved']
-                              .map((activity, i) => (
-                                <div key={i} className={`flex items-center gap-3 text-sm ${
-                                  isDark ? 'text-gray-400' : 'text-gray-600'
-                                }`}>
-                                  <div
-                                    className="w-2 h-2 rounded-full"
-                                    style={{ backgroundColor: (displayItem.division as Division)?.color || '#6B7280' }}
-                                  />
-                                  {activity}
-                                </div>
-                              ))
-                            }
-                          </div>
-                        </div>
-                      )}
+                      <div className="flex items-center justify-between p-3 sm:p-4 rounded-lg bg-base-100/50">
+                        <span className="font-medium text-sm sm:text-base text-neutral">Total Issues</span>
+                        <span className="font-black text-xl sm:text-3xl text-info">{(selectedItem.data as District).total}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between p-3 sm:p-4 rounded-lg bg-base-100/50">
+                        <span className="font-medium text-sm sm:text-base text-neutral">Pending</span>
+                        <span className="font-black text-xl sm:text-3xl text-warning">{(selectedItem.data as District).pending}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between p-3 sm:p-4 rounded-lg bg-base-100/50">
+                        <span className="font-medium text-sm sm:text-base text-neutral">Resolved</span>
+                        <span className="font-black text-xl sm:text-3xl text-success">{(selectedItem.data as District).completed}</span>
+                      </div>
+                    </div>
+
+                    {/* Priority Badge */}
+                    <div className={`p-4 rounded-lg border ${getPriorityColor((selectedItem.data as District).priority)}`}>
+                      <p className="text-xs font-bold uppercase tracking-wider mb-1">Priority Level</p>
+                      <p className="text-lg sm:text-xl font-black capitalize">{(selectedItem.data as District).priority} Priority</p>
                     </div>
                   </div>
                 )}
+              </div>
 
-                {/* Sidebar Footer */}
-                <div className={`p-5 border-t ${
-                  isDark ? 'border-gray-800/50 bg-gray-900/50' : 'border-gray-200/50 bg-gray-50/50'
-                } backdrop-blur-sm`}>
-                  <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-lg ${
-                      isDark ? 'bg-blue-500/10' : 'bg-blue-50'
-                    }`}>
-                      <Info className={`w-4 h-4 ${
-                        isDark ? 'text-blue-400' : 'text-blue-600'
-                      }`} strokeWidth={2.5} />
-                    </div>
-                    <div className="flex-1">
-                      <p className={`text-xs font-medium mb-1 ${
-                        isDark ? 'text-gray-300' : 'text-gray-700'
-                      }`}>
-                        {displayItem.type === 'division' ? 'Division Overview' : 'District Insights'}
-                      </p>
-                      <p className={`text-xs ${
-                        isDark ? 'text-gray-500' : 'text-gray-600'
-                      }`}>
-                        {displayItem.type === 'division'
-                          ? 'Click on any district to view detailed performance metrics and recent activities.'
-                          : 'Real-time data synced with municipal reporting systems. Updated every 15 minutes.'
-                        }
-                      </p>
-                    </div>
+              {/* Footer */}
+              <div className="flex-shrink-0 p-4 sm:p-6 border-t border-base-300/40 bg-base-100/80 backdrop-blur-xl">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="p-2 sm:p-3 rounded-lg sm:rounded-2xl bg-primary/10 flex-shrink-0">
+                    <Info className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-bold text-info text-xs sm:text-sm">Live Data • Updated Every 15 Minutes</p>
+                    <p className="text-xs text-neutral">Powered by Bangladesh Municipal Systems</p>
                   </div>
                 </div>
               </div>
-            </>
-          )}
+            </aside>
+          </>
+        )}
       </div>
 
-      {/* Custom Scrollbar Styles */}
+      {/* Global Animations */}
       <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: ${isDark ? 'rgba(75, 85, 99, 0.8)' : 'rgba(156, 163, 175, 0.8)'};
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: ${isDark ? 'rgba(107, 114, 128, 1)' : 'rgba(107, 114, 128, 1)'};
-        }
-        .leaflet-tooltip {
-          background: transparent !important;
-          border: none !important;
-          box-shadow: none !important;
-          padding: 0 !important;
-        }
-        .leaflet-tooltip:before {
-          display: none !important;
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+        @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        .animate-fadeIn { animation: fadeIn 0.4s ease-out; }
+        .animate-slideInLeft { animation: slideInLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .animate-slideInRight { animation: slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: hsl(var(--p) / 0.3); border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: hsl(var(--p) / 0.5); }
       `}</style>
     </div>
   );
