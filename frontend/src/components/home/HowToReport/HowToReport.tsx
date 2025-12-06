@@ -1,5 +1,6 @@
 "use client";
 
+import { Sprout } from "lucide-react";
 import React from "react";
 
 const StepsProgress = () => {
@@ -74,10 +75,13 @@ const StepsProgress = () => {
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-8 md:mb-16">
-          <p className="text-gray-500 uppercase text-sm tracking-wider mb-3 font-medium">
-            HOW TO REPORT
-          </p>
-          <h2 className="text-2xl md:text-4xl font-bold text-[#002E2E]">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Sprout className="w-5 h-5 text-[#004d40]" />
+            <span className="text-[#555555] text-lg font-medium">
+              How to Report
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-primary">
             Complete Every <span className="font-bold">Step Carefully</span>
           </h2>
         </div>

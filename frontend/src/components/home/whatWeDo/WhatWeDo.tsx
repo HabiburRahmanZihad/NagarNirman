@@ -5,7 +5,7 @@ import React from "react";
 import { motion, Variants } from "framer-motion";
 import {
   Droplets, Lightbulb, Recycle,
-  Route, Waves, Wrench
+  Route, Sprout, Waves, Wrench
 } from "lucide-react";
 
 // --- DATA ---
@@ -92,7 +92,13 @@ export default function WhatWeDo() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
+                    <div className="flex items-center justify-center gap-2 mb-3">
+            <Sprout className="w-5 h-5 text-[#004d40]" />
+            <span className="text-[#555555] text-lg font-medium">
+              What We Do
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-primary">
             Building a Better City
           </h2>
         </motion.div>
