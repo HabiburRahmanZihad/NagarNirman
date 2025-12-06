@@ -133,7 +133,7 @@ const addMarkersToMap = (
             transform: translate(-50%, -50%);
             width: 20px;
             height: 20px;
-            background: linear-gradient(135deg, ${division.color} 0%, ${division.color}dd 100%);
+            background: linear-linear(135deg, ${division.color} 0%, ${division.color}dd 100%);
             border: 3px solid white;
             border-radius: 50%;
             box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 4px ${division.color}33;
@@ -191,7 +191,7 @@ const addMarkersToMap = (
               transform: translate(-50%, -50%);
               width: 16px;
               height: 16px;
-              background: linear-gradient(135deg, ${district.color} 0%, ${district.color}dd 100%);
+              background: linear-linear(135deg, ${district.color} 0%, ${district.color}dd 100%);
               border: 2px solid white;
               border-radius: 50% 50% 50% 0;
               transform: translate(-50%, -50%) rotate(-45deg);
@@ -388,7 +388,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
   }, [selectedItem]);
 
   if (!mounted) return (
-    <div className="w-full h-full bg-gradient-to-br from-base-200 to-base-300 animate-pulse" />
+    <div className="w-full h-full bg-linear-to-br from-base-200 to-base-300 animate-pulse" />
   );
 
   return <div id="map" className="w-full h-full z-0" />;
@@ -635,9 +635,9 @@ export default function MapSearchPage() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-base-100">
+    <div className="relative min-h-screen overflow-hidden bg-base-100 container mx-auto ">
       {/* Header */}
-      <header className="relative z-40 border-b border-base-200/60 bg-base-100/95 backdrop-blur-2xl sticky top-0">
+      <header className="z-40 border-b border-base-200/60 bg-base-100/95 backdrop-blur-2xl sticky top-0">
         <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-8">
             {/* Title */}
@@ -680,11 +680,11 @@ export default function MapSearchPage() {
       </header>
 
       {/* Main View */}
-      <div className="relative h-[calc(100vh-180px)] sm:h-[calc(100vh-160px)] md:h-[calc(100vh-180px)] mb-6 sm:mb-12 mx-4 sm:mx-6 rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border border-base-200/60">
+      <div className="relative h-[calc(100vh-180px)] sm:h-[calc(100vh-160px)] md:h-[calc(100vh-180px)] mb-6 sm:mb-12  sm:mx-0 rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border border-base-200/60">
         {/* Floating Search - Moved to LEFT */}
-        <div className="absolute top-4 sm:top-8 left-4 sm:left-8 w-full max-w-xs sm:max-w-sm z-[100] px-0 sm:px-0">
+        <div className="absolute top-4 sm:top-8 left-4 sm:left-8 w-full max-w-xs sm:max-w-sm z-100 px-0 sm:px-0">
           <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-secondary/10 to-primary/20 rounded-2xl sm:rounded-3xl blur-2xl opacity-70 group-hover:opacity-100 transition duration-700" />
+            <div className="absolute -inset-1 bg-linear-to-r from-primary/20 via-secondary/10 to-primary/20 rounded-2xl sm:rounded-3xl blur-2xl opacity-70 group-hover:opacity-100 transition duration-700" />
             <div className="relative bg-base-100/95 backdrop-blur-3xl border border-base-300/80 rounded-2xl sm:rounded-3xl shadow-xl overflow-hidden">
               <Search className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-6 sm:h-6 text-neutral" strokeWidth={2.5} />
               <input
@@ -698,6 +698,8 @@ export default function MapSearchPage() {
                 <button
                   onClick={handleClearSearch}
                   className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 p-2 sm:p-3 rounded-full hover:bg-base-200/60 transition"
+                  aria-label="Clear search"
+                  title="Clear search"
                 >
                   <X className="w-4 h-4 sm:w-5 sm:h-5 text-neutral" />
                 </button>
@@ -727,12 +729,12 @@ export default function MapSearchPage() {
               className="fixed inset-0 bg-black/40 backdrop-blur-xl z-40 animate-fadeIn"
             />
             {/* Mobile Sidebar */}
-            <aside className="md:hidden fixed inset-0 left-0 top-[108px] h-[calc(100vh-108px)] w-80 z-[98] bg-base-100/98 backdrop-blur-3xl border-r border-base-300/60 shadow-2xl animate-slideInLeft flex flex-col overflow-y-auto custom-scrollbar">
+            <aside className="md:hidden fixed inset-0 left-0 top-[108px] h-[calc(100vh-108px)] w-80 z-98 bg-base-100/98 backdrop-blur-3xl border-r border-base-300/60 shadow-2xl animate-slideInLeft flex flex-col overflow-y-auto custom-scrollbar">
               {/* Header */}
-              <div className="shrink-0 p-4 sm:p-8 border-b border-base-300/40 bg-gradient-to-br from-primary/5 to-secondary/5">
+              <div className="shrink-0 p-4 sm:p-8 border-b border-base-300/40 bg-linear-to-br from-primary/5 to-secondary/5">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-center gap-3 sm:gap-5 flex-1 min-w-0">
-                    <div className="relative w-12 h-12 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary to-secondary shadow-lg flex-shrink-0 flex items-center justify-center">
+                    <div className="relative w-12 h-12 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-linear-to-br from-primary to-secondary shadow-lg shrink-0 flex items-center justify-center">
                       <MapPin className="w-6 h-6 sm:w-10 sm:h-10 text-white" strokeWidth={3} />
                       <div className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-white/20 animate-pulse" />
                     </div>
@@ -749,7 +751,9 @@ export default function MapSearchPage() {
                   </div>
                   <button
                     onClick={handleCloseSidebar}
-                    className="p-2 sm:p-4 rounded-xl sm:rounded-2xl bg-base-200/60 hover:bg-base-300/80 transition flex-shrink-0"
+                    className="p-2 sm:p-4 rounded-xl sm:rounded-2xl bg-base-200/60 hover:bg-base-300/80 transition shrink-0"
+                    aria-label="Close sidebar"
+                    title="Close sidebar"
                   >
                     <X className="w-4 h-4 sm:w-6 sm:h-6 text-neutral" />
                   </button>
@@ -758,9 +762,9 @@ export default function MapSearchPage() {
                 {/* Key Stats */}
                 <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-8">
                   {[
-                    { label: "Total", value: selectedItem.type === "division" ? (selectedItem.data as Division).districts.reduce((a,d)=>a+d.total,0) : (selectedItem.data as District).total },
-                    { label: "Pending", value: selectedItem.type === "division" ? (selectedItem.data as Division).districts.reduce((a,d)=>a+d.pending,0) : (selectedItem.data as District).pending },
-                    { label: "Resolved", value: selectedItem.type === "division" ? (selectedItem.data as Division).districts.reduce((a,d)=>a+d.completed,0) : (selectedItem.data as District).completed },
+                    { label: "Total", value: selectedItem.type === "division" ? (selectedItem.data as Division).districts.reduce((a, d) => a + d.total, 0) : (selectedItem.data as District).total },
+                    { label: "Pending", value: selectedItem.type === "division" ? (selectedItem.data as Division).districts.reduce((a, d) => a + d.pending, 0) : (selectedItem.data as District).pending },
+                    { label: "Resolved", value: selectedItem.type === "division" ? (selectedItem.data as Division).districts.reduce((a, d) => a + d.completed, 0) : (selectedItem.data as District).completed },
                   ].map((s) => (
                     <div key={s.label} className="p-3 sm:p-5 rounded-lg sm:rounded-2xl bg-base-200/50 border border-base-300/60">
                       <p className="text-xs font-bold uppercase tracking-wider text-neutral">{s.label}</p>
@@ -772,7 +776,7 @@ export default function MapSearchPage() {
 
               {/* Sidebar Search & Filters */}
               {selectedItem.type === 'division' && (
-                <div className="flex-shrink-0 p-4 sm:p-6 border-b border-base-300/40 space-y-3 sm:space-y-4">
+                <div className="shrink-0 p-4 sm:p-6 border-b border-base-300/40 space-y-3 sm:space-y-4">
                   {/* Search in sidebar */}
                   <div className="relative">
                     <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-neutral" strokeWidth={2.5} />
@@ -782,6 +786,7 @@ export default function MapSearchPage() {
                       value={sidebarSearch}
                       onChange={(e) => setSidebarSearch(e.target.value)}
                       className="w-full pl-9 sm:pl-12 pr-4 py-2 sm:py-3 text-xs sm:text-sm rounded-lg sm:rounded-xl bg-base-200 border border-base-300/60 focus:outline-none focus:border-primary/50 text-info placeholder:text-neutral/60"
+                      aria-label="Search districts"
                     />
                   </div>
 
@@ -789,6 +794,8 @@ export default function MapSearchPage() {
                   <button
                     onClick={() => setShowFilters(!showFilters)}
                     className="w-full flex items-center justify-between px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl bg-primary/10 border border-primary/30 hover:bg-primary/20 transition text-primary font-semibold text-sm sm:text-base"
+                    aria-label={showFilters ? "Hide filters" : "Show filters"}
+                    title={showFilters ? "Hide filters" : "Show filters"}
                   >
                     <div className="flex items-center gap-2">
                       <Filter className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -807,6 +814,7 @@ export default function MapSearchPage() {
                           value={filterPriority}
                           onChange={(e) => setFilterPriority(e.target.value as any)}
                           className="w-full px-3 py-2 rounded-lg text-xs sm:text-sm bg-base-100 border border-base-300/60 focus:outline-none focus:border-primary text-info"
+                          aria-label="Filter by priority"
                         >
                           <option value="all">All Priorities</option>
                           <option value="high">High Priority</option>
@@ -822,6 +830,7 @@ export default function MapSearchPage() {
                           value={filterStatus}
                           onChange={(e) => setFilterStatus(e.target.value as any)}
                           className="w-full px-3 py-2 rounded-lg text-xs sm:text-sm bg-base-100 border border-base-300/60 focus:outline-none focus:border-primary text-info"
+                          aria-label="Filter by status"
                         >
                           <option value="all">All Status</option>
                           <option value="pending">Pending Issues</option>
@@ -840,6 +849,7 @@ export default function MapSearchPage() {
                           value={filterCompletion}
                           onChange={(e) => setFilterCompletion(Number(e.target.value))}
                           className="w-full accent-primary"
+                          aria-label="Minimum completion percentage"
                         />
                       </div>
                     </div>
@@ -881,7 +891,7 @@ export default function MapSearchPage() {
                                   {district.priority}
                                 </span>
                               </div>
-                              <div className="text-right flex-shrink-0">
+                              <div className="text-right shrink-0">
                                 <p className="text-2xl sm:text-4xl font-black text-primary">{completion}%</p>
                                 <p className="text-xs text-neutral">Resolved</p>
                               </div>
@@ -904,7 +914,8 @@ export default function MapSearchPage() {
                             {/* Progress Bar */}
                             <div className="h-2 sm:h-3 bg-base-300/60 rounded-full overflow-hidden">
                               <div
-                                className={`h-full rounded-full transition-all duration-1500 ease-out bg-gradient-to-r ${getCompletionColor(completion)}`}
+                                // eslint-disable-next-line
+                                className={`h-full rounded-full transition-all duration-1500 ease-out bg-linear-to-r ${getCompletionColor(completion)}`}
                                 style={{
                                   width: `${completion}%`
                                 }}
@@ -921,7 +932,7 @@ export default function MapSearchPage() {
                     )}
                   </>
                 ) : (
-                  <div className="p-6 sm:p-8 rounded-lg sm:rounded-2xl bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20 space-y-6">
+                  <div className="p-6 sm:p-8 rounded-lg sm:rounded-2xl bg-linear-to-br from-primary/5 to-secondary/5 border border-primary/20 space-y-6">
                     <h3 className="text-xl sm:text-2xl font-bold text-info">District Insights</h3>
 
                     {/* Detailed Stats */}
@@ -959,9 +970,9 @@ export default function MapSearchPage() {
               </div>
 
               {/* Footer */}
-              <div className="flex-shrink-0 p-4 sm:p-6 border-t border-base-300/40 bg-base-100/80 backdrop-blur-xl">
+              <div className="shrink-0 p-4 sm:p-6 border-t border-base-300/40 bg-base-100/80 backdrop-blur-xl">
                 <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="p-2 sm:p-3 rounded-lg sm:rounded-2xl bg-primary/10 flex-shrink-0">
+                  <div className="p-2 sm:p-3 rounded-lg sm:rounded-2xl bg-primary/10 shrink-0">
                     <Info className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div className="min-w-0">
