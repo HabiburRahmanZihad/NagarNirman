@@ -19,24 +19,44 @@ const teamMembers = [
     name: "Habibur Rahman Zihad",
     role: "Team Leader",
     image: "https://avatars.githubusercontent.com/u/158202166?v=4",
+    social: {
+      facebook: "https://www.facebook.com/habibur.rahman.zihad",
+      twitter: "https://twitter.com/HabiburRZ",
+      instagram: "https://www.instagram.com/habibur.rahman.zihad/",
+    },
   },
   {
     id: 2,
     name: "Md. Shahariar Hafiz",
     role: "CEO-Founder",
     image: "https://avatars.githubusercontent.com/u/102473526?v=4",
+    social: {
+      facebook: "https://www.facebook.com/shahariar.hafiz",
+      twitter: "https://twitter.com/shahariar_hafiz",
+      instagram: "https://www.instagram.com/shahariar.hafiz/",
+    },
   },
   {
     id: 3,
     name: "Mizanur Malita",
     role: "Volunteer",
     image: "https://avatars.githubusercontent.com/u/193724330?v=4",
+    social: {
+      facebook: "https://www.facebook.com/mizanur.malita",
+      twitter: "https://twitter.com/mizanur_malita",
+      instagram: "https://www.instagram.com/mizanur.malita/",
+    },
   },
   {
     id: 4,
     name: "Mohammad Bin Amin",
     role: "Volunteer",
     image: "https://avatars.githubusercontent.com/u/108111892?v=4",
+    social: {
+      facebook: "https://www.facebook.com/mohammad.bin.amin",
+      twitter: "https://twitter.com/mohammad_b_amin",
+      instagram: "https://www.instagram.com/mohammad.bin.amin/",
+    },
   },
 ];
 
@@ -82,10 +102,17 @@ export default function TeamSection() {
 
                 {/* Social Icons (Vertical Stack below Share button) */}
                 <div className="absolute top-16 right-4 z-10 flex flex-col gap-2 items-center">
-                  {[Facebook, Twitter, Instagram].map((Icon, i) => (
-                    <Link
+                  {[
+                    { Icon: Facebook, url: member.social.facebook, label: "Facebook" },
+                    { Icon: Twitter, url: member.social.twitter, label: "Twitter" },
+                    { Icon: Instagram, url: member.social.instagram, label: "Instagram" },
+                  ].map((social, i) => (
+                    <a
                       key={i}
-                      href="#"
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Visit ${member.name} on ${social.label}`}
                       className={`
                         w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#555]
                         shadow-sm hover:bg-[#F7CE50] hover:text-[#003B31] transition-all duration-500 ease-out
@@ -94,8 +121,8 @@ export default function TeamSection() {
                       `}
                       style={{ transitionDelay: `${i * 100}ms` }}
                     >
-                      <Icon className="w-4 h-4" />
-                    </Link>
+                      <social.Icon className="w-4 h-4" />
+                    </a>
                   ))}
                 </div>
               </div>
