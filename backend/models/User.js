@@ -282,7 +282,7 @@ export const checkReportSubmissionLimit = async (userId) => {
   const { reportSubmissions } = user;
   const now = new Date();
   const lastReset = new Date(reportSubmissions.lastResetDate);
-  
+
   // Calculate days since last reset
   const daysSinceReset = Math.floor((now - lastReset) / (1000 * 60 * 60 * 24));
 

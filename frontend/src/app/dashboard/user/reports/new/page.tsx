@@ -274,7 +274,7 @@ export default function NewReportPage() {
       // Handle rate limit (429) - Weekly submission limit exceeded
       if (res.status === 429) {
         const { limitInfo, daysLeft, message } = result;
-        
+
         // Show warning toast with detailed limit info
         toast.custom((t) => (
           <div className="bg-white rounded-lg shadow-2xl p-6 border-l-4 border-orange-500 max-w-md">
@@ -306,7 +306,7 @@ export default function NewReportPage() {
             </div>
           </div>
         ), { duration: 6000 });
-        
+
         console.log('Weekly limit exceeded:', { limitInfo, daysLeft });
         return;
       }
@@ -407,26 +407,24 @@ export default function NewReportPage() {
             <div className="h-4 bg-blue-200 rounded w-3/4"></div>
           </div>
         ) : weeklyLimit && (
-          <div className={`mb-6 border-l-4 p-4 rounded-lg ${
-            weeklyLimit.remaining === 0 
-              ? 'bg-red-50 border-red-500' 
-              : weeklyLimit.remaining === 1 
-              ? 'bg-orange-50 border-orange-500' 
-              : 'bg-blue-50 border-blue-500'
-          }`}>
+          <div className={`mb-6 border-l-4 p-4 rounded-lg ${weeklyLimit.remaining === 0
+              ? 'bg-red-50 border-red-500'
+              : weeklyLimit.remaining === 1
+                ? 'bg-orange-50 border-orange-500'
+                : 'bg-blue-50 border-blue-500'
+            }`}>
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3 flex-1">
                 <span className="text-2xl">
                   {weeklyLimit.remaining === 0 ? '🔴' : weeklyLimit.remaining === 1 ? '🟠' : '🟢'}
                 </span>
                 <div className="flex-1">
-                  <h3 className={`font-semibold mb-2 ${
-                    weeklyLimit.remaining === 0 
-                      ? 'text-red-900' 
-                      : weeklyLimit.remaining === 1 
-                      ? 'text-orange-900' 
-                      : 'text-blue-900'
-                  }`}>
+                  <h3 className={`font-semibold mb-2 ${weeklyLimit.remaining === 0
+                      ? 'text-red-900'
+                      : weeklyLimit.remaining === 1
+                        ? 'text-orange-900'
+                        : 'text-blue-900'
+                    }`}>
                     📊 Weekly Report Submission Status
                   </h3>
                   <div className="space-y-1 text-sm">
@@ -465,14 +463,13 @@ export default function NewReportPage() {
             </div>
             {/* Progress bar */}
             <div className="mt-3 w-full bg-gray-300 rounded-full h-2 overflow-hidden">
-              <div 
-                className={`h-full report-progress-bar ${
-                  weeklyLimit.remaining === 0 
-                    ? 'bg-red-500 report-progress-0' 
-                    : weeklyLimit.remaining === 1 
-                    ? 'bg-orange-500 report-progress-1' 
-                    : 'bg-green-500 report-progress-2'
-                }`}
+              <div
+                className={`h-full report-progress-bar ${weeklyLimit.remaining === 0
+                    ? 'bg-red-500 report-progress-0'
+                    : weeklyLimit.remaining === 1
+                      ? 'bg-orange-500 report-progress-1'
+                      : 'bg-green-500 report-progress-2'
+                  }`}
               ></div>
             </div>
           </div>
