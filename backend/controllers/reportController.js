@@ -28,6 +28,7 @@ export const getReports = asyncHandler(async (req, res) => {
     problemType,
     division,
     district,
+    search,
     sortBy = 'createdAt',
     order = 'desc',
   } = req.query;
@@ -38,6 +39,17 @@ export const getReports = asyncHandler(async (req, res) => {
   if (problemType) filter.problemType = problemType;
   if (division) filter['location.division'] = division;
   if (district) filter['location.district'] = district;
+
+  // Add search functionality
+  if (search) {
+    filter.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { description: { $regex: search, $options: 'i' } },
+      { 'location.address': { $regex: search, $options: 'i' } },
+      { 'location.district': { $regex: search, $options: 'i' } },
+      { problemType: { $regex: search, $options: 'i' } },
+    ];
+  }
 
   const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
 

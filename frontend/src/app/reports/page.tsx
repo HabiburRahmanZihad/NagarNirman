@@ -63,6 +63,15 @@ export default function AllReportsPage() {
   });
   const [showFilters, setShowFilters] = useState(false);
 
+  // Handle search submit (on Enter key)
+  const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setCurrentPage(1);
+      fetchAllReportsStats();
+      fetchReports(1);
+    }
+  };
+
   // Fetch all reports stats (without pagination)
   const fetchAllReportsStats = async () => {
     try {
@@ -70,6 +79,11 @@ export default function AllReportsPage() {
       const params = new URLSearchParams({
         page: '1',
         limit: '1000', // Get all reports in one go for stats
+        ...(filters.district && { district: filters.district }),
+        ...(filters.status && { status: filters.status }),
+        ...(filters.severity && { severity: filters.severity }),
+        ...(filters.problemType && { problemType: filters.problemType }),
+        ...(searchTerm && { search: searchTerm }),
         sortBy: 'createdAt',
         order: 'desc',
       });
@@ -119,7 +133,10 @@ export default function AllReportsPage() {
         order: 'desc',
       });
 
-      const res = await fetch(`${apiUrl}/api/reports?${params}`, {
+      const url = `${apiUrl}/api/reports?${params}`;
+      console.log('📡 Fetching reports from:', url);
+
+      const res = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -132,6 +149,7 @@ export default function AllReportsPage() {
       }
 
       const data = await res.json();
+      console.log('✅ Response data:', data);
 
       if (data.success && data.data) {
         setReports(data.data);
@@ -158,7 +176,7 @@ export default function AllReportsPage() {
         });
       }
     } catch (error: any) {
-      console.error('Error fetching reports:', error);
+      console.error('❌ Error fetching reports:', error);
       toast.error(error.message || 'Failed to load reports. Please check your connection.');
       setReports([]);
     } finally {
@@ -170,7 +188,7 @@ export default function AllReportsPage() {
     setCurrentPage(1);
     fetchAllReportsStats();
     fetchReports(1);
-  }, [filters, searchTerm]);
+  }, [filters]);
 
   useEffect(() => {
     if (currentPage >= 1) {
@@ -187,6 +205,10 @@ export default function AllReportsPage() {
       problemType: '',
     });
     setCurrentPage(1);
+    setTimeout(() => {
+      fetchAllReportsStats();
+      fetchReports(1);
+    }, 0);
   };
 
   // Get severity color and icon
@@ -283,18 +305,32 @@ export default function AllReportsPage() {
         <Card className="mb-6 p-6">
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
-            <div className="flex-1">
-              <div className="relative">
+            <div className="flex-1 flex gap-2">
+              <div className="flex-1 relative">
                 <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search reports by title, description, or location..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={handleSearchSubmit}
                   className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2
                   outline-none focus:ring-primary focus:border-primary transition"
                 />
               </div>
+              <button
+                onClick={() => {
+                  setCurrentPage(1);
+                  fetchAllReportsStats();
+                  fetchReports(1);
+                }}
+                className="px-6 py-3 bg-linear-to-br from-primary to-[#1e5d22] text-white rounded-lg font-bold hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                title="Search"
+                aria-label="Search reports"
+              >
+                <FaSearch className="text-lg" />
+                <span className="hidden sm:inline">Search</span>
+              </button>
             </div>
 
             {/* Filter Toggle */}
