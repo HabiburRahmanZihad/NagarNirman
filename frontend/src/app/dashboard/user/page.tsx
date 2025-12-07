@@ -132,16 +132,20 @@ export default function UserDashboard() {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Welcome Section */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+    <div className="min-h-screen bg-base-300 space-y-8 px-4 sm:px-6 lg:px-8 py-8">
+      {/* Welcome Section with Gradient Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
+      >
+        <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
           Welcome back, {user.name}! 👋
         </h1>
-        <p className="text-gray-600">
-          Here's what's happening with your reports today.
+        <p className="text-white/90 text-lg font-semibold">
+          Here's what's happening with your reports and community contributions today.
         </p>
-      </div>
+      </motion.div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -151,15 +155,16 @@ export default function UserDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
+            className="group"
           >
-            <div className={`${stat.bgColor} rounded-xl p-6`}>
+            <div className={`${stat.bgColor} rounded-2xl p-8 border-2 border-accent/20 shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:scale-105 hover:-translate-y-1`}>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-3xl">{stat.icon}</span>
-                <span className={`text-2xl font-bold ${stat.color}`}>
-                  {loadingStats ? '...' : stat.value}
+                <span className="text-5xl group-hover:scale-110 transition-transform duration-300">{stat.icon}</span>
+                <span className={`text-4xl font-extrabold text-primary`}>
+                  {loadingStats ? <span className="animate-pulse">...</span> : stat.value}
                 </span>
               </div>
-              <h3 className="text-sm font-medium text-gray-700">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-neutral/70">
                 {stat.title}
               </h3>
             </div>
@@ -168,34 +173,40 @@ export default function UserDashboard() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Quick Actions */}
-        <div className="lg:col-span-1">
-          <Card>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="lg:col-span-1"
+        >
+          <Card className="rounded-3xl shadow-xl border-t-4 border-primary p-8 h-fit">
+            <h2 className="text-2xl font-extrabold text-info mb-6 flex items-center gap-3">
+              <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-bold">⚡</div>
               Quick Actions
             </h2>
-            <div className="space-y-3">
+            <div className="gap-1 flex flex-col">
               <Link href="/dashboard/user/reports/new">
-                <Button variant="primary" className="w-full justify-start">
-                  <span className="mr-2">📝</span> Report New Issue
-                </Button>
+                <button className="w-full bg-primary text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-primary/90 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
+                  <span>📝</span> Report New Issue
+                </button>
               </Link>
               <Link href="/dashboard/user/my-reports">
-                <Button variant="secondary" className="w-full justify-start">
-                  <span className="mr-2">📋</span> My Reports
-                </Button>
+                <button className="w-full bg-secondary text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-secondary/90 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
+                  <span>📋</span> My Reports
+                </button>
               </Link>
               <Link href="/dashboard/user/map-search">
-                <Button variant="outline" className="w-full justify-start">
-                  <span className="mr-2">🗺️</span> Map Search
-                </Button>
+                <button className="w-full bg-accent text-info px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-accent/90 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
+                  <span>🗺️</span> Map Search
+                </button>
               </Link>
               {!applicationStatus && (
                 <Link href="/dashboard/user/join-as-a-Problem-Solver">
-                  <Button variant="accent" className="w-full justify-start">
-                    <span className="mr-2">💡</span> Become a Solver
-                  </Button>
+                  <button className="w-full bg-primary text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-primary/90 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
+                    <span>💡</span> Become a Solver
+                  </button>
                 </Link>
               )}
             </div>
@@ -203,92 +214,116 @@ export default function UserDashboard() {
 
           {/* Application Status */}
           {applicationStatus && (
-            <Card className="mt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                Solver Application
-              </h3>
-              <div className={`p-3 rounded-lg ${applicationStatus.status === 'approved'
-                  ? 'bg-green-50 text-green-700'
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Card className="mt-6 rounded-3xl shadow-xl border-t-4 border-accent p-8">
+                <h3 className="text-2xl font-extrabold text-info mb-6 flex items-center gap-3">
+                  <div className={`w-10 h-10 ${applicationStatus.status === 'approved' ? 'bg-success' : applicationStatus.status === 'rejected' ? 'bg-error' : 'bg-warning'} rounded-full flex items-center justify-center text-white font-bold`}>
+                    {applicationStatus.status === 'approved' ? '✅' : applicationStatus.status === 'rejected' ? '❌' : '⏳'}
+                  </div>
+                  Solver Application
+                </h3>
+                <div className={`p-4 rounded-xl border-2 font-bold text-center capitalize text-lg ${applicationStatus.status === 'approved'
+                  ? 'bg-success/10 text-success border-success/30'
                   : applicationStatus.status === 'rejected'
-                    ? 'bg-red-50 text-red-700'
-                    : 'bg-yellow-50 text-yellow-700'
-                }`}>
-                <p className="font-medium capitalize">
+                    ? 'bg-error/10 text-error border-error/30'
+                    : 'bg-warning/10 text-warning border-warning/30'
+                  }`}>
                   Status: {applicationStatus.status}
-                </p>
-              </div>
-              <Link href="/dashboard/user/application-status">
-                <Button variant="outline" size="sm" className="w-full mt-3">
-                  View Details
-                </Button>
-              </Link>
-            </Card>
+                </div>
+                <Link href="/dashboard/user/application-status">
+                  <button className="w-full mt-4 bg-accent text-info px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-accent/90 transform hover:scale-105 transition-all duration-300">
+                    View Details →
+                  </button>
+                </Link>
+              </Card>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
 
         {/* Recent Reports */}
-        <div className="lg:col-span-2">
-          <Card>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900">
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="lg:col-span-2"
+        >
+          <Card className="rounded-3xl shadow-xl border-t-4 border-secondary p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-extrabold text-info flex items-center gap-3">
+                <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">📋</div>
                 Recent Reports
               </h2>
               <Link href="/dashboard/user/my-reports">
-                <Button variant="outline" size="sm">
-                  View All
-                </Button>
+                <button className="bg-secondary text-white px-5 py-2 rounded-lg font-bold shadow-md hover:shadow-lg hover:bg-secondary/90 transform hover:scale-105 transition-all duration-300 text-sm">
+                  View All →
+                </button>
               </Link>
             </div>
 
             {recentReports.length > 0 ? (
-              <div className="space-y-3">
-                {recentReports.map((report) => (
-                  <Link key={report._id} href={`/reports/${report._id}`}>
-                    <div className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-medium text-gray-900 mb-1">
-                            {report.title}
-                          </h3>
-                          <p className="text-sm text-gray-600 line-clamp-2">
-                            {report.description}
-                          </p>
-                          <div className="flex items-center gap-4 mt-2">
-                            <span className="text-xs text-gray-500">
-                              {report.district}
-                            </span>
-                            <span className={`text-xs px-2 py-1 rounded-full ${report.status === 'resolved'
-                                ? 'bg-green-100 text-green-700'
+              <div className="space-y-4">
+                {recentReports.map((report, idx) => (
+                  <motion.div
+                    key={report._id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                  >
+                    <Link href={`/dashboard/user/reports/${report._id}`}>
+                      <div className="p-5 bg-base-100 border-2 border-base-200 rounded-xl hover:border-secondary hover:shadow-lg transition-all duration-300 group cursor-pointer hover:bg-base-100">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="font-extrabold text-info mb-2 group-hover:text-secondary transition-colors text-lg line-clamp-1">
+                              {report.title}
+                            </h3>
+                            <p className="text-sm text-neutral/70 line-clamp-2 leading-relaxed">
+                              {report.description}
+                            </p>
+                            <div className="flex items-center gap-3 mt-3 flex-wrap">
+                              <span className="text-xs font-bold bg-warning/10 text-warning px-3 py-1 rounded-full border border-warning/30">
+                                📍 {report.district}
+                              </span>
+                              <span className={`text-xs px-3 py-1 rounded-full font-bold border-2 ${report.status === 'resolved'
+                                ? 'bg-success/10 text-success border-success/30'
                                 : report.status === 'in_progress'
-                                  ? 'bg-blue-100 text-blue-700'
-                                  : 'bg-yellow-100 text-yellow-700'
-                              }`}>
-                              {report.status.replace('_', ' ')}
-                            </span>
+                                  ? 'bg-info/10 text-info border-info/30'
+                                  : 'bg-warning/10 text-warning border-warning/30'
+                                }`}>
+                                {report.status === 'resolved' ? '✅' : report.status === 'in_progress' ? '⚙️' : '⏳'} {report.status.replace('_', ' ')}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="ml-4 text-xl group-hover:scale-110 transition-transform duration-300">
+                            →
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
+                  </motion.div>
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <p className="text-gray-600 mb-2">
+              <div className="text-center py-16 bg-base-300 rounded-xl border-2 border-dashed border-base-200">
+                <p className="text-3xl mb-3">🗂️</p>
+                <p className="text-info font-bold mb-2 text-lg">
                   No reports yet
                 </p>
-                <p className="text-sm text-gray-500 mb-4">
-                  Start by reporting your first issue
+                <p className="text-sm text-neutral/70 mb-6">
+                  Start by reporting your first community issue
                 </p>
-                <Link href="/reports/new">
-                  <Button variant="primary" size="sm">
-                    Report an Issue
-                  </Button>
+                <Link href="/dashboard/user/reports/new">
+                  <button className="bg-primary text-white px-6 py-3 rounded-lg font-bold shadow-md hover:shadow-lg hover:bg-primary/90 transform hover:scale-105 transition-all duration-300 inline-block">
+                    📝 Report an Issue
+                  </button>
                 </Link>
               </div>
             )}
           </Card>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
