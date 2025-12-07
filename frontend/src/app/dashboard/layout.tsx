@@ -155,7 +155,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </header>
 
         {/* Main Content Area */}
-        <main className="flex-1 bg-base-300 p-6 lg:p-8">
+        <main className="flex-1 bg-base-300 overflow-y-auto">
           {children}
         </main>
       </div>

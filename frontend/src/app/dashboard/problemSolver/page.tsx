@@ -210,36 +210,23 @@ export default function SolverDashboard() {
 
   return (
     <>
-      <div className="space-y-6 p-6 bg-linear-to-br from-gray-50 to-green-50 min-h-screen">
-        {/* Welcome Section */}
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-              <Activity className="text-[#2a7d2f]" size={40} />
-              Your Missions
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Manage and complete your assigned cleanup tasks
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <RefreshButton
-              onClick={() => fetchDashboardData(true)}
-              isRefreshing={isRefreshing}
-              variant="outline"
-              size="md"
-            />
-            <Link href="/dashboard/problemSolver/tasks">
-              <Button variant="primary" className="shadow-lg hover:shadow-xl transition-shadow">
-                <Target className="mr-2" size={18} />
-                View All Tasks
-              </Button>
-            </Link>
-          </div>
-        </div>
+      <div className="space-y-8 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
+        {/* Welcome Section with Gradient Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
+        >
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
+            Welcome back, {user?.name}! 👋
+          </h1>
+          <p className="text-white/90 text-lg font-semibold">
+            Track your assigned tasks, earn points, and make an impact in your community.
+          </p>
+        </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {statsCards.map((stat, index) => {
             const IconComponent = stat.icon;
             return (
@@ -247,25 +234,22 @@ export default function SolverDashboard() {
                 key={stat.title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
+                transition={{ delay: index * 0.1 }}
+                className="group"
               >
-                <div className={`${stat.bgColor} rounded-xl p-5 border-2 ${stat.borderColor} shadow-sm hover:shadow-md transition-all duration-200 h-full`}>
-                  <div className="flex items-start justify-between mb-3">
-                    <div className={`p-2 rounded-lg bg-white shadow-sm ${stat.color}`}>
-                      <IconComponent size={24} />
-                    </div>
-                    <span className={`text-3xl font-bold break-all leading-relaxed  ${stat.color}`}>
-                      {loadingStats ? (
-                        <div className="animate-pulse">...</div>
-                      ) : (
-                        stat.value
-                      )}
+                <div className={`${stat.bgColor} rounded-2xl p-8 border-2 border-accent/20 shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:scale-105 hover:-translate-y-1`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-5xl group-hover:scale-110 transition-transform duration-300">
+                      {loadingStats ? <span className="animate-pulse">...</span> : <IconComponent size={40} className={stat.color} />}
+                    </span>
+                    <span className={`text-4xl font-extrabold ${stat.color}`}>
+                      {loadingStats ? <span className="animate-pulse">...</span> : stat.value}
                     </span>
                   </div>
-                  <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                  <h3 className="text-sm font-bold uppercase tracking-widest text-neutral/70">
                     {stat.title}
                   </h3>
-                  <p className="text-xs text-gray-600">
+                  <p className="text-xs text-neutral/60 mt-1">
                     {stat.description}
                   </p>
                 </div>
@@ -275,77 +259,89 @@ export default function SolverDashboard() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Quick Actions Sidebar */}
-          <div className="lg:col-span-1 space-y-4">
-            <Card className="bg-white shadow-md border border-gray-200">
-              <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Target className="text-[#2a7d2f]" size={20} />
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-1"
+          >
+            <Card className="rounded-3xl shadow-xl border-t-4 border-secondary p-8 h-fit">
+              <h2 className="text-2xl font-extrabold text-info mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">⚡</div>
                 Quick Actions
               </h2>
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2">
                 <Link href="/dashboard/problemSolver/tasks">
-                  <Button variant="primary" className="w-full justify-start shadow-sm hover:shadow-md transition-shadow">
-                    <ListTodo className="mr-2" size={18} /> My Tasks
-                  </Button>
+                  <button className="w-full bg-primary text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-primary/90 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
+                    <ListTodo size={20} /> My Tasks
+                  </button>
                 </Link>
                 <Link href="/dashboard/problemSolver/all-reports">
-                  <Button variant="secondary" className="w-full justify-start">
-                    <FileText className="mr-2" size={18} /> Browse Reports
-                  </Button>
+                  <button className="w-full bg-secondary text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-secondary/90 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
+                    <FileText size={20} /> Browse Reports
+                  </button>
                 </Link>
-                <Link href="/dashboard/problemSolver/map-search">
-                  <Button variant="outline" className="w-full justify-start">
-                    <MapPin className="mr-2" size={18} /> Map Search
-                  </Button>
+                <Link href="/dashboard/problemSolver/leaderboard">
+                  <button className="w-full bg-accent text-info px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-accent/90 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
+                    <Award size={20} /> Leaderboard
+                  </button>
                 </Link>
                 <Link href="/dashboard/problemSolver/statistics">
-                  <Button variant="outline" className="w-full justify-start">
-                    <TrendingUp className="mr-2" size={18} /> Statistics
-                  </Button>
+                  <button className="w-full bg-primary text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-primary/90 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
+                    <TrendingUp size={20} /> Statistics
+                  </button>
                 </Link>
               </div>
             </Card>
 
-            {/* Ranking Card */}
-            <Card className="bg-linear-to-br from-amber-50 via-orange-50 to-yellow-50 shadow-md border-2 border-amber-200">
-              <div className="text-center">
-                <div className="inline-block p-3 bg-white rounded-full shadow-md mb-3">
-                  <Award className="text-amber-500" size={32} />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Your Ranking
-                </h3>
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <Star className="text-amber-500 fill-amber-500" size={24} />
-                  <p className="text-4xl font-bold text-amber-600">
-                    {stats.points}
-                  </p>
-                </div>
-                <p className="text-sm text-gray-700 font-medium mb-3">
+            {/* Points Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Card className="mt-6 rounded-3xl shadow-xl border-t-4 border-accent p-8">
+                <h3 className="text-2xl font-extrabold text-info mb-6 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-info font-bold">⭐</div>
                   Points Earned
-                </p>
-                <div className="pt-3 border-t border-amber-200">
-                  <p className="text-xs text-gray-600">
-                    Keep solving to climb the leaderboard! 🚀
-                  </p>
+                </h3>
+                <div className={`p-6 rounded-2xl border-2 font-bold text-center capitalize text-2xl ${stats.points > 0
+                  ? 'bg-success/10 text-success border-success/30'
+                  : 'bg-warning/10 text-warning border-warning/30'
+                  }`}>
+                  {stats.points} Points
                 </div>
-              </div>
-            </Card>
-          </div>
+                <p className="text-sm text-neutral/70 text-center mt-4">
+                  Keep solving tasks to climb the leaderboard! 🚀
+                </p>
+                <Link href="/dashboard/problemSolver/leaderboard">
+                  <button className="w-full mt-4 bg-secondary text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-secondary/90 transform hover:scale-105 transition-all duration-300">
+                    View Leaderboard →
+                  </button>
+                </Link>
+              </Card>
+            </motion.div>
+          </motion.div>
 
           {/* Recent Tasks */}
-          <div className="lg:col-span-3">
-            <Card className="bg-white shadow-md border border-gray-200">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-2"
+          >
+            <Card className="rounded-3xl shadow-xl border-t-4 border-secondary p-8">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                  <Activity className="text-[#2a7d2f]" size={28} />
+                <h2 className="text-2xl font-extrabold text-info flex items-center gap-3">
+                  <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">📋</div>
                   Recent Tasks
                 </h2>
                 <Link href="/dashboard/problemSolver/tasks">
-                  <Button variant="outline" size="sm" className="shadow-sm">
-                    View All <span className="ml-1">→</span>
-                  </Button>
+                  <button className="bg-secondary text-white px-5 py-2 rounded-lg font-bold shadow-md hover:shadow-lg hover:bg-secondary/90 transform hover:scale-105 transition-all duration-300 text-sm">
+                    View All →
+                  </button>
                 </Link>
               </div>
 
@@ -353,55 +349,47 @@ export default function SolverDashboard() {
                 <div className="space-y-4">
                   {[1, 2, 3].map((i) => (
                     <div key={i} className="animate-pulse">
-                      <div className="h-32 bg-gray-200 rounded-lg"></div>
+                      <div className="h-32 bg-base-200 rounded-xl"></div>
                     </div>
                   ))}
                 </div>
               ) : recentTasks.length > 0 ? (
                 <div className="space-y-4">
-                  {recentTasks.map((task, index) => (
+                  {recentTasks.map((task, idx) => (
                     <motion.div
                       key={task._id}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
+                      transition={{ delay: idx * 0.1 }}
                     >
                       <Link href={`/dashboard/problemSolver/tasks/${task._id}`}>
-                        <div className="p-5 border-2 border-gray-200 rounded-xl hover:border-[#2a7d2f] hover:shadow-lg transition-all duration-200 bg-linear-to-r from-white to-gray-50">
-                          <div className="flex items-start justify-between mb-3">
+                        <div className="p-5 bg-base-100 border-2 border-base-200 rounded-xl hover:border-secondary hover:shadow-lg transition-all duration-300 group cursor-pointer hover:bg-base-100">
+                          <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <h3 className="font-bold text-gray-900 text-lg overflow-hidden">
+                              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                <h3 className="font-extrabold text-info mb-2 group-hover:text-secondary transition-colors text-lg line-clamp-1">
                                   {task.title}
                                 </h3>
-                                <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(task.status)}`}>
+                                <span className={`text-xs px-3 py-1 rounded-full font-bold border-2 ${getStatusColor(task.status)}`}>
                                   {task.status.replace('-', ' ').toUpperCase()}
                                 </span>
                               </div>
-                              <p className="text-sm text-gray-600 break-all leading-relaxed ">
+                              <p className="text-sm text-neutral/70 line-clamp-2 leading-relaxed">
                                 {task.description}
                               </p>
-                              <div className="flex items-center gap-4 flex-wrap">
+                              <div className="flex items-center gap-3 mt-3 flex-wrap">
                                 {task.report?.location && (
-                                  <span className="text-xs text-gray-600 flex items-center gap-1">
-                                    <MapPin size={14} className="text-[#2a7d2f]" />
-                                    {task.report.location.district}, {task.report.location.division}
+                                  <span className="text-xs font-bold bg-warning/10 text-warning px-3 py-1 rounded-full border border-warning/30">
+                                    📍 {task.report.location.district}
                                   </span>
                                 )}
-                                <span className="text-xs text-gray-600 flex items-center gap-1">
-                                  <Calendar size={14} className="text-blue-600" />
-                                  {new Date(task.createdAt).toLocaleDateString()}
-                                </span>
-                                <span className={`text-xs font-semibold flex items-center gap-1 ${getPriorityColor(task.priority)}`}>
-                                  <AlertCircle size={14} />
+                                <span className={`text-xs px-3 py-1 rounded-full font-bold border-2 ${getPriorityColor(task.priority) === 'text-red-600' ? 'bg-error/10 text-error border-error/30' : getPriorityColor(task.priority) === 'text-orange-600' ? 'bg-warning/10 text-warning border-warning/30' : 'bg-info/10 text-info border-info/30'}`}>
                                   {task.priority.toUpperCase()} Priority
                                 </span>
                               </div>
                             </div>
-                            <div className="ml-4 text-right">
-                              <div className="text-sm font-medium text-gray-700 mb-2">
-                                Progress
-                              </div>
+                            <div className="ml-4 text-center min-w-fit">
+                              <div className="text-xs font-bold text-neutral/70 mb-2">Progress</div>
                               <div className="relative w-20 h-20">
                                 <svg className="transform -rotate-90 w-20 h-20">
                                   <circle
@@ -411,7 +399,7 @@ export default function SolverDashboard() {
                                     stroke="currentColor"
                                     strokeWidth="6"
                                     fill="transparent"
-                                    className="text-gray-200"
+                                    className="text-base-200"
                                   />
                                   <circle
                                     cx="40"
@@ -422,11 +410,11 @@ export default function SolverDashboard() {
                                     fill="transparent"
                                     strokeDasharray={213}
                                     strokeDashoffset={213 - (213 * (task.progress || 0)) / 100}
-                                    className="text-[#2a7d2f]"
+                                    className="text-primary transition-all duration-300"
                                   />
                                 </svg>
                                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                  <span className="text-lg font-bold text-[#2a7d2f]">{task.progress || 0}%</span>
+                                  <span className="text-lg font-bold text-primary">{task.progress || 0}%</span>
                                 </div>
                               </div>
                             </div>
@@ -437,71 +425,68 @@ export default function SolverDashboard() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-16 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
-                  <div className="inline-block p-4 bg-gray-200 rounded-full mb-4">
-                    <ListTodo className="text-gray-400" size={48} />
-                  </div>
-                  <p className="text-gray-600 text-lg font-medium mb-2">
+                <div className="text-center py-16 bg-base-300 rounded-xl border-2 border-dashed border-base-200">
+                  <p className="text-3xl mb-3">🗂️</p>
+                  <p className="text-info font-bold mb-2 text-lg">
                     No tasks assigned yet
                   </p>
-                  <p className="text-sm text-gray-500 mb-6">
-                    Check available reports and get started!
+                  <p className="text-sm text-neutral/70 mb-6">
+                    Start by browsing available reports
                   </p>
-                  <Link href="/reports">
-                    <Button variant="primary" size="md" className="shadow-lg">
-                      <FileText className="mr-2" size={18} />
-                      Browse Available Reports
-                    </Button>
+                  <Link href="/dashboard/problemSolver/all-reports">
+                    <button className="bg-primary text-white px-6 py-3 rounded-lg font-bold shadow-md hover:shadow-lg hover:bg-primary/90 transform hover:scale-105 transition-all duration-300 inline-block">
+                      📝 Browse Reports
+                    </button>
                   </Link>
                 </div>
               )}
             </Card>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Info Banner */}
-        <Card className="bg-linear-to-r from-green-50 via-blue-50 to-purple-50 shadow-md border-2 border-green-200">
-          <div className="flex items-start gap-4">
-            <div className="p-3 bg-white rounded-full shadow-sm">
-              <Activity className="text-[#2a7d2f]" size={32} />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                How It Works
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="flex items-start gap-2">
-                  <div className="shrink-0 w-6 h-6 bg-[#2a7d2f] text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                  <div>
-                    <p className="font-semibold text-gray-800 text-sm">Accept Tasks</p>
-                    <p className="text-xs text-gray-600">Review and accept assigned tasks</p>
-                  </div>
+        {/* How It Works Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <Card className="rounded-3xl shadow-xl border-t-4 border-primary p-8 bg-linear-to-br from-primary/5 to-secondary/5">
+            <h3 className="text-2xl font-extrabold text-info mb-6 flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">✨</div>
+              How to Get Started
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="flex items-start gap-3">
+                <div className="shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm">1</div>
+                <div>
+                  <p className="font-bold text-info text-sm">Accept Tasks</p>
+                  <p className="text-xs text-neutral/70">Review and accept assigned tasks</p>
                 </div>
-                <div className="flex items-start gap-2">
-                  <div className="shrink-0 w-6 h-6 bg-[#2a7d2f] text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                  <div>
-                    <p className="font-semibold text-gray-800 text-sm">Start Work</p>
-                    <p className="text-xs text-gray-600">Begin working on the task</p>
-                  </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="shrink-0 w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-sm">2</div>
+                <div>
+                  <p className="font-bold text-info text-sm">Start Work</p>
+                  <p className="text-xs text-neutral/70">Begin working on the task</p>
                 </div>
-                <div className="flex items-start gap-2">
-                  <div className="shrink-0 w-6 h-6 bg-[#2a7d2f] text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                  <div>
-                    <p className="font-semibold text-gray-800 text-sm">Submit Proof</p>
-                    <p className="text-xs text-gray-600">Upload completion evidence</p>
-                  </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="shrink-0 w-8 h-8 bg-accent text-info rounded-full flex items-center justify-center font-bold text-sm">3</div>
+                <div>
+                  <p className="font-bold text-info text-sm">Submit Proof</p>
+                  <p className="text-xs text-neutral/70">Upload completion evidence</p>
                 </div>
-                <div className="flex items-start gap-2">
-                  <div className="shrink-0 w-6 h-6 bg-[#2a7d2f] text-white rounded-full flex items-center justify-center text-sm font-bold">4</div>
-                  <div>
-                    <p className="font-semibold text-gray-800 text-sm">Earn Points</p>
-                    <p className="text-xs text-gray-600">Get rewarded for your work!</p>
-                  </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm">4</div>
+                <div>
+                  <p className="font-bold text-info text-sm">Earn Points</p>
+                  <p className="text-xs text-neutral/70">Get rewarded for your work!</p>
                 </div>
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </motion.div>
       </div>
     </>
   );
