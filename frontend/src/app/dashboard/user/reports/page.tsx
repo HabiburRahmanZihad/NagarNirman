@@ -133,7 +133,7 @@ export default function AllReportsPage() {
   ).sort();
 
   if (isLoading) {
-    return <FullPageLoading message="Loading Reports" />;
+    return <FullPageLoading text="Loading Reports" />;
   }
 
   return (

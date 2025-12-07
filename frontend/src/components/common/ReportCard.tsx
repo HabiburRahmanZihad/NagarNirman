@@ -63,7 +63,7 @@ const ReportCard: React.FC<ReportCardProps> = ({ report }) => {
   const imageCount = report.images?.length || 0;
 
   return (
-    <Link href={`/reports/${report._id}`}>
+    <Link href={`/dashboard/user/reports/${report._id}`}>
       <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-[#2a7d2f] cursor-pointer group h-full flex flex-col">
         {/* Image Section */}
         {primaryImage ? (
