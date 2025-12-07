@@ -331,7 +331,7 @@ export default function NewReportPage() {
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Remaining reports this week:</span>
                   <span className="font-semibold text-green-600">
-                    {successLimitInfo?.remaining || (limitInfo?.weeklyLimit - (successLimitInfo?.submitted || 0))} available
+                    {successLimitInfo?.remaining || (successLimitInfo?.weeklyLimit - (successLimitInfo?.submitted || 0))} available
                   </span>
                 </div>
                 {successLimitInfo && successLimitInfo.remaining === 0 && (

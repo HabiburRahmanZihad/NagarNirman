@@ -344,10 +344,10 @@ export const findReports = async (filter = {}, options = {}) => {
   return {
     reports,
     pagination: {
-      page,
-      limit,
-      total,
-      pages: Math.ceil(total / limit),
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalReports: total,
+      reportsPerPage: limit,
     },
   };
 };
