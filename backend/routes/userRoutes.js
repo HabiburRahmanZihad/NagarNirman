@@ -17,6 +17,7 @@ import {
   getApplicationDetails,
   reviewApplication,
   getSolvers,
+  getWeeklyReportLimit,
 } from '../controllers/userController.js';
 import { protect, authorize } from '../middleware/auth.js';
 
@@ -30,6 +31,7 @@ router.post('/apply-problem-solver', protect, applyProblemSolver);
 router.get('/my-application', protect, getMyApplication);
 router.delete('/my-application', protect, deleteMyApplication);
 router.put('/profile', protect, updateProfile);
+router.get('/weekly-report-limit', protect, getWeeklyReportLimit);
 
 // Authority and SuperAdmin routes (must be before /:id routes)
 router.get('/', protect, authorize('authority', 'superAdmin'), getUsers);

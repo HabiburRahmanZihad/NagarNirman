@@ -883,3 +883,47 @@ export const updateUserRole = asyncHandler(async (req, res) => {
     });
   }
 });
+
+// Get current user's weekly report submission limit info
+export const getWeeklyReportLimit = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not authenticated',
+      });
+    }
+
+    // Use the checkReportSubmissionLimit function from User model
+    const { checkReportSubmissionLimit } = await import('../models/User.js');
+    const limitInfo = await checkReportSubmissionLimit(userId);
+
+    if (!limitInfo) {
+      return res.status(404).json({
+        success: false,
+        message: 'Could not fetch weekly report limit info',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Weekly report limit info fetched successfully',
+      data: {
+        weeklyLimit: limitInfo.limitInfo.weeklyLimit,
+        submittedThisWeek: limitInfo.limitInfo.submittedThisWeek,
+        completedThisWeek: limitInfo.limitInfo.completedThisWeek,
+        remaining: limitInfo.remaining,
+        daysLeft: limitInfo.daysLeft,
+        canSubmit: limitInfo.canSubmit,
+      },
+    });
+  } catch (error) {
+    console.error('getWeeklyReportLimit error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error fetching weekly report limit',
+    });
+  }
+});

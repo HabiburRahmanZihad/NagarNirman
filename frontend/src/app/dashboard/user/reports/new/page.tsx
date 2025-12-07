@@ -26,6 +26,14 @@ type ReportFormData = {
   longitude?: string;
 };
 
+interface WeeklyLimitInfo {
+  weeklyLimit: number;
+  submittedThisWeek: number;
+  completedThisWeek: number;
+  remaining: number;
+  daysLeft: number;
+}
+
 export default function NewReportPage() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -36,9 +44,50 @@ export default function NewReportPage() {
     { name: string; latitude: number; longitude: number }[]
   >([]);
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
+  const [weeklyLimit, setWeeklyLimit] = useState<WeeklyLimitInfo | null>(null);
+  const [isLoadingLimit, setIsLoadingLimit] = useState(true);
 
   const selectedCategory = watch("category");
   const selectedDivision = watch("division");
+
+  // Fetch weekly limit on component mount
+  useEffect(() => {
+    const fetchWeeklyLimit = async () => {
+      try {
+        const token = localStorage.getItem("nn_auth_token");
+        if (!token) {
+          setIsLoadingLimit(false);
+          return;
+        }
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/users/weekly-report-limit`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setWeeklyLimit(data.data);
+        } else {
+          console.warn("Could not fetch weekly limit info");
+        }
+      } catch (error) {
+        console.error("Error fetching weekly limit:", error);
+      } finally {
+        setIsLoadingLimit(false);
+      }
+    };
+
+    if (isAuthenticated && user?.role === "user") {
+      fetchWeeklyLimit();
+    } else {
+      setIsLoadingLimit(false);
+    }
+  }, [isAuthenticated, user?.role]);
 
   const handleDivisionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const div = e.target.value;
@@ -222,20 +271,88 @@ export default function NewReportPage() {
 
       toast.dismiss(submitToast);
 
+      // Handle rate limit (429) - Weekly submission limit exceeded
+      if (res.status === 429) {
+        const { limitInfo, daysLeft, message } = result;
+        
+        // Show warning toast with detailed limit info
+        toast.custom((t) => (
+          <div className="bg-white rounded-lg shadow-2xl p-6 border-l-4 border-orange-500 max-w-md">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl mt-1">⚠️</span>
+              <div className="flex-1">
+                <h3 className="font-bold text-gray-900 mb-2">Weekly Limit Reached</h3>
+                <p className="text-sm text-gray-700 mb-3">
+                  {message || "You've reached your weekly report submission limit."}
+                </p>
+                <div className="bg-orange-50 rounded-md p-3 mb-3 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Reports submitted:</span>
+                    <span className="font-semibold text-gray-900">{limitInfo?.submitted}/{limitInfo?.weeklyLimit}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Reports completed:</span>
+                    <span className="font-semibold text-gray-900">{limitInfo?.completed}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Reset available in:</span>
+                    <span className="font-semibold text-orange-600">{daysLeft} day(s)</span>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600">
+                  💡 Tip: You can submit more reports after marking your current ones as completed!
+                </p>
+              </div>
+            </div>
+          </div>
+        ), { duration: 6000 });
+        
+        console.log('Weekly limit exceeded:', { limitInfo, daysLeft });
+        return;
+      }
+
       if (!res.ok) {
         console.error('Error Response:', result);
         throw new Error(result.message || result.error || "Failed to submit report");
       }
 
-      toast.success("Report submitted successfully! 🎉");
+      // Success - Show success toast with remaining reports
+      const { limitInfo: successLimitInfo } = result;
+      toast.custom((t) => (
+        <div className="bg-white rounded-lg shadow-2xl p-6 border-l-4 border-green-500 max-w-md">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl mt-1">🎉</span>
+            <div className="flex-1">
+              <h3 className="font-bold text-gray-900 mb-2">Report Submitted Successfully!</h3>
+              <p className="text-sm text-gray-700 mb-3">
+                Your report has been submitted and will be reviewed by the authorities.
+              </p>
+              <div className="bg-green-50 rounded-md p-3 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Remaining reports this week:</span>
+                  <span className="font-semibold text-green-600">
+                    {successLimitInfo?.remaining || (limitInfo?.weeklyLimit - (successLimitInfo?.submitted || 0))} available
+                  </span>
+                </div>
+                {successLimitInfo && successLimitInfo.remaining === 0 && (
+                  <div className="text-xs text-gray-600 pt-2 border-t border-green-200">
+                    💡 You've used all your reports for this week. Complete your current reports to submit more!
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      ), { duration: 4000 });
+
       reset();
       setPreviews([]);
       setDistricts([]);
 
-      // Redirect to user's reports dashboard after 1.5 seconds
+      // Redirect to user's reports dashboard after 2 seconds
       setTimeout(() => {
         router.push("/dashboard/user/my-reports");
-      }, 1500);
+      }, 2000);
 
     } catch (error: unknown) {
       toast.dismiss(submitToast);
@@ -283,6 +400,83 @@ export default function NewReportPage() {
             <span className="font-semibold">✓ Verified User:</span> {user?.name}
           </div>
         </div>
+
+        {/* Weekly Report Limit Display */}
+        {isLoadingLimit ? (
+          <div className="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg animate-pulse">
+            <div className="h-4 bg-blue-200 rounded w-3/4"></div>
+          </div>
+        ) : weeklyLimit && (
+          <div className={`mb-6 border-l-4 p-4 rounded-lg ${
+            weeklyLimit.remaining === 0 
+              ? 'bg-red-50 border-red-500' 
+              : weeklyLimit.remaining === 1 
+              ? 'bg-orange-50 border-orange-500' 
+              : 'bg-blue-50 border-blue-500'
+          }`}>
+            <div className="flex items-start justify-between">
+              <div className="flex items-start gap-3 flex-1">
+                <span className="text-2xl">
+                  {weeklyLimit.remaining === 0 ? '🔴' : weeklyLimit.remaining === 1 ? '🟠' : '🟢'}
+                </span>
+                <div className="flex-1">
+                  <h3 className={`font-semibold mb-2 ${
+                    weeklyLimit.remaining === 0 
+                      ? 'text-red-900' 
+                      : weeklyLimit.remaining === 1 
+                      ? 'text-orange-900' 
+                      : 'text-blue-900'
+                  }`}>
+                    📊 Weekly Report Submission Status
+                  </h3>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className={weeklyLimit.remaining === 0 ? 'text-red-800' : weeklyLimit.remaining === 1 ? 'text-orange-800' : 'text-blue-800'}>
+                        Reports submitted this week:
+                      </span>
+                      <span className="font-semibold">
+                        {weeklyLimit.submittedThisWeek}/{weeklyLimit.weeklyLimit}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className={weeklyLimit.remaining === 0 ? 'text-red-800' : weeklyLimit.remaining === 1 ? 'text-orange-800' : 'text-blue-800'}>
+                        Remaining this week:
+                      </span>
+                      <span className="font-semibold">
+                        {weeklyLimit.remaining} report{weeklyLimit.remaining !== 1 ? 's' : ''}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className={weeklyLimit.remaining === 0 ? 'text-red-800' : weeklyLimit.remaining === 1 ? 'text-orange-800' : 'text-blue-800'}>
+                        Reports completed:
+                      </span>
+                      <span className="font-semibold">
+                        {weeklyLimit.completedThisWeek}
+                      </span>
+                    </div>
+                  </div>
+                  {weeklyLimit.remaining === 0 && (
+                    <p className="text-xs text-red-700 mt-2 pt-2 border-t border-red-200">
+                      💡 Tip: Complete your current reports to submit more!
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+            {/* Progress bar */}
+            <div className="mt-3 w-full bg-gray-300 rounded-full h-2 overflow-hidden">
+              <div 
+                className={`h-full report-progress-bar ${
+                  weeklyLimit.remaining === 0 
+                    ? 'bg-red-500 report-progress-0' 
+                    : weeklyLimit.remaining === 1 
+                    ? 'bg-orange-500 report-progress-1' 
+                    : 'bg-green-500 report-progress-2'
+                }`}
+              ></div>
+            </div>
+          </div>
+        )}
 
         {/* Important Notice Banner */}
         <div className="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">

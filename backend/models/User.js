@@ -84,6 +84,13 @@ export const createUser = async (userData) => {
     isActive: true,
     avatar: avatar || '',
     profilePicture: '',
+    // Report submission limit tracking (2 per week)
+    reportSubmissions: {
+      weeklyLimit: 2,
+      submittedThisWeek: 0,
+      completedThisWeek: 0,
+      lastResetDate: new Date(),
+    },
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -234,6 +241,154 @@ export const updateUserApproval = async (userId, approved) => {
       },
     },
     { returnDocument: 'after', projection: { password: 0 } }
+  );
+
+  return result;
+};
+
+// Check if user has exceeded weekly report submission limit
+export const checkReportSubmissionLimit = async (userId) => {
+  if (!ObjectId.isValid(userId)) {
+    throw new Error('Invalid user ID');
+  }
+
+  const user = await getUsersCollection().findOne(
+    { _id: new ObjectId(userId) },
+    { projection: { reportSubmissions: 1 } }
+  );
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  // If user has no reportSubmissions field (legacy user), initialize it
+  if (!user.reportSubmissions) {
+    await getUsersCollection().updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $set: {
+          reportSubmissions: {
+            weeklyLimit: 2,
+            submittedThisWeek: 0,
+            completedThisWeek: 0,
+            lastResetDate: new Date(),
+          },
+        },
+      }
+    );
+    return { canSubmit: true, remaining: 2, message: 'You can submit 2 reports this week' };
+  }
+
+  const { reportSubmissions } = user;
+  const now = new Date();
+  const lastReset = new Date(reportSubmissions.lastResetDate);
+  
+  // Calculate days since last reset
+  const daysSinceReset = Math.floor((now - lastReset) / (1000 * 60 * 60 * 24));
+
+  // Reset weekly count if 7 days have passed
+  if (daysSinceReset >= 7) {
+    await getUsersCollection().updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $set: {
+          'reportSubmissions.submittedThisWeek': 0,
+          'reportSubmissions.completedThisWeek': 0,
+          'reportSubmissions.lastResetDate': new Date(),
+        },
+      }
+    );
+    return { canSubmit: true, remaining: 2, message: 'Weekly limit reset. You can submit 2 reports this week' };
+  }
+
+  // Check if user has reached the limit
+  const submitted = reportSubmissions.submittedThisWeek || 0;
+  const completed = reportSubmissions.completedThisWeek || 0;
+  const weeklyLimit = reportSubmissions.weeklyLimit || 2;
+
+  // User can submit more reports if:
+  // 1. They haven't reached the limit for new submissions, OR
+  // 2. They have completed previous reports
+  const canSubmitMore = submitted < weeklyLimit || completed > 0;
+  const remaining = weeklyLimit - submitted;
+
+  if (!canSubmitMore) {
+    const daysLeft = 7 - daysSinceReset;
+    return {
+      canSubmit: false,
+      remaining: 0,
+      message: `You've reached your weekly limit of ${weeklyLimit} reports. You can submit again in ${daysLeft} days or after completing current reports.`,
+      daysLeft,
+      limitInfo: {
+        weeklyLimit,
+        submitted,
+        completed,
+      },
+    };
+  }
+
+  return {
+    canSubmit: true,
+    remaining,
+    message: `You can submit ${remaining} more report(s) this week`,
+    limitInfo: {
+      weeklyLimit,
+      submitted,
+      completed,
+    },
+  };
+};
+
+// Increment user's weekly report submission count
+export const incrementReportSubmission = async (userId) => {
+  if (!ObjectId.isValid(userId)) {
+    throw new Error('Invalid user ID');
+  }
+
+  const result = await getUsersCollection().findOneAndUpdate(
+    { _id: new ObjectId(userId) },
+    {
+      $inc: { 'reportSubmissions.submittedThisWeek': 1 },
+    },
+    { returnDocument: 'after', projection: { reportSubmissions: 1 } }
+  );
+
+  return result;
+};
+
+// Increment user's weekly completed report count
+export const incrementCompletedReport = async (userId) => {
+  if (!ObjectId.isValid(userId)) {
+    throw new Error('Invalid user ID');
+  }
+
+  const result = await getUsersCollection().findOneAndUpdate(
+    { _id: new ObjectId(userId) },
+    {
+      $inc: { 'reportSubmissions.completedThisWeek': 1 },
+    },
+    { returnDocument: 'after', projection: { reportSubmissions: 1 } }
+  );
+
+  return result;
+};
+
+// Reset weekly report limit for a user
+export const resetWeeklyReportLimit = async (userId) => {
+  if (!ObjectId.isValid(userId)) {
+    throw new Error('Invalid user ID');
+  }
+
+  const result = await getUsersCollection().findOneAndUpdate(
+    { _id: new ObjectId(userId) },
+    {
+      $set: {
+        'reportSubmissions.submittedThisWeek': 0,
+        'reportSubmissions.completedThisWeek': 0,
+        'reportSubmissions.lastResetDate': new Date(),
+      },
+    },
+    { returnDocument: 'after', projection: { reportSubmissions: 1 } }
   );
 
   return result;
