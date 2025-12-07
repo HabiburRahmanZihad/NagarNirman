@@ -27,6 +27,7 @@ import userRoutes from './routes/userRoutes.js';
 import mapRoutes from './routes/mapRoutes.js';
 import statisticsRoutes from './routes/statisticsRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import leaderboardRoutes from './routes/leaderboardRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 // Initialize Express app
@@ -62,6 +63,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/map', mapRoutes);
 app.use('/api/statistics', statisticsRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
