@@ -152,10 +152,10 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-linear-to-br from-[#F6FFF9] to-white py-8 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
-        <div className="mb-8">
+        <div className="mb-8 border-b pb-4 bg-white rounded-lg shadow-sm px-6 py-4 border-accent/80">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-4xl font-extrabold text-[#002E2E] mb-2 flex items-center gap-3">
+              <h1 className="text-4xl font-extrabold text-primary mb-2 flex items-center gap-3">
                 <FaUser className="text-primary" />
                 Profile Settings
               </h1>
@@ -225,7 +225,7 @@ const ProfilePage = () => {
                 </div>
 
                 <div className="flex-1 pb-2">
-                  <h2 className="text-3xl font-bold text-[#002E2E] mb-1">{user?.name}</h2>
+                  <h2 className="text-3xl font-bold text-p mb-1">{user?.name}</h2>
                   <p className="text-[#6B7280] capitalize flex items-center gap-2">
                     <span className="px-3 py-1 bg-primary bg-opacity-10 text-base-100 rounded-full text-sm font-semibold">
                       {user?.role}
@@ -260,13 +260,13 @@ const ProfilePage = () => {
               <>
                 {/* Personal Information Section */}
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold text-[#002E2E] mb-4 flex items-center gap-2">
+                  <h3 className="text-xl font-bold text-p mb-4 flex items-center gap-2">
                     <FaUser className="text-primary" />
                     Personal Information
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-[#002E2E] mb-2">Full Name</label>
+                      <label className="block text-sm font-semibold text-p mb-2">Full Name</label>
                       <input
                         title="Full Name"
                         type="text"
@@ -279,7 +279,7 @@ const ProfilePage = () => {
                       </p>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-[#002E2E] mb-2">Email Address</label>
+                      <label className="block text-sm font-semibold text-p mb-2">Email Address</label>
                       <input
                         title="Email Address"
                         type="email"
@@ -292,7 +292,7 @@ const ProfilePage = () => {
                       </p>
                     </div>
                     <div>
-                      <label className=" text-sm font-semibold text-[#002E2E] mb-2 flex items-center gap-2">
+                      <label className=" text-sm font-semibold text-p mb-2 flex items-center gap-2">
                         <FaPhone className="text-primary text-sm" />
                         Phone Number
                       </label>
@@ -309,7 +309,7 @@ const ProfilePage = () => {
                       <p className="text-xs text-gray-500 mt-1">11 digits starting with 01 (e.g., 01712345678)</p>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-[#002E2E] mb-2">Role</label>
+                      <label className="block text-sm font-semibold text-p mb-2">Role</label>
                       <input
                         title="Role"
                         type="text"
@@ -323,13 +323,13 @@ const ProfilePage = () => {
 
                 {/* Location Section */}
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold text-[#002E2E] mb-4 flex items-center gap-2">
+                  <h3 className="text-xl font-bold text-p mb-4 flex items-center gap-2">
                     <FaMapMarkerAlt className="text-primary" />
                     Location Information
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-semibold text-[#002E2E] mb-2">Division</label>
+                      <label className="block text-sm font-semibold text-p mb-2">Division</label>
                       <select
                         title="Division"
                         name="division"
@@ -347,7 +347,7 @@ const ProfilePage = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-[#002E2E] mb-2">District</label>
+                      <label className="block text-sm font-semibold text-p mb-2">District</label>
                       <select
                         title="District"
                         name="district"
@@ -366,7 +366,7 @@ const ProfilePage = () => {
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-[#002E2E] mb-2">Full Address</label>
+                      <label className="block text-sm font-semibold text-p mb-2">Full Address</label>
                       <textarea
                         name="address"
                         value={profileData.address}
@@ -402,27 +402,27 @@ const ProfilePage = () => {
                 {/* View Mode */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
                   <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-                    <label className="text-sm font-semibold text-[#002E2E] flex items-center gap-2 mb-2">
+                    <label className="text-sm font-semibold text-p flex items-center gap-2 mb-2">
                       <FaPhone className="text-blue-500 text-sm" />
                       Phone Number
                     </label>
-                    <p className="text-lg font-semibold text-[#002E2E]">{profileData.phone || 'Not provided'}</p>
+                    <p className="text-lg font-semibold text-p">{profileData.phone || 'Not provided'}</p>
                   </div>
 
                   <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
-                    <label className="text-sm font-semibold text-[#002E2E] flex items-center gap-2 mb-2">
+                    <label className="text-sm font-semibold text-p flex items-center gap-2 mb-2">
                       <FaMapMarkerAlt className="text-green-500 text-sm" />
                       Location
                     </label>
-                    <p className="text-lg font-semibold text-[#002E2E]">{profileData.district || 'Not provided'}, {profileData.division || 'N/A'}</p>
+                    <p className="text-lg font-semibold text-p">{profileData.district || 'Not provided'}, {profileData.division || 'N/A'}</p>
                   </div>
 
                   <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500 md:col-span-2">
-                    <label className="text-sm font-semibold text-[#002E2E] flex items-center gap-2 mb-2">
+                    <label className="text-sm font-semibold text-p flex items-center gap-2 mb-2">
                       <FaMapMarkerAlt className="text-purple-500 text-sm" />
                       Address
                     </label>
-                    <p className="text-lg font-semibold text-[#002E2E]">{profileData.address || 'Not provided'}</p>
+                    <p className="text-lg font-semibold text-p">{profileData.address || 'Not provided'}</p>
                   </div>
                 </div>
               </>
@@ -432,7 +432,7 @@ const ProfilePage = () => {
 
         {/* Account Info Card */}
         <Card className="bg-linear-to-r from-slate-50 to-slate-100">
-          <h2 className="text-xl font-bold text-[#002E2E] mb-6 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-p mb-6 flex items-center gap-2">
             <FaCheckCircle className="text-primary" />
             Account Information
           </h2>
@@ -450,7 +450,7 @@ const ProfilePage = () => {
                 )}
                 <div>
                   <p className="text-sm font-medium text-[#6B7280]">Account Status</p>
-                  <p className="text-lg font-bold text-[#002E2E]">{user?.approved ? '✅ Approved' : '⏳ Pending'}</p>
+                  <p className="text-lg font-bold text-p">{user?.approved ? '✅ Approved' : '⏳ Pending'}</p>
                 </div>
               </div>
             </div>
@@ -462,7 +462,7 @@ const ProfilePage = () => {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-[#6B7280]">Member Since</p>
-                  <p className="text-lg font-bold text-[#002E2E]">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'N/A'}</p>
+                  <p className="text-lg font-bold text-p">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : 'N/A'}</p>
                 </div>
               </div>
             </div>
@@ -474,7 +474,7 @@ const ProfilePage = () => {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-[#6B7280]">User Role</p>
-                  <p className="text-lg font-bold text-[#002E2E] capitalize">{user?.role}</p>
+                  <p className="text-lg font-bold text-p capitalize">{user?.role}</p>
                 </div>
               </div>
             </div>

@@ -282,7 +282,7 @@ export default function AllReportsPage() {
     <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-8">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4  mb-8 border-b pb-4 bg-white rounded-lg shadow-sm px-6 py-4 border-accent/80">
           <div>
             <h1 className="text-5xl font-extrabold text-[#002E2E] mb-2">
               Infrastructure <span className="text-primary">Issues</span>

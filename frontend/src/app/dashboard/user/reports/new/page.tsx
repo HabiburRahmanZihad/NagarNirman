@@ -393,7 +393,7 @@ export default function NewReportPage() {
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="flex items-start justify-between mb-6">
+          <div className="flex items-start justify-between  mb-8 border-b pb-4 bg-white rounded-lg shadow-sm px-6 py-4 border-accent/80">
             <div>
               <h1 className="text-4xl font-extrabold text-[#002E2E] mb-2 flex items-center gap-3">
                 <FaUpload className="text-primary" />
