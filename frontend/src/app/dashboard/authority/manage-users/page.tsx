@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import UsersTable from "@/components/manage-users/UsersTable";
 import UserFilterBar from "@/components/manage-users/UserFilterBar";
 import toast from "react-hot-toast";
-import Card from "@/components/common/Card";
 import {
   Users,
   RefreshCw,
@@ -14,7 +13,6 @@ import {
   UserX,
   Trash2,
 } from "lucide-react";
-import RefreshButton from "@/components/common/RefreshButton";
 import { useAuth } from "@/context/AuthContext";
 import { userAPI } from "@/utils/api";
 
@@ -34,7 +32,6 @@ interface User {
 }
 
 export default function ManageUsersPage() {
-  const router = useRouter();
   const { user: authUser, isLoading: authLoading, isAuthenticated } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
