@@ -21,7 +21,7 @@ interface UserFilterBarProps {
   onFilterChange?: (filters: any) => void;
   divisions?: string[];
   districts?: string[];
-  userDivision?: string;
+  userDivision?: any;
   isSuperAdmin?: boolean;
 }
 

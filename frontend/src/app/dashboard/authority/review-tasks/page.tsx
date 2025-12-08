@@ -191,7 +191,7 @@ export default function TaskReviewPage() {
           className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
         >
           <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
-            Task Review Center 📋
+            Task Review Center
           </h1>
           <p className="text-white/90 text-lg font-semibold">
             Review submitted work and provide feedback to problem solvers

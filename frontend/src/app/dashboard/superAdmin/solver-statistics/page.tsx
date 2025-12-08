@@ -16,15 +16,16 @@ import {
   Award,
   UserCheck,
   UserX,
-  ArrowLeft,
   Filter,
   Search,
   Download,
   BarChart3,
   PlusCircle,
   XCircle,
+  Zap,
+  RotateCcw,
 } from 'lucide-react';
-import Link from 'next/link';
+import Card from '@/components/common/Card';
 
 interface SolverStats {
   _id: string;
@@ -45,7 +46,6 @@ interface SolverStats {
     status: string;
     isBusy: boolean;
   };
-  // Keep old structure for backward compatibility
   tasks?: {
     pending: number;
     'in-progress': number;
@@ -61,7 +61,7 @@ type SortOption = 'name' | 'points' | 'total' | 'completed' | 'pending' | 'ratin
 type SortOrder = 'asc' | 'desc';
 
 export default function SolverStatisticsPage() {
-  const { user, isLoading: authLoading } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const [statistics, setStatistics] = useState<SolverStats[]>([]);
   const [filteredStats, setFilteredStats] = useState<SolverStats[]>([]);
@@ -79,22 +79,18 @@ export default function SolverStatisticsPage() {
   }, [user]);
 
   useEffect(() => {
-    // Apply filters
     let filtered = [...statistics];
 
-    // Role filter
     if (filterRole !== 'all') {
       filtered = filtered.filter((s) => s.role === filterRole);
     }
 
-    // Status filter
     if (filterStatus === 'free') {
       filtered = filtered.filter((s) => s.isFree);
     } else if (filterStatus === 'active') {
       filtered = filtered.filter((s) => !s.isFree);
     }
 
-    // Search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -106,7 +102,6 @@ export default function SolverStatisticsPage() {
       );
     }
 
-    // Apply sorting
     filtered.sort((a, b) => {
       let aValue: any;
       let bValue: any;
@@ -145,14 +140,12 @@ export default function SolverStatisticsPage() {
           bValue = 0;
       }
 
-      // Handle string comparison
       if (typeof aValue === 'string' && typeof bValue === 'string') {
         return sortOrder === 'asc'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
 
-      // Handle numeric comparison
       return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
     });
 
@@ -175,7 +168,6 @@ export default function SolverStatisticsPage() {
     }
   };
 
-  // Calculate summary stats
   const summaryStats = {
     totalSolvers: statistics.length,
     freeSolvers: statistics.filter((s) => s.isFree).length,
@@ -190,16 +182,7 @@ export default function SolverStatisticsPage() {
     pendingTasks: statistics.reduce((sum, s) => sum + (s.tasks?.pending ?? 0), 0),
   };
 
-  const getRoleColor = (role: string) => {
-    return 'bg-blue-100 text-blue-700';
-  };
-
-  const getRoleBadge = (role: string) => {
-    return 'Problem Solver';
-  };
-
   const handleAssignTask = (solver: SolverStats) => {
-    // Navigate to assign task page with solver pre-selected via query params
     router.push(`/dashboard/superAdmin/assign-task?solverId=${solver._id}&solverName=${encodeURIComponent(solver.name)}`);
   };
 
@@ -208,245 +191,244 @@ export default function SolverStatisticsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/30 to-blue-50/30 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-base-200 p-4 sm:p-6 lg:p-8">
+      <div className="container mx-auto space-y-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
         >
-
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                Solver Performance Statistics
-              </h1>
-              <p className="text-gray-600">
-                Track task assignments, completion rates, and availability of problem solvers
-              </p>
-            </div>
-            <button
-              onClick={() => window.print()}
-              className="hidden md:flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <Download className="w-5 h-5" />
-              <span>Export Report</span>
-            </button>
+          <div>
+            <h1 className="text-4xl sm:text-5xl font-extrabold mb-2">
+              Solver Performance
+            </h1>
+            <p className="text-white/90 text-base sm:text-lg font-semibold">
+              Track task assignments, completion rates, and availability
+            </p>
           </div>
+          <motion.button
+            onClick={() => window.print()}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 px-6 py-3 bg-white/20 hover:bg-white/30 rounded-xl font-bold text-white transition-all shrink-0"
+          >
+            <Download className="w-5 h-5" />
+            <span>Export</span>
+          </motion.button>
         </motion.div>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-linear-to-br from-blue-500 to-blue-600 rounded-xl">
-                <Users className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Total Solvers</p>
-                <p className="text-3xl font-bold text-gray-900">{summaryStats.totalSolvers}</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-linear-to-br from-green-500 to-green-600 rounded-xl">
-                <UserCheck className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Active Solvers</p>
-                <p className="text-3xl font-bold text-gray-900">{summaryStats.activeSolvers}</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-linear-to-br from-yellow-500 to-yellow-600 rounded-xl">
-                <UserX className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Free Solvers</p>
-                <p className="text-3xl font-bold text-gray-900">{summaryStats.freeSolvers}</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-linear-to-br from-purple-500 to-purple-600 rounded-xl">
-                <BarChart3 className="w-7 h-7 text-white" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 font-medium">Total Tasks</p>
-                <p className="text-3xl font-bold text-gray-900">{summaryStats.totalTasks}</p>
-              </div>
-            </div>
-          </motion.div>
+        {/* Summary Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            {
+              title: 'Total Solvers',
+              value: summaryStats.totalSolvers,
+              icon: Users,
+              color: 'text-info',
+              bgColor: 'bg-info/10',
+            },
+            {
+              title: 'Active Solvers',
+              value: summaryStats.activeSolvers,
+              icon: UserCheck,
+              color: 'text-success',
+              bgColor: 'bg-success/10',
+            },
+            {
+              title: 'Free Solvers',
+              value: summaryStats.freeSolvers,
+              icon: UserX,
+              color: 'text-warning',
+              bgColor: 'bg-warning/10',
+            },
+            {
+              title: 'Total Tasks',
+              value: summaryStats.totalTasks,
+              icon: BarChart3,
+              color: 'text-secondary',
+              bgColor: 'bg-secondary/10',
+            },
+          ].map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`${stat.bgColor} rounded-2xl p-6 border-2 border-accent/20 shadow-lg`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-bold text-neutral/70 uppercase tracking-wide">{stat.title}</p>
+                    <p className="text-4xl font-extrabold text-info mt-3">{stat.value}</p>
+                  </div>
+                  <div className={`${stat.color} bg-white/60 p-3 rounded-xl`}>
+                    <Icon className="w-6 h-6" />
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Task Status Overview */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100"
-        >
-          <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-            <TrendingUp className="w-6 h-6 text-green-600" />
+        <Card className="bg-base-100 border-2 border-accent/20 p-8 shadow-xl">
+          <h2 className="text-2xl font-extrabold text-neutral mb-6 flex items-center gap-3">
+            <TrendingUp className="w-7 h-7 text-success" />
             Overall Task Status
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-yellow-50 rounded-xl border border-yellow-200">
-              <Clock className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-yellow-700">{summaryStats.pendingTasks}</p>
-              <p className="text-sm text-yellow-600 font-medium">Pending</p>
-            </div>
-            <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
-              <AlertCircle className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-blue-700">{summaryStats.inProgressTasks}</p>
-              <p className="text-sm text-blue-600 font-medium">In Progress</p>
-            </div>
-            <div className="text-center p-4 bg-green-50 rounded-xl border border-green-200">
-              <CheckCircle2 className="w-8 h-8 text-green-600 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-green-700">{summaryStats.completedTasks}</p>
-              <p className="text-sm text-green-600 font-medium">Completed</p>
-            </div>
-            <div className="text-center p-4 bg-purple-50 rounded-xl border border-purple-200">
-              <Award className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-              <p className="text-2xl font-bold text-purple-700">
-                {summaryStats.completedTasks > 0
-                  ? Math.round((summaryStats.completedTasks / summaryStats.totalTasks) * 100)
-                  : 0}
-                %
-              </p>
-              <p className="text-sm text-purple-600 font-medium">Success Rate</p>
-            </div>
+            {[
+              {
+                title: 'Pending',
+                value: summaryStats.pendingTasks,
+                icon: Clock,
+                bgColor: 'bg-warning/10',
+                borderColor: 'border-warning/40',
+                textColor: 'text-warning',
+              },
+              {
+                title: 'In Progress',
+                value: summaryStats.inProgressTasks,
+                icon: AlertCircle,
+                bgColor: 'bg-info/10',
+                borderColor: 'border-info/40',
+                textColor: 'text-info',
+              },
+              {
+                title: 'Completed',
+                value: summaryStats.completedTasks,
+                icon: CheckCircle2,
+                bgColor: 'bg-success/10',
+                borderColor: 'border-success/40',
+                textColor: 'text-success',
+              },
+              {
+                title: 'Success Rate',
+                value: `${
+                  summaryStats.completedTasks > 0
+                    ? Math.round((summaryStats.completedTasks / summaryStats.totalTasks) * 100)
+                    : 0
+                }%`,
+                icon: Award,
+                bgColor: 'bg-secondary/10',
+                borderColor: 'border-secondary/40',
+                textColor: 'text-secondary',
+              },
+            ].map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`text-center p-5 ${stat.bgColor} rounded-xl border-2 ${stat.borderColor} shadow-md`}
+                >
+                  <Icon className={`w-8 h-8 ${stat.textColor} mx-auto mb-2`} />
+                  <p className="text-3xl font-extrabold text-neutral">{stat.value}</p>
+                  <p className={`text-sm font-bold mt-1 ${stat.textColor}`}>{stat.title}</p>
+                </motion.div>
+              );
+            })}
           </div>
-        </motion.div>
+        </Card>
 
         {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="bg-white rounded-2xl shadow-lg p-6 mb-6 border border-gray-100"
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <Filter className="w-5 h-5 text-gray-600" />
-            <h2 className="text-lg font-bold text-gray-900">Filters</h2>
+        <Card className="bg-base-100 border-2 border-accent/20 p-8 shadow-xl">
+          <div className="flex items-center gap-3 mb-6">
+            <Filter className="w-6 h-6 text-primary" />
+            <h2 className="text-xl font-extrabold text-neutral">Filters & Search</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="space-y-4">
             {/* Search */}
-            <div className="relative md:col-span-2">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral/40" />
               <input
                 type="text"
-                placeholder="Search by name, email, or location..."
+                placeholder="Search by name, email, district, or division..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full pl-12 pr-4 py-3 border-2 border-accent/20 focus:border-accent rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral placeholder-neutral/50 transition-all"
               />
             </div>
 
-            {/* Role Filter */}
-            <select
-              value={filterRole}
-              onChange={(e) => setFilterRole(e.target.value as any)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              aria-label="Filter by role"
-            >
-              <option value="all">All Roles</option>
-              <option value="problemSolver">Problem Solvers</option>
+            {/* Filter Controls */}
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {/* Role Filter */}
+              <select
+                title='all-roles'
+                value={filterRole}
+                onChange={(e) => setFilterRole(e.target.value as any)}
+                className="px-4 py-3 border-2 border-accent/20 focus:border-accent rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all"
+              >
+                <option value="all">All Roles</option>
+                <option value="problemSolver">Problem Solvers</option>
+              </select>
 
-            </select>
+              {/* Status Filter */}
+              <select
+                title='status-filter'
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value as any)}
+                className="px-4 py-3 border-2 border-accent/20 focus:border-accent rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all"
+              >
+                <option value="all">All Status</option>
+                <option value="active">Active (Busy)</option>
+                <option value="free">Free</option>
+              </select>
 
-            {/* Status Filter */}
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value as any)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              aria-label="Filter by status"
-            >
-              <option value="all">All Status</option>
-              <option value="active">Active (Has Tasks)</option>
-              <option value="free">Free (No Tasks)</option>
-            </select>
+              {/* Sort By */}
+              <select
+                title='sort-by'
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as SortOption)}
+                className="px-4 py-3 border-2 border-accent/20 focus:border-accent rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all md:col-span-2"
+              >
+                <option value="total">Total Tasks</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+                <option value="rating">Rating</option>
+                <option value="successRate">Success Rate</option>
+                <option value="points">Points</option>
+                <option value="name">Name</option>
+              </select>
 
-            {/* Sort By */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              aria-label="Sort by"
-            >
-              <option value="total">Sort: Total Tasks</option>
-              <option value="completed">Sort: Completed</option>
-              <option value="pending">Sort: Pending</option>
-              <option value="rating">Sort: Rating</option>
-              <option value="successRate">Sort: Success Rate</option>
-              <option value="points">Sort: Points</option>
-              <option value="name">Sort: Name</option>
-            </select>
+              {/* Sort Order */}
+              <motion.button
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-4 py-3 bg-linear-to-r from-secondary to-secondary/80 text-white rounded-xl hover:shadow-lg font-bold transition-all flex items-center justify-center gap-2"
+              >
+                {sortOrder === 'asc' ? '↑' : '↓'} {sortOrder.toUpperCase()}
+              </motion.button>
+            </div>
           </div>
 
-          {/* Sort Order Toggle */}
-          <button
-            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="mt-4 flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors text-gray-700 font-medium"
-          >
-            {sortOrder === 'asc' ? '↑ Ascending' : '↓ Descending'}
-          </button>
-        </motion.div>
-
-        {/* Results Count */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className="mb-4"
-        >
-          <p className="text-gray-600">
-            Showing <span className="font-bold text-gray-900">{filteredStats.length}</span> of{' '}
-            <span className="font-bold text-gray-900">{statistics.length}</span> solvers
-          </p>
-        </motion.div>
+          {/* Results Count */}
+          <div className="mt-6 pt-6 border-t-2 border-accent/10">
+            <p className="text-sm font-bold text-neutral">
+              Showing <span className="text-info">{filteredStats.length}</span> of{' '}
+              <span className="text-info">{statistics.length}</span> solvers
+            </p>
+          </div>
+        </Card>
 
         {/* Solver Statistics Table */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100"
+          className="bg-base-100 rounded-2xl shadow-xl border-2 border-accent/20 overflow-hidden"
         >
           {filteredStats.length === 0 ? (
             <div className="p-12 text-center">
-              <UserX className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <p className="text-xl font-semibold text-gray-900 mb-2">No Solvers Found</p>
-              <p className="text-gray-600">
+              <UserX className="w-16 h-16 text-neutral/30 mx-auto mb-4" />
+              <p className="text-xl font-bold text-neutral mb-2">No Solvers Found</p>
+              <p className="text-neutral/60">
                 {searchQuery || filterRole !== 'all' || filterStatus !== 'all'
                   ? 'Try adjusting your filters'
                   : 'No problem solvers registered yet'}
@@ -455,87 +437,87 @@ export default function SolverStatisticsPage() {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-linear-to-r from-green-50 to-blue-50">
+                <thead className="bg-linear-to-r from-primary/5 to-secondary/5 border-b-2 border-accent/10">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">Solver</th>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">Role</th>
-                    <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">Location</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Total</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Pending</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">In Progress</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Completed</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Points</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Rating / Success</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Status</th>
-                    <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">Actions</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-neutral uppercase tracking-wide">Solver</th>
+                    <th className="px-6 py-4 text-left text-sm font-bold text-neutral uppercase tracking-wide">Location</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-neutral uppercase tracking-wide">Total</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-neutral uppercase tracking-wide">Pending</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-neutral uppercase tracking-wide">Progress</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-neutral uppercase tracking-wide">Completed</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-neutral uppercase tracking-wide">Points</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-neutral uppercase tracking-wide">Rating</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-neutral uppercase tracking-wide">Status</th>
+                    <th className="px-6 py-4 text-center text-sm font-bold text-neutral uppercase tracking-wide">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-accent/10">
                   {filteredStats.map((solver, index) => (
                     <motion.tr
                       key={solver._id}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className="hover:bg-gray-50 transition-colors"
+                      className="hover:bg-base-200 transition-all"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-linear-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold">
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="w-12 h-12 rounded-full bg-gradient-to-br from-info to-secondary flex items-center justify-center text-white font-bold text-lg shadow-lg"
+                          >
                             {solver.name.charAt(0).toUpperCase()}
-                          </div>
+                          </motion.div>
                           <div>
-                            <p className="font-semibold text-gray-900">{solver.name}</p>
-                            <p className="text-sm text-gray-500">{solver.email}</p>
+                            <p className="font-extrabold text-neutral">{solver.name}</p>
+                            <p className="text-sm text-neutral/60">{solver.email}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getRoleColor(solver.role)}`}>
-                          {getRoleBadge(solver.role)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="text-sm font-medium text-gray-900">{solver.district || 'N/A'}</p>
-                        <p className="text-xs text-gray-500">{solver.division || 'N/A'}</p>
+                        <div>
+                          <p className="font-semibold text-neutral">{solver.district || 'N/A'}</p>
+                          <p className="text-sm text-neutral/60">{solver.division || 'N/A'}</p>
+                        </div>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-900 font-bold">
+                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-info/10 text-info font-extrabold border-2 border-info/40">
                           {solver.taskStats?.total ?? solver.tasks?.total ?? 0}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 text-yellow-700 font-semibold">
+                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-warning/10 text-warning font-extrabold border-2 border-warning/40">
                           {solver.taskStats?.pending ?? solver.tasks?.pending ?? 0}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-semibold">
+                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-secondary/10 text-secondary font-extrabold border-2 border-secondary/40">
                           {solver.tasks?.['in-progress'] ?? 0}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-green-100 text-green-700 font-semibold">
+                        <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-success/10 text-success font-extrabold border-2 border-success/40">
                           {solver.taskStats?.completed ?? solver.tasks?.completed ?? 0}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          <Award className="w-4 h-4 text-yellow-500" />
-                          <span className="font-bold text-gray-900">{solver.points}</span>
+                        <div className="flex items-center justify-center gap-2">
+                          <Award className="w-5 h-5 text-warning" />
+                          <span className="font-extrabold text-neutral">{solver.points}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="flex flex-col items-center gap-1">
                           <div className="flex items-center gap-1">
-                            <span className="text-yellow-500">⭐</span>
-                            <span className="font-semibold text-gray-900">
+                            <span className="text-lg">⭐</span>
+                            <span className="font-bold text-neutral">
                               {typeof solver.taskStats?.rating === 'number' && solver.taskStats.rating > 0
                                 ? solver.taskStats.rating.toFixed(1)
                                 : 'N/A'}
                             </span>
                           </div>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs font-bold text-neutral/60">
                             {typeof solver.taskStats?.successRate === 'number'
                               ? `${solver.taskStats.successRate}%`
                               : '0%'}
@@ -543,30 +525,32 @@ export default function SolverStatisticsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        {(solver.taskStats?.isBusy === false || solver.isFree) ? (
-                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
-                            <CheckCircle2 className="w-3 h-3" />
-                            {solver.taskStats?.status || solver.status || 'Free'}
+                        {solver.isFree ? (
+                          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide bg-success/20 text-success border-2 border-success/40">
+                            <CheckCircle2 className="w-4 h-4" />
+                            Free
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">
-                            <XCircle className="w-3 h-3" />
-                            {solver.taskStats?.status || solver.status || 'Busy'}
+                          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide bg-error/20 text-error border-2 border-error/40">
+                            <XCircle className="w-4 h-4" />
+                            Busy
                           </span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-center">
                         {solver.isFree ? (
-                          <button
+                          <motion.button
                             onClick={() => handleAssignTask(solver)}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-green-500 to-blue-500 text-white rounded-lg hover:from-green-600 hover:to-blue-600 transition-all shadow-md hover:shadow-lg font-medium text-sm"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-linear-to-r from-success to-info text-white rounded-xl hover:shadow-lg font-bold transition-all"
                             title="Assign a task to this solver"
                           >
                             <PlusCircle className="w-4 h-4" />
-                            Assign Task
-                          </button>
+                            Assign
+                          </motion.button>
                         ) : (
-                          <span className="text-gray-400 text-sm font-medium">Occupied</span>
+                          <span className="text-neutral/40 font-semibold text-sm">—</span>
                         )}
                       </td>
                     </motion.tr>

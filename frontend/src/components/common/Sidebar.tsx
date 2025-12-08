@@ -67,10 +67,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { href: '/dashboard/superAdmin', icon: 'settings', label: 'SuperAdmin Panel' },
         { href: '/dashboard/superAdmin/users', icon: 'users', label: 'All Users' },
         { href: '/dashboard/superAdmin/applications', icon: 'filetext', label: 'Applications' },
-        { href: '/dashboard/superAdmin/all-reports', icon: 'filetext', label: 'All Reports' },
         { href: '/dashboard/superAdmin/assign-task', icon: 'edit', label: 'Assign Task' },
         { href: '/dashboard/superAdmin/review-tasks', icon: 'filecheck', label: 'Review Tasks' },
         { href: '/dashboard/superAdmin/solver-statistics', icon: 'barchart', label: 'Solver Statistics' },
+        { href: '/dashboard/superAdmin/all-reports', icon: 'filetext', label: 'All Reports' },
         { href: '/dashboard/superAdmin/map-search', icon: 'map', label: 'Map Search' },
       ];
     }
@@ -124,15 +124,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       >
         <div className="flex flex-col min-h-screen">
           {/* Header */}
-          <div className="p-6 border-b-2 border-primary/30 bg-linear-to-br from-primary via-primary to-primary/90 sticky top-0 z-10">
+          <div
+            className="flex items-center justify-between p-4 border-b-2 border-base-200 bg-base-100">
             <div className="flex items-center justify-between">
               {/* Logo */}
-              <div className="px-8 py-4 bg-white/20 backdrop-blur-xl rounded-2xl border-2 border-white/30 hover:bg-white/25 hover:border-white/50 transition-all duration-300 shadow-lg">
+              <div className="px-8 py-4 bg-base-100 rounded-2xl border-2
+              border-primary/50 transition-all duration-300 shadow-lg">
                 <Link
                   href="/">
-
                   <Image
-
                     src="/logo/logo.png"
                     alt="NagarNirman Logo"
                     width={150}
@@ -151,35 +151,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               </button>
             </div>
 
-            {/* User Info - Enhanced */}
-            {user && (
-              <div className="mt-6 p-4 bg-white/20 backdrop-blur-xl rounded-2xl border-2 border-white/30 hover:bg-white/25 hover:border-white/50 transition-all duration-300 shadow-lg">
-                <div className="flex items-center space-x-3 mb-3">
-                  {user.profilePicture ? (
-                    <img
-                      src={user.profilePicture}
-                      alt={user.name}
-                      className="w-12 h-12 rounded-full object-cover border-3 border-white shadow-lg shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 bg-white text-primary rounded-full flex items-center justify-center font-bold text-lg border-none shadow-lg shrink-0">
-                      {user.name?.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-extrabold text-white truncate">{user.name}</p>
-                    <p className="text-xs text-white/90 capitalize font-semibold">{user.role.replace(/([A-Z])/g, ' $1').trim()}</p>
-                  </div>
-                </div>
-                {user.email && (
-                  <p className="text-xs text-white/80 truncate px-1 font-medium">{user.email}</p>
-                )}
-              </div>
-            )}
+            {/* User Info - Moved to Footer */}
+            {/* Removed from header to place near logout button */}
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+          <nav className="flex-1 p-5 space-y-1 overflow-y-auto">
             {links.map((link) => {
               const active = isActive(link.href);
               return (
@@ -187,7 +164,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   key={link.href}
                   href={link.href}
                   onClick={() => onClose()}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 group ${active
+                  className={`flex items-center space-x-3 px-4 py-3 rounded-xl
+                    font-semibold transition-all duration-300 group ${active
                     ? 'bg-primary text-white shadow-lg scale-105 origin-left'
                     : 'text-info hover:bg-base-200/60 hover:text-primary'
                     }`}
@@ -207,11 +185,37 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </nav>
 
           {/* Footer Actions */}
-          <div className="p-4 border-t-2 border-base-200 bg-base-100 space-y-2">
-            {/* Logout */}
+          <div className="p-4 border-t-2 border-base-200 bg-linear-to-br from-primary via-primary to-primary/90  space-y-3">
+            {/* User Info Section */}
+            {user && (
+              <div className="p-4 bg-white/10 rounded-2xl border-2 border-accent/30 hover:border-accent/60 transition-all duration-300">
+                <div className="flex items-center space-x-3 mb-3">
+                  {user.profilePicture ? (
+                    <img
+                      src={user.profilePicture}
+                      alt={user.name}
+                      className="w-12 h-12 rounded-full object-cover border-3 border-accent shadow-lg shrink-0"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 bg-linear-to-br from-primary to-secondary text-accent rounded-full flex items-center justify-center font-bold text-lg shadow-lg shrink-0">
+                      {user.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-extrabold text-accent truncate">{user.name}</p>
+                    <p className="text-xs text-accent/70 capitalize font-semibold">{user.role.replace(/([A-Z])/g, ' $1').trim()}</p>
+                  </div>
+                </div>
+                {user.email && (
+                  <p className="text-xs text-accent/80 truncate px-1 font-medium">{user.email}</p>
+                )}
+              </div>
+            )}
+
+            {/* Logout Button */}
             <button
               onClick={logout}
-              className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl text-white font-bold bg-linear-to-r from-error to-error/80 hover:from-error/90 hover:to-error hover:shadow-lg transition-all duration-300 border-2 border-error/50 hover:border-error group"
+              className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl text-white font-bold bg-linear-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent hover:shadow-lg transition-all duration-300 border-2 border-accent/50 hover:border-accent group"
             >
               <LogOut className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
               <span>Logout</span>

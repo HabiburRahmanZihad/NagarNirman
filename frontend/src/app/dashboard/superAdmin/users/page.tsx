@@ -6,10 +6,11 @@ import { useRouter } from "next/navigation";
 import UsersTable from "@/components/manage-users/UsersTable";
 import UserFilterBar from "@/components/manage-users/UserFilterBar";
 import toast from "react-hot-toast";
-import { Users } from "lucide-react";
-import { FullPageLoading, RefreshButton } from "@/components/common";
+import { Users, RefreshCw, UserCheck, UserX, Trash2 } from "lucide-react";
+import { FullPageLoading } from "@/components/common";
 import { useAuth } from "@/context/AuthContext";
 import { userAPI } from "@/utils/api";
+import Card from "@/components/common/Card";
 import divisionsData from "@/data/divisionsData.json";
 
 interface User {
@@ -151,181 +152,83 @@ export default function SuperAdminUsersPage() {
   }
 
   return (
-    <div className="p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-3">
-              <div className="p-3 bg-[#2a7d2f] rounded-xl shadow-lg">
-                <Users className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                  All Users Management
-                </h1>
-                <p className="text-gray-600 mt-1">
-                  System-wide user management (SuperAdmin)
-                </p>
-              </div>
-            </div>
-            <RefreshButton
-              onClick={() => loadUsers(true)}
-              isRefreshing={isRefreshing}
-              variant="primary"
-            />
-          </div>
-        </motion.div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="bg-white rounded-xl shadow-sm p-4 border-l-4 border-blue-500"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
-              </div>
-              <span className="text-3xl">👥</span>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="bg-white rounded-xl shadow-sm p-4 border-l-4 border-green-500"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Active Users</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {users.filter(u => u.isActive).length}
-                </p>
-              </div>
-              <span className="text-3xl">✅</span>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-white rounded-xl shadow-sm p-4 border-l-4 border-purple-500"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Authorities</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {users.filter(u => u.role === 'authority').length}
-                </p>
-              </div>
-              <span className="text-3xl">🏛️</span>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white rounded-xl shadow-sm p-4 border-l-4 border-yellow-500"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Problem Solvers</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {users.filter(u => u.role === 'problemSolver').length}
-                </p>
-              </div>
-              <span className="text-3xl">💡</span>
-            </div>
-          </motion.div>
+    <div className="space-y-8 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
+      {/* Welcome Section with Gradient Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent flex items-center justify-between"
+      >
+        <div>
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
+            All Users Management 👥
+          </h1>
+          <p className="text-white/90 text-lg font-semibold">
+            System-wide user management (SuperAdmin)
+          </p>
         </div>
-
-        {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+        <motion.button
+          onClick={() => loadUsers(true)}
+          whileHover={{ rotate: 180 }}
+          whileTap={{ scale: 0.95 }}
+          disabled={isRefreshing}
+          className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all disabled:opacity-50 shrink-0"
+          title="Refresh users"
         >
-          <UserFilterBar
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            filters={filters}
-            setFilters={setFilters}
-            divisions={divisionsData.map(d => d.division)}
-            districts={divisionsData.flatMap(d => d.districts.map(dist => dist.name))}
-            isSuperAdmin={true}
-          />
-        </motion.div>
+          <RefreshCw className={`w-6 h-6 ${isRefreshing ? 'animate-spin' : ''}`} />
+        </motion.button>
+      </motion.div>
 
-        {/* Users Table */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="bg-white rounded-xl shadow-sm overflow-hidden"
-        >
-          <UsersTable
-            users={currentUsers}
-            onRoleChange={handleRoleChange}
-            onDelete={handleDelete}
-            isSuperAdmin={true}
-          />
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="px-6 py-4 border-t border-gray-200">
+      {/* Quick Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { title: 'Total Users', value: users.length, icon: Users, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+          { title: 'Active Users', value: users.filter(u => u.isActive).length, icon: UserCheck, color: 'text-green-600', bgColor: 'bg-green-50' },
+          { title: 'Inactive Users', value: users.filter(u => !u.isActive).length, icon: UserX, color: 'text-red-600', bgColor: 'bg-red-50' },
+          { title: 'Problem Solvers', value: users.filter(u => u.role === 'problemSolver').length, icon: Trash2, color: 'text-purple-600', bgColor: 'bg-purple-50' }
+        ].map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className={`${stat.bgColor} rounded-2xl p-6 border-2 border-accent/20 hover:scale-105 transition-transform`}
+            >
               <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-600">
-                  Showing {indexOfFirstUser + 1} to {Math.min(indexOfLastUser, filteredUsers.length)} of {filteredUsers.length} users
+                <div>
+                  <p className="text-sm font-bold text-neutral/70 uppercase tracking-wide">{stat.title}</p>
+                  <p className="text-3xl font-extrabold text-info mt-2">{stat.value}</p>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    Previous
-                  </button>
-                  <div className="flex items-center gap-2">
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                      const pageNum = i + 1;
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => setCurrentPage(pageNum)}
-                          className={`px-4 py-2 rounded-lg transition-colors ${currentPage === pageNum
-                            ? 'bg-[#2a7d2f] text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                            }`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage === totalPages}
-                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    Next
-                  </button>
+                <div className={`${stat.color} bg-white/50 p-3 rounded-xl`}>
+                  <Icon className="w-6 h-6" />
                 </div>
               </div>
-            </div>
-          )}
-        </motion.div>
+            </motion.div>
+          );
+        })}
       </div>
+
+      {/* Filter Bar */}
+      <UserFilterBar
+        onSearch={setSearchTerm}
+        onFilterChange={setFilters}
+        filters={filters}
+        userDivision={null}
+      />
+
+      {/* Users Table */}
+      <UsersTable
+        users={currentUsers}
+        onRoleChange={handleRoleChange}
+        onStatusToggle={() => { }}
+        onDeleteUser={handleDelete}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        isLoading={false}
+      />
     </div>
   );
 }

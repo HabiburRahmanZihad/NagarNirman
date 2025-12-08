@@ -8,7 +8,24 @@ import { useAuth } from '@/context/AuthContext';
 import { FullPageLoading } from '@/components/common';
 import { reportAPI, userAPI, taskAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
-import { FaCheckDouble } from 'react-icons/fa';
+import {
+  CheckCircle2,
+  AlertCircle,
+  Users,
+  Lightbulb,
+  Building2,
+  Clock,
+  MapPin,
+  Zap,
+  ArrowRight,
+  ArrowLeft,
+  Calendar,
+  CheckSquare,
+  Star,
+  Award,
+  X,
+} from 'lucide-react';
+import Card from '@/components/common/Card';
 
 interface Report {
   _id: string;
@@ -250,95 +267,83 @@ export default function SuperAdminAssignTaskPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-purple-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-6">
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="bg-linear-to-br from-green-500 to-green-600 p-3 rounded-xl shadow-lg">
-                <span className="text-3xl">
-                  <FaCheckDouble />
-                </span>
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Quick Task Assignment</h1>
-                <p className="text-gray-600 mt-1">
-                  3 easy steps: Select report → Choose solver → Assign
-                </p>
-              </div>
-            </div>
-            {selectedReport && (
-              <div className="bg-white px-4 py-2 rounded-lg shadow-sm border-2 border-green-500 animate-pulse">
-                <p className="text-sm font-semibold text-green-600">Step {selectedSolver ? '3' : '2'} of 3</p>
-              </div>
-            )}
-          </div>
+    <div className="space-y-8 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent flex items-center justify-between"
+      >
+        <div>
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
+            Quick Task Assignment 🚀
+          </h1>
+          <p className="text-white/90 text-lg font-semibold">
+            3 easy steps: Select report → Choose solver → Assign
+          </p>
         </div>
+        {selectedReport && (
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="shrink-0 px-6 py-3 bg-white/20 hover:bg-white/30 rounded-2xl border-2 border-accent"
+          >
+            <p className="text-sm font-bold">Step {selectedSolver ? '3' : '2'} of 3</p>
+          </motion.div>
+        )}
+      </motion.div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">⏳</span>
-              <div>
-                <p className="text-xs text-gray-600">Pending</p>
-                <p className="text-xl font-bold text-yellow-600">
-                  {reports.filter(r => r.status === 'pending').length}
-                </p>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { title: 'Pending Reports', value: reports.filter(r => r.status === 'pending').length, icon: Clock, color: 'text-amber-600', bgColor: 'bg-amber-50' },
+          { title: 'Available Solvers', value: solvers.length, icon: Users, color: 'text-info', bgColor: 'bg-info/10' },
+          { title: 'Individuals', value: solvers.filter(s => s.role === 'problemSolver').length, icon: Lightbulb, color: 'text-success', bgColor: 'bg-success/10' },
+          { title: 'Organizations', value: solvers.filter(s => s.role === 'ngo').length, icon: Building2, color: 'text-secondary', bgColor: 'bg-secondary/10' }
+        ].map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className={`${stat.bgColor} rounded-2xl p-6 border-2 border-accent/20`}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold text-neutral/70 uppercase tracking-wide">{stat.title}</p>
+                  <p className="text-3xl font-extrabold text-info mt-2">{stat.value}</p>
+                </div>
+                <div className={`${stat.color} bg-white/50 p-3 rounded-xl`}>
+                  <Icon className="w-6 h-6" />
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">👥</span>
-              <div>
-                <p className="text-xs text-gray-600">Solvers</p>
-                <p className="text-xl font-bold text-blue-600">{solvers.length}</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">💡</span>
-              <div>
-                <p className="text-xs text-gray-600">Individuals</p>
-                <p className="text-xl font-bold text-green-600">
-                  {solvers.filter(s => s.role === 'problemSolver').length}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🏢</span>
-              <div>
-                <p className="text-xs text-gray-600">NGOs</p>
-                <p className="text-xl font-bold text-purple-600">
-                  {solvers.filter(s => s.role === 'ngo').length}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          );
+        })}
+      </div>
 
-        {/* Assignment Flow */}
-        {!selectedReport ? (
-          // STEP 1: Select Report
-          <div className="bg-white rounded-xl shadow-lg border-2 border-green-500 p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">1</div>
-              <h2 className="text-2xl font-bold text-gray-900">Select a Report to Assign</h2>
+      {/* STEP 1: Select Report */}
+      {!selectedReport ? (
+        <Card className="border-t-4 border-secondary">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-lg">1</div>
+            <div>
+              <h2 className="text-2xl font-bold">Select a Report to Assign</h2>
+              <p className="text-sm text-neutral/60 mt-1">Choose a pending report that needs to be assigned to a problem solver</p>
             </div>
+          </div>
 
-            {/* Report Filters */}
-            <div className="mb-4 flex gap-3">
+          {/* Filters */}
+          <div className="bg-base-200 rounded-2xl p-4 mb-6">
+            <p className="text-xs font-bold text-neutral/70 uppercase mb-3">Filter Reports</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <select
                 aria-label="Filter by severity"
                 value={reportFilter.severity}
                 onChange={(e) => setReportFilter({ ...reportFilter, severity: e.target.value })}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                className="px-4 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-100 font-medium text-neutral cursor-pointer hover:border-secondary/50 transition-all"
               >
                 <option value="">All Priorities</option>
                 <option value="high">🔴 High Priority</option>
@@ -350,372 +355,468 @@ export default function SuperAdminAssignTaskPage() {
                 aria-label="Filter by status"
                 value={reportFilter.status}
                 onChange={(e) => setReportFilter({ ...reportFilter, status: e.target.value })}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                className="px-4 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-100 font-medium text-neutral cursor-pointer hover:border-secondary/50 transition-all"
               >
                 <option value="pending">⏳ Pending Only</option>
                 <option value="">All Statuses</option>
               </select>
             </div>
+          </div>
 
-            {/* Reports List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto pr-2">
-              {reports.length === 0 ? (
-                <div className="col-span-2 text-center py-12">
-                  <span className="text-6xl mb-4 block">📭</span>
-                  <p className="text-gray-500 text-lg">No reports found</p>
-                </div>
-              ) : (
-                reports.map((report) => (
-                  <motion.div
-                    key={report._id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.02 }}
-                    className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${report.status === 'pending'
-                        ? 'border-gray-300 hover:border-green-500 hover:shadow-lg bg-white'
-                        : 'border-gray-200 bg-gray-50 opacity-60'
-                      }`}
-                    onClick={() => report.status === 'pending' && setSelectedReport(report)}
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-bold text-gray-900 text-lg">{report.title}</h3>
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${report.severity === 'high' ? 'bg-red-500 text-white' :
-                          report.severity === 'medium' ? 'bg-orange-500 text-white' :
-                            'bg-yellow-500 text-white'
-                        }`}>
-                        {report.severity.toUpperCase()}
-                      </span>
+          {/* Reports Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto pr-2">
+            {reports.length === 0 ? (
+              <div className="col-span-2 text-center py-16">
+                <div className="text-7xl mb-4 opacity-40">📭</div>
+                <p className="text-neutral/60 text-lg font-semibold">No reports found</p>
+                <p className="text-neutral/50 text-sm mt-2">Try adjusting your filters</p>
+              </div>
+            ) : (
+              reports.map((report) => (
+                <motion.div
+                  key={report._id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  whileHover={report.status === 'pending' ? { scale: 1.02 } : {}}
+                  className={`rounded-2xl p-6 cursor-pointer transition-all border-2 overflow-hidden group ${report.status === 'pending'
+                      ? 'bg-base-100 border-secondary/30 hover:border-secondary hover:shadow-2xl active:scale-95'
+                      : 'bg-base-200 border-base-300 opacity-50 cursor-not-allowed'
+                    }`}
+                  onClick={() => report.status === 'pending' && setSelectedReport(report)}
+                >
+                  {/* Gradient overlay on hover */}
+                  <div className={`absolute inset-0 bg-linear-to-r from-secondary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${report.status === 'pending' ? '' : 'hidden'}`}></div>
+
+                  <div className="relative z-10">
+                    {/* Header with severity badge */}
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="font-bold text-neutral text-lg flex-1 group-hover:text-secondary transition-colors">{report.title}</h3>
+                      <motion.span
+                        whileHover={{ scale: 1.1 }}
+                        className={`px-3 py-1 rounded-full text-xs font-bold text-white shrink-0 ml-2 ${report.severity === 'high'
+                            ? 'bg-error shadow-lg shadow-error/30'
+                            : report.severity === 'medium'
+                              ? 'bg-warning shadow-lg shadow-warning/30'
+                              : 'bg-success shadow-lg shadow-success/30'
+                          }`}
+                      >
+                        {report.severity === 'high' ? '🔴' : report.severity === 'medium' ? '🟡' : '🟢'} {report.severity.toUpperCase()}
+                      </motion.span>
                     </div>
-                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{report.description}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm text-gray-700">
-                        <p className="font-medium">📍 {report.location.district}</p>
-                        <p className="text-xs text-gray-500">{report.location.division}</p>
+
+                    {/* Description */}
+                    <p className="text-sm text-neutral/70 mb-4 line-clamp-2">{report.description}</p>
+
+                    {/* Footer with location and action */}
+                    <div className="flex items-center justify-between pt-4 border-t border-accent/10">
+                      <div className="text-sm text-neutral/60">
+                        <p className="font-semibold flex items-center gap-1 text-neutral">
+                          <MapPin className="w-4 h-4 text-secondary" />
+                          {report.location.district}
+                        </p>
+                        <p className="text-xs text-neutral/50 mt-1">{report.location.division}</p>
                       </div>
                       {report.status === 'pending' ? (
-                        <button
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedReport(report);
                           }}
-                          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-bold shadow-md hover:shadow-lg transition-all"
+                          className="px-4 py-2 bg-linear-to-r from-secondary to-secondary/80 text-white rounded-xl hover:shadow-lg font-semibold flex items-center gap-2 text-sm transition-all shadow-md"
                         >
-                          Select →
-                        </button>
+                          <CheckSquare className="w-4 h-4" />
+                          Select
+                        </motion.button>
                       ) : (
-                        <span className="px-3 py-1 bg-gray-300 text-gray-600 rounded-lg text-xs font-medium">
+                        <span className="px-3 py-1 bg-base-300 text-neutral/60 rounded-lg text-xs font-bold uppercase tracking-wide">
                           {report.status}
                         </span>
                       )}
                     </div>
-                  </motion.div>
-                ))
-              )}
+                  </div>
+                </motion.div>
+              ))
+            )}
+          </div>
+
+          {/* Helper text */}
+          {reports.length > 0 && (
+            <p className="text-xs text-neutral/50 mt-4 text-center">
+              {reports.filter(r => r.status === 'pending').length} pending reports available for assignment
+            </p>
+          )}
+        </Card>
+      ) : !selectedSolver ? (
+        /* STEP 2: Select Solver */
+        <Card className="border-t-4 border-info">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-info text-white rounded-full flex items-center justify-center font-bold text-lg">2</div>
+              <div>
+                <h2 className="text-2xl font-bold">Choose Problem Solver</h2>
+                <p className="text-sm text-neutral/60 mt-1">Select a solver or NGO to handle this report</p>
+              </div>
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                setSelectedReport(null);
+                setSelectedSolver('');
+                setPreSelectedSolver(null);
+              }}
+              className="flex items-center gap-1 px-4 py-2 border-2 border-accent/20 rounded-xl hover:bg-base-200 text-sm font-semibold transition-all"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back
+            </motion.button>
+          </div>
+
+          {/* Pre-Selected Solver */}
+          {preSelectedSolver && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-5 bg-linear-to-r from-success/20 to-info/20 border-2 border-success rounded-2xl"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle2 className="w-5 h-5 text-success" />
+                <p className="text-sm font-bold text-success">✨ Solver Pre-Selected</p>
+              </div>
+              <p className="font-bold text-neutral text-lg">{preSelectedSolver.name}</p>
+              <p className="text-sm text-neutral/60 mt-1">👉 This solver is available and ready for assignment</p>
+            </motion.div>
+          )}
+
+          {/* Selected Report Summary */}
+          <div className="mb-6 p-5 bg-linear-to-r from-secondary/20 to-accent/10 border-2 border-secondary rounded-2xl">
+            <p className="text-xs font-bold text-secondary/70 uppercase mb-2">Selected Report</p>
+            <p className="font-bold text-neutral text-lg">{selectedReport.title}</p>
+            <p className="text-sm text-neutral/60 flex items-center gap-1 mt-2">
+              <MapPin className="w-4 h-4" />
+              {selectedReport.location.district}, {selectedReport.location.division}
+            </p>
+            <div className="mt-3 flex items-center gap-2">
+              <span className={`px-3 py-1 rounded-full text-xs font-bold text-white ${selectedReport.severity === 'high'
+                  ? 'bg-error'
+                  : selectedReport.severity === 'medium'
+                    ? 'bg-warning'
+                    : 'bg-success'
+                }`}>
+                {selectedReport.severity.toUpperCase()} Priority
+              </span>
             </div>
           </div>
-        ) : !selectedSolver ? (
-          // STEP 2: Select Solver
-          <div className="bg-white rounded-xl shadow-lg border-2 border-blue-500 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">2</div>
-                <h2 className="text-2xl font-bold text-gray-900">Choose Problem Solver</h2>
-              </div>
-              <button
-                onClick={() => {
-                  setSelectedReport(null);
-                  setSelectedSolver('');
-                  setPreSelectedSolver(null);
-                }}
-                className="px-4 py-2 border-2 border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
-              >
-                ← Back
-              </button>
-            </div>
 
-            {/* Pre-Selected Solver Info */}
-            {preSelectedSolver && (
-              <div className="mb-4 p-4 bg-linear-to-r from-green-50 to-blue-50 border-2 border-green-400 rounded-lg">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-green-600 text-xl">✓</span>
-                  <p className="text-sm font-semibold text-green-700">Solver Pre-Selected from Statistics:</p>
-                </div>
-                <p className="font-bold text-gray-900 text-lg">{preSelectedSolver.name}</p>
-                <p className="text-sm text-gray-600 mt-1">This solver is currently free and available for task assignment.</p>
-              </div>
-            )}
-
-            {/* Selected Report Info */}
-            <div className="mb-4 p-4 bg-green-50 border-2 border-green-200 rounded-lg">
-              <p className="text-sm text-gray-600 mb-1">Selected Report:</p>
-              <p className="font-bold text-gray-900 text-lg">{selectedReport.title}</p>
-              <p className="text-sm text-gray-600">📍 {selectedReport.location.district}, {selectedReport.location.division}</p>
-            </div>
-
-            {/* Solver Filters */}
-            <div className="mb-4 flex gap-3">
+          {/* Solver Filters */}
+          <div className="bg-base-200 rounded-2xl p-4 mb-6">
+            <p className="text-xs font-bold text-neutral/70 uppercase mb-3">Search & Filter Solvers</p>
+            <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="text"
                 placeholder="🔍 Search by name, email, or organization..."
                 value={solverFilter.search}
                 onChange={(e) => setSolverFilter({ ...solverFilter, search: e.target.value })}
-                className="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="flex-1 px-4 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-info focus:border-info bg-base-100 text-neutral hover:border-info/50 transition-all"
               />
 
               <select
                 aria-label="Filter by solver type"
                 value={solverFilter.role}
                 onChange={(e) => setSolverFilter({ ...solverFilter, role: e.target.value as any })}
-                className="px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="px-4 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-info focus:border-info bg-base-100 font-medium text-neutral cursor-pointer hover:border-info/50 transition-all"
               >
                 <option value="all">👥 All Types</option>
                 <option value="problemSolver">💡 Problem Solvers</option>
                 <option value="ngo">🏢 NGOs</option>
               </select>
             </div>
+          </div>
 
-            {/* Solvers List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto pr-2">
-              {solvers.length === 0 ? (
-                <div className="col-span-3 text-center py-12">
-                  <span className="text-6xl mb-4 block">🔍</span>
-                  <p className="text-gray-500 text-lg">No solvers found</p>
-                </div>
-              ) : (
-                solvers.map((solver) => {
-                  const isPreSelected = preSelectedSolver?.id === solver._id;
-                  return (
-                    <motion.div
-                      key={solver._id}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      whileHover={{ scale: 1.05 }}
-                      className={`border-2 rounded-xl p-4 cursor-pointer transition-all bg-white hover:shadow-xl ${isPreSelected
-                          ? 'border-green-500 bg-linear-to-br from-green-50 to-blue-50 shadow-lg ring-2 ring-green-300'
-                          : 'border-gray-300 hover:border-blue-500'
-                        }`}
-                      onClick={() => setSelectedSolver(solver._id)}
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="w-12 h-12 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
-                            {solver.name.charAt(0).toUpperCase()}
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-gray-900">{solver.name}</h3>
-                            <p className="text-xs text-gray-500">{solver.email}</p>
-                          </div>
+          {/* Solvers Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto pr-2">
+            {solvers.length === 0 ? (
+              <div className="col-span-3 text-center py-16">
+                <div className="text-7xl mb-4 opacity-40">🔍</div>
+                <p className="text-neutral/60 text-lg font-semibold">No solvers found</p>
+                <p className="text-neutral/50 text-sm mt-2">Try adjusting your filters</p>
+              </div>
+            ) : (
+              solvers.map((solver) => {
+                const isPreSelected = preSelectedSolver?.id === solver._id;
+                return (
+                  <motion.div
+                    key={solver._id}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    whileHover={{ scale: 1.05 }}
+                    className={`rounded-2xl p-5 cursor-pointer transition-all border-2 overflow-hidden group ${isPreSelected
+                        ? 'bg-linear-to-br from-success/15 to-info/15 border-success shadow-lg ring-2 ring-success/50'
+                        : 'bg-base-100 border-info/30 hover:border-info hover:shadow-xl'
+                      }`}
+                    onClick={() => setSelectedSolver(solver._id)}
+                  >
+                    {/* Gradient overlay */}
+                    <div className={`absolute inset-0 bg-linear-to-r from-info/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none`}></div>
+
+                    <div className="relative z-10">
+                      {/* Avatar and Name */}
+                      <div className="flex items-start gap-3 mb-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shrink-0 bg-linear-to-br ${isPreSelected
+                            ? 'from-success to-info shadow-lg'
+                            : 'from-info to-secondary shadow-md'
+                          }`}>
+                          {solver.name.charAt(0).toUpperCase()}
                         </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-neutral">{solver.name}</h3>
+                          <p className="text-xs text-neutral/60 truncate">{solver.email}</p>
+                        </div>
+                        {isPreSelected && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="shrink-0 w-6 h-6 bg-success text-white rounded-full flex items-center justify-center"
+                          >
+                            <CheckCircle2 className="w-5 h-5" />
+                          </motion.div>
+                        )}
                       </div>
 
-                      <div className="text-xs text-gray-600 space-y-2 mb-3">
-                        <p className="font-medium">📍 {solver.district}, {solver.division}</p>
-                        {solver.organization && <p className="font-medium">🏢 {solver.organization}</p>}
-                        <div className="flex items-center gap-1 flex-wrap">
-                          <span className={`px-2 py-1 rounded-full text-xs font-bold ${solver.role === 'problemSolver'
-                              ? 'bg-blue-500 text-white'
-                              : 'bg-purple-500 text-white'
-                            }`}>
-                            {solver.role === 'problemSolver' ? '💡 Solver' : '🏢 NGO'}
+                      {/* Location and Organization */}
+                      <div className="text-xs text-neutral/60 space-y-2 mb-4 pt-3 border-t border-accent/10">
+                        <p className="font-semibold flex items-center gap-1 text-neutral">
+                          <MapPin className="w-3 h-3 text-info" />
+                          {solver.district}, {solver.division}
+                        </p>
+                        {solver.organization && (
+                          <p className="font-semibold flex items-center gap-1 text-neutral">
+                            <Building2 className="w-3 h-3 text-secondary" /> {solver.organization}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Stats Badges */}
+                      <div className="flex items-center gap-2 flex-wrap mb-4">
+                        <span className={`px-2.5 py-1 rounded-lg text-xs font-bold text-white ${solver.role === 'problemSolver' ? 'bg-info shadow-md shadow-info/30' : 'bg-secondary shadow-md shadow-secondary/30'
+                          }`}>
+                          {solver.role === 'problemSolver' ? '💡 Solver' : '🏢 NGO'}
+                        </span>
+                        {solver.rating && (
+                          <motion.span
+                            whileHover={{ scale: 1.1 }}
+                            className="bg-warning text-white px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 text-xs shadow-md shadow-warning/30"
+                          >
+                            <Star className="w-3 h-3" /> {solver.rating.toFixed(1)}
+                          </motion.span>
+                        )}
+                        {solver.completedTasks !== undefined && (
+                          <span className="bg-success text-white px-2.5 py-1 rounded-lg font-bold flex items-center gap-1 text-xs shadow-md shadow-success/30">
+                            <CheckSquare className="w-3 h-3" /> {solver.completedTasks}
                           </span>
-                          {solver.rating && (
-                            <span className="bg-yellow-400 text-white px-2 py-1 rounded-full font-bold">
-                              ⭐ {solver.rating.toFixed(1)}
-                            </span>
-                          )}
-                          {solver.completedTasks !== undefined && (
-                            <span className="bg-green-500 text-white px-2 py-1 rounded-full font-bold">
-                              ✓ {solver.completedTasks}
-                            </span>
-                          )}
-                        </div>
+                        )}
                       </div>
 
-                      <button
+                      {/* Select Button */}
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedSolver(solver._id);
                         }}
-                        className={`w-full px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:shadow-lg transition-all ${isPreSelected
-                            ? 'bg-linear-to-r from-green-600 to-blue-600 text-white hover:from-green-700 hover:to-blue-700'
-                            : 'bg-linear-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700'
+                        className={`w-full px-3 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 text-white shadow-md hover:shadow-lg ${isPreSelected
+                            ? 'bg-linear-to-r from-success to-info'
+                            : 'bg-linear-to-r from-info to-secondary'
                           }`}
                       >
-                        {isPreSelected ? '✓ Pre-Selected Solver →' : 'Select This Solver →'}
-                      </button>
-                    </motion.div>
-                  );
-                })
+                        {isPreSelected ? (
+                          <>
+                            <CheckCircle2 className="w-4 h-4" /> Selected ✓
+                          </>
+                        ) : (
+                          <>
+                            <CheckSquare className="w-4 h-4" /> Select This Solver
+                          </>
+                        )}
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Helper text */}
+          {solvers.length > 0 && (
+            <p className="text-xs text-neutral/50 mt-4 text-center">
+              {solvers.length} solver{solvers.length !== 1 ? 's' : ''} available • Click to select
+            </p>
+          )}
+        </Card>
+      ) : (
+        /* STEP 3: Confirm Assignment */
+        <Card className="border-t-4 border-info">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-info text-white rounded-full flex items-center justify-center font-bold text-lg">3</div>
+              <h2 className="text-2xl font-bold">Confirm Assignment</h2>
+            </div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setSelectedSolver('')}
+              className="flex items-center gap-1 px-4 py-2 border-2 border-accent/20 rounded-xl hover:bg-base-200 text-sm font-semibold transition-all"
+            >
+              <ArrowLeft className="w-4 h-4" /> Change Solver
+            </motion.button>
+          </div>
+
+          {/* Summary Cards */}
+          <div className="space-y-4 mb-6">
+            {/* Report Summary */}
+            <div className="p-5 bg-linear-to-b from-secondary/20 to-accent/10 border-2 border-secondary rounded-2xl">
+              <p className="text-xs font-bold text-secondary/70 uppercase mb-2 flex items-center gap-1">
+                <AlertCircle className="w-4 h-4" /> Report to be Assigned
+              </p>
+              <h3 className="text-xl font-bold text-neutral mb-2">{selectedReport.title}</h3>
+              <p className="text-sm text-neutral/70 mb-3">{selectedReport.description}</p>
+              <div className="flex items-center gap-3 flex-wrap text-sm">
+                <span className={`px-3 py-1 rounded-full font-bold text-white ${selectedReport.severity === 'high'
+                    ? 'bg-error'
+                    : selectedReport.severity === 'medium'
+                      ? 'bg-warning'
+                      : 'bg-success'
+                  }`}>
+                  {selectedReport.severity.toUpperCase()} Priority
+                </span>
+                <span className="text-neutral/70 font-medium flex items-center gap-1">
+                  <MapPin className="w-4 h-4" />
+                  {selectedReport.location.district}, {selectedReport.location.division}
+                </span>
+              </div>
+            </div>
+
+            {/* Solver Summary */}
+            <div className="p-5 bg-linear-to-b from-info/20 to-accent/10 border-2 border-info rounded-2xl">
+              <p className="text-xs font-bold text-info/70 uppercase mb-2 flex items-center gap-1">
+                <Users className="w-4 h-4" /> Assigned To
+              </p>
+              {solvers.find(s => s._id === selectedSolver) && (
+                <>
+                  <h3 className="text-xl font-bold text-neutral mb-2">
+                    {solvers.find(s => s._id === selectedSolver)?.name}
+                  </h3>
+                  <p className="text-sm text-neutral/70 mb-3">{solvers.find(s => s._id === selectedSolver)?.email}</p>
+                  <div className="flex items-center gap-3 flex-wrap text-sm">
+                    <span className={`px-3 py-1 rounded-full font-bold text-white ${solvers.find(s => s._id === selectedSolver)?.role === 'problemSolver' ? 'bg-info' : 'bg-secondary'
+                      }`}>
+                      {solvers.find(s => s._id === selectedSolver)?.role === 'problemSolver' ? '💡 Problem Solver' : '🏢 NGO'}
+                    </span>
+                    <span className="text-neutral/70 font-medium flex items-center gap-1">
+                      <MapPin className="w-4 h-4" />
+                      {solvers.find(s => s._id === selectedSolver)?.district}, {solvers.find(s => s._id === selectedSolver)?.division}
+                    </span>
+                  </div>
+                </>
               )}
             </div>
           </div>
-        ) : (
-          // STEP 3: Confirm Assignment
-          <div className="bg-white rounded-xl shadow-lg border-2 border-purple-500 p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold">3</div>
-                <h2 className="text-2xl font-bold text-gray-900">Confirm Assignment</h2>
-              </div>
-              <button
-                onClick={() => setSelectedSolver('')}
-                className="px-4 py-2 border-2 border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium"
-              >
-                ← Change Solver
-              </button>
-            </div>
 
-            {/* Summary */}
-            <div className="space-y-4 mb-6">
-              <div className="p-5 bg-linear-to-r from-green-50 to-blue-50 border-2 border-green-300 rounded-xl">
-                <p className="text-sm font-semibold text-gray-700 mb-2">📋 Report to be Assigned:</p>
-                <h3 className="text-xl font-bold text-gray-900 mb-1">{selectedReport.title}</h3>
-                <p className="text-sm text-gray-600 mb-2">{selectedReport.description}</p>
-                <div className="flex items-center gap-3 text-sm">
-                  <span className={`px-3 py-1 rounded-full font-bold ${selectedReport.severity === 'high' ? 'bg-red-500 text-white' :
-                      selectedReport.severity === 'medium' ? 'bg-orange-500 text-white' :
-                        'bg-yellow-500 text-white'
-                    }`}>
-                    {selectedReport.severity.toUpperCase()} Priority
-                  </span>
-                  <span className="text-gray-700 font-medium">📍 {selectedReport.location.district}, {selectedReport.location.division}</span>
-                </div>
-              </div>
-
-              <div className="p-5 bg-linear-to-r from-blue-50 to-purple-50 border-2 border-blue-300 rounded-xl">
-                <p className="text-sm font-semibold text-gray-700 mb-2">👤 Assigned To:</p>
-                {solvers.find(s => s._id === selectedSolver) && (
-                  <>
-                    <h3 className="text-xl font-bold text-gray-900 mb-1">
-                      {solvers.find(s => s._id === selectedSolver)?.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-2">{solvers.find(s => s._id === selectedSolver)?.email}</p>
-                    <div className="flex items-center gap-3 text-sm">
-                      <span className={`px-3 py-1 rounded-full font-bold ${solvers.find(s => s._id === selectedSolver)?.role === 'problemSolver'
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-purple-500 text-white'
-                        }`}>
-                        {solvers.find(s => s._id === selectedSolver)?.role === 'problemSolver' ? '💡 Problem Solver' : '🏢 NGO'}
-                      </span>
-                      <span className="text-gray-700 font-medium">
-                        📍 {solvers.find(s => s._id === selectedSolver)?.district}, {solvers.find(s => s._id === selectedSolver)?.division}
-                      </span>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Deadline Input */}
-            <div className="p-5 bg-linear-to-r from-orange-50 to-red-50 border-2 border-orange-300 rounded-xl mb-6">
-              <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                <span className="text-lg">⏰</span>
-                Set Task Deadline (Required)
-              </p>
-              <div className="space-y-3">
-                <input
-                  aria-label="Set task deadline"
-                  type="datetime-local"
-                  value={deadline}
-                  onChange={(e) => setDeadline(e.target.value)}
-                  min={new Date().toISOString().slice(0, 16)}
-                  className="w-full px-4 py-3 border-2 border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-800 font-semibold"
-                  required
-                />
-                <div className="flex gap-2">
-                  <button
+          {/* Deadline Input */}
+          <div className="p-5 bg-linear-to-b from-warning/20 to-accent/10 border-2 border-warning rounded-2xl mb-6">
+            <p className="text-xs font-bold text-warning/70 uppercase mb-3 flex items-center gap-2">
+              <Calendar className="w-4 h-4" /> Set Task Deadline (Required)
+            </p>
+            <div className="space-y-3">
+              <input
+                aria-label="Set task deadline"
+                type="datetime-local"
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
+                min={new Date().toISOString().slice(0, 16)}
+                className="w-full px-4 py-3 border-2 border-warning/30 rounded-xl focus:ring-2 focus:ring-warning focus:border-warning bg-base-100 text-neutral font-semibold"
+                required
+              />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {[
+                  { label: '+3 Days', days: 3 },
+                  { label: '+1 Week', days: 7 },
+                  { label: '+2 Weeks', days: 14 },
+                  { label: '+1 Month', days: 30 }
+                ].map((preset) => (
+                  <motion.button
+                    key={preset.label}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     type="button"
                     onClick={() => {
                       const date = new Date();
-                      date.setDate(date.getDate() + 3);
+                      date.setDate(date.getDate() + preset.days);
                       setDeadline(date.toISOString().slice(0, 16));
                     }}
-                    className="flex-1 px-3 py-2 bg-white border border-orange-300 rounded-lg hover:bg-orange-50 text-sm font-medium text-gray-700"
+                    className="px-3 py-2 bg-base-100 border-2 border-warning/30 rounded-lg hover:bg-warning/10 text-sm font-semibold text-neutral transition-all"
                   >
-                    +3 Days
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const date = new Date();
-                      date.setDate(date.getDate() + 7);
-                      setDeadline(date.toISOString().slice(0, 16));
-                    }}
-                    className="flex-1 px-3 py-2 bg-white border border-orange-300 rounded-lg hover:bg-orange-50 text-sm font-medium text-gray-700"
-                  >
-                    +1 Week
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const date = new Date();
-                      date.setDate(date.getDate() + 14);
-                      setDeadline(date.toISOString().slice(0, 16));
-                    }}
-                    className="flex-1 px-3 py-2 bg-white border border-orange-300 rounded-lg hover:bg-orange-50 text-sm font-medium text-gray-700"
-                  >
-                    +2 Weeks
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const date = new Date();
-                      date.setMonth(date.getMonth() + 1);
-                      setDeadline(date.toISOString().slice(0, 16));
-                    }}
-                    className="flex-1 px-3 py-2 bg-white border border-orange-300 rounded-lg hover:bg-orange-50 text-sm font-medium text-gray-700"
-                  >
-                    +1 Month
-                  </button>
-                </div>
-                {deadline && (
-                  <p className="text-sm text-gray-600 flex items-center gap-2">
-                    <span className="font-semibold">Selected:</span>
-                    <span className="text-orange-700 font-bold">
-                      {new Date(deadline).toLocaleString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </span>
-                  </p>
-                )}
+                    {preset.label}
+                  </motion.button>
+                ))}
               </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  setSelectedReport(null);
-                  setSelectedSolver('');
-                  setDeadline('');
-                }}
-                className="flex-1 px-6 py-3 border-2 border-gray-300 rounded-lg hover:bg-gray-50 font-bold text-gray-700"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAssignTask}
-                disabled={assigning}
-                className="flex-1 px-6 py-3 bg-linear-to-r from-green-600 to-blue-600 text-white rounded-lg hover:from-green-700 hover:to-blue-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed font-bold text-lg shadow-lg hover:shadow-xl transition-all"
-              >
-                {assigning ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    Assigning...
-                  </span>
-                ) : (
-                  '✅ Confirm & Assign Task'
-                )}
-              </button>
+              {deadline && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-sm text-warning font-semibold flex items-center gap-2 pt-2 border-t border-warning/20"
+                >
+                  <CheckSquare className="w-4 h-4" />
+                  {new Date(deadline).toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </motion.p>
+              )}
             </div>
           </div>
-        )}
-      </div>
 
+          {/* Action Buttons */}
+          <div className="flex gap-4">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                setSelectedReport(null);
+                setSelectedSolver('');
+                setDeadline('');
+              }}
+              className="flex-1 px-6 py-3 border-2 border-accent/20 rounded-xl hover:bg-base-200 font-bold text-neutral transition-all"
+            >
+              Cancel
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleAssignTask}
+              disabled={assigning}
+              className="flex-1 px-6 py-3 bg-linear-to-r from-success to-info text-white rounded-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-bold text-lg transition-all flex items-center justify-center gap-2"
+            >
+              {assigning ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  Assigning...
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="w-5 h-5" />
+                  Confirm & Assign Task
+                </>
+              )}
+            </motion.button>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }
