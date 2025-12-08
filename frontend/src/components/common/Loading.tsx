@@ -10,6 +10,7 @@ interface LoadingProps {
 
 interface FullPageLoadingProps {
   text?: string;
+  subtext?: string;
   showOverlay?: boolean;
 }
 
@@ -98,6 +99,7 @@ export const InlineLoading: React.FC<InlineLoadingProps> = ({ text = 'Loading...
 // ============================================
 export const FullPageLoading: React.FC<FullPageLoadingProps> = ({
   text = 'Loading...',
+  subtext = '',
   showOverlay = true,
 }) => {
   // Prevent scroll when component mounts

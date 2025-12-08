@@ -13,7 +13,7 @@ import {
 } from '../models/Report.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { uploadToImgBB, uploadMultipleToImgBB } from '../utils/imageUpload.js';
-import { getUserById } from '../models/User.js';
+import { getUserById, checkReportSubmissionLimit, incrementReportSubmission } from '../models/User.js';
 import { sendReportStatusEmail } from '../services/emailService.js';
 
 // @desc    Get all reports
@@ -28,6 +28,7 @@ export const getReports = asyncHandler(async (req, res) => {
     problemType,
     division,
     district,
+    search,
     sortBy = 'createdAt',
     order = 'desc',
   } = req.query;
@@ -38,6 +39,17 @@ export const getReports = asyncHandler(async (req, res) => {
   if (problemType) filter.problemType = problemType;
   if (division) filter['location.division'] = division;
   if (district) filter['location.district'] = district;
+
+  // Add search functionality
+  if (search) {
+    filter.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { description: { $regex: search, $options: 'i' } },
+      { 'location.address': { $regex: search, $options: 'i' } },
+      { 'location.district': { $regex: search, $options: 'i' } },
+      { problemType: { $regex: search, $options: 'i' } },
+    ];
+  }
 
   const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
 
@@ -87,18 +99,30 @@ export const getReport = asyncHandler(async (req, res) => {
 export const createNewReport = asyncHandler(async (req, res) => {
   const { title, description, problemType, severity, location, images } = req.body;
 
-  // Debug log
-  console.log('=== Report Creation Debug ===');
-  console.log('Title:', title);
-  console.log('Description:', description?.substring(0, 50));
-  console.log('Problem Type:', problemType);
-  console.log('Severity:', severity);
-  console.log('Location:', location);
-  console.log('Images count:', images?.length || 0);
-  console.log('User ID:', req.user?.id);
-  console.log('===========================');
-
   try {
+    // Check user report submission limit
+    const limitCheck = await checkReportSubmissionLimit(req.user.id);
+
+    if (!limitCheck.canSubmit) {
+      return res.status(429).json({
+        success: false,
+        message: limitCheck.message,
+        limitInfo: limitCheck.limitInfo,
+        daysLeft: limitCheck.daysLeft,
+      });
+    }
+
+    // Debug log
+    console.log('=== Report Creation Debug ===');
+    console.log('Title:', title);
+    console.log('Description:', description?.substring(0, 50));
+    console.log('Problem Type:', problemType);
+    console.log('Severity:', severity);
+    console.log('Location:', location);
+    console.log('Images count:', images?.length || 0);
+    console.log('User ID:', req.user?.id);
+    console.log('===========================');
+
     // Parse location if it's a string
     let parsedLocation = location;
     if (typeof location === 'string') {
@@ -151,10 +175,17 @@ export const createNewReport = asyncHandler(async (req, res) => {
       createdBy: req.user.id,
     });
 
+    // Increment user's report submission count
+    await incrementReportSubmission(req.user.id);
+
+    // Return updated limit info
+    const updatedLimitCheck = await checkReportSubmissionLimit(req.user.id);
+
     res.status(201).json({
       success: true,
       message: 'Report created successfully',
       data: report,
+      limitInfo: updatedLimitCheck,
     });
   } catch (error) {
     console.error('Error creating report:', error);

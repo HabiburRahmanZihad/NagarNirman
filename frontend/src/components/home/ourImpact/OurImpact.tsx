@@ -2,9 +2,9 @@ import { Sprout, Users } from "lucide-react";
 import { FaHandHoldingHeart } from "react-icons/fa";
 
 const images = [
-  "https://i.postimg.cc/xdgfM2W6/pexels-fauxels-3184357.jpg",
-  "https://i.postimg.cc/7ZqH5pYg/pexels-tomfisk-3856433.jpg",
-  "https://i.postimg.cc/h4ZXN9Zy/pexels-rdne-6646967.jpg",
+  "https://images.unsplash.com/photo-1633788989414-8a8d43ff985e?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1622760219088-90c1576336a1?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "https://images.unsplash.com/photo-1615560480284-64ad1051fc4e?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 ];
 
 export default function OurImpact() {
@@ -46,7 +46,7 @@ export default function OurImpact() {
         {/* Middle Image */}
         <div className="group rounded-xl overflow-hidden shadow-md relative">
           <img
-            src={images[0]}
+            src={images[1]}
             alt="Impact Middle"
             className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
           />

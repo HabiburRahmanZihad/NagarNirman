@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion';
 import Button from '@/components/common/Button';
-import { ArrowRight, PlayCircle } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -47,6 +48,8 @@ interface SlideContentProps {
   paragraph: string;
   primaryBtn: string;
   secondaryBtn: string;
+  primaryLink: string;
+  secondaryLink: string;
 }
 
 export default function SlideContent({
@@ -54,7 +57,9 @@ export default function SlideContent({
   mainHeading,
   paragraph,
   primaryBtn,
-  secondaryBtn
+  secondaryBtn,
+  primaryLink,
+  secondaryLink
 }: SlideContentProps) {
   return (
     <motion.div
@@ -94,23 +99,27 @@ export default function SlideContent({
           className="flex flex-col justify-center lg:justify-start sm:flex-row gap-4"
         >
           <motion.div variants={itemVariants}>
-            <Button
-              variant="primary"
-              size="lg"
-              iconPosition="right"
-            >
-              {primaryBtn}
-            </Button>
+            <Link href={primaryLink}>
+              <Button
+                variant="primary"
+                size="lg"
+                iconPosition="right"
+              >
+                {primaryBtn}
+              </Button>
+            </Link>
           </motion.div>
 
           <motion.div variants={itemVariants}>
-            <Button
-              variant="outline"
-              size="lg"
-              iconPosition="right"
-            >
-              {secondaryBtn}
-            </Button>
+            <Link href={secondaryLink}>
+              <Button
+                variant="outline"
+                size="lg"
+                iconPosition="right"
+              >
+                {secondaryBtn}
+              </Button>
+            </Link>
           </motion.div>
         </motion.div>
       </div>

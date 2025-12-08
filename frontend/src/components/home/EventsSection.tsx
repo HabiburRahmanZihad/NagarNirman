@@ -17,7 +17,7 @@ const events = [
     joinedCount: "236",
     category: "Tree Plantation",
     image:
-      "https://img.freepik.com/free-photo/group-happy-diverse-volunteers-planting-tree-park_1150-13639.jpg",
+      "https://images.unsplash.com/photo-1673051787560-13622b325a9a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     avatars: [
       "https://i.pravatar.cc/100?img=11",
       "https://i.pravatar.cc/100?img=12",
@@ -35,7 +35,7 @@ const events = [
     joinedCount: "49",
     category: "Forest",
     image:
-      "https://img.freepik.com/free-photo/volunteers-collecting-trash-park_1150-13725.jpg",
+      "https://images.unsplash.com/photo-1713931750497-1428b117158b?q=80&w=1569&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     avatars: [
       "https://i.pravatar.cc/100?img=33",
       "https://i.pravatar.cc/100?img=32",
@@ -53,7 +53,7 @@ const events = [
     joinedCount: "184",
     category: "Drainage & Sanitation",
     image:
-      "https://cdn.pixabay.com/photo/2012/01/16/07/16/water-11699_960_720.jpg",
+      "https://images.unsplash.com/photo-1706640254392-4648f5aac0d6?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     avatars: [
       "https://i.pravatar.cc/100?img=44",
       "https://i.pravatar.cc/100?img=45",
@@ -86,7 +86,7 @@ export default function EventsSection() {
             <div
               key={event.id}
               // Changed structure: Flex-col allows separate padding for content vs image
-              className="flex flex-col bg-white rounded-[30px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 group overflow-hidden hover:shadow-2xl transition-all duration-300"
+              className="flex flex-col bg-white rounded-[30px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-2 border-[#F7CE50] group overflow-hidden hover:shadow-2xl transition-all duration-300"
             >
               {/* === CONTENT SECTION (With Padding) === */}
               <div className="p-8 pb-0 flex-grow">
@@ -161,13 +161,19 @@ export default function EventsSection() {
                   </div>
 
                   {/* Button */}
-                  <Button
-                    variant="accent"
-                    size="lg"
-                    iconPosition="right"
+                  <a
+                    href="https://www.facebook.com/nagarnirnanbangladesh"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    Join Event
-                  </Button>
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      iconPosition="right"
+                    >
+                      Join Event
+                    </Button>
+                  </a>
                 </div>
               </div>
 
@@ -176,7 +182,7 @@ export default function EventsSection() {
               <div className="relative h-[280px] w-full mt-auto">
                 {/* SHAPE DIVIDER (The Brush Stroke) */}
                 {/* Placed absolutely at the top of the image container to blend with the card background */}
-                <div className="absolute top-[-1px] left-0 w-full z-10 leading-none">
+                <div className="absolute -top-px left-0 w-full z-10 leading-none">
                   <img
                     src="https://econest-html.netlify.app/econest/assets/img/shapes/shape-3.webp"
                     alt="shape"

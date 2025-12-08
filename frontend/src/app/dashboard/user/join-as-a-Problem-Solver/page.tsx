@@ -12,16 +12,13 @@ import {
   FaEnvelope,
   FaPhone,
   FaMapMarkerAlt,
-  FaBriefcase,
   FaBuilding,
   FaCode,
   FaFileAlt,
-  FaImage,
   FaCheck,
   FaPaperPlane,
   FaIdCard,
   FaHome,
-  FaSave,
   FaCalendar,
   FaTransgender,
   FaUserTie,
@@ -730,30 +727,36 @@ export default function ApplyProblemSolver() {
         animate="visible"
         className="max-w-4xl mx-auto"
       >
-        {/* Header */}
-        <motion.div variants={itemVariants} className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Apply to Join as Problem Solver
-          </h1>
-          <p className="text-gray-600 mb-4">
-            Help your community by verifying and resolving public problem reports
-          </p>
+        {/* Header Card with Gradient */}
+        <motion.div variants={itemVariants} className="text-center mb-8 relative">
+          {/* Gradient Background */}
+          <div className="h-40 bg-linear-to-r from-primary to-[#1e5d22] rounded-2xl shadow-lg mb-6 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-10 bg-pattern"></div>
+            <div className="relative h-full flex flex-col items-center justify-center px-6">
+              <h1 className="text-4xl font-extrabold text-white mb-2 drop-shadow-lg">
+                🔧 Become a Problem Solver
+              </h1>
+              <p className="text-green-100 font-semibold drop-shadow-md max-w-lg">
+                Help your community by verifying and resolving public infrastructure issues
+              </p>
+            </div>
+          </div>
 
-          {/* Progress Indicator */}
-          <div className="flex justify-center mb-6">
-            <div className="flex items-center space-x-4">
-              <div className={`flex items-center ${currentStep >= 1 ? 'text-[#2a7d2f]' : 'text-gray-400'}`}>
-                <div className={`w-8 h-8 rounded-full border-2 ${currentStep >= 1 ? 'border-[#2a7d2f] bg-[#2a7d2f] text-white' : 'border-gray-400'} flex items-center justify-center text-sm font-semibold`}>
-                  1
+          {/* Enhanced Progress Indicator */}
+          <div className="flex justify-center mb-8">
+            <div className="flex items-center space-x-6 bg-white rounded-2xl shadow-md px-8 py-4 border-2 border-primary/10">
+              <div className={`flex items-center transition-all duration-300 ${currentStep >= 1 ? 'text-primary' : 'text-gray-400'}`}>
+                <div className={`w-10 h-10 rounded-full border-3 font-bold flex items-center justify-center text-sm transition-all duration-300 ${currentStep >= 1 ? 'border-primary bg-primary text-white shadow-lg' : 'border-gray-300 text-gray-400'}`}>
+                  {currentStep >= 1 ? '✓' : '1'}
                 </div>
-                <span className="ml-2 text-sm">Personal Info</span>
+                <span className={`ml-3 font-bold text-sm ${currentStep >= 1 ? 'text-primary' : 'text-gray-500'}`}>Personal Info</span>
               </div>
-              <div className="w-12 h-0.5 bg-gray-300"></div>
-              <div className={`flex items-center ${currentStep >= 2 ? 'text-[#2a7d2f]' : 'text-gray-400'}`}>
-                <div className={`w-8 h-8 rounded-full border-2 ${currentStep >= 2 ? 'border-[#2a7d2f] bg-[#2a7d2f] text-white' : 'border-gray-400'} flex items-center justify-center text-sm font-semibold`}>
+              <div className={`w-16 h-1 rounded-full transition-all duration-300 ${currentStep >= 2 ? 'bg-primary' : 'bg-gray-300'}`}></div>
+              <div className={`flex items-center transition-all duration-300 ${currentStep >= 2 ? 'text-primary' : 'text-gray-400'}`}>
+                <div className={`w-10 h-10 rounded-full border-3 font-bold flex items-center justify-center text-sm transition-all duration-300 ${currentStep >= 2 ? 'border-primary bg-primary text-white shadow-lg' : 'border-gray-300 text-gray-400'}`}>
                   2
                 </div>
-                <span className="ml-2 text-sm">Background & Skills</span>
+                <span className={`ml-3 font-bold text-sm ${currentStep >= 2 ? 'text-primary' : 'text-gray-500'}`}>Skills & Background</span>
               </div>
             </div>
           </div>
@@ -761,7 +764,7 @@ export default function ApplyProblemSolver() {
 
         <motion.div
           variants={itemVariants}
-          className="bg-white rounded-2xl shadow-lg p-6 sm:p-8"
+          className="bg-white rounded-2xl shadow-xl p-8 sm:p-10 border-t-4 border-primary"
         >
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <AnimatePresence mode="wait">
@@ -772,16 +775,21 @@ export default function ApplyProblemSolver() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="space-y-6"
+                  className="space-y-8"
                 >
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Personal Information</h2>
+                  <div className="flex items-center gap-3 pb-6 border-b-2 border-primary/20">
+                    <div className="w-12 h-12 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-xl">
+                      👤
+                    </div>
+                    <h2 className="text-2xl font-extrabold text-[#002E2E]">Personal Information</h2>
+                  </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Full Name */}
                     <div className="space-y-2">
-                      <label htmlFor="fullName" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaUser className="w-4 h-4 mr-2 text-[#2a7d2f]" />
-                        Full Name (as per NID/Birth Certificate) <span className="text-red-500 ml-1">*</span>
+                      <label htmlFor="fullName" className="flex items-center text-sm font-bold text-[#002E2E] mb-3">
+                        <FaUser className="w-5 h-5 mr-2 text-blue-500" />
+                        Full Name (as per NID/Birth Certificate)
                       </label>
                       <input
                         id="fullName"
@@ -793,25 +801,23 @@ export default function ApplyProblemSolver() {
                             message: 'Full name must be at least 2 characters',
                           },
                         })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="outline-none w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all font-medium"
                         placeholder="Enter your full name exactly as it appears on your NID"
                       />
-                      <div className="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                        <span className="text-yellow-600 text-sm">⚠️</span>
-                        <p className="text-xs text-yellow-800">
-                          <strong>Important:</strong> Please enter your name exactly as it appears on your National ID Card or Birth Certificate. This will be verified during the approval process.
-                        </p>
+                      <div className="flex items-start gap-2 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                        <span className="text-blue-600 font-bold text-lg">ℹ️</span>
+                        <p className="text-xs text-blue-700 font-semibold">Your name must match your NID document exactly for verification</p>
                       </div>
                       {errors.fullName && (
-                        <p className="text-red-500 text-sm">{errors.fullName.message}</p>
+                        <p className="text-red-500 text-sm font-bold flex items-center gap-1">⚠️ {errors.fullName.message}</p>
                       )}
                     </div>
 
                     {/* Email */}
                     <div className="space-y-2">
-                      <label htmlFor="email" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaEnvelope className="w-4 h-4 mr-2 text-[#2a7d2f]" />
-                        Email Address <span className="text-red-500 ml-1">*</span>
+                      <label htmlFor="email" className="flex items-center text-sm font-bold text-[#002E2E] mb-3">
+                        <FaEnvelope className="w-5 h-5 mr-2 text-amber-500" />
+                        Email Address
                       </label>
                       <input
                         id="email"
@@ -819,9 +825,9 @@ export default function ApplyProblemSolver() {
                         value={userInfo.email}
                         readOnly
                         {...register('email', { required: true })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+                        className="outline-none w-full px-4 py-3 border-2 border-gray-200 rounded-lg bg-gray-50 cursor-not-allowed font-medium text-gray-700"
                       />
-                      <p className="text-xs text-gray-500">Email cannot be changed</p>
+                      <p className="text-xs text-gray-600 font-semibold">🔒 Email is locked to your account for security</p>
                     </div>
 
                     {/* Phone */}
@@ -841,7 +847,7 @@ export default function ApplyProblemSolver() {
                             message: 'Phone number must be 11 digits starting with 01',
                           },
                         })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                         placeholder="01XXXXXXXXX"
                       />
                       <p className="text-xs text-gray-500">Phone number cannot be changed</p>
@@ -862,7 +868,7 @@ export default function ApplyProblemSolver() {
                         {...register('dateOfBirth', {
                           required: 'Date of birth is required',
                         })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
                       />
                       {errors.dateOfBirth && (
                         <p className="text-red-500 text-sm">{errors.dateOfBirth.message}</p>
@@ -930,7 +936,7 @@ export default function ApplyProblemSolver() {
                             setCustomProfession(e.target.value);
                             setValue('profession', e.target.value, { shouldValidate: true });
                           }}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors mt-2"
+                          className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors mt-2"
                           placeholder="Enter your profession"
                           required
                         />
@@ -965,7 +971,7 @@ export default function ApplyProblemSolver() {
                             message: 'NID must be 10, 13, or 17 digits',
                           },
                         })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
                         placeholder="Enter your 10/13/17 digit NID number"
                         maxLength={17}
                       />
@@ -1037,7 +1043,7 @@ export default function ApplyProblemSolver() {
                         {...register('address', {
                           required: 'Address is required',
                         })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
                         placeholder="Enter your complete address with area, road, and house details"
                       />
                       {errors.address && (
@@ -1060,7 +1066,7 @@ export default function ApplyProblemSolver() {
                             {...register('emergencyContactName', {
                               required: 'Emergency contact name is required',
                             })}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                            className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
                             placeholder="Full name"
                           />
                           {errors.emergencyContactName && (
@@ -1083,7 +1089,7 @@ export default function ApplyProblemSolver() {
                                 message: 'Must be 11 digits starting with 01',
                               },
                             })}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                            className=" outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
                             placeholder="01XXXXXXXXX"
                             maxLength={11}
                           />
@@ -1119,7 +1125,7 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Step Navigation */}
-                  <div className="flex justify-end pt-4">
+                  <div className="flex justify-end pt-8 mt-8 border-t-2 border-gray-200">
                     <motion.button
                       type="button"
                       onClick={nextStep}
@@ -1128,10 +1134,10 @@ export default function ApplyProblemSolver() {
                       initial="initial"
                       whileHover="hover"
                       whileTap="tap"
-                      className="bg-[#2a7d2f] text-white font-semibold py-3 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 transition-colors hover:bg-[#236b27]"
+                      className="bg-linear-to-r from-primary to-[#1e5d22] text-white font-bold py-3 px-8 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 transition-all hover:shadow-lg transform hover:scale-105"
                     >
-                      <span>Next</span>
-                      <FaArrowRight className="w-4 h-4" />
+                      <span>Continue to Skills</span>
+                      <FaArrowRight className="w-5 h-5" />
                     </motion.button>
                   </div>
                 </motion.div>
@@ -1144,9 +1150,14 @@ export default function ApplyProblemSolver() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="space-y-6"
+                  className="space-y-8"
                 >
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Background & Skills</h2>
+                  <div className="flex items-center gap-3 pb-6 border-b-2 border-primary/20">
+                    <div className="w-12 h-12 bg-linear-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white text-xl">
+                      🎯
+                    </div>
+                    <h2 className="text-2xl font-extrabold text-[#002E2E]">Skills & Background</h2>
+                  </div>
 
                   {/* Additional Information Grid */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1160,7 +1171,7 @@ export default function ApplyProblemSolver() {
                         id="organization"
                         type="text"
                         {...register('organization')}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
                         placeholder="e.g., NGO, Company, Institution"
                       />
                     </div>
@@ -1203,7 +1214,7 @@ export default function ApplyProblemSolver() {
                             setCustomEducationLevel(e.target.value);
                             setValue('educationLevel', e.target.value, { shouldValidate: true });
                           }}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors mt-2"
+                          className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors mt-2"
                           placeholder="Enter your education level"
                         />
                       )}
@@ -1273,9 +1284,9 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Skills */}
-                  <div className="space-y-2">
-                    <label htmlFor="skills" className="flex items-center text-sm font-medium text-gray-700">
-                      <FaCode className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                  <div className="space-y-3 bg-linear-to-r from-purple-50 to-indigo-50 p-6 rounded-xl border-2 border-purple-200">
+                    <label htmlFor="skills" className="flex items-center text-sm font-bold text-[#002E2E] mb-3">
+                      <FaCode className="w-5 h-5 mr-2 text-purple-600" />
                       Skills & Expertise <span className="text-red-500 ml-1">*</span>
                     </label>
                     <Controller
@@ -1293,11 +1304,15 @@ export default function ApplyProblemSolver() {
                           styles={{
                             control: (base) => ({
                               ...base,
-                              border: '1px solid #D1D5DB',
-                              borderRadius: '0.5rem',
-                              padding: '0.25rem',
+                              border: '2px solid #D1D5DB',
+                              borderRadius: '0.75rem',
+                              padding: '0.5rem',
+                              backgroundColor: '#fff',
                               '&:hover': {
-                                borderColor: '#D1D5DB',
+                                borderColor: '#a855f7',
+                              },
+                              '&:focus': {
+                                borderColor: '#a855f7',
                               },
                             }),
                           }}
@@ -1305,15 +1320,15 @@ export default function ApplyProblemSolver() {
                       )}
                     />
                     {errors.skills && (
-                      <p className="text-red-500 text-sm">{errors.skills.message}</p>
+                      <p className="text-red-500 text-sm font-bold flex items-center gap-1">⚠️ {errors.skills.message}</p>
                     )}
                   </div>
 
                   {/* Motivation */}
-                  <div className="space-y-2">
-                    <label htmlFor="motivation" className="flex items-center text-sm font-medium text-gray-700">
-                      <FaPaperPlane className="w-4 h-4 mr-2 text-[#2a7d2f]" />
-                      Motivation <span className="text-red-500 ml-1">*</span>
+                  <div className="space-y-3 bg-linear-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border-2 border-blue-200">
+                    <label htmlFor="motivation" className="flex items-center text-sm font-bold text-[#002E2E] mb-3">
+                      <FaPaperPlane className="w-5 h-5 mr-2 text-blue-600" />
+                      Why Do You Want to Join? <span className="text-red-500 ml-1">*</span>
                     </label>
                     <textarea
                       id="motivation"
@@ -1325,11 +1340,11 @@ export default function ApplyProblemSolver() {
                           message: 'Motivation must be at least 50 characters',
                         },
                       })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none"
-                      placeholder="Why do you want to join as a problem solver? (Minimum 50 characters)"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none font-medium"
+                      placeholder="Share your motivation and passion for community development..."
                     />
                     {errors.motivation && (
-                      <p className="text-red-500 text-sm">{errors.motivation.message}</p>
+                      <p className="text-red-500 text-sm font-bold flex items-center gap-1">⚠️ {errors.motivation.message}</p>
                     )}
                   </div>
 
@@ -1364,8 +1379,11 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Social Media Links */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Social Media & Professional Links</h3>
+                  <div className="space-y-4 bg-linear-to-r from-indigo-50 to-purple-50 p-6 rounded-xl border-2 border-indigo-200">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-indigo-200 rounded-full flex items-center justify-center text-lg">🔗</div>
+                      <h3 className="text-lg font-bold text-[#002E2E]">Social & Professional Links</h3>
+                    </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                       {/* LinkedIn - Required */}
                       <div className="space-y-2">
@@ -1383,7 +1401,7 @@ export default function ApplyProblemSolver() {
                               message: 'Please enter a valid LinkedIn URL',
                             },
                           })}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
                           placeholder="https://linkedin.com/in/your-profile"
                         />
                         {errors.linkedinProfile && (
@@ -1401,7 +1419,7 @@ export default function ApplyProblemSolver() {
                           id="facebookProfile"
                           type="url"
                           {...register('facebookProfile')}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
                           placeholder="https://facebook.com/your-profile"
                         />
                       </div>
@@ -1416,7 +1434,7 @@ export default function ApplyProblemSolver() {
                           id="twitterProfile"
                           type="url"
                           {...register('twitterProfile')}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
                           placeholder="https://twitter.com/your-profile"
                         />
                       </div>
@@ -1431,7 +1449,7 @@ export default function ApplyProblemSolver() {
                           id="websiteProfile"
                           type="url"
                           {...register('websiteProfile')}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
                           placeholder="https://your-website.com"
                         />
                       </div>
@@ -1439,8 +1457,11 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Document Upload */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Required Documents</h3>
+                  <div className="space-y-4 bg-linear-to-r from-amber-50 to-orange-50 p-6 rounded-xl border-2 border-amber-200">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-amber-200 rounded-full flex items-center justify-center text-lg">📄</div>
+                      <h3 className="text-lg font-bold text-[#002E2E]">Required Documents</h3>
+                    </div>
                     <div className="space-y-2">
                       <label htmlFor="nidOrIdDoc" className="flex items-center text-sm font-medium text-gray-700">
                         <FaIdCard className="w-4 h-4 mr-2 text-[#2a7d2f]" />
@@ -1458,7 +1479,7 @@ export default function ApplyProblemSolver() {
                         {...register('nidOrIdDoc', {
                           required: 'NID and identification documents are required',
                         })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#2a7d2f] file:text-white hover:file:bg-[#236b27]"
+                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#2a7d2f] file:text-white hover:file:bg-[#236b27]"
                       />
                       {errors.nidOrIdDoc && (
                         <p className="text-red-500 text-sm">{errors.nidOrIdDoc.message}</p>
@@ -1486,25 +1507,27 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Agreement */}
-                  <div className="flex items-start space-x-3 pt-4">
-                    <input
-                      id="agree"
-                      type="checkbox"
-                      {...register('agree', {
-                        required: 'You must agree to the terms and conditions',
-                      })}
-                      className="mt-1 w-4 h-4 text-[#2a7d2f] bg-gray-100 border-gray-300 rounded focus:ring-[#2a7d2f] focus:ring-2"
-                    />
-                    <label htmlFor="agree" className="text-sm text-gray-700">
-                      I agree to the terms and conditions and confirm that all information provided is accurate and truthful. I understand that my application will be reviewed and I may be contacted for verification.
-                    </label>
+                  <div className="bg-linear-to-r from-green-50 to-emerald-50 p-6 rounded-xl border-2 border-green-200 space-y-4">
+                    <div className="flex items-start space-x-3">
+                      <input
+                        id="agree"
+                        type="checkbox"
+                        {...register('agree', {
+                          required: 'You must agree to the terms and conditions',
+                        })}
+                        className="outline-none mt-1 w-5 h-5 text-primary bg-white border-2 border-gray-300 rounded focus:ring-primary focus:ring-2 cursor-pointer"
+                      />
+                      <label htmlFor="agree" className="text-sm font-semibold text-[#002E2E] cursor-pointer leading-relaxed">
+                        ✅ I confirm that all information provided is accurate and truthful. I understand that my application will be reviewed by authorities and I may be contacted for verification. I agree to the terms and conditions.
+                      </label>
+                    </div>
+                    {errors.agree && (
+                      <p className="text-red-500 text-sm font-bold flex items-center gap-1">⚠️ {errors.agree.message}</p>
+                    )}
                   </div>
-                  {errors.agree && (
-                    <p className="text-red-500 text-sm">{errors.agree.message}</p>
-                  )}
 
                   {/* Step Navigation */}
-                  <div className="flex justify-between pt-4">
+                  <div className="flex justify-between pt-8 mt-8 border-t-2 border-gray-200 gap-4">
                     <motion.button
                       type="button"
                       onClick={prevStep}
@@ -1512,9 +1535,9 @@ export default function ApplyProblemSolver() {
                       initial="initial"
                       whileHover="hover"
                       whileTap="tap"
-                      className="bg-gray-500 text-white font-semibold py-3 px-6 rounded-lg flex items-center space-x-2 transition-colors hover:bg-gray-600"
+                      className="bg-linear-to-r from-gray-400 to-gray-500 text-white font-bold py-3 px-8 rounded-xl flex items-center space-x-2 transition-all hover:shadow-lg transform hover:scale-105"
                     >
-                      <span>Back</span>
+                      <span>← Back to Info</span>
                     </motion.button>
 
                     <div className="flex space-x-4">

@@ -500,3 +500,54 @@ export const notificationAPI = {
     });
   },
 };
+
+// Leaderboard API
+export const leaderboardAPI = {
+  // Get full leaderboard
+  getLeaderboard: () => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/leaderboard`, {
+      method: 'GET',
+    });
+  },
+
+  // Get filtered and paginated leaderboard
+  getFiltered: (params: {
+    page?: number;
+    limit?: number;
+    district?: string;
+    division?: string;
+    sortBy?: 'points' | 'streak' | 'completed' | 'rating';
+  }) => {
+    const searchParams = new URLSearchParams();
+    if (params.page) searchParams.append('page', params.page.toString());
+    if (params.limit) searchParams.append('limit', params.limit.toString());
+    if (params.district) searchParams.append('district', params.district);
+    if (params.division) searchParams.append('division', params.division);
+    if (params.sortBy) searchParams.append('sortBy', params.sortBy);
+
+    return apiClient(
+      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/leaderboard/filtered?${searchParams}`,
+      {
+        method: 'GET',
+      }
+    );
+  },
+
+  // Get user's rank and nearby competitors
+  getUserRank: (userId: string) => {
+    return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/leaderboard/rank/${userId}`, {
+      method: 'GET',
+      requiresAuth: true,
+    });
+  },
+
+  // Get district leaderboard
+  getDistrictLeaderboard: (district: string, limit = 50) => {
+    return apiClient(
+      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/leaderboard/district/${district}?limit=${limit}`,
+      {
+        method: 'GET',
+      }
+    );
+  },
+};

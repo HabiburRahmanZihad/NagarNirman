@@ -2,14 +2,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from "next/navigation";
-import Link from 'next/link';
-import Button from '@/components/common/Button';
 import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
-import { reportAPI, problemSolverAPI, taskAPI, userAPI } from '@/utils/api';
+import { reportAPI, taskAPI, userAPI } from '@/utils/api';
 import divisionsData from '@/data/divisionsData.json';
 import { FullPageLoading } from '@/components/common';
+import { motion } from 'framer-motion';
+import Card from '@/components/common/Card';
+import {
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  Users,
+} from 'lucide-react';
 
 interface Report {
   _id: string;
@@ -69,378 +74,8 @@ interface ProblemSolver {
   createdAt: string;
 }
 
-// Multiple dummy users for testing
-// const dummyUsers = [
-//   // {
-//   //   _id: "69112fcd36bb614c42ffc6a1",
-//   //   name: "Habibur Rahman",
-//   //   email: "habib@zihad.com",
-//   //   password: "$2a$10$/rDOIFGsvdw766f60h1AJesssSKph91qy0twANDHjmKSTEyzHrPMi",
-//   //   role: "authority",
-//   //   division: "Chittagong",
-//   //   district: "Chandpur",
-//   //   points: 1000,
-//   //   approved: true,
-//   //   isActive: true,
-//   //   avatar: "",
-//   //   createdAt: "2025-11-10T00:20:29.651+00:00",
-//   //   updatedAt: "2025-11-10T00:20:29.651+00:00"
-//   // },
-//   {
-//     _id: "69112fcd36bb614c42ffc6a66",
-//     name: "Rahim Khan",
-//     email: "rahim@khan.com",
-//     password: "$2a$10$/rDOIFGsvdw766f60h1AJesssSKph91qy0twANDHjmKSTEyzHrPMi",
-//     role: "authority",
-//     division: "Dhaka",
-//     district: "Narayanganj",
-//     points: 1000,
-//     approved: true,
-//     isActive: true,
-//     avatar: "",
-//     createdAt: "2025-11-10T00:20:29.651+00:00",
-//     updatedAt: "2025-11-10T00:20:29.651+00:00"
-//   }
-// ];
-
-// All reports data
-const allReports: Report[] = [
-  // Chandpur reports
-  {
-    _id: "69183427faef057a765604bd",
-    title: "Water Logging in Chandpur City",
-    description: "Severe water logging in main city area after heavy rainfall",
-    images: ["https://i.ibb.co/1t68tQsW/Moana-Nunez-nid.png"],
-    problemType: "water logging",
-    severity: "high",
-    status: "pending",
-    location: {
-      address: "City Center, Chandpur, Chittagong",
-      district: "Chandpur",
-      division: "Chittagong",
-      coordinates: [90.7667, 23.2500]
-    },
-    upvotes: [],
-    comments: [],
-    createdBy: "6918336cfaef057a765604b8",
-    assignedTo: null,
-    history: [{
-      status: "pending",
-      note: "Report submitted",
-      updatedBy: "6918336cfaef057a765604b8",
-      date: "2025-11-15T08:04:55.362Z"
-    }],
-    createdAt: "2025-11-15T08:04:55.362Z",
-    updatedAt: "2025-11-15T08:04:55.362Z"
-  },
-  {
-    _id: "69183427faef057a765604be",
-    title: "Broken Bridge in Rural Area",
-    description: "Bridge connecting two villages is broken and needs immediate repair",
-    images: ["https://i.ibb.co/1t68tQsW/Moana-Nunez-nid.png"],
-    problemType: "infrastructure",
-    severity: "high",
-    status: "pending",
-    location: {
-      address: "Village Road, Chandpur, Chittagong",
-      district: "Chandpur",
-      division: "Chittagong",
-      coordinates: [90.8000, 23.3000]
-    },
-    upvotes: [],
-    comments: [],
-    createdBy: "6918336cfaef057a765604b8",
-    assignedTo: null,
-    history: [{
-      status: "pending",
-      note: "Report submitted",
-      updatedBy: "6918336cfaef057a765604b8",
-      date: "2025-11-15T08:04:55.362Z"
-    }],
-    createdAt: "2025-11-15T08:04:55.362Z",
-    updatedAt: "2025-11-15T08:04:55.362Z"
-  },
-  // Barishal reports
-  {
-    _id: "69183427faef057a765604bf",
-    title: "Flooded Roads in Barishal",
-    description: "Main roads flooded due to poor drainage system",
-    images: ["https://i.ibb.co/1t68tQsW/Moana-Nunez-nid.png"],
-    problemType: "water logging",
-    severity: "high",
-    status: "pending",
-    location: {
-      address: "Main Road, Barishal, Barishal",
-      district: "Barishal",
-      division: "Barishal",
-      coordinates: [90.3667, 22.7000]
-    },
-    upvotes: [],
-    comments: [],
-    createdBy: "6918336cfaef057a765604b8",
-    assignedTo: null,
-    history: [{
-      status: "pending",
-      note: "Report submitted",
-      updatedBy: "6918336cfaef057a765604b8",
-      date: "2025-11-15T08:04:55.362Z"
-    }],
-    createdAt: "2025-11-15T08:04:55.362Z",
-    updatedAt: "2025-11-15T08:04:55.362Z"
-  },
-  {
-    _id: "69183427faef057a765604bg",
-    title: "Garbage Pileup in Barishal Market",
-    description: "Large garbage accumulation in central market",
-    images: ["https://i.ibb.co/1t68tQsW/Moana-Nunez-nid.png"],
-    problemType: "garbage",
-    severity: "medium",
-    status: "pending",
-    location: {
-      address: "Central Market, Barishal, Barishal",
-      district: "Barishal",
-      division: "Barishal",
-      coordinates: [90.3500, 22.7500]
-    },
-    upvotes: [],
-    comments: [],
-    createdBy: "6918336cfaef057a765604b8",
-    assignedTo: null,
-    history: [{
-      status: "pending",
-      note: "Report submitted",
-      updatedBy: "6918336cfaef057a765604b8",
-      date: "2025-11-15T08:04:55.362Z"
-    }],
-    createdAt: "2025-11-15T08:04:55.362Z",
-    updatedAt: "2025-11-15T08:04:55.362Z"
-  },
-  // Narayanganj reports
-  {
-    _id: "69183427faef057a765604bh",
-    title: "Industrial Waste in Narayanganj",
-    description: "Industrial waste dumping in residential areas",
-    images: ["https://i.ibb.co/1t68tQsW/Moana-Nunez-nid.png"],
-    problemType: "pollution",
-    severity: "high",
-    status: "pending",
-    location: {
-      address: "Industrial Zone, Narayanganj, Dhaka",
-      district: "Narayanganj",
-      division: "Dhaka",
-      coordinates: [90.5000, 23.6167]
-    },
-    upvotes: [],
-    comments: [],
-    createdBy: "6918336cfaef057a765604b8",
-    assignedTo: null,
-    history: [{
-      status: "pending",
-      note: "Report submitted",
-      updatedBy: "6918336cfaef057a765604b8",
-      date: "2025-11-15T08:04:55.362Z"
-    }],
-    createdAt: "2025-11-15T08:04:55.362Z",
-    updatedAt: "2025-11-15T08:04:55.362Z"
-  },
-  {
-    _id: "69183427faef057a765604bi",
-    title: "Traffic Congestion in Narayanganj",
-    description: "Severe traffic congestion during peak hours",
-    images: ["https://i.ibb.co/1t68tQsW/Moana-Nunez-nid.png"],
-    problemType: "traffic",
-    severity: "medium",
-    status: "pending",
-    location: {
-      address: "Main Highway, Narayanganj, Dhaka",
-      district: "Narayanganj",
-      division: "Dhaka",
-      coordinates: [90.5167, 23.6333]
-    },
-    upvotes: [],
-    comments: [],
-    createdBy: "6918336cfaef057a765604b8",
-    assignedTo: null,
-    history: [{
-      status: "pending",
-      note: "Report submitted",
-      updatedBy: "6918336cfaef057a765604b8",
-      date: "2025-11-15T08:04:55.362Z"
-    }],
-    createdAt: "2025-11-15T08:04:55.362Z",
-    updatedAt: "2025-11-15T08:04:55.362Z"
-  }
-];
-
-// All problem solvers data (empty - will use API data)
-const allProblemSolvers: ProblemSolver[] = [];
-/*
-const allProblemSolversOld: any[] = [
-  // Chandpur problem solvers
-  {
-    _id: "691833a1faef057a765604bd",
-    userId: "6918336cfaef057a765604c2",
-    fullName: "Karimullah Ahmed",
-    email: "karimullah@example.com",
-    phone: "+880 1711-223344",
-    division: "Chittagong",
-    district: "Chandpur",
-    address: "Chandpur Town, Chandpur",
-    profession: "Civil Engineer",
-    organization: "Chandpur Development Society",
-    skills: ["infrastructure", "construction", "project management"],
-    motivation: "Working for the development of Chandpur district",
-    experience: "5 years in civil engineering",
-    profileImage: null,
-    status: "approved",
-    reviewedBy: "admin123",
-    reviewedAt: "2025-11-15T09:00:00.000Z",
-    reviewNote: "Local expert in Chandpur",
-    appliedAt: "2025-11-12T09:00:00.000Z",
-    rating: 4.6,
-    completedTasks: 42,
-    successRate: 89,
-    points: 1450,
-    avgResolutionTime: 22
-  },
-  {
-    _id: "691833a1faef057a765604be",
-    userId: "6918336cfaef057a765604c3",
-    fullName: "Nusrat Jahan",
-    email: "nusrat@example.com",
-    phone: "+880 1811-334455",
-    division: "Chittagong",
-    district: "Chandpur",
-    address: "Hazariganj, Chandpur",
-    profession: "Environmental Specialist",
-    organization: "Green Chandpur Initiative",
-    skills: ["environment", "water management", "community development"],
-    motivation: "Passionate about environmental issues in Chandpur",
-    experience: "4 years in environmental science",
-    profileImage: null,
-    status: "approved",
-    reviewedBy: "admin123",
-    reviewedAt: "2025-11-15T09:00:00.000Z",
-    reviewNote: "Environmental specialist",
-    appliedAt: "2025-11-11T09:00:00.000Z",
-    rating: 4.4,
-    completedTasks: 38,
-    successRate: 85,
-    points: 1200,
-    avgResolutionTime: 26
-  },
-  // Barishal problem solvers
-  {
-    _id: "691833a1faef057a765604bf",
-    userId: "6918336cfaef057a765604c4",
-    fullName: "Abdul Malek",
-    email: "malek@example.com",
-    phone: "+880 1712-445566",
-    division: "Barishal",
-    district: "Barishal",
-    address: "Barishal City, Barishal",
-    profession: "Urban Planner",
-    organization: "Barishal Development Authority",
-    skills: ["urban planning", "infrastructure", "community development"],
-    motivation: "Dedicated to improving Barishal city infrastructure",
-    experience: "6 years in urban planning",
-    profileImage: null,
-    status: "approved",
-    reviewedBy: "admin123",
-    reviewedAt: "2025-11-15T09:00:00.000Z",
-    reviewNote: "Expert in urban development",
-    appliedAt: "2025-11-10T09:00:00.000Z",
-    rating: 4.7,
-    completedTasks: 51,
-    successRate: 92,
-    points: 1750,
-    avgResolutionTime: 20
-  },
-  {
-    _id: "691833a1faef057a765604bg",
-    userId: "6918336cfaef057a765604c5",
-    fullName: "Fatema Begum",
-    email: "fatema@example.com",
-    phone: "+880 1812-556677",
-    division: "Barishal",
-    district: "Barishal",
-    address: "Sadar Road, Barishal",
-    profession: "Environmental Engineer",
-    organization: "Clean Barishal Project",
-    skills: ["environment", "waste management", "public health"],
-    motivation: "Committed to making Barishal cleaner and healthier",
-    experience: "4 years in environmental engineering",
-    profileImage: null,
-    status: "approved",
-    reviewedBy: "admin123",
-    reviewedAt: "2025-11-15T09:00:00.000Z",
-    reviewNote: "Environmental engineering expert",
-    appliedAt: "2025-11-09T09:00:00.000Z",
-    rating: 4.5,
-    completedTasks: 45,
-    successRate: 88,
-    points: 1550,
-    avgResolutionTime: 24
-  },
-  // Narayanganj problem solvers
-  {
-    _id: "691833a1faef057a765604bh",
-    userId: "6918336cfaef057a765604c6",
-    fullName: "Rafiqul Islam",
-    email: "rafiq@example.com",
-    phone: "+880 1713-667788",
-    division: "Dhaka",
-    district: "Narayanganj",
-    address: "Narayanganj Industrial Area",
-    profession: "Industrial Engineer",
-    organization: "Narayanganj Development Board",
-    skills: ["industrial management", "pollution control", "infrastructure"],
-    motivation: "Working to solve industrial problems in Narayanganj",
-    experience: "7 years in industrial engineering",
-    profileImage: null,
-    status: "approved",
-    reviewedBy: "admin123",
-    reviewedAt: "2025-11-15T09:00:00.000Z",
-    reviewNote: "Industrial problems specialist",
-    appliedAt: "2025-11-08T09:00:00.000Z",
-    rating: 4.8,
-    completedTasks: 58,
-    successRate: 94,
-    points: 1950,
-    avgResolutionTime: 18
-  },
-  {
-    _id: "691833a1faef057a765604bi",
-    userId: "6918336cfaef057a765604c7",
-    fullName: "Shamima Akter",
-    email: "shamima@example.com",
-    phone: "+880 1813-778899",
-    division: "Dhaka",
-    district: "Narayanganj",
-    address: "Bandar, Narayanganj",
-    profession: "Traffic Management Specialist",
-    organization: "Narayanganj Traffic Control",
-    skills: ["traffic management", "urban planning", "public transport"],
-    motivation: "Solving traffic issues in Narayanganj",
-    experience: "5 years in traffic management",
-    profileImage: null,
-    status: "approved",
-    reviewedBy: "admin123",
-    reviewedAt: "2025-11-15T09:00:00.000Z",
-    reviewNote: "Traffic management expert",
-    appliedAt: "2025-11-07T09:00:00.000Z",
-    rating: 4.6,
-    completedTasks: 47,
-    successRate: 90,
-    points: 1650,
-    avgResolutionTime: 21
-  }
-];
-*/
-
 const AssignTaskPage = () => {
-  const router = useRouter();
-  const { user: authUser, isLoading, isAuthenticated } = useAuth();
+  const { user: authUser, isLoading } = useAuth();
   const [reports, setReports] = useState<Report[]>([]);
   const [problemSolvers, setProblemSolvers] = useState<ProblemSolver[]>([]);
   const [filters, setFilters] = useState({
@@ -453,7 +88,6 @@ const AssignTaskPage = () => {
   const [selectedSolver, setSelectedSolver] = useState('');
   const [loading, setLoading] = useState(true);
   const [assigning, setAssigning] = useState(false);
-  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'rating' | 'points' | 'completedTasks' | 'successRate'>('rating');
 
   // Auto-set filters based on user's location
@@ -559,8 +193,6 @@ const AssignTaskPage = () => {
     ? (divisionsData.find(d => d.division === filters.division)?.districts.map(d => d.name) || [])
     : [];
 
-  // Get all divisions from divisionsData instead of only those with reports
-  const divisions = divisionsData.map(d => d.division);
 
   // Sort problem solvers based on selected criteria
   const getSortedSolvers = (solvers: ProblemSolver[]) => {
@@ -677,51 +309,6 @@ const AssignTaskPage = () => {
     }
   };
 
-  const updateTaskStatus = async (reportId: string, newStatus: Report['status']) => {
-    setUpdatingStatus(reportId);
-
-    try {
-      // API call to update report status
-      const response = await reportAPI.updateStatus(reportId, newStatus);
-
-      if (response.success) {
-        // Update local state
-        setReports(prev => prev.map(report =>
-          report._id === reportId
-            ? {
-              ...report,
-              status: newStatus,
-              history: [
-                ...report.history,
-                {
-                  status: newStatus,
-                  note: `Status updated to ${newStatus}`,
-                  updatedBy: authUser?.name || 'Authority',
-                  date: new Date().toISOString()
-                }
-              ],
-              updatedAt: new Date().toISOString()
-            }
-            : report
-        ));
-
-        const statusLabel = newStatus === 'approved' ? 'Approved' :
-          newStatus === 'in-progress' ? 'In Progress' :
-            newStatus === 'resolved' ? 'Resolved' :
-              newStatus === 'closed' ? 'Closed' : 'Pending';
-        toast.success(`Status updated to ${statusLabel}`);
-      } else {
-        throw new Error(response.message || 'Failed to update status');
-      }
-    } catch (error: any) {
-      console.error('Error updating status:', error);
-      const errorMessage = error.message || 'Failed to update status. Please try again.';
-      toast.error(errorMessage);
-    } finally {
-      setUpdatingStatus(null);
-    }
-  };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
@@ -742,12 +329,6 @@ const AssignTaskPage = () => {
     }
   };
 
-  const getRatingColor = (rating: number) => {
-    if (rating >= 4.5) return 'text-green-600';
-    if (rating >= 4.0) return 'text-yellow-600';
-    if (rating >= 3.5) return 'text-orange-600';
-    return 'text-red-600';
-  };
 
   // Get available problem solvers for the selected report's location
   const getAvailableSolvers = (report: Report) => {
@@ -763,497 +344,324 @@ const AssignTaskPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header with Breadcrumb */}
-        <div className="mb-8">
+    <>
+      <div className="space-y-8 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
+        {/* Welcome Section with Gradient Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
+        >
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
+            Task Assignment Center ⚡
+          </h1>
+          <p className="text-white/90 text-lg font-semibold">
+            {authUser?.role === 'authority' && authUser.division
+              ? `Assign infrastructure tasks to problem solvers in ${authUser.division} Division`
+              : 'Manage and assign infrastructure tasks to available problem solvers'}
+          </p>
+        </motion.div>
 
-          <div className="flex justify-between items-start">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-[#002E2E]">Task Assignment Center</h1>
-              {authUser?.role === 'authority' && authUser.district && authUser.division && (
-                <div className="mt-2 flex items-center space-x-2">
-                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">
-                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd" />
-                    </svg>
-                    Division: {authUser.division}
+        {/* Quick Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { title: 'Pending Tasks', value: reports.filter(r => r.status === 'pending').length, icon: AlertCircle, color: 'text-yellow-600', bgColor: 'bg-yellow-50' },
+            { title: 'In Progress', value: reports.filter(r => r.status === 'in-progress').length, icon: Clock, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+            { title: 'Resolved', value: reports.filter(r => r.status === 'resolved').length, icon: CheckCircle2, color: 'text-green-600', bgColor: 'bg-green-50' },
+            { title: 'Available Solvers', value: problemSolvers.length, icon: Users, color: 'text-purple-600', bgColor: 'bg-purple-50' }
+          ].map((stat, index) => {
+            const IconComponent = stat.icon;
+            return (
+              <motion.div
+                key={stat.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="group"
+              >
+                <div className={`${stat.bgColor} rounded-2xl p-6 border-2 border-accent/20 shadow-lg hover:shadow-2xl transform transition-all duration-300 hover:scale-105 hover:-translate-y-1`}>
+                  <div className="flex items-center justify-between mb-3">
+                    <IconComponent size={32} className={stat.color} />
+                    <span className={`text-3xl font-extrabold ${stat.color}`}>
+                      {stat.value}
+                    </span>
                   </div>
-                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
-                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                    </svg>
-                    District: {authUser.district}
-                  </div>
+                  <h3 className="text-sm font-bold uppercase tracking-widest text-neutral/70">
+                    {stat.title}
+                  </h3>
                 </div>
-              )}
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button
-                onClick={() => window.location.reload()}
-                variant="primary"
-                size="md"
-                iconPosition="left"
-                title="Refresh data"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                <span>Refresh</span>
-              </Button>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-[#81d586]">{filteredReports.length}</div>
-                <div className="text-sm text-gray-500">Tasks Found</div>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            );
+          })}
         </div>
 
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-yellow-50 rounded-lg">
-                <div className="w-6 h-6 bg-yellow-500 rounded-full"></div>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Pending Tasks</p>
-                <p className="text-2xl font-bold text-yellow-600">
-                  {reports.filter(r => r.status === 'pending').length}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <div className="w-6 h-6 bg-blue-500 rounded-full"></div>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">In Progress</p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {reports.filter(r => r.status === 'in-progress').length}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-green-50 rounded-lg">
-                <div className="w-6 h-6 bg-green-500 rounded-full"></div>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Resolved</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {reports.filter(r => r.status === 'resolved').length}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-[#F6FFF9] rounded-lg">
-                <div className="w-6 h-6 bg-[#81d586] rounded-full"></div>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Available Solvers</p>
-                <p className="text-2xl font-bold text-[#002E2E]">
-                  {problemSolvers.length}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Advanced Filters */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 text-[#002E2E]">Advanced Filters</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Division
-              </label>
-              <select
-                aria-label="Filter by division"
-                value={filters.division}
-                onChange={(e) => setFilters({
-                  ...filters,
-                  division: e.target.value,
-                  district: ''
-                })}
-                disabled={authUser?.role === 'authority'}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
-              >
-                <option value="">All Divisions</option>
-                {divisions.map(division => (
-                  <option key={division} value={division}>{division}</option>
-                ))}
-              </select>
-              {authUser?.role === 'authority' && (
-                <p className="text-xs text-gray-500 mt-1">Automatically set to your division: {authUser.division}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                District
-              </label>
-              <select
-                aria-label="Filter by district"
-                value={filters.district}
-                onChange={(e) => setFilters({ ...filters, district: e.target.value })}
-                disabled={!filters.division}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
-              >
-                <option value="">
-                  {authUser?.role === 'authority' && authUser.division
-                    ? `All Districts in ${authUser.division}`
-                    : 'All Districts'}
-                </option>
-                {availableDistricts.map(district => (
-                  <option key={district} value={district}>{district}</option>
-                ))}
-              </select>
-              {!filters.division && authUser?.role !== 'authority' && (
-                <p className="text-xs text-gray-500 mt-1">Select a division first</p>
-              )}
-              {authUser?.role === 'authority' && (
-                <p className="text-xs text-gray-500 mt-1">Filter by specific district within {authUser.division} division</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Status
-              </label>
-              <select
-                aria-label="Filter by status"
-                value={filters.status}
-                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors"
-              >
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="in-progress">In Progress</option>
-                <option value="resolved">Resolved</option>
-                <option value="closed">Closed</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Severity
-              </label>
-              <select
-                aria-label="Filter by severity"
-                value={filters.severity}
-                onChange={(e) => setFilters({ ...filters, severity: e.target.value })}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent transition-colors"
-              >
-                <option value="">Select severity</option>
-                <option value="low">🟢 Low - Minor issue</option>
-                <option value="medium">🟡 Medium - Moderate issue</option>
-                <option value="high">🟠 High - Serious issue</option>
-                <option value="urgent">🔴 Urgent - Critical issue</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Assigned Tasks Section */}
-        {filteredReports.filter(r => r.status === 'approved' || r.status === 'in-progress' || r.status === 'resolved').length > 0 && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-[#002E2E]">Assigned Tasks & Updates</h2>
-              <span className="text-sm text-gray-500">
-                {filteredReports.filter(r => r.status === 'approved' || r.status === 'in-progress' || r.status === 'resolved').length} active assignments
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredReports
-                .filter(r => r.status === 'approved' || r.status === 'in-progress' || r.status === 'resolved')
-                .map(report => {
-                  const assignedSolver = problemSolvers.find(s => s._id === report.assignedTo);
-                  return (
-                    <div key={report._id} className="border border-gray-200 rounded-lg p-4 hover:border-[#81d586] transition-colors">
-                      <div className="flex items-start space-x-3 mb-3">
-                        {report.images.length > 0 && (
-                          <img
-                            src={report.images[0]}
-                            alt={report.title}
-                            className="w-16 h-16 rounded-lg object-cover"
-                          />
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-900 truncate">{report.title}</h3>
-                          <p className="text-xs text-gray-500 mt-1">{report.location.address}</p>
-                        </div>
-                      </div>
-
-                      {assignedSolver && (
-                        <div className="flex items-center space-x-2 mb-3 p-2 bg-gray-50 rounded">
-                          <div className="w-8 h-8 bg-[#81d586] rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                            {assignedSolver.name.split(' ').map(n => n[0]).join('')}
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">{assignedSolver.name}</p>
-                            <p className="text-xs text-gray-500">{assignedSolver.organization || assignedSolver.role}</p>
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex items-center justify-between">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
-                          {report.status === 'approved' ? 'Approved' : report.status === 'in-progress' ? 'In Progress' : report.status === 'resolved' ? 'Resolved' : report.status}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          Updated {new Date(report.updatedAt).toLocaleDateString()}
-                        </span>
-                      </div>
-
-                      {report.history.length > 1 && (
-                        <div className="mt-3 pt-3 border-t border-gray-100">
-                          <p className="text-xs text-gray-600">
-                            <span className="font-medium">Last update:</span> {report.history[report.history.length - 1].note}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
-        )}
-
-        {/* Reports Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-[#002E2E]">
-                Pending Tasks {authUser?.role === 'authority' && authUser.division && `in ${authUser.division} Division`}
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Filters Sidebar */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-1"
+          >
+            <Card className="rounded-3xl shadow-xl border-t-4 border-secondary p-8 h-fit">
+              <h2 className="text-2xl font-extrabold text-info mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">🎯</div>
+                Filters
               </h2>
-              <span className="text-sm text-gray-500">
-                {filteredReports.filter(r => r.status === 'pending').length} pending tasks
-              </span>
-            </div>
-          </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
+                    Division
+                  </label>
+                  <select
+                    aria-label="Filter by division"
+                    value={filters.division}
+                    onChange={(e) => setFilters({
+                      ...filters,
+                      division: e.target.value,
+                      district: ''
+                    })}
+                    disabled={authUser?.role === 'authority'}
+                    className="w-full px-4 py-3 border-2 border-base-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-colors disabled:bg-base-200 disabled:cursor-not-allowed font-medium"
+                  >
+                    <option value="">All Divisions</option>
+                    {divisionsData.map(d => (
+                      <option key={d.division} value={d.division}>{d.division}</option>
+                    ))}
+                  </select>
+                  {authUser?.role === 'authority' && (
+                    <p className="text-xs text-gray-500 mt-2">Set to: {authUser.division}</p>
+                  )}
+                </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Issue Details
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Location
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Severity
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
+                    District
+                  </label>
+                  <select
+                    aria-label="Filter by district"
+                    value={filters.district}
+                    onChange={(e) => setFilters({ ...filters, district: e.target.value })}
+                    disabled={!filters.division}
+                    className="w-full px-4 py-3 border-2 border-base-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-colors disabled:bg-base-200 disabled:cursor-not-allowed font-medium"
+                  >
+                    <option value="">All Districts</option>
+                    {availableDistricts.map(district => (
+                      <option key={district} value={district}>{district}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
                     Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredReports.map((report) => {
-                  const availableSolvers = getAvailableSolvers(report);
-                  const canAssign = availableSolvers.length > 0 && report.status === 'pending';
+                  </label>
+                  <select
+                    aria-label="Filter by status"
+                    value={filters.status}
+                    onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-base-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-colors font-medium"
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                </div>
 
-                  return (
-                    <tr key={report._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-start space-x-3">
-                          {report.images.length > 0 && (
-                            <img
-                              src={report.images[0]}
-                              alt={report.title}
-                              className="w-12 h-12 rounded-lg object-cover shrink-0"
-                            />
-                          )}
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
+                    Severity
+                  </label>
+                  <select
+                    aria-label="Filter by severity"
+                    value={filters.severity}
+                    onChange={(e) => setFilters({ ...filters, severity: e.target.value })}
+                    className="w-full px-4 py-3 border-2 border-base-200 rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-colors font-medium"
+                  >
+                    <option value="">All Severity</option>
+                    <option value="low">🟢 Low</option>
+                    <option value="medium">🟡 Medium</option>
+                    <option value="high">🟠 High</option>
+                  </select>
+                </div>
+
+                <button
+                  onClick={() => {
+                    window.location.reload();
+                  }}
+                  className="w-full bg-secondary text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-secondary/90 transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 mt-6"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>Refresh Filters</span>
+                </button>
+              </div>
+            </Card>
+          </motion.div>
+
+          {/* Reports List */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-2"
+          >
+            <Card className="rounded-3xl shadow-xl border-t-4 border-secondary p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-extrabold text-info flex items-center gap-3">
+                  <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">📋</div>
+                  Available Tasks
+                </h2>
+                <span className="text-sm font-bold bg-primary text-white px-3 py-1 rounded-full">
+                  {filteredReports.length} Found
+                </span>
+              </div>
+
+              {filteredReports.length > 0 ? (
+                <div className="space-y-4">
+                  {filteredReports.map((report, idx) => (
+                    <motion.div
+                      key={report._id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                    >
+                      <div className="p-5 bg-base-100 border-2 border-base-200 rounded-xl hover:border-secondary hover:shadow-lg transition-all duration-300 group cursor-pointer hover:bg-base-100">
+                        <div className="flex items-start justify-between gap-4">
                           <div className="flex-1 min-w-0">
-                            <h3 className="text-sm font-semibold text-gray-900 truncate">
-                              {report.title}
-                            </h3>
-                            <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
+                              <h3 className="font-extrabold text-info group-hover:text-secondary transition-colors text-lg line-clamp-1">
+                                {report.title}
+                              </h3>
+                              <span className={`text-xs px-3 py-1 rounded-full font-bold border-2 ${getStatusColor(report.status)}`}>
+                                {report.status.replace('-', ' ').toUpperCase()}
+                              </span>
+                            </div>
+                            <p className="text-sm text-neutral/70 line-clamp-2 leading-relaxed">
                               {report.description}
                             </p>
-                            <span className="inline-block mt-2 px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded">
-                              {report.problemType}
-                            </span>
+                            <div className="flex items-center gap-3 mt-3 flex-wrap">
+                              <span className="text-xs font-bold bg-warning/10 text-warning px-3 py-1 rounded-full border border-warning/30">
+                                📍 {report.location.district}
+                              </span>
+                              <span className={`text-xs px-3 py-1 rounded-full font-bold border-2 ${getSeverityColor(report.severity)}`}>
+                                {report.severity.toUpperCase()}
+                              </span>
+                              <span className="text-xs text-neutral/60">
+                                {new Date(report.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
                           </div>
+                          {report.status === 'pending' && getAvailableSolvers(report).length > 0 && (
+                            <button
+                              onClick={() => setSelectedReport(report)}
+                              className="shrink-0 bg-primary text-white px-4 py-2 rounded-lg font-bold shadow-md hover:shadow-lg hover:bg-primary/90 transform hover:scale-105 transition-all duration-300 text-sm"
+                            >
+                              Assign →
+                            </button>
+                          )}
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {report.location.district}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {report.location.division}
-                        </div>
-                        <div className="text-xs text-gray-400 mt-1 truncate max-w-[150px]">
-                          {report.location.address}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getSeverityColor(report.severity)}`}>
-                          {report.severity.charAt(0).toUpperCase() + report.severity.slice(1)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
-                          {report.status.charAt(0).toUpperCase() + report.status.slice(1)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(report.createdAt).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric'
-                        })}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                        {report.status === 'pending' && (
-                          <Button
-                            onClick={() => setSelectedReport(report)}
-                            disabled={!canAssign}
-                            variant="primary"
-                            size="sm"
-                            iconPosition="right"
-                          >
-                            {canAssign ? 'Assign' : 'No Solvers'}
-                          </Button>
-                        )}
-
-                        {report.status !== 'pending' && (
-                          <select
-                            aria-label="Update task status"
-                            value={report.status}
-                            onChange={(e) => updateTaskStatus(report._id, e.target.value as Report['status'])}
-                            disabled={updatingStatus === report._id}
-                            className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] focus:border-transparent disabled:opacity-50 transition-colors"
-                          >
-                            <option value="inProgress">In Progress</option>
-                            <option value="resolved">Resolved</option>
-                            <option value="closed">Closed</option>
-                          </select>
-                        )}
-
-                        <button
-                          onClick={() => {
-                            window.open(`/reports/${report._id}`, '_blank');
-                          }}
-                          className="px-3 py-2 text-[#81d586] hover:text-[#65b869] font-medium transition-colors"
-                          title="View Report Details"
-                        >
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            {filteredReports.length === 0 && (
-              <div className="text-center py-12">
-                <div className="text-gray-400 mb-4">
-                  <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-                <p className="text-gray-500 text-lg">No tasks found</p>
-                <p className="text-gray-400 mt-1">
-                  {authUser?.role === 'authority' && authUser.division
-                    ? `No infrastructure issues reported in ${authUser.division} division with current filters`
-                    : 'Try adjusting your filters or check back later'
-                  }
-                </p>
-              </div>
-            )}
-          </div>
+              ) : (
+                <div className="text-center py-16 bg-base-300 rounded-xl border-2 border-dashed border-base-200">
+                  <p className="text-3xl mb-3">📭</p>
+                  <p className="text-info font-bold mb-2 text-lg">No tasks found</p>
+                  <p className="text-sm text-neutral/70">
+                    {authUser?.role === 'authority' && authUser.division
+                      ? `No pending tasks in ${authUser.division} with current filters`
+                      : 'Try adjusting your filters'}
+                  </p>
+                </div>
+              )}
+            </Card>
+          </motion.div>
         </div>
 
-        {/* Assignment Modal */}
+        {/* Modal for Assignment */}
         {selectedReport && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-semibold text-[#002E2E]">
-                  Assign Task
-                </h3>
-                <Button
-                  aria-label="Close modal"
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-base-100 rounded-3xl p-8 max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+            >
+              {/* Modal Header */}
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h2 className="text-3xl font-extrabold text-info mb-2">
+                    Assign Task
+                  </h2>
+                  <p className="text-sm text-neutral/70">
+                    Select the best problem solver for this task
+                  </p>
+                </div>
+                <button
                   onClick={() => {
                     setSelectedReport(null);
                     setSelectedSolver('');
                   }}
-                  variant="ghost"
-                  size="sm"
-                  className="min-w-0 w-10 h-10 p-0"
+                  className="text-neutral/50 hover:text-neutral transition"
+                  title="Close modal"
+                  aria-label="Close modal"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                </Button>
+                </button>
               </div>
 
-              {/* Task Details */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-                <h4 className="font-semibold text-gray-900 mb-2">Task Details</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+              {/* Task Details Card */}
+              <div className="mb-6 p-5 bg-linear-to-br from-primary/5 to-secondary/5 rounded-2xl border-2 border-primary/20">
+                <h3 className="font-bold text-info mb-3">📋 Task Details</h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
-                    <span className="text-gray-600">Title:</span>
-                    <p className="font-medium">{selectedReport.title}</p>
+                    <p className="text-neutral/60 font-medium">Title</p>
+                    <p className="font-bold text-info">{selectedReport.title}</p>
                   </div>
                   <div>
-                    <span className="text-gray-600">Type:</span>
-                    <p className="font-medium">{selectedReport.problemType}</p>
+                    <p className="text-neutral/60 font-medium">Problem Type</p>
+                    <p className="font-bold text-info">{selectedReport.problemType}</p>
                   </div>
                   <div>
-                    <span className="text-gray-600">Severity:</span>
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${getSeverityColor(selectedReport.severity)}`}>
-                      {selectedReport.severity}
+                    <p className="text-neutral/60 font-medium">Severity</p>
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2 ${getSeverityColor(selectedReport.severity)}`}>
+                      {selectedReport.severity.toUpperCase()}
                     </span>
                   </div>
                   <div>
-                    <span className="text-gray-600">Location:</span>
-                    <p className="font-medium">{selectedReport.location.district}, {selectedReport.location.division}</p>
+                    <p className="text-neutral/60 font-medium">Location</p>
+                    <p className="font-bold text-info">{selectedReport.location.district}</p>
                   </div>
                 </div>
-                <div className="mt-3">
-                  <span className="text-gray-600">Description:</span>
-                  <p className="text-sm mt-1">{selectedReport.description}</p>
+                <div className="mt-3 pt-3 border-t border-primary/20">
+                  <p className="text-neutral/60 font-medium mb-1">Description</p>
+                  <p className="text-sm text-neutral/70">{selectedReport.description}</p>
                 </div>
               </div>
 
               {/* Sort Options */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Sort Problem Solvers By:
-                </label>
+              <div className="mb-6">
+                <p className="text-sm font-bold text-neutral/70 mb-3 uppercase tracking-wide">Sort By:</p>
                 <div className="flex flex-wrap gap-2">
                   {[
-                    { value: 'rating', label: 'Highest Rating' },
-                    { value: 'points', label: 'Most Points' },
-                    { value: 'completedTasks', label: 'Most Completed Tasks' },
-                    { value: 'successRate', label: 'Highest Success Rate' }
+                    { value: 'rating', label: '⭐ Rating' },
+                    { value: 'completedTasks', label: '✅ Tasks' },
+                    { value: 'successRate', label: '🎯 Success Rate' },
+                    { value: 'points', label: '🏆 Points' }
                   ].map(option => (
                     <button
                       key={option.value}
                       onClick={() => setSortBy(option.value as any)}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${sortBy === option.value
-                        ? 'bg-[#81d586] text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      className={`px-4 py-2 rounded-lg text-sm font-bold transition-all transform ${sortBy === option.value
+                        ? 'bg-primary text-white shadow-lg scale-105'
+                        : 'bg-base-200 text-neutral hover:bg-base-300 scale-100'
                         }`}
                     >
                       {option.label}
@@ -1264,146 +672,100 @@ const AssignTaskPage = () => {
 
               {/* Available Problem Solvers */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Available Problem Solvers in {selectedReport.location.division} Division
-                  <span className="text-gray-500 ml-2">(Sorted by {sortBy.replace(/([A-Z])/g, ' $1').toLowerCase()})</span>
-                </label>
+                <p className="text-sm font-bold text-neutral/70 mb-3 uppercase tracking-wide">
+                  Available Problem Solvers ({getAvailableSolvers(selectedReport).length})
+                </p>
 
                 {getAvailableSolvers(selectedReport).length === 0 ? (
-                  <div className="text-center py-6 border-2 border-dashed border-gray-300 rounded-lg">
-                    <svg className="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                    </svg>
-                    <p className="text-gray-500">No problem solvers available in this division</p>
-                    <p className="text-sm text-gray-400 mt-1">Problem solvers will be shown when available in {selectedReport.location.division} division</p>
+                  <div className="text-center py-8 border-2 border-dashed border-base-200 rounded-2xl">
+                    <p className="text-3xl mb-2">😕</p>
+                    <p className="font-bold text-info">No solvers available</p>
+                    <p className="text-sm text-neutral/60 mt-1">
+                      No approved problem solvers in {selectedReport.location.division} division
+                    </p>
                   </div>
                 ) : (
-                  <div className="space-y-3 max-h-96 overflow-y-auto">
-                    {getAvailableSolvers(selectedReport).map((solver, index) => (
-                      <div
-                        key={solver._id}
-                        className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedSolver === solver._id
-                          ? 'border-[#81d586] bg-[#F6FFF9] ring-2 ring-[#81d586] ring-opacity-50'
-                          : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        onClick={() => setSelectedSolver(solver._id)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4 flex-1">
-                            {/* Rank Badge */}
-                            <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${index === 0 ? 'bg-yellow-500' :
-                              index === 1 ? 'bg-gray-400' :
-                                index === 2 ? 'bg-orange-500' : 'bg-[#81d586]'
-                              }`}>
-                              {index + 1}
-                            </div>
+                  <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+                    {getAvailableSolvers(selectedReport).map((solver, index) => {
+                      const rating = solver.taskStats?.rating !== undefined && solver.taskStats.rating !== 'N/A'
+                        ? (typeof solver.taskStats.rating === 'string' ? parseFloat(solver.taskStats.rating) : solver.taskStats.rating)
+                        : solver.rating || 0;
+                      const successRate = solver.taskStats?.successRate
+                        ? parseFloat(solver.taskStats.successRate.replace('%', ''))
+                        : solver.successRate || 0;
+                      const completedTasks = solver.taskStats?.completed ?? solver.completedTasks ?? 0;
+                      const points = solver.points || 0;
 
-                            {/* Profile */}
-                            <div className="w-12 h-12 bg-[#81d586] rounded-full flex items-center justify-center text-white font-semibold text-lg shrink-0">
-                              {solver.name.split(' ').map(n => n[0]).join('')}
-                            </div>
-
-                            {/* Details */}
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center space-x-2 mb-1">
-                                <h4 className="font-semibold text-gray-900 text-lg">{solver.name}</h4>
-                                <div className="flex items-center space-x-1">
-                                  {(() => {
-                                    const rating = solver.taskStats?.rating !== undefined && solver.taskStats.rating !== 'N/A'
-                                      ? (typeof solver.taskStats.rating === 'string' ? parseFloat(solver.taskStats.rating) : solver.taskStats.rating)
-                                      : solver.rating || 0;
-                                    return (
-                                      <>
-                                        <svg className={`w-4 h-4 ${getRatingColor(rating)}`} fill="currentColor" viewBox="0 0 20 20">
-                                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                        </svg>
-                                        <span className={`font-bold ${getRatingColor(rating)}`}>
-                                          {rating > 0 ? rating.toFixed(1) : 'N/A'}
-                                        </span>
-                                      </>
-                                    );
-                                  })()}
-                                </div>
-                              </div>
-                              <p className="text-sm text-gray-600 mb-2">{solver.organization || solver.role} • {solver.district || solver.division}</p>
-
-                              {/* Performance Stats */}
-                              <div className="grid grid-cols-4 gap-4 text-xs">
-                                <div className="text-center">
-                                  <div className="font-bold text-gray-900">
-                                    {solver.taskStats?.completed ?? solver.completedTasks ?? 0}
-                                  </div>
-                                  <div className="text-gray-500">Tasks</div>
-                                </div>
-                                <div className="text-center">
-                                  <div className="font-bold text-green-600">
-                                    {solver.taskStats?.successRate ?? (solver.successRate ? `${solver.successRate}%` : '0%')}
-                                  </div>
-                                  <div className="text-gray-500">Success</div>
-                                </div>
-                                <div className="text-center">
-                                  <div className="font-bold text-blue-600">{solver.points || 0}</div>
-                                  <div className="text-gray-500">Points</div>
-                                </div>
-                                <div className="text-center">
-                                  <div className="font-bold text-purple-600">
-                                    {solver.role === 'ngo' ? 'NGO' : 'Solver'}
-                                  </div>
-                                  <div className="text-gray-500">Type</div>
-                                </div>
+                      return (
+                        <motion.div
+                          key={solver._id}
+                          whileHover={{ scale: 1.02 }}
+                          onClick={() => setSelectedSolver(solver._id)}
+                          className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedSolver === solver._id
+                            ? 'border-primary bg-primary/5 ring-2 ring-primary'
+                            : 'border-base-200 hover:border-primary/50 bg-base-50'
+                            }`}
+                        >
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="flex items-center gap-3 flex-1">
+                              {/* Rank Badge */}
+                              <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${index === 0 ? 'bg-yellow-500' :
+                                index === 1 ? 'bg-gray-400' :
+                                  index === 2 ? 'bg-orange-500' : 'bg-primary'
+                                }`}>
+                                {index + 1}
                               </div>
 
-                              {/* Skills */}
-                              {solver.expertise && solver.expertise.length > 0 && (
-                                <div className="flex flex-wrap gap-1 mt-2">
-                                  {solver.expertise.slice(0, 3).map((skill, idx) => (
-                                    <span key={idx} className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
-                                      {skill}
-                                    </span>
-                                  ))}
-                                  {solver.expertise.length > 3 && (
-                                    <span className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
-                                      +{solver.expertise.length - 3} more
-                                    </span>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </div>
+                              {/* Avatar */}
+                              <div className="w-12 h-12 bg-linear-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white font-bold text-lg shrink-0">
+                                {solver.name.split(' ').map(n => n[0]).join('')}
+                              </div>
 
-                          {/* Selection Indicator */}
-                          <div className="shrink-0 ml-4">
-                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${selectedSolver === solver._id
-                              ? 'bg-[#81d586] border-[#81d586]'
-                              : 'bg-white border-gray-300'
+                              {/* Details */}
+                              <div className="flex-1 min-w-0">
+                                <p className="font-bold text-info">{solver.name}</p>
+                                <p className="text-xs text-neutral/60">{solver.organization || solver.role}</p>
+                                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                  <span className="text-xs font-bold text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded">⭐ {rating.toFixed(1)}</span>
+                                  <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">✅ {completedTasks}</span>
+                                  <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded">🎯 {successRate}%</span>
+                                  <span className="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded">🏆 {points}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Selection Indicator */}
+                            <div className={`shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedSolver === solver._id
+                              ? 'bg-primary border-primary'
+                              : 'border-base-300'
                               }`}>
                               {selectedSolver === solver._id && (
-                                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                 </svg>
                               )}
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    ))}
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
 
-              <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-                <Button
+              {/* Modal Actions */}
+              <div className="flex justify-end gap-3 pt-6 border-t border-base-200">
+                <button
                   onClick={() => {
                     setSelectedReport(null);
                     setSelectedSolver('');
                   }}
-                  variant="ghost"
-                  size="lg"
+                  className="px-6 py-3 text-info font-bold rounded-xl hover:bg-base-200 transition-all"
                   disabled={assigning}
                 >
                   Cancel
-                </Button>
-                <Button
+                </button>
+                <button
                   onClick={() => {
                     if (!selectedSolver) {
                       toast.error('Please select a problem solver');
@@ -1415,31 +777,32 @@ const AssignTaskPage = () => {
                     }
                   }}
                   disabled={!selectedSolver || assigning || getAvailableSolvers(selectedReport).length === 0}
-                  variant="primary"
-                  size="lg"
-                  iconPosition="right"
-                  isLoading={assigning}
+                  className={`px-6 py-3 text-white font-bold rounded-xl transition-all flex items-center gap-2 ${assigning
+                    ? 'bg-primary/50 cursor-not-allowed'
+                    : 'bg-primary hover:shadow-lg transform hover:scale-105 hover:bg-primary/90'
+                    }`}
                 >
                   {assigning ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>Assigning Task...</span>
+                      <span>Assigning...</span>
                     </>
                   ) : (
                     <>
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <span>Assign Task</span>
+                      <span>Confirm Assignment</span>
                     </>
                   )}
                 </button>
               </div>
-            </div>
+            </motion.div>
           </div>
         )}
+
       </div>
-    </div>
+    </>
   );
 };
 

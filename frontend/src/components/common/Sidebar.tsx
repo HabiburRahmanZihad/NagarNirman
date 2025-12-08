@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Image from 'next/image';
+import { LayoutDashboard, User, MapPin, Search, FileText, Edit, Lightbulb, BarChart3, Trophy, Settings, Users, FileCheck, LogOut, Menu, X } from 'lucide-react';
 
 interface SidebarLink {
   href: string;
@@ -26,52 +27,51 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const role = user?.role;
 
     const commonLinks: SidebarLink[] = [
-      { href: `/dashboard/${role}`, icon: '📊', label: 'Dashboard' },
-      { href: `/dashboard/${role}/profile`, icon: '👤', label: 'My Profile' },
-      { href: `/dashboard/${role}/map-search`, icon: '🗺️', label: 'Map Search' },
-      { href: `/dashboard/${role}/all-reports`, icon: '🔍', label: 'Browse Reports' },
+      { href: `/dashboard/${role}`, icon: 'dashboard', label: 'Dashboard' },
+      { href: `/dashboard/${role}/profile`, icon: 'profile', label: 'My Profile' },
+      { href: `/dashboard/${role}/map-search`, icon: 'map', label: 'Map Search' },
+      { href: `/dashboard/${role}/all-reports`, icon: 'search', label: 'Browse Reports' },
     ];
 
     if (role === 'user') {
       return [
         ...commonLinks,
-        { href: '/dashboard/user/reports/new', icon: '📝', label: 'Report Issue' },
-        { href: '/dashboard/user/my-reports', icon: '📋', label: 'My Reports' },
-        { href: '/dashboard/user/join-as-a-Problem-Solver', icon: '💡', label: 'Become Solver' },
+        { href: '/dashboard/user/reports/new', icon: 'file', label: 'Report Issue' },
+        { href: '/dashboard/user/my-reports', icon: 'filetext', label: 'My Reports' },
+        { href: '/dashboard/user/join-as-a-Problem-Solver', icon: 'lightbulb', label: 'Become Solver' },
       ];
     }
 
     if (role === 'authority') {
       return [
         ...commonLinks,
-        // { href: '/reports', icon: '📋', label: 'All Reports' },
-        { href: '/dashboard/authority/assign-task', icon: '🛠️', label: 'Assign Task' },
-        { href: '/dashboard/authority/review-tasks', icon: '✅', label: 'Review Tasks' },
-        { href: '/dashboard/authority/solvers', icon: '💡', label: 'Problem Solvers' },
-        { href: '/dashboard/authority/applications', icon: '📄', label: 'Applications' },
-        { href: '/dashboard/authority/manage-users', icon: '👥', label: 'Manage Users' },
+        { href: '/dashboard/authority/assign-task', icon: 'settings', label: 'Assign Task' },
+        { href: '/dashboard/authority/review-tasks', icon: 'filecheck', label: 'Review Tasks' },
+        { href: '/dashboard/authority/solvers', icon: 'lightbulb', label: 'Problem Solvers' },
+        { href: '/dashboard/authority/applications', icon: 'filetext', label: 'Applications' },
+        { href: '/dashboard/authority/manage-users', icon: 'users', label: 'Manage Users' },
       ];
     }
 
     if (role === 'problemSolver') {
       return [
         ...commonLinks,
-        { href: '/dashboard/problemSolver/tasks', icon: '📋', label: 'My Tasks' },
-        { href: '/dashboard/problemSolver/leaderboard', icon: '🏆', label: 'Leaderboard & Rewards' },
-        { href: '/dashboard/problemSolver/statistics', icon: '📈', label: 'Statistics' },
+        { href: '/dashboard/problemSolver/tasks', icon: 'filetext', label: 'My Tasks' },
+        { href: '/dashboard/problemSolver/leaderboard', icon: 'trophy', label: 'Leaderboard & Rewards' },
+        { href: '/dashboard/problemSolver/statistics', icon: 'barchart', label: 'Statistics' },
       ];
     }
 
     if (role === 'superAdmin') {
       return [
-        { href: '/dashboard/superAdmin', icon: '🛡️', label: 'SuperAdmin Panel' },
-        { href: '/dashboard/superAdmin/users', icon: '👥', label: 'All Users' },
-        { href: '/dashboard/superAdmin/applications', icon: '📄', label: 'Applications' },
-        { href: '/dashboard/superAdmin/all-reports', icon: '📋', label: 'All Reports' },
-        { href: '/dashboard/superAdmin/assign-task', icon: '✏️', label: 'Assign Task' },
-        { href: '/dashboard/superAdmin/review-tasks', icon: '✅', label: 'Review Tasks' },
-        { href: '/dashboard/superAdmin/solver-statistics', icon: '📊', label: 'Solver Statistics' },
-        { href: '/dashboard/superAdmin/map-search', icon: '🗺️', label: 'Map Search' },
+        { href: '/dashboard/superAdmin', icon: 'settings', label: 'SuperAdmin Panel' },
+        { href: '/dashboard/superAdmin/users', icon: 'users', label: 'All Users' },
+        { href: '/dashboard/superAdmin/applications', icon: 'filetext', label: 'Applications' },
+        { href: '/dashboard/superAdmin/all-reports', icon: 'filetext', label: 'All Reports' },
+        { href: '/dashboard/superAdmin/assign-task', icon: 'edit', label: 'Assign Task' },
+        { href: '/dashboard/superAdmin/review-tasks', icon: 'filecheck', label: 'Review Tasks' },
+        { href: '/dashboard/superAdmin/solver-statistics', icon: 'barchart', label: 'Solver Statistics' },
+        { href: '/dashboard/superAdmin/map-search', icon: 'map', label: 'Map Search' },
       ];
     }
 
@@ -87,72 +87,99 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     return pathname.startsWith(href);
   };
 
+  const getIconComponent = (iconName: string) => {
+    const iconProps = { className: 'w-5 h-5' };
+    const icons: { [key: string]: React.ReactNode } = {
+      dashboard: <LayoutDashboard {...iconProps} />,
+      profile: <User {...iconProps} />,
+      map: <MapPin {...iconProps} />,
+      search: <Search {...iconProps} />,
+      file: <FileText {...iconProps} />,
+      filetext: <FileText {...iconProps} />,
+      lightbulb: <Lightbulb {...iconProps} />,
+      settings: <Settings {...iconProps} />,
+      filecheck: <FileCheck {...iconProps} />,
+      users: <Users {...iconProps} />,
+      trophy: <Trophy {...iconProps} />,
+      barchart: <BarChart3 {...iconProps} />,
+      edit: <Edit {...iconProps} />,
+    };
+    return icons[iconName] || <LayoutDashboard {...iconProps} />;
+  };
+
   return (
     <>
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 z-50 overflow-y-auto transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 lg:sticky lg:top-0`}
+        className={`fixed top-0 left-0 h-screen w-64 bg-base-100 border-r-2 border-base-200 z-50 overflow-y-auto transition-all duration-300 flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0 lg:sticky lg:top-0 shadow-2xl`}
       >
         <div className="flex flex-col min-h-screen">
           {/* Header */}
-          <div className="p-6 border-b border-gray-200">
+          <div className="p-6 border-b-2 border-primary/30 bg-linear-to-br from-primary via-primary to-primary/90 sticky top-0 z-10">
             <div className="flex items-center justify-between">
               {/* Logo */}
-              <Link href="/">
-                <Image
-                  src="/logo/logo.png"
-                  alt="NagarNirman Logo"
-                  width={150}
-                  height={150}
-                  priority
-                />
-              </Link>
+              <div className="px-8 py-4 bg-white/20 backdrop-blur-xl rounded-2xl border-2 border-white/30 hover:bg-white/25 hover:border-white/50 transition-all duration-300 shadow-lg">
+                <Link
+                  href="/">
+
+                  <Image
+
+                    src="/logo/logo.png"
+                    alt="NagarNirman Logo"
+                    width={150}
+                    height={150}
+                    priority
+                  />
+                </Link>
+              </div>
+
               <button
                 onClick={onClose}
-                className="lg:hidden text-gray-500 hover:text-gray-700"
+                className="lg:hidden text-white hover:text-white/70 transition-colors"
                 aria-label="Close menu"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-6 h-6" />
               </button>
             </div>
 
-            {/* User Info */}
+            {/* User Info - Enhanced */}
             {user && (
-              <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center space-x-3">
+              <div className="mt-6 p-4 bg-white/20 backdrop-blur-xl rounded-2xl border-2 border-white/30 hover:bg-white/25 hover:border-white/50 transition-all duration-300 shadow-lg">
+                <div className="flex items-center space-x-3 mb-3">
                   {user.profilePicture ? (
                     <img
                       src={user.profilePicture}
                       alt={user.name}
-                      className="w-10 h-10 rounded-full object-cover border-2 border-primary"
+                      className="w-12 h-12 rounded-full object-cover border-3 border-white shadow-lg shrink-0"
                     />
                   ) : (
-                    <div className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center font-semibold">
+                    <div className="w-12 h-12 bg-white text-primary rounded-full flex items-center justify-center font-bold text-lg border-none shadow-lg shrink-0">
                       {user.name?.charAt(0).toUpperCase()}
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{user.name}</p>
-                    <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                    <p className="text-sm font-extrabold text-white truncate">{user.name}</p>
+                    <p className="text-xs text-white/90 capitalize font-semibold">{user.role.replace(/([A-Z])/g, ' $1').trim()}</p>
                   </div>
                 </div>
+                {user.email && (
+                  <p className="text-xs text-white/80 truncate px-1 font-medium">{user.email}</p>
+                )}
               </div>
             )}
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex-1 p-4 space-y-1">
+          <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
             {links.map((link) => {
               const active = isActive(link.href);
               return (
@@ -160,15 +187,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   key={link.href}
                   href={link.href}
                   onClick={() => onClose()}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${active
-                    ? 'bg-primary text-white shadow-md'
-                    : 'text-gray-700 hover:bg-gray-100'
+                  className={`flex items-center space-x-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 group ${active
+                    ? 'bg-primary text-white shadow-lg scale-105 origin-left'
+                    : 'text-info hover:bg-base-200/60 hover:text-primary'
                     }`}
                 >
-                  <span className="text-xl">{link.icon}</span>
-                  <span className="font-medium">{link.label}</span>
+                  <div className={`transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:scale-110'}`}>
+                    {getIconComponent(link.icon)}
+                  </div>
+                  <span className="flex-1">{link.label}</span>
                   {link.badge && (
-                    <span className="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                    <span className="ml-auto bg-error text-white text-xs px-2 py-1 rounded-lg font-bold animate-pulse">
                       {link.badge}
                     </span>
                   )}
@@ -178,14 +207,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </nav>
 
           {/* Footer Actions */}
-          <div className="p-4 border-t border-gray-200 space-y-2">
+          <div className="p-4 border-t-2 border-base-200 bg-base-100 space-y-2">
             {/* Logout */}
             <button
               onClick={logout}
-              className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+              className="w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl text-white font-bold bg-linear-to-r from-error to-error/80 hover:from-error/90 hover:to-error hover:shadow-lg transition-all duration-300 border-2 border-error/50 hover:border-error group"
             >
-              <span className="text-xl">🚪</span>
-              <span className="font-medium">Logout</span>
+              <LogOut className="w-5 h-5 transition-transform duration-300 group-hover:scale-110" />
+              <span>Logout</span>
             </button>
           </div>
         </div>

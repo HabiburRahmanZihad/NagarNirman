@@ -9,6 +9,23 @@ import { userAPI } from '@/utils/api';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FullPageLoading } from '@/components/common';
+import Card from '@/components/common/Card';
+import {
+  Users,
+  TrendingUp,
+  Activity,
+  Star,
+  Award,
+  MapPin,
+  Mail,
+  Phone,
+  Building2,
+  CheckCircle,
+  AlertCircle,
+  Plus,
+  Search,
+  RefreshCw,
+} from 'lucide-react';
 
 interface Solver {
   _id: string;
@@ -39,7 +56,6 @@ interface Solver {
 }
 
 export default function SolversPage() {
-  const router = useRouter();
   const { user: authUser, isLoading, isAuthenticated } = useAuth();
   const [solvers, setSolvers] = useState<Solver[]>([]);
   const [loading, setLoading] = useState(true);
@@ -186,166 +202,142 @@ export default function SolversPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header with Breadcrumb */}
-        <div className="mb-8">
+    <>
+      <div className="space-y-8 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
+        {/* Welcome Section with Gradient Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent flex items-center justify-between"
+        >
+          <div>
+            <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
+              Problem Solvers & NGOs 👥
+            </h1>
+            <p className="text-white/90 text-lg font-semibold">
+              Manage all problem solvers and NGOs in <span className="text-accent font-bold">{authUser?.division}</span> division
+            </p>
+          </div>
+          <motion.button
+            onClick={handleRefresh}
+            whileHover={{ rotate: 180 }}
+            whileTap={{ scale: 0.95 }}
+            disabled={loading}
+            className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all disabled:opacity-50 shrink-0"
+            title="Refresh solvers"
+          >
+            <RefreshCw className={`w-6 h-6 ${loading ? 'animate-spin' : ''}`} />
+          </motion.button>
+        </motion.div>
 
-          <div className="flex justify-between items-start">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900">Problem Solvers & NGOs</h1>
-              <p className="text-gray-600 mt-2">
-                View and manage all problem solvers and NGOs in{' '}
-                <span className="font-semibold text-green-600">{authUser?.division}</span> division
-              </p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => fetchSolvers(true)}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
-                title="Refresh data"
+        {/* Quick Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { title: 'Total Solvers', value: solvers.length, icon: Users, color: 'text-green-600', bgColor: 'bg-green-50' },
+            { title: 'Problem Solvers', value: solvers.filter(s => s.role === 'problemSolver').length, icon: Star, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+            { title: 'Active Members', value: solvers.filter(s => s.isActive).length, icon: Activity, color: 'text-purple-600', bgColor: 'bg-purple-50' },
+            { title: 'Avg Rating', value: (solvers.reduce((sum, s) => sum + ((typeof s.taskStats?.rating === 'number' ? s.taskStats.rating : s.rating) || 0), 0) / Math.max(solvers.length, 1)).toFixed(1), icon: TrendingUp, color: 'text-yellow-600', bgColor: 'bg-yellow-50' }
+          ].map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`${stat.bgColor} rounded-2xl p-6 border-2 border-accent/20 hover:scale-105 transition-transform`}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                <span>Refresh</span>
-              </button>
-            </div>
-          </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-bold text-neutral/70 uppercase tracking-wide">{stat.title}</p>
+                    <p className="text-3xl font-extrabold text-info mt-2">{stat.value}</p>
+                  </div>
+                  <div className={`${stat.color} bg-white/50 p-3 rounded-xl`}>
+                    <Icon className="w-6 h-6" />
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-green-50 rounded-lg">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Solvers</p>
-                <p className="text-2xl font-bold text-gray-900">{solvers.length}</p>
-              </div>
+        {/* Filters Card */}
+        <Card className="rounded-3xl shadow-xl border-t-4 border-secondary p-8 space-y-6">
+          <h2 className="text-2xl font-extrabold text-info mb-6 flex items-center gap-3">
+            <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-white">
+              <Search className="w-6 h-6" />
             </div>
-          </div>
+            Search & Filter
+          </h2>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-blue-50 rounded-lg">
-                <div className="w-6 h-6 text-2xl">💡</div>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Problem Solvers</p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {solvers.filter(s => s.role === 'problemSolver').length}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-purple-50 rounded-lg">
-                <div className="w-6 h-6 text-2xl">🏢</div>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">NGOs</p>
-                <p className="text-2xl font-bold text-purple-600">
-                  0
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center">
-              <div className="p-3 bg-green-50 rounded-lg">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Active</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {solvers.filter(s => s.isActive).length}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Filters */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Search */}
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Search
+              <label className="block text-sm font-bold text-info mb-3 uppercase tracking-wide">
+                🔍 Search Solvers
               </label>
               <input
                 type="text"
                 placeholder="Search by name, email, organization, or district..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium"
               />
             </div>
 
             {/* Role Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Filter by Type
+              <label className="block text-sm font-bold text-info mb-3 uppercase tracking-wide">
+                Filter Type
               </label>
               <select
                 aria-label="Filter by role"
                 value={filterRole}
                 onChange={(e) => setFilterRole(e.target.value as any)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium"
               >
                 <option value="all">All Types</option>
                 <option value="problemSolver">💡 Problem Solvers</option>
-
-              </select>
-            </div>
-
-            {/* District Filter */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Filter by District
-              </label>
-              <select
-                aria-label="Filter by district"
-                value={filterDistrict}
-                onChange={(e) => setFilterDistrict(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              >
-                <option value="">All Districts</option>
-                {districts.map(district => (
-                  <option key={district} value={district}>{district}</option>
-                ))}
               </select>
             </div>
           </div>
 
-          {/* Sort Options */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Sort by:
+          {/* District Filter */}
+          <div>
+            <label className="block text-sm font-bold text-info mb-3 uppercase tracking-wide">
+              Filter by District
             </label>
-            <div className="flex flex-wrap gap-2">
+            <select
+              aria-label="Filter by district"
+              value={filterDistrict}
+              onChange={(e) => setFilterDistrict(e.target.value)}
+              className="w-full px-4 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium"
+            >
+              <option value="">All Districts</option>
+              {districts.map(district => (
+                <option key={district} value={district}>{district}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sort Options */}
+          <div>
+            <label className="block text-sm font-bold text-info mb-3 uppercase tracking-wide">
+              📊 Sort By
+            </label>
+            <div className="flex flex-wrap gap-3">
               {[
-                { value: 'rating', label: 'Highest Rating' },
-                { value: 'completedTasks', label: 'Most Tasks Completed' },
-                { value: 'successRate', label: 'Highest Success Rate' },
-                { value: 'createdAt', label: 'Newest First' }
+                { value: 'rating', label: '⭐ Highest Rating' },
+                { value: 'completedTasks', label: '✅ Most Tasks' },
+                { value: 'successRate', label: '🎯 Success Rate' },
+                { value: 'createdAt', label: '🆕 Newest' }
               ].map(option => (
                 <button
                   key={option.value}
                   onClick={() => setSortBy(option.value as any)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${sortBy === option.value
-                    ? 'bg-green-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  className={`px-4 py-2 rounded-lg text-sm font-bold transition-all transform ${sortBy === option.value
+                    ? 'bg-primary text-white shadow-lg scale-105'
+                    : 'bg-base-200 text-neutral hover:bg-base-300 scale-100'
                     }`}
                 >
                   {option.label}
@@ -353,20 +345,18 @@ export default function SolversPage() {
               ))}
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Results Info */}
-        <div className="mb-4 flex items-center justify-between">
-          <p className="text-sm text-gray-600">
-            Showing <span className="font-semibold">{filteredSolvers.length}</span> of <span className="font-semibold">{solvers.length}</span> solvers
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-bold text-neutral/70 uppercase tracking-wide">
+            📋 Showing <span className="text-info">{filteredSolvers.length}</span> of <span className="text-info">{solvers.length}</span> solvers
           </p>
           <Link
-            href="/dashboard/authority/assign-solvers"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+            href="/dashboard/authority/assign-task"
+            className="px-6 py-3 bg-secondary text-white font-bold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all flex items-center gap-2"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
+            <Plus className="w-5 h-5" />
             <span>Assign Tasks</span>
           </Link>
         </div>
@@ -374,15 +364,13 @@ export default function SolversPage() {
         {/* Solvers Grid */}
         {filteredSolvers.length === 0 ? (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-white rounded-xl shadow-sm p-12 text-center"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-base-100 rounded-3xl shadow-xl p-12 text-center border-2 border-accent/20"
           >
-            <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-            </svg>
-            <p className="text-gray-500 text-lg">No solvers found</p>
-            <p className="text-gray-400 mt-1">Try adjusting your filters</p>
+            <Users className="w-20 h-20 text-neutral/30 mx-auto mb-4" />
+            <p className="text-neutral/70 text-lg font-bold">No solvers found</p>
+            <p className="text-neutral/50 mt-1">Try adjusting your filters</p>
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -392,149 +380,148 @@ export default function SolversPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100"
+                whileHover={{ y: -8 }}
+                className="bg-base-100 rounded-3xl shadow-xl border-2 border-accent/20 overflow-hidden hover:shadow-2xl transition-all p-6 sm:p-8"
               >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center space-x-3">
+                {/* Header with Avatar */}
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex items-center gap-4">
                     {solver.profilePicture ? (
                       <img
                         src={solver.profilePicture}
                         alt={solver.name}
-                        className="w-14 h-14 rounded-full object-cover"
+                        className="w-16 h-16 rounded-2xl object-cover border-2 border-accent/20"
                       />
                     ) : (
-                      <div className="w-14 h-14 rounded-full bg-linear-to-br from-green-400 to-blue-500 flex items-center justify-center text-white font-bold text-lg">
+                      <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-xl border-2 border-accent/20">
                         {getInitials(solver.name)}
                       </div>
                     )}
                     <div>
-                      <h3 className="font-semibold text-gray-900">{solver.name}</h3>
-                      <p className="text-sm text-gray-500">{solver.email}</p>
+                      <h3 className="font-bold text-info text-lg">{solver.name}</h3>
+                      <p className="text-sm text-neutral/60">{solver.email}</p>
                     </div>
                   </div>
-                  <span className="text-2xl">{getRoleIcon(solver.role)}</span>
                 </div>
 
-                {/* Role Badge */}
-                <div className="mb-4">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getRoleBadge(solver.role)}`}>
-                    {getRoleLabel(solver.role)}
-                  </span>
-                </div>
-
-                {/* Info */}
-                <div className="space-y-2 mb-4">
+                {/* Info Section */}
+                <div className="space-y-3 mb-6 pb-6 border-b border-accent/10">
                   {solver.organization && (
-                    <div className="flex items-center text-sm text-gray-600">
-                      <span className="mr-2">🏢</span>
-                      <span className="truncate">{solver.organization}</span>
+                    <div className="flex items-center gap-3 text-neutral/70">
+                      <Building2 className="w-4 h-4 shrink-0 text-secondary" />
+                      <span className="text-sm font-medium truncate">{solver.organization}</span>
                     </div>
                   )}
                   {solver.district && (
-                    <div className="flex items-center text-sm text-gray-600">
-                      <span className="mr-2">📍</span>
-                      <span>{solver.district}, {solver.division}</span>
+                    <div className="flex items-center gap-3 text-neutral/70">
+                      <MapPin className="w-4 h-4 shrink-0 text-accent" />
+                      <span className="text-sm font-medium">{solver.district}, {solver.division}</span>
                     </div>
                   )}
                   {solver.phone && (
-                    <div className="flex items-center text-sm text-gray-600">
-                      <span className="mr-2">📞</span>
-                      <span>{solver.phone}</span>
+                    <div className="flex items-center gap-3 text-neutral/70">
+                      <Phone className="w-4 h-4 shrink-0 text-primary" />
+                      <span className="text-sm font-medium">{solver.phone}</span>
                     </div>
                   )}
                 </div>
 
-                {/* Performance Metrics + Points */}
-                <div className="grid grid-cols-3 gap-2 mb-4 p-3 bg-gray-50 rounded-lg">
+                {/* Performance Metrics */}
+                <div className="grid grid-cols-3 gap-3 mb-6 p-4 bg-linear-to-br from-primary/5 to-secondary/5 rounded-2xl border border-primary/10">
                   <div className="text-center">
-                    <div className="text-lg font-bold text-gray-900">
+                    <div className="text-lg font-bold text-info flex items-center justify-center gap-1">
+                      <Star className="w-4 h-4 text-accent" />
                       {solver.taskStats?.rating || solver.rating || 'N/A'}
                     </div>
-                    <div className="text-xs text-gray-500">Rating</div>
+                    <div className="text-xs text-neutral/60 font-bold uppercase mt-1">Rating</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-gray-900">
-                      {solver.taskStats?.completed ?? solver.completedTasks ?? 0}
-                    </div>
-                    <div className="text-xs text-gray-500">Tasks</div>
+                    <div className="text-lg font-bold text-info">{solver.taskStats?.completed ?? solver.completedTasks ?? 0}</div>
+                    <div className="text-xs text-neutral/60 font-bold uppercase mt-1">Tasks</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-lg font-bold text-gray-900">
-                      {solver.taskStats?.successRate || `${solver.successRate || 0}%`}
-                    </div>
-                    <div className="text-xs text-gray-500">Success</div>
+                    <div className="text-lg font-bold text-info">{solver.taskStats?.successRate || `${solver.successRate || 0}%`}</div>
+                    <div className="text-xs text-neutral/60 font-bold uppercase mt-1">Success</div>
                   </div>
-                  {
-                    <div className="col-span-3 text-center mt-2">
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-50 text-yellow-700 rounded-full text-xs font-semibold border border-yellow-200">
-                        <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 01.894.553l2.382 4.828 5.327.774a1 1 0 01.554 1.707l-3.853 3.755.91 5.308a1 1 0 01-1.451 1.054L10 16.347l-4.771 2.504A1 1 0 013.778 17.8l.91-5.308L.835 8.737a1 1 0 01.554-1.707l5.327-.774L9.098 2.553A1 1 0 0110 2z" /></svg>
-                        {Number(solver.points || 0).toLocaleString()} Points
-                      </span>
-                    </div>
-                  }
+                </div>
+
+                {/* Points Badge */}
+                <div className="mb-6 flex justify-center">
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-accent/20 text-accent rounded-full text-sm font-bold border border-accent/40">
+                    <Award className="w-4 h-4" />
+                    {Number(solver.points || 0).toLocaleString()} Points
+                  </span>
                 </div>
 
                 {/* Expertise Tags */}
                 {solver.expertise && solver.expertise.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {solver.expertise.slice(0, 3).map((skill, idx) => (
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {solver.expertise.slice(0, 2).map((skill, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"
+                        className="px-3 py-1 bg-primary/20 text-primary text-xs font-bold rounded-full"
                       >
                         {skill}
                       </span>
                     ))}
-                    {solver.expertise.length > 3 && (
-                      <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                        +{solver.expertise.length - 3}
+                    {solver.expertise.length > 2 && (
+                      <span className="px-3 py-1 bg-neutral/20 text-neutral text-xs font-bold rounded-full">
+                        +{solver.expertise.length - 2}
                       </span>
                     )}
                   </div>
                 )}
 
-                {/* Status & Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                  <div className="flex items-center space-x-2">
-                    <span className={`flex items-center text-sm ${solver.isActive ? 'text-green-600' : 'text-gray-400'}`}>
-                      <span className={`w-2 h-2 rounded-full mr-2 ${solver.isActive ? 'bg-green-600' : 'bg-gray-400'}`}></span>
-                      {solver.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${solver.taskStats?.isBusy
-                      ? 'bg-orange-100 text-orange-800'
-                      : 'bg-green-100 text-green-800'
+                {/* Status Bar */}
+                <div className="flex items-center justify-between gap-3 mb-6 pb-6 border-b border-accent/10">
+                  <div className="flex items-center gap-3">
+                    {solver.isActive ? (
+                      <span className="flex items-center gap-2 text-sm font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full">
+                        <CheckCircle className="w-4 h-4" />
+                        Active
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2 text-sm font-bold text-neutral/50 bg-neutral/10 px-3 py-1 rounded-full">
+                        <AlertCircle className="w-4 h-4" />
+                        Inactive
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${solver.taskStats?.isBusy
+                      ? 'bg-yellow-100 text-yellow-800 border border-yellow-300'
+                      : 'bg-green-100 text-green-800 border border-green-300'
                       }`}>
                       {solver.taskStats?.status || 'Free'}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => window.location.href = `mailto:${solver.email}`}
-                      className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="Send email"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                    </button>
-                    {solver.phone && (
-                      <button
-                        onClick={() => window.location.href = `tel:${solver.phone}`}
-                        className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                        title="Call"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                        </svg>
-                      </button>
-                    )}
-                  </div>
                 </div>
 
-                {/* Member Since */}
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <p className="text-xs text-gray-500">
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => window.location.href = `mailto:${solver.email}`}
+                    className="flex-1 p-3 bg-secondary/20 text-secondary hover:bg-secondary hover:text-white rounded-xl transition-all transform hover:scale-105 font-bold flex items-center justify-center gap-2"
+                    title="Send email"
+                  >
+                    <Mail className="w-4 h-4" />
+                    <span className="text-sm">Email</span>
+                  </button>
+                  {solver.phone && (
+                    <button
+                      onClick={() => window.location.href = `tel:${solver.phone}`}
+                      className="flex-1 p-3 bg-primary/20 text-primary hover:bg-primary hover:text-white rounded-xl transition-all transform hover:scale-105 font-bold flex items-center justify-center gap-2"
+                      title="Call"
+                    >
+                      <Phone className="w-4 h-4" />
+                      <span className="text-sm">Call</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="mt-6 pt-6 border-t border-accent/10">
+                  <p className="text-xs text-neutral/50 font-medium text-center">
                     Member since {new Date(solver.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                   </p>
                 </div>
@@ -543,6 +530,6 @@ export default function SolversPage() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

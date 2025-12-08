@@ -46,6 +46,7 @@ export const protect = async (req, res, next) => {
         id: user._id.toString(),
         role: user.role,
         approved: user.approved,
+        division: user.division || null,
       };
 
       next();

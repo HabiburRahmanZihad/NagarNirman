@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, TrendingUp, RefreshCw } from 'lucide-react';
+import { BarChart3, RefreshCw, AlertCircle, Filter } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { statisticsAPI } from '@/utils/api';
-import { ErrorDisplay } from '@/components/common';
 import divisionsData from '@/data/divisionsData.json';
 import toast from 'react-hot-toast';
 import AnalyticsKPI from '@/components/admin/analytics/AnalyticsKPI';
@@ -40,55 +39,60 @@ interface AnalyticsData {
   lastUpdated: string;
 }
 
+const SkeletonLoader = () => (
+  <motion.div className="bg-white/80 rounded-2xl p-6 shadow-lg border border-white/20 mb-6">
+    <div className="animate-pulse space-y-4">
+      <div className="h-6 bg-linear-to-r from-gray-200 to-gray-100 rounded-lg w-48"></div>
+      <div className="space-y-3">
+        {[...Array(3)].map((_, i) => (
+          <div key={i} className="h-4 bg-linear-to-r from-gray-100 to-gray-50 rounded w-full"></div>
+        ))}
+      </div>
+    </div>
+  </motion.div>
+);
+
 const LoadingSkeleton = () => (
-  <div className="min-h-screen bg-linear-to-br from-gray-50 to-green-50/30 p-6">
+  <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/20 to-gray-50 p-4 md:p-6">
     <div className="max-w-7xl mx-auto">
-      <div className="animate-pulse mb-8">
-        <div className="h-12 bg-gray-200 rounded-xl w-64 mb-4"></div>
-        <div className="h-4 bg-gray-200 rounded w-96"></div>
-      </div>
-
-      <div className="bg-white/80 rounded-2xl p-6 mb-8 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-32 mb-4"></div>
-        <div className="flex gap-4">
-          <div className="h-10 bg-gray-200 rounded-lg w-24"></div>
-          <div className="h-10 bg-gray-200 rounded-lg w-32"></div>
-          <div className="h-10 bg-gray-200 rounded-lg w-40 ml-auto"></div>
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 0.5 }}
+        className="mb-8 animate-pulse"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
+          <div className="h-10 bg-gray-200 rounded-lg w-64"></div>
         </div>
-      </div>
+        <div className="h-4 bg-gray-200 rounded w-96"></div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="relative overflow-hidden bg-white/80 rounded-2xl p-6 h-32 animate-pulse">
-            <div className="h-4 bg-gray-200 rounded w-24 mb-4"></div>
-            <div className="h-8 bg-gray-200 rounded w-16 mb-4"></div>
-            <div className="h-2 bg-gray-200 rounded-full"></div>
-            <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/50 to-transparent animate-shimmer"></div>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="bg-white/80 rounded-2xl p-6 h-80 animate-pulse">
-            <div className="h-6 bg-gray-200 rounded w-48 mb-6"></div>
-            <div className="h-64 bg-gray-200 rounded-xl"></div>
-          </div>
-        ))}
-      </div>
-
-      <div className="bg-white/80 rounded-2xl p-6 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-48 mb-6"></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-12 bg-gray-200 rounded-lg"></div>
+      {/* Filter Bar */}
+      <motion.div className="bg-white/80 rounded-2xl p-6 mb-8 animate-pulse border border-gray-100">
+        <div className="flex gap-4 flex-wrap">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-10 bg-gray-200 rounded-lg w-24"></div>
           ))}
         </div>
-        <div className="flex gap-4">
-          <div className="h-12 bg-gray-200 rounded-lg w-32"></div>
-          <div className="h-12 bg-gray-200 rounded-lg w-32"></div>
-        </div>
+      </motion.div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {[...Array(4)].map((_, i) => (
+          <SkeletonLoader key={i} />
+        ))}
       </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {[...Array(2)].map((_, i) => (
+          <SkeletonLoader key={i} />
+        ))}
+      </div>
+
+      {/* Performance Table */}
+      <SkeletonLoader />
     </div>
   </div>
 );
@@ -158,15 +162,18 @@ const AnalyticsPage = () => {
         filters.division = user.division;
       }
 
+      console.log('📊 Fetching analytics with filters:', filters);
       const data = await statisticsAPI.getAnalytics(filters);
 
       // Validate data exists
       if (!data) {
-        throw new Error('No data received from API');
+        throw new Error('No data received from API. The backend may not have data for the selected filters.');
       }
 
+      console.log('✅ Raw API response:', data);
+
       // Transform data to match component expectations with null checks
-      const transformedData = {
+      const transformedData: AnalyticsData = {
         totalReports: data.totalReports || 0,
         completedReports: data.completedReports || 0,
         ongoingReports: data.ongoingReports || 0,
@@ -176,49 +183,78 @@ const AnalyticsPage = () => {
         lastUpdated: data.lastUpdated || new Date().toISOString(),
         // Add percentages to category stats
         categoryStats: (data.categoryStats || []).map((cat: any) => ({
-          category: cat.category,
-          count: cat.count,
+          category: cat.category || 'Unknown',
+          count: cat.count || 0,
           percentage: data.totalReports > 0 ? (cat.count / data.totalReports) * 100 : 0
         })),
         // Add percentages to status stats
         statusStats: (data.statusStats || []).map((stat: any) => ({
-          status: stat.status,
-          count: stat.count,
-          color: stat.color,
+          status: stat.status || 'Unknown',
+          count: stat.count || 0,
+          color: stat.color || '#808080',
           percentage: data.totalReports > 0 ? (stat.count / data.totalReports) * 100 : 0
         })),
         // Rename fields for monthly stats to match component
         monthlyStats: (data.monthlyStats || []).map((stat: any) => ({
-          month: stat.month,
-          reports: stat.reports,
-          completed: stat.resolved || 0, // Rename resolved to completed
+          month: stat.month || 'N/A',
+          reports: stat.reports || 0,
+          completed: stat.resolved || stat.completed || 0,
           pending: stat.pending || 0
         })),
         // Transform district stats to match component
         districtStats: (data.districtStats || []).map((stat: any) => ({
-          district: stat.district,
-          division: stat.division,
-          reports: stat.total || 0, // Rename total to reports
+          district: stat.district || 'Unknown',
+          division: stat.division || 'Unknown',
+          reports: stat.total || stat.reports || 0,
           pending: stat.pending || 0,
-          completed: stat.resolved || 0, // Rename resolved to completed
+          completed: stat.resolved || stat.completed || 0,
           ongoing: stat.ongoing || 0
         })),
         // Ensure solver performance exists
-        solverPerformance: data.solverPerformance || []
+        solverPerformance: (data.solverPerformance || []).map((solver: any) => ({
+          solverId: solver.solverId || '',
+          name: solver.name || 'Unknown',
+          completedTasks: solver.completedTasks || 0,
+          totalTasks: solver.totalTasks || solver.completedTasks || 0,
+          successRate: Math.min(100, Math.max(0, solver.successRate || 0)),
+          avgResolutionTime: solver.avgResolutionTime || 0,
+          rating: solver.rating || 0,
+          organization: solver.organization
+        }))
       };
 
-      setAnalyticsData(transformedData as any);
+      console.log('✅ Transformed data:', transformedData);
+      setAnalyticsData(transformedData);
       setLastUpdated(new Date());
+
       if (showRefresh) {
-        toast.success('Data refreshed successfully!');
+        toast.success('📈 Data refreshed successfully!', {
+          icon: '🔄',
+          duration: 2000
+        });
       }
     } catch (error: any) {
-      console.error('Failed to load analytics:', error);
-      toast.error(error.message || 'Failed to load analytics data');
+      console.error('❌ Failed to load analytics:', error);
+
+      // Detailed error logging for debugging
+      console.error('Error details:', {
+        message: error.message,
+        status: error.status,
+        data: error.data,
+        stack: error.stack
+      });
+
+      const errorMessage = error.data?.message || error.message || 'Failed to load analytics data';
+      toast.error(errorMessage, {
+        icon: '❌',
+        duration: 3000
+      });
 
       // Redirect to login if unauthorized
-      if (error.message === 'Not authorized, token failed' || error.message === 'Not authorized, no token') {
-        router.push('/auth/login');
+      if (error.message?.includes('Not authorized') || error.status === 401) {
+        setTimeout(() => {
+          router.push('/auth/login');
+        }, 2000);
       }
     } finally {
       setLoading(false);
@@ -247,54 +283,79 @@ const AnalyticsPage = () => {
 
   if (!analyticsData) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 to-green-50/30 p-6 flex items-center justify-center">
-        <ErrorDisplay
-          title="Failed to Load Analytics"
-          message="Unable to load analytics data. Please try again."
-          onRetry={() => loadAnalytics()}
-          retryText="Try Again"
-          showHomeButton={true}
-          showBackButton={false}
-        />
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/20 to-gray-50 p-4 md:p-6 flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-md"
+        >
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-8 text-center">
+            <div className="flex justify-center mb-4">
+              <AlertCircle className="w-12 h-12 text-amber-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">No Data Available</h2>
+            <p className="text-gray-600 mb-6">
+              Unable to load analytics data. This could mean:
+            </p>
+            <ul className="text-left text-gray-600 mb-6 space-y-2">
+              <li>• No reports have been created yet</li>
+              <li>• You don't have permission to view this data</li>
+              <li>• The backend service is experiencing issues</li>
+            </ul>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => loadAnalytics()}
+              className="w-full px-4 py-3 bg-[#2a7d2f] text-white rounded-xl font-medium shadow-lg hover:bg-[#3a9d40] transition-all flex items-center justify-center gap-2"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Try Again
+            </motion.button>
+          </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-green-50/30 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/10 to-gray-50 p-4 md:p-6">
+      <div className="container mx-auto">
+        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-8"
+          className="mb-8 border-b pb-4 bg-white rounded-lg shadow-sm px-6 py-4 border-accent/80"
         >
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-linear-to-r from-[#f2a921] to-[#2a7d2f] rounded-lg">
-                  <BarChart3 className="w-6 h-6 text-white" />
-                </div>
-                <h1 className="text-4xl font-bold bg-linear-to-r from-[#1f2937] via-[#f2a921] to-[#2a7d2f] bg-clip-text text-transparent">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-3">
+                <h1 className="text-5xl font-extrabold text-[#002E2E] mb-2">
                   Performance Analytics
                 </h1>
               </div>
-              <p className="text-gray-600 text-lg">
-                Comprehensive insights and real-time performance metrics
+              <p className="text-[#6B7280] text-lg">
+                <span>Comprehensive insights and real-time performance metrics</span>
               </p>
             </div>
+
+            {/* Live Status Badge */}
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20"
+              whileHover={{ scale: 1.02 }}
+              className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20 self-end md:self-start"
             >
               <div className="text-right">
-                <div className="text-2xl font-bold bg-linear-to-r from-[#f2a921] to-[#2a7d2f] bg-clip-text text-transparent">
+                <div className="text-lg md:text-xl font-bold  text-accent">
                   Live Dashboard
                 </div>
-                <div className="flex items-center gap-2 justify-end">
-                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm text-green-600">
-                    Updated {lastUpdated.toLocaleTimeString()}
+                <div className="flex items-center gap-2 justify-end mt-1">
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="w-2 h-2 bg-green-500 rounded-full"
+                  ></motion.div>
+                  <span className="text-xs md:text-sm text-gray-600">
+                    {lastUpdated.toLocaleTimeString()}
                   </span>
                 </div>
               </div>
@@ -302,41 +363,52 @@ const AnalyticsPage = () => {
           </div>
         </motion.div>
 
+        {/* Filter Controls */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 mb-8"
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-5 md:p-6 mb-8"
         >
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
-            <div className="flex items-center gap-4 flex-wrap">
-              <h3 className="text-lg font-semibold text-gray-900">Filters:</h3>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2 md:gap-3">
+              <Filter className="w-5 h-5 text-[#2a7d2f]" />
+              <h3 className="text-base md:text-lg font-semibold text-gray-900">Filters</h3>
+            </div>
 
+            <div className="flex flex-col md:flex-row gap-4 flex-wrap">
+              {/* Time Range Buttons */}
               <div className="flex bg-gray-100 rounded-xl p-1">
                 {[
-                  { value: '1month', label: '1 Month' },
-                  { value: '3months', label: '3 Months' },
-                  { value: '6months', label: '6 Months' },
-                  { value: '1year', label: '1 Year' }
+                  { value: '1month', label: '1M', fullLabel: '1 Month' },
+                  { value: '3months', label: '3M', fullLabel: '3 Months' },
+                  { value: '6months', label: '6M', fullLabel: '6 Months' },
+                  { value: '1year', label: '1Y', fullLabel: '1 Year' }
                 ].map((range) => (
-                  <button
+                  <motion.button
                     key={range.value}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => setTimeRange(range.value)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${timeRange === range.value
-                      ? 'bg-[#2a7d2f] text-white shadow-md'
-                      : 'text-gray-600 hover:text-gray-900'
+                    className={`px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all ${timeRange === range.value
+                      ? 'bg-linear-to-r from-[#2a7d2f] to-[#3a9d40] text-white shadow-md'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                       }`}
+                    title={range.fullLabel}
                   >
-                    {range.label}
-                  </button>
+                    <span className="hidden md:inline">{range.fullLabel}</span>
+                    <span className="md:hidden">{range.label}</span>
+                  </motion.button>
                 ))}
               </div>
 
-              <select
+              {/* Division Filter */}
+              <motion.select
                 aria-label="Filter by division"
                 value={divisionFilter}
                 onChange={(e) => setDivisionFilter(e.target.value)}
-                className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent"
+                whileHover={{ scale: 1.02 }}
+                className="bg-white border-2 border-gray-200 rounded-xl px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent transition-all hover:border-[#2a7d2f]"
               >
                 <option value="all">
                   {user?.division ? `My Division (${user.division})` : 'All Divisions'}
@@ -344,134 +416,225 @@ const AnalyticsPage = () => {
                 {(Array.isArray(divisionsData)
                   ? divisionsData.map((d: any) => d.division)
                   : Object.keys(divisionsData)
-                ).filter((division: string) => division && division !== user?.division)
+                )
+                  .filter((division: string) => division && division !== user?.division)
                   .map((division: string) => (
                     <option key={division} value={division}>
                       {division.charAt(0).toUpperCase() + division.slice(1)}
                     </option>
                   ))}
-              </select>
-            </div>
+              </motion.select>
 
-            <div className="flex gap-3">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleRefresh}
-                disabled={refreshing}
-                className="flex items-center gap-2 px-4 py-2 bg-[#2a7d2f] text-white rounded-xl font-medium shadow-lg hover:bg-[#3a9d40] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                {refreshing ? 'Refreshing...' : 'Refresh Data'}
-              </motion.button>
+              {/* Refresh Button */}
+              <div className="ml-auto flex gap-2">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleRefresh}
+                  disabled={refreshing}
+                  className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-[#2a7d2f] to-[#3a9d40] text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
+                >
+                  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                  <span className="hidden md:inline">{refreshing ? 'Refreshing...' : 'Refresh'}</span>
+                  <span className="md:hidden">{refreshing ? 'Loading...' : 'Refresh'}</span>
+                </motion.button>
+              </div>
             </div>
           </div>
         </motion.div>
 
-        <AnalyticsKPI
-          totalReports={analyticsData.totalReports}
-          completedReports={analyticsData.completedReports}
-          ongoingReports={analyticsData.ongoingReports}
-          averageResolutionTime={analyticsData.averageResolutionTime}
-          completionRate={analyticsData.completionRate}
-        />
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <CategoryPieChart data={analyticsData.categoryStats} />
-          <StatusBarChart data={analyticsData.statusStats} />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <TrendLineChart data={analyticsData.monthlyStats} />
-          <DivisionDistrictChart data={analyticsData.districtStats} />
-        </div>
-
-        <ReportExportPanel onExport={handleExport} />
-
+        {/* KPI Cards */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 mt-8"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
         >
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
-              Problem Solver Performance
-            </h3>
-            <span className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-              Top Performers
-            </span>
+          <AnalyticsKPI
+            totalReports={analyticsData.totalReports}
+            completedReports={analyticsData.completedReports}
+            ongoingReports={analyticsData.ongoingReports}
+            averageResolutionTime={analyticsData.averageResolutionTime}
+            completionRate={analyticsData.completionRate}
+          />
+        </motion.div>
+
+        {/* Charts Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <CategoryPieChart data={analyticsData.categoryStats} />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+          >
+            <StatusBarChart data={analyticsData.statusStats} />
+          </motion.div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <TrendLineChart data={analyticsData.monthlyStats} />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.35 }}
+          >
+            <DivisionDistrictChart data={analyticsData.districtStats} />
+          </motion.div>
+        </div>
+
+        {/* Export Panel */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <ReportExportPanel onExport={handleExport} />
+        </motion.div>
+
+        {/* Performance Cards Grid - Matching Reports UI */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.45 }}
+          className="mt-8"
+        >
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-3">
+            <div>
+              <h2 className="text-3xl font-bold text-[#002E2E] mb-2 flex items-center gap-2">
+                Problem Solver <span className="text-primary">Performance</span>
+              </h2>
+              <p className="text-[#6B7280] text-lg">
+                Top performers ranked by completion rate and success metrics
+              </p>
+            </div>
+            <motion.span
+              whileHover={{ scale: 1.05 }}
+              className="text-xs md:text-sm text-gray-600 bg-linear-to-r from-[#f2a921]/10 to-[#2a7d2f]/10 px-4 py-2 rounded-full border border-[#2a7d2f]/20 font-medium"
+            >
+              🏆 Top Performers
+            </motion.span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-4 font-medium text-gray-900">Solver</th>
-                  <th className="text-left py-4 font-medium text-gray-900">Completed Tasks</th>
-                  <th className="text-left py-4 font-medium text-gray-900">Success Rate</th>
-                  <th className="text-left py-4 font-medium text-gray-900">Avg. Resolution Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {analyticsData.solverPerformance && analyticsData.solverPerformance.length > 0 ? (
-                  analyticsData.solverPerformance.map((solver, index) => (
-                    <motion.tr
-                      key={solver.solverId}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="border-b border-gray-100 hover:bg-white/50 transition-colors"
-                    >
-                      <td className="py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-linear-to-br from-[#2a7d2f] to-[#3a9d40] rounded-full flex items-center justify-center text-white font-bold text-sm">
-                            {solver.name.charAt(0)}
-                          </div>
-                          <div>
-                            <div className="font-medium text-gray-900">{solver.name}</div>
-                            {solver.organization && (
-                              <div className="text-xs text-gray-500">{solver.organization}</div>
-                            )}
-                          </div>
+
+          {analyticsData.solverPerformance && analyticsData.solverPerformance.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {analyticsData.solverPerformance.map((solver, index) => (
+                <motion.div
+                  key={solver.solverId}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  whileHover={{ y: -8, boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}
+                  className="group h-full bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 transform cursor-default border border-gray-100 overflow-hidden"
+                >
+                  {/* Top Bar with Performance Score */}
+                  <div className="relative h-24 bg-linear-to-br from-[#F6FFF9] to-[#E8F5E9] overflow-hidden p-4">
+                    <div className="flex items-start justify-between h-full">
+                      <div>
+                        <div className="text-3xl font-bold text-primary">
+                          {solver.successRate.toFixed(0)}%
                         </div>
-                      </td>
-                      <td className="py-4">
-                        <div>
-                          <span className="text-gray-900 font-semibold">{solver.completedTasks}</span>
-                          <span className="text-gray-500 text-sm"> / {solver.totalTasks}</span>
+                        <div className="text-xs text-gray-600 mt-1">Success Rate</div>
+                      </div>
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        className="w-12 h-12 bg-linear-to-br from-[#2a7d2f] to-[#3a9d40] rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md"
+                      >
+                        {solver.name.charAt(0).toUpperCase()}
+                      </motion.div>
+                    </div>
+
+                    {/* Performance Badge */}
+                    {solver.successRate >= 85 && (
+                      <div className="absolute top-3 right-3 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
+                        ⭐ Top Performer
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="p-5">
+                    {/* Name and Organization */}
+                    <h3 className="font-bold text-[#002E2E] line-clamp-1 group-hover:text-primary transition mb-1 text-lg">
+                      {solver.name}
+                    </h3>
+                    {solver.organization && (
+                      <p className="text-[#6B7280] text-xs line-clamp-1 mb-4 font-medium">
+                        {solver.organization}
+                      </p>
+                    )}
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="bg-green-50 rounded-lg p-3 border border-green-100">
+                        <div className="text-xs text-gray-600 font-medium">Completed</div>
+                        <div className="text-2xl font-bold text-primary mt-1">
+                          {solver.completedTasks}
                         </div>
-                      </td>
-                      <td className="py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-20 bg-gray-200 rounded-full h-2 overflow-hidden">
-                            <div
-                              className="h-2 rounded-full bg-linear-to-r from-[#2a7d2f] to-[#3a9d40] transition-all duration-500"
-                              data-success-rate={solver.successRate}
-                            >
-                              <style dangerouslySetInnerHTML={{
-                                __html: `[data-success-rate="${solver.successRate}"] { width: ${Math.min(100, Math.max(0, solver.successRate))}%; }`
-                              }} />
-                            </div>
-                          </div>
-                          <span className="text-gray-900 font-medium min-w-12">{solver.successRate.toFixed(1)}%</span>
+                        <div className="text-xs text-gray-500 mt-1">
+                          of {solver.totalTasks}
                         </div>
-                      </td>
-                      <td className="py-4">
-                        <span className="text-gray-900 font-medium">{solver.avgResolutionTime.toFixed(1)}h</span>
-                      </td>
-                    </motion.tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={4} className="py-8 text-center text-gray-500">
-                      No solver performance data available
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                      <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+                        <div className="text-xs text-gray-600 font-medium">Avg. Time</div>
+                        <div className="text-2xl font-bold text-blue-600 mt-1">
+                          {solver.avgResolutionTime.toFixed(1)}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">hours</div>
+                      </div>
+                    </div>
+
+                    {/* Success Rate Progress Bar */}
+                    <div className="mb-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-medium text-gray-600">Completion Progress</span>
+                        <span className="text-xs font-bold text-primary">
+                          {((solver.completedTasks / solver.totalTasks) * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${((solver.completedTasks / solver.totalTasks) * 100)}%` }}
+                          transition={{ duration: 0.8, delay: index * 0.1 }}
+                          className="h-2 rounded-full bg-linear-to-r from-[#2a7d2f] to-[#3a9d40]"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Rating Badge */}
+                    <div className="inline-block bg-primary bg-opacity-10 text-[#002E2E] px-3 py-1 rounded-full text-xs font-semibold">
+                      {solver.successRate >= 90
+                        ? '⭐⭐⭐⭐⭐'
+                        : solver.successRate >= 80
+                          ? '⭐⭐⭐⭐'
+                          : solver.successRate >= 70
+                            ? '⭐⭐⭐'
+                            : '⭐⭐'}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+              <div className="text-8xl mb-6 opacity-50">📊</div>
+              <h3 className="text-3xl font-bold text-[#002E2E] mb-4">No Performance Data</h3>
+              <p className="text-[#6B7280] text-lg">
+                Performance metrics will appear once problem solvers complete their first tasks.
+              </p>
+            </div>
+          )}
         </motion.div>
       </div>
     </div>

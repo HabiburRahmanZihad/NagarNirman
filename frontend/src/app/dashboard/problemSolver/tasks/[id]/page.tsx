@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, MapPin, Calendar, User, AlertTriangle, CheckCircle, Clock, Star, Eye, Award, Target, TrendingUp, Upload, X, Image as ImageIcon, FileText, Send } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, User, AlertTriangle, CheckCircle, Clock, Star, Eye, Award, Target, TrendingUp, Upload, X, Image as ImageIcon, FileText, Send, Camera } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { taskAPI } from "@/utils/api";
@@ -313,76 +313,115 @@ export default function TaskDetailPage() {
   const rewardPoints = calculateRewardPoints(task.priority);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Error Display */}
-        {error && <InlineError message={error} />}
-
+    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-8 px-4">
+      <div className="max-w-7xl mx-auto">
         {/* Back Button */}
         <Link
           href="/dashboard/problemSolver/tasks"
-          className="inline-flex items-center space-x-2 text-gray-600 hover:text-green-600 mb-6 transition-colors"
+          className="flex items-center gap-2 text-[#6B7280] hover:text-primary mb-6 transition font-semibold"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span className="font-medium">Back to Missions</span>
+          <span>Back to My Tasks</span>
         </Link>
 
-        {/* Header Section */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`bg-linear-to-r ${severityConfig.headerBg} rounded-xl shadow-lg p-6 mb-6 text-white`}
-        >
-          <div className="flex justify-between items-start mb-4">
-            <div className="flex items-center space-x-3">
-              <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-bold ${statusConfig.bgColor} ${statusConfig.color}`}>
-                <StatusIcon className="w-4 h-4 mr-2" />
-                {statusConfig.label}
-              </div>
-              <div className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-bold bg-white/20 backdrop-blur-sm">
-                <AlertTriangle className="w-4 h-4 mr-1.5" />
-                {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
-              <Star className="w-5 h-5 text-yellow-300" />
-              <span className="text-xl font-bold">{rewardPoints}</span>
-              <span className="text-sm opacity-90">Points</span>
-            </div>
-          </div>
-          <h1 className="text-3xl font-bold mb-3">{task.title}</h1>
-          <p className="text-white/90 text-lg leading-relaxed">{task.description}</p>
-
-          {/* Progress Bar */}
-          <div className="mt-6">
-            <div className="flex justify-between text-sm mb-2">
-              <span className="font-semibold">Task Progress</span>
-              <span className="font-bold">{task.progress}%</span>
-            </div>
-            <div className="w-full bg-white/30 rounded-full h-3 overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${task.progress}%` }}
-                transition={{ duration: 1, delay: 0.3 }}
-                className="bg-white h-3 rounded-full shadow-lg"
-              />
-            </div>
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Header Card */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-primary">
+              {/* Header Background Gradient */}
+              <div className={`h-32 bg-linear-to-r ${severityConfig.headerBg}`}></div>
+
+              <div className="p-8 -mt-16 relative">
+                <div className="flex flex-wrap gap-3 mb-6">
+                  <span className={`px-4 py-2 rounded-full text-sm font-bold border-2 ${severityConfig.bgColor} ${severityConfig.color}`}>
+                    <AlertTriangle className="w-4 h-4 inline mr-1" />
+                    {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority
+                  </span>
+                  <span className={`px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 ${statusConfig.bgColor} ${statusConfig.color}`}>
+                    <StatusIcon className="w-4 h-4" />
+                    {statusConfig.label}
+                  </span>
+                  <span className="px-4 py-2 rounded-full text-sm font-bold bg-yellow-100 text-yellow-800 flex items-center gap-2">
+                    <Star className="w-4 h-4" />
+                    {rewardPoints} Points
+                  </span>
+                </div>
+
+                {/* Problem Classification */}
+                <div className="mb-6 p-4 bg-linear-to-r from-purple-50 to-indigo-50 rounded-lg border-l-4 border-purple-500">
+                  <h4 className="text-sm font-bold text-purple-900 mb-3">📋 Problem Classification</h4>
+                  <div className="flex flex-wrap gap-3">
+                    <div>
+                      <p className="text-xs text-gray-600 font-semibold mb-1">Problem Type</p>
+                      <span className="inline-block px-4 py-2 bg-blue-100 text-blue-900 rounded-lg text-sm font-bold capitalize shadow-sm">
+                        {task.report.problemType}
+                      </span>
+                    </div>
+                    {task.report.category && (
+                      <div>
+                        <p className="text-xs text-gray-600 font-semibold mb-1">Category</p>
+                        <span className="inline-block px-4 py-2 bg-purple-100 text-purple-900 rounded-lg text-sm font-bold shadow-sm">
+                          {task.report.category}
+                        </span>
+                      </div>
+                    )}
+                    {task.report.subcategory && (
+                      <div>
+                        <p className="text-xs text-gray-600 font-semibold mb-1">Subcategory</p>
+                        <span className="inline-block px-4 py-2 bg-indigo-100 text-indigo-900 rounded-lg text-sm font-bold shadow-sm">
+                          {task.report.subcategory}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Task Title & Description */}
+                <div>
+                  <h1 className="text-3xl font-bold text-[#002E2E] mb-3">{task.title}</h1>
+                  <p className="text-gray-700 leading-relaxed mb-4">{task.description}</p>
+
+                  {/* Report Details */}
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <h3 className="font-bold text-gray-800 mb-2">Issue Details</h3>
+                    <p className="text-sm text-gray-600 mb-2">
+                      <span className="font-semibold text-gray-800">Report Title:</span> {task.report.title}
+                    </p>
+                    <p className="text-sm text-gray-700 break-words">
+                      <span className="font-semibold">Report Description:</span> {task.report.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="mt-6">
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="font-semibold text-gray-700">Task Progress</span>
+                    <span className="font-bold text-primary">{task.progress}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${task.progress}%` }}
+                      transition={{ duration: 1, delay: 0.3 }}
+                      className="bg-primary h-3 rounded-full shadow-lg"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Issue Photos */}
             {task.report?.images && task.report.images.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-white rounded-xl shadow-md p-6"
+                className="bg-white rounded-xl shadow-md p-6 border-t-4 border-primary"
               >
-                <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                  <span className="text-2xl mr-2">📸</span>
+                <h2 className="text-xl font-bold text-[#002E2E] mb-4 flex items-center">
+                  <Camera className="w-6 h-6 mr-2 text-primary" />
                   Issue Photos
                 </h2>
                 <div className="grid grid-cols-2 gap-4">
@@ -410,72 +449,20 @@ export default function TaskDetailPage() {
               </motion.div>
             )}
 
-            {/* Report Details */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white rounded-xl shadow-md p-6"
-            >
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <span className="text-2xl mr-2">📋</span>
-                Report Details
-              </h2>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Report Title</p>
-                  <p className="font-semibold text-gray-800">{task.report.title}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 mb-1">Description</p>
-                  <p className="text-gray-700   mb-3  break-all leading-relaxed ">{task.report.description}</p>
-                </div>
-
-                {/* Problem Classification - Highlighted Section */}
-                <div className="p-3 bg-linear-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200">
-                  <p className="text-xs font-semibold text-gray-700 mb-2">🏷️ Problem Classification</p>
-                  <div className="flex flex-wrap gap-2">
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Problem Type</p>
-                      <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium capitalize">
-                        {task.report.problemType || 'Uncategorized'}
-                      </span>
-                    </div>
-                    {task.report.category && (
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Category</p>
-                        <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
-                          {task.report.category}
-                        </span>
-                      </div>
-                    )}
-                    {task.report.subcategory && (
-                      <div>
-                        <p className="text-xs text-gray-500 mb-1">Subcategory</p>
-                        <span className="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
-                          {task.report.subcategory}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
             {/* Timeline */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white rounded-xl shadow-md p-6"
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-xl shadow-md p-6 border-t-4 border-primary"
             >
-              <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                <Clock className="w-6 h-6 mr-2 text-blue-600" />
+              <h2 className="text-xl font-bold text-[#002E2E] mb-4 flex items-center">
+                <Clock className="w-6 h-6 mr-2 text-primary" />
                 Task Timeline
               </h2>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <div className="shrink-0 w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+                  <div className="shrink-0 w-2 h-2 rounded-full bg-primary mt-2"></div>
                   <div>
                     <p className="font-semibold text-gray-800">Task Assigned</p>
                     <p className="text-sm text-gray-500">{formatDate(task.createdAt)}</p>
@@ -548,36 +535,36 @@ export default function TaskDetailPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-green-50 rounded-xl shadow-md p-6 border-2 border-green-200"
+              className="bg-green-50 rounded-xl shadow-md p-6 border-t-4 border-primary"
             >
               <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                <MapPin className="w-5 h-5 mr-2 text-green-600" />
+                <MapPin className="w-5 h-5 mr-2 text-primary" />
                 Location Details
               </h3>
               <div className="space-y-3 text-sm">
                 <div>
-                  <p className="text-gray-500 mb-1">Address</p>
+                  <p className="text-gray-500 mb-1 font-semibold">Address</p>
                   <p className="font-semibold text-gray-800">{task.report.location.address}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 mb-1">District</p>
+                  <p className="text-gray-500 mb-1 font-semibold">District</p>
                   <p className="font-semibold text-gray-800">{task.report.location.district}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 mb-1">Division</p>
+                  <p className="text-gray-500 mb-1 font-semibold">Division</p>
                   <p className="font-semibold text-gray-800">{task.report.location.division}</p>
                 </div>
                 {task.report.location.coordinates?.lat && task.report.location.coordinates?.lng && (
                   <div>
-                    <p className="text-gray-500 mb-1">Coordinates</p>
-                    <p className="font-mono text-xs text-gray-700">
+                    <p className="text-gray-500 mb-1 font-semibold">Coordinates</p>
+                    <p className="font-mono text-xs text-gray-700 break-all">
                       {task.report.location.coordinates.lat.toFixed(6)}, {task.report.location.coordinates.lng.toFixed(6)}
                     </p>
                   </div>
                 )}
                 <button
                   onClick={handleOpenInMaps}
-                  className="w-full mt-4 py-2.5 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-all flex items-center justify-center space-x-2 shadow-md hover:shadow-lg active:scale-95 transform"
+                  className="w-full mt-4 py-2.5 bg-primary text-white rounded-lg font-semibold hover:bg-primary/90 transition-all flex items-center justify-center space-x-2 shadow-md hover:shadow-lg active:scale-95 transform"
                 >
                   <MapPin className="w-4 h-4" />
                   <span>Open in Maps</span>
@@ -590,7 +577,7 @@ export default function TaskDetailPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-yellow-50 rounded-xl shadow-md p-6 border-2 border-yellow-200"
+              className="bg-yellow-50 rounded-xl shadow-md p-6 border-t-4 border-yellow-500"
             >
               <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                 <Award className="w-5 h-5 mr-2 text-yellow-600" />
@@ -627,7 +614,7 @@ export default function TaskDetailPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="bg-white rounded-xl shadow-md p-6"
+              className="bg-white rounded-xl shadow-md p-6 border-t-4 border-blue-500"
             >
               <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                 <User className="w-5 h-5 mr-2 text-blue-600" />
@@ -635,12 +622,12 @@ export default function TaskDetailPage() {
               </h3>
               <div className="space-y-4">
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Assigned By</p>
+                  <p className="text-xs text-gray-500 mb-1 font-semibold">Assigned By</p>
                   <p className="font-semibold text-gray-800">{task.assigner.name}</p>
                   <p className="text-sm text-gray-500 capitalize">{task.assigner.role}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Assignment Date</p>
+                  <p className="text-xs text-gray-500 mb-1 font-semibold">Assignment Date</p>
                   <p className="font-semibold text-gray-800">{formatDate(task.createdAt)}</p>
                 </div>
                 {task.deadline && (
@@ -651,7 +638,7 @@ export default function TaskDetailPage() {
                       : 'bg-blue-50 border-blue-300'
                     }`}>
                     <div className="flex items-center justify-between mb-1">
-                      <p className="text-xs font-semibold text-gray-600">Deadline (Set by Authority)</p>
+                      <p className="text-xs font-semibold text-gray-600">Deadline</p>
                       <Clock className={`w-4 h-4 ${new Date(task.deadline) < new Date()
                         ? 'text-red-600'
                         : new Date(task.deadline) < new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
@@ -683,16 +670,47 @@ export default function TaskDetailPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
-              className={`${severityConfig.bgColor} rounded-xl shadow-md p-6 border-2 ${severityConfig.borderColor}`}
+              className={`bg-white rounded-xl shadow-md p-6 border-t-4 ${task.priority === 'high'
+                ? 'border-red-500 bg-red-50'
+                : task.priority === 'medium'
+                  ? 'border-orange-500 bg-orange-50'
+                  : 'border-green-500 bg-green-50'
+                }`}
             >
-              <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center">
-                <AlertTriangle className={`w-5 h-5 mr-2 ${severityConfig.color}`} />
-                Priority Information
+              <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <AlertTriangle className={`w-5 h-5 mr-2 ${task.priority === 'high'
+                  ? 'text-red-600'
+                  : task.priority === 'medium'
+                    ? 'text-orange-600'
+                    : 'text-green-600'
+                  }`} />
+                Priority & Severity Information
               </h3>
-              <p className={`text-2xl font-bold ${severityConfig.color} mb-2 capitalize`}>
-                {task.priority} Priority
-              </p>
-              <p className="text-sm text-gray-700 leading-relaxed">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white/60 rounded-lg p-3">
+                  <p className="text-xs text-gray-500 mb-1 font-semibold">Priority Level</p>
+                  <p className={`font-bold text-lg capitalize ${task.priority === 'high'
+                    ? 'text-red-600'
+                    : task.priority === 'medium'
+                      ? 'text-orange-600'
+                      : 'text-green-600'
+                    }`}>
+                    {task.priority}
+                  </p>
+                </div>
+                <div className="bg-white/60 rounded-lg p-3">
+                  <p className="text-xs text-gray-500 mb-1 font-semibold">Report Severity</p>
+                  <p className={`font-bold text-lg capitalize ${task.report.severity === 'high'
+                    ? 'text-red-600'
+                    : task.report.severity === 'medium'
+                      ? 'text-orange-600'
+                      : 'text-green-600'
+                    }`}>
+                    {task.report.severity}
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed mt-4">
                 {task.priority === 'high'
                   ? 'This is a critical issue requiring immediate attention and should be resolved as soon as possible.'
                   : task.priority === 'medium'
@@ -713,7 +731,7 @@ export default function TaskDetailPage() {
           {task.status === 'assigned' && (
             <button
               onClick={handleAcceptTask}
-              className="px-8 py-3 bg-linear-to-r from-green-500 to-green-600 text-white rounded-xl font-bold hover:from-green-600 hover:to-green-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-primary to-primary/90 text-white rounded-xl font-bold hover:scale-105 transition-transform shadow-lg hover:shadow-xl flex items-center space-x-2"
             >
               <CheckCircle className="w-5 h-5" />
               <span>Accept This Task</span>
@@ -722,7 +740,7 @@ export default function TaskDetailPage() {
           {task.status === 'accepted' && (
             <button
               onClick={handleStartTask}
-              className="px-8 py-3 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-xl font-bold hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-primary to-primary/90 text-white rounded-xl font-bold hover:scale-105 transition-transform shadow-lg hover:shadow-xl flex items-center space-x-2"
             >
               <TrendingUp className="w-5 h-5" />
               <span>Start Working</span>
@@ -731,7 +749,7 @@ export default function TaskDetailPage() {
           {task.status === 'in-progress' && (
             <button
               onClick={() => setShowProofModal(true)}
-              className="px-8 py-3 bg-linear-to-r from-purple-500 to-purple-600 text-white rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-accent to-accent/90 text-white rounded-xl font-bold hover:scale-105 transition-transform shadow-lg hover:shadow-xl flex items-center space-x-2"
             >
               <Upload className="w-5 h-5" />
               <span>Submit Proof</span>
@@ -740,7 +758,7 @@ export default function TaskDetailPage() {
           {task.status === 'rejected' && (
             <button
               onClick={() => setShowProofModal(true)}
-              className="px-8 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-xl font-bold hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+              className="px-8 py-3 bg-linear-to-r from-orange-500 to-orange-600 text-white rounded-xl font-bold hover:scale-105 transition-transform shadow-lg hover:shadow-xl flex items-center space-x-2"
             >
               <Upload className="w-5 h-5" />
               <span>Resubmit Proof</span>
@@ -748,7 +766,7 @@ export default function TaskDetailPage() {
           )}
           <Link
             href="/dashboard/problemSolver/tasks"
-            className="px-8 py-3 bg-gray-600 text-white rounded-xl font-bold hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
+            className="px-8 py-3 bg-gray-500 text-white rounded-xl font-bold hover:bg-gray-600 transition-all shadow-lg hover:shadow-xl flex items-center space-x-2"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Back to My Tasks</span>
@@ -882,7 +900,7 @@ export default function TaskDetailPage() {
                 <button
                   onClick={handleSubmitProof}
                   disabled={submittingProof || proofImages.length === 0 || !proofDescription.trim()}
-                  className="flex-1 py-3 bg-linear-to-r from-purple-500 to-purple-600 text-white rounded-xl font-bold hover:from-purple-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  className="flex-1 py-3 bg-linear-to-r from-accent to-accent/90 text-white rounded-xl font-bold hover:scale-105 transition-transform shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                 >
                   {submittingProof ? (
                     <>
@@ -903,7 +921,7 @@ export default function TaskDetailPage() {
                     setProofDescription('');
                   }}
                   disabled={submittingProof}
-                  className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-300 transition-colors"
+                  className="px-6 py-3 bg-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-400 transition-colors"
                 >
                   Cancel
                 </button>

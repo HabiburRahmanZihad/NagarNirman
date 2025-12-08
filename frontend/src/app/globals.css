@@ -119,3 +119,20 @@ body {
 .swiper-slide-active {
   opacity: 1 !important;
 }
+
+/* Weekly Report Limit Progress Bar */
+.report-progress-bar {
+  transition: width 0.3s ease;
+}
+
+.report-progress-0 {
+  width: 100%;
+}
+
+.report-progress-1 {
+  width: 50%;
+}
+
+.report-progress-2 {
+  width: 0%;
+}

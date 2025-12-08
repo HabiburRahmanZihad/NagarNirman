@@ -218,31 +218,35 @@ export default function MyApplicationStatus() {
   };
 
   if (loading) {
-    return <FullPageLoading message="Loading Application" submessage="Fetching your application status..." />;
+    return <FullPageLoading text="Loading Application" subtext="Fetching your application status..." />;
   }
 
   if (notFound) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-8 px-4 sm:px-6 lg:px-8">
         <Toaster position="top-right" />
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-lg shadow-lg p-12 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-2xl shadow-xl p-12 text-center border-t-4 border-primary"
+          >
             <div className="mb-6">
-              <FaClock className="text-gray-400 text-6xl mx-auto" />
+              <FaClock className="text-amber-500 text-6xl mx-auto drop-shadow-lg" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-extrabold text-[#002E2E] mb-3">
               No Application Found
             </h2>
-            <p className="text-gray-600 mb-8">
-              You haven't submitted an application to become a Problem Solver yet.
+            <p className="text-[#6B7280] mb-8 text-lg leading-relaxed max-w-lg mx-auto">
+              You haven't submitted an application to become a Problem Solver yet. Start your journey today and help your community!
             </p>
             <button
-              onClick={() => router.push('/join-as-a-Problem-Solver')}
-              className="bg-[#2a7d2f] text-white px-8 py-3 rounded-lg hover:bg-[#236b27] transition-colors"
+              onClick={() => router.push('/dashboard/user/join-as-a-Problem-Solver')}
+              className="bg-linear-to-r from-primary to-[#1e5d22] text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all font-bold transform hover:scale-105"
             >
-              Apply Now
+              🔧 Apply Now to Join
             </button>
-          </div>
+          </motion.div>
         </div>
       </div>
     );
@@ -255,35 +259,35 @@ export default function MyApplicationStatus() {
   const statusInfo = getStatusMessage(application.status);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-8 px-4 sm:px-6 lg:px-8">
       <Toaster position="top-right" />
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-lg shadow-lg overflow-hidden"
+          className="bg-white rounded-2xl shadow-xl overflow-hidden border-t-4 border-primary"
         >
-          {/* Status Header */}
-          <div className={`${statusInfo.bgColor} p-8 text-center border-b`}>
-            <div className="mb-4 flex justify-center">
+          {/* Status Header with Gradient Background */}
+          <div className={`${application.status === 'pending' ? 'bg-linear-to-r from-amber-50 to-yellow-50 border-b-2 border-amber-200' : application.status === 'approved' ? 'bg-linear-to-r from-green-50 to-emerald-50 border-b-2 border-green-200' : 'bg-linear-to-r from-red-50 to-orange-50 border-b-2 border-red-200'} p-10 text-center`}>
+            <div className="mb-4 flex justify-center animate-bounce">
               {getStatusIcon(application.status)}
             </div>
-            <h1 className={`text-3xl font-bold ${statusInfo.color} mb-2`}>
+            <h1 className={`text-4xl font-extrabold ${statusInfo.color} mb-3`}>
               {statusInfo.title}
             </h1>
-            <p className={`${statusInfo.color} max-w-2xl mx-auto`}>
+            <p className={`${statusInfo.color} max-w-2xl mx-auto text-lg leading-relaxed font-medium`}>
               {statusInfo.message}
             </p>
           </div>
 
           {/* Application Details */}
-          <div className="p-8 space-y-6">
+          <div className="p-10 space-y-8">
             {/* Applied Date */}
-            <div className="flex items-center text-gray-600">
-              <FaCalendar className="mr-3 text-[#2a7d2f]" />
-              <span>
-                Applied on {new Date(application.appliedAt).toLocaleDateString('en-US', {
+            <div className="flex items-center bg-linear-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border-2 border-blue-200">
+              <FaCalendar className="mr-3 text-blue-600 text-xl" />
+              <span className="text-[#002E2E] font-semibold">
+                📅 Applied on {new Date(application.appliedAt).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
@@ -292,61 +296,62 @@ export default function MyApplicationStatus() {
             </div>
 
             {/* Personal Information */}
-            <div className="border-t pt-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <div className="border-t-2 border-primary/20 pt-8">
+              <h2 className="text-2xl font-extrabold text-[#002E2E] mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white">👤</div>
                 Personal Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center text-gray-700">
-                  <FaUser className="mr-3 text-[#2a7d2f]" />
+                <div className="flex items-center bg-linear-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border-2 border-blue-100">
+                  <FaUser className="mr-3 text-blue-600 text-lg" />
                   <div>
-                    <p className="text-sm text-gray-500">Full Name</p>
-                    <p className="font-medium">{application.fullName}</p>
+                    <p className="text-xs text-gray-600 font-bold uppercase tracking-wide">Full Name</p>
+                    <p className="font-bold text-[#002E2E]">{application.fullName}</p>
                   </div>
                 </div>
-                <div className="flex items-center text-gray-700">
-                  <FaEnvelope className="mr-3 text-[#2a7d2f]" />
+                <div className="flex items-center bg-linear-to-r from-amber-50 to-orange-50 p-4 rounded-lg border-2 border-amber-100">
+                  <FaEnvelope className="mr-3 text-amber-600 text-lg" />
                   <div>
-                    <p className="text-sm text-gray-500">Email</p>
-                    <p className="font-medium">{application.email}</p>
+                    <p className="text-xs text-gray-600 font-bold uppercase tracking-wide">Email</p>
+                    <p className="font-bold text-[#002E2E] truncate">{application.email}</p>
                   </div>
                 </div>
-                <div className="flex items-center text-gray-700">
-                  <FaPhone className="mr-3 text-[#2a7d2f]" />
+                <div className="flex items-center bg-linear-to-r from-green-50 to-emerald-50 p-4 rounded-lg border-2 border-green-100">
+                  <FaPhone className="mr-3 text-green-600 text-lg" />
                   <div>
-                    <p className="text-sm text-gray-500">Phone</p>
-                    <p className="font-medium">{application.phone}</p>
+                    <p className="text-xs text-gray-600 font-bold uppercase tracking-wide">Phone</p>
+                    <p className="font-bold text-[#002E2E]">{application.phone}</p>
                   </div>
                 </div>
-                <div className="flex items-center text-gray-700">
-                  <FaBriefcase className="mr-3 text-[#2a7d2f]" />
+                <div className="flex items-center bg-linear-to-r from-purple-50 to-pink-50 p-4 rounded-lg border-2 border-purple-100">
+                  <FaBriefcase className="mr-3 text-purple-600 text-lg" />
                   <div>
-                    <p className="text-sm text-gray-500">Profession</p>
-                    <p className="font-medium">{application.profession}</p>
+                    <p className="text-xs text-gray-600 font-bold uppercase tracking-wide">Profession</p>
+                    <p className="font-bold text-[#002E2E]">{application.profession}</p>
                   </div>
                 </div>
-                <div className="flex items-center text-gray-700">
-                  <FaIdCard className="mr-3 text-[#2a7d2f]" />
+                <div className="flex items-center bg-linear-to-r from-rose-50 to-red-50 p-4 rounded-lg border-2 border-rose-100">
+                  <FaIdCard className="mr-3 text-rose-600 text-lg" />
                   <div>
-                    <p className="text-sm text-gray-500">NID Number</p>
-                    <p className="font-medium">{application.nidNumber}</p>
+                    <p className="text-xs text-gray-600 font-bold uppercase tracking-wide">NID Number</p>
+                    <p className="font-bold text-[#002E2E] font-mono">{application.nidNumber}</p>
                   </div>
                 </div>
                 {application.educationLevel && (
-                  <div className="flex items-center text-gray-700">
-                    <FaGraduationCap className="mr-3 text-[#2a7d2f]" />
+                  <div className="flex items-center bg-linear-to-r from-indigo-50 to-blue-50 p-4 rounded-lg border-2 border-indigo-100">
+                    <FaGraduationCap className="mr-3 text-indigo-600 text-lg" />
                     <div>
-                      <p className="text-sm text-gray-500">Education Level</p>
-                      <p className="font-medium">{application.educationLevel}</p>
+                      <p className="text-xs text-gray-600 font-bold uppercase tracking-wide">Education Level</p>
+                      <p className="font-bold text-[#002E2E]">{application.educationLevel}</p>
                     </div>
                   </div>
                 )}
                 {application.availability && (
-                  <div className="flex items-center text-gray-700">
-                    <FaAvailability className="mr-3 text-[#2a7d2f]" />
+                  <div className="flex items-center bg-linear-to-r from-cyan-50 to-teal-50 p-4 rounded-lg border-2 border-cyan-100">
+                    <FaAvailability className="mr-3 text-cyan-600 text-lg" />
                     <div>
-                      <p className="text-sm text-gray-500">Availability</p>
-                      <p className="font-medium">{application.availability}</p>
+                      <p className="text-xs text-gray-600 font-bold uppercase tracking-wide">Availability</p>
+                      <p className="font-bold text-[#002E2E]">{application.availability}</p>
                     </div>
                   </div>
                 )}
@@ -354,59 +359,56 @@ export default function MyApplicationStatus() {
             </div>
 
             {/* Emergency Contact */}
-            <div className="border-t pt-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                <FaUserShield className="mr-2 text-[#2a7d2f]" />
+            <div className="border-t-2 border-primary/20 pt-8">
+              <h2 className="text-2xl font-extrabold text-[#002E2E] mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 bg-linear-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center text-white">🚨</div>
                 Emergency Contact
               </h2>
-              <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Name:</span>
-                  <span className="font-medium text-gray-900">
-                    {application.emergencyContactName}
-                  </span>
+              <div className="bg-linear-to-r from-red-50 to-orange-50 rounded-xl p-6 space-y-4 border-2 border-red-200">
+                <div className="flex justify-between items-center bg-white p-3 rounded-lg border border-red-100">
+                  <span className="text-gray-600 font-bold">👤 Name:</span>
+                  <span className="font-bold text-[#002E2E]">{application.emergencyContactName}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Phone:</span>
-                  <span className="font-medium text-gray-900">
-                    {application.emergencyContact}
-                  </span>
+                <div className="flex justify-between items-center bg-white p-3 rounded-lg border border-red-100">
+                  <span className="text-gray-600 font-bold">📞 Phone:</span>
+                  <span className="font-bold text-[#002E2E]">{application.emergencyContact}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Relation:</span>
-                  <span className="font-medium text-gray-900">
-                    {application.emergencyContactRelation}
-                  </span>
+                <div className="flex justify-between items-center bg-white p-3 rounded-lg border border-red-100">
+                  <span className="text-gray-600 font-bold">🔗 Relation:</span>
+                  <span className="font-bold text-[#002E2E]">{application.emergencyContactRelation}</span>
                 </div>
               </div>
             </div>
 
             {/* Location */}
-            <div className="border-t pt-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Location</h2>
-              <div className="flex items-start text-gray-700">
-                <FaMapMarkerAlt className="mr-3 text-[#2a7d2f] mt-1" />
+            <div className="border-t-2 border-primary/20 pt-8">
+              <h2 className="text-2xl font-extrabold text-[#002E2E] mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 bg-linear-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center text-white">📍</div>
+                Location
+              </h2>
+              <div className="flex items-start bg-linear-to-r from-amber-50 to-orange-50 p-6 rounded-xl border-2 border-amber-200">
+                <FaMapMarkerAlt className="mr-4 text-amber-600 text-xl mt-1 shrink-0" />
                 <div>
-                  <p className="font-medium">
+                  <p className="font-bold text-lg text-[#002E2E] mb-2">
                     {application.district}, {application.division}
                   </p>
-                  <p className="text-sm text-gray-600">{application.address}</p>
+                  <p className="text-sm text-gray-700 font-semibold leading-relaxed">{application.address}</p>
                 </div>
               </div>
             </div>
 
             {/* Languages Spoken */}
             {application.languagesSpoken && application.languagesSpoken.length > 0 && (
-              <div className="border-t pt-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                  <FaLanguage className="mr-2 text-[#2a7d2f]" />
+              <div className="border-t-2 border-primary/20 pt-8">
+                <h2 className="text-2xl font-extrabold text-[#002E2E] mb-6 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white">🗣️</div>
                   Languages Spoken
                 </h2>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-3">
                   {application.languagesSpoken.map((language, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+                      className="px-4 py-2 bg-linear-to-r from-blue-100 to-indigo-100 text-blue-700 rounded-full text-sm font-bold border-2 border-blue-200 shadow-sm"
                     >
                       {language}
                     </span>
@@ -416,15 +418,16 @@ export default function MyApplicationStatus() {
             )}
 
             {/* Skills */}
-            <div className="border-t pt-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <div className="border-t-2 border-primary/20 pt-8">
+              <h2 className="text-2xl font-extrabold text-[#002E2E] mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 bg-linear-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white">⚙️</div>
                 Skills & Expertise
               </h2>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {application.skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-[#2a7d2f] text-white rounded-full text-sm"
+                    className="px-4 py-2 bg-linear-to-r from-primary to-[#1e5d22] text-white rounded-full text-sm font-bold shadow-md hover:shadow-lg transform hover:scale-105 transition-all"
                   >
                     {skill}
                   </span>
@@ -433,21 +436,24 @@ export default function MyApplicationStatus() {
             </div>
 
             {/* Motivation */}
-            <div className="border-t pt-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Motivation</h2>
-              <p className="text-gray-700 whitespace-pre-wrap">
+            <div className="border-t-2 border-primary/20 pt-8">
+              <h2 className="text-2xl font-extrabold text-[#002E2E] mb-6 flex items-center gap-3">
+                <div className="w-10 h-10 bg-linear-to-br from-yellow-400 to-orange-600 rounded-full flex items-center justify-center text-white">💭</div>
+                Motivation
+              </h2>
+              <p className="text-gray-700 whitespace-pre-wrap bg-linear-to-r from-yellow-50 to-orange-50 p-6 rounded-xl border-2 border-yellow-200 leading-relaxed font-medium">
                 {application.motivation}
               </p>
             </div>
 
             {/* Previous Volunteer Work */}
             {application.previousVolunteerWork && (
-              <div className="border-t pt-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                  <FaHandsHelping className="mr-2 text-[#2a7d2f]" />
+              <div className="border-t-2 border-primary/20 pt-8">
+                <h2 className="text-2xl font-extrabold text-[#002E2E] mb-6 flex items-center gap-3">
+                  <div className="w-10 h-10 bg-linear-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center text-white">🤝</div>
                   Previous Volunteer Work
                 </h2>
-                <p className="text-gray-700 whitespace-pre-wrap bg-green-50 p-4 rounded-lg">
+                <p className="text-gray-700 whitespace-pre-wrap bg-linear-to-r from-green-50 to-emerald-50 p-6 rounded-xl border-2 border-green-200 leading-relaxed font-medium">
                   {application.previousVolunteerWork}
                 </p>
               </div>
@@ -539,7 +545,7 @@ export default function MyApplicationStatus() {
 
             {/* Documents & Images */}
             {(application.profileImage || application.nidOrIdDoc) && (
-              <div className="border-t pt-6">
+              <div className="border-t border-primary/80 pt-8">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                   <FaFileImage className="mr-2 text-[#2a7d2f]" />
                   Submitted Documents
@@ -587,12 +593,15 @@ export default function MyApplicationStatus() {
 
             {/* Review Note (if rejected or approved with note) */}
             {application.reviewNote && (
-              <div className="border-t pt-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <div className="border-t-2 border-primary/20 pt-8">
+                <h2 className="text-2xl font-extrabold text-[#002E2E] mb-6 flex items-center gap-3">
+                  <div className={`w-10 h-10 ${application.status === 'rejected' ? 'bg-linear-to-br from-red-400 to-red-600' : 'bg-linear-to-br from-green-400 to-emerald-600'} rounded-full flex items-center justify-center text-white`}>
+                    {application.status === 'rejected' ? '📝' : '✅'}
+                  </div>
                   Review Feedback
                 </h2>
-                <div className={`p-4 rounded-lg ${statusInfo.bgColor}`}>
-                  <p className={`${statusInfo.color}`}>{application.reviewNote}</p>
+                <div className={`p-6 rounded-xl ${statusInfo.bgColor} border-2 ${application.status === 'rejected' ? 'border-red-200' : 'border-green-200'}`}>
+                  <p className={`${statusInfo.color} font-semibold leading-relaxed`}>{application.reviewNote}</p>
                   {application.reviewedAt && (
                     <p className="text-sm text-gray-500 mt-2">
                       Reviewed on {new Date(application.reviewedAt).toLocaleString()}
@@ -604,31 +613,31 @@ export default function MyApplicationStatus() {
 
             {/* Action Buttons */}
             {application.status === 'approved' && (
-              <div className="border-t pt-6 text-center">
+              <div className="border-t-2 border-primary/20 pt-8 text-center">
                 <button
                   onClick={() => router.push('/dashboard/problemSolver')}
-                  className="bg-[#2a7d2f] text-white px-8 py-3 rounded-lg hover:bg-[#236b27] transition-colors"
+                  className="bg-linear-to-r from-primary to-[#1e5d22] text-white px-8 py-3 rounded-xl hover:shadow-lg transition-all font-bold transform hover:scale-105"
                 >
-                  Go to Problem Solver Dashboard
+                  🚀 Go to Problem Solver Dashboard
                 </button>
               </div>
             )}
 
             {application.status === 'rejected' && (
-              <div className="border-t pt-6">
-                <div className="bg-linear-to-r from-orange-50 to-red-50 p-6 rounded-lg border-2 border-orange-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                    <span className="text-2xl mr-2">💡</span>
+              <div className="border-t-2 border-primary/20 pt-8">
+                <div className="bg-linear-to-r from-orange-50 to-red-50 p-8 rounded-xl border-2 border-orange-200">
+                  <h3 className="text-2xl font-extrabold text-[#002E2E] mb-4 flex items-center gap-3">
+                    <span className="text-3xl">💡</span>
                     Want to Reapply?
                   </h3>
-                  <p className="text-gray-700 mb-4">
+                  <p className="text-gray-700 mb-6 leading-relaxed font-medium">
                     You can delete this rejected application and submit a new one with updated information.
                     Your previous data will be pre-filled in the form to make it easier.
                   </p>
                   <button
                     onClick={handleDeleteConfirmClick}
                     disabled={deleting}
-                    className="w-full bg-linear-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-lg hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-md hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center gap-2"
+                    className="w-full bg-linear-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-xl hover:from-orange-600 hover:to-red-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold shadow-lg hover:shadow-2xl transform hover:scale-105 flex items-center justify-center gap-2"
                   >
                     {deleting ? (
                       <>
@@ -655,36 +664,36 @@ export default function MyApplicationStatus() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+              className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4"
               onClick={handleCancelDelete}
             >
               <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
+                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.9, opacity: 0, y: 20 }}
                 onClick={(e) => e.stopPropagation()}
-                className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6"
+                className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 border-t-4 border-orange-500"
               >
                 <div className="text-center">
-                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-orange-100 mb-4">
-                    <FaPaperPlane className="h-8 w-8 text-orange-600" />
+                  <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-linear-to-br from-orange-100 to-red-100 mb-6 animate-bounce">
+                    <FaPaperPlane className="h-10 w-10 text-orange-600" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  <h3 className="text-2xl font-extrabold text-[#002E2E] mb-3">
                     Delete and Reapply?
                   </h3>
-                  <p className="text-gray-600 mb-6">
+                  <p className="text-gray-600 mb-8 leading-relaxed font-medium">
                     Are you sure you want to delete this application and start a new one? Your previous data will be saved for reference.
                   </p>
                   <div className="flex gap-3">
                     <button
                       onClick={handleCancelDelete}
-                      className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+                      className="flex-1 px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all font-bold hover:shadow-md"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleConfirmDelete}
-                      className="flex-1 px-4 py-3 bg-linear-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all font-semibold shadow-md hover:shadow-lg"
+                      className="flex-1 px-4 py-3 bg-linear-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-all font-bold shadow-md hover:shadow-lg transform hover:scale-105"
                     >
                       Yes, Delete
                     </button>

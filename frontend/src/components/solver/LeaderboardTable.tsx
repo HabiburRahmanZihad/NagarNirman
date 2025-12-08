@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import { Trophy, Star, Medal, Crown } from "lucide-react";
 
 interface LeaderboardUser {
-  id: string;
+  _id?: string;
+  id?: string;
   name: string;
   district: string;
   points: number;
@@ -15,6 +16,7 @@ interface LeaderboardUser {
   xpRequired: number;
   streak: number;
   badges: string[];
+  totalRating?: number;
 }
 
 interface LeaderboardTableProps {
@@ -86,7 +88,7 @@ export default function LeaderboardTable({ users }: LeaderboardTableProps) {
           <tbody className="divide-y divide-gray-200">
             {users.map((user, index) => (
               <motion.tr
-                key={user.id}
+                key={user._id || user.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}

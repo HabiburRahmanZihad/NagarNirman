@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import Button from '@/components/common/Button';
+import Card from '@/components/common/Card';
 import {
   FaUser,
   FaEnvelope,
@@ -19,7 +20,19 @@ import {
   FaEye,
   FaFilter,
 } from 'react-icons/fa';
-import { RefreshButton, FullPageLoading } from '@/components/common';
+import {
+  RefreshButton,
+  FullPageLoading,
+} from '@/components/common';
+import {
+  Users,
+  FileText,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Search,
+  RefreshCw,
+} from 'lucide-react';
 
 interface Application {
   _id: string;
@@ -194,169 +207,210 @@ export default function ProblemSolverApplications() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-50 via-blue-50 to-purple-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="space-y-8 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
       <Toaster position="top-right" />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8 bg-white rounded-2xl shadow-lg border border-gray-100 p-6"
-        >
-          <h1 className="text-4xl font-bold bg-linear-to-r from-[#2a7d2f] to-[#1e5a23] bg-clip-text text-transparent mb-3">
-            Problem Solver Applications
+      {/* Welcome Section with Gradient Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent flex items-center justify-between"
+      >
+        <div>
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
+            Problem Solver Applications 📋
           </h1>
-          <p className="text-gray-700 text-lg">
-            Review and manage applications from citizens who want to become problem solvers
-            {userDivision && (
-              <span className="inline-flex items-center ml-2 px-4 py-1.5 rounded-full text-sm font-semibold bg-linear-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200 shadow-sm">
-                📍 {userDivision} Division
-              </span>
-            )}
+          <p className="text-white/90 text-lg font-semibold">
+            Review and manage applications from <span className="text-accent font-bold">{userDivision} Division</span>
           </p>
-        </motion.div>
-
-        {/* Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6"
+        </div>
+        <motion.button
+          onClick={() => fetchApplications(true)}
+          whileHover={{ rotate: 180 }}
+          whileTap={{ scale: 0.95 }}
+          disabled={isRefreshing}
+          className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all disabled:opacity-50 shrink-0"
+          title="Refresh applications"
         >
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center space-x-4 flex-wrap">
-              <div className="flex items-center justify-center w-10 h-10 bg-linear-to-br from-[#2a7d2f] to-[#1e5a23] rounded-xl shadow-md">
-                <FaFilter className="text-white" />
+          <RefreshCw className={`w-6 h-6 ${isRefreshing ? 'animate-spin' : ''}`} />
+        </motion.button>
+      </motion.div>
+
+      {/* Quick Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { title: 'Pending Applications', value: applications.filter(a => a.status === 'pending').length, icon: Clock, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+          { title: 'Approved', value: applications.filter(a => a.status === 'approved').length, icon: CheckCircle2, color: 'text-green-600', bgColor: 'bg-green-50' },
+          { title: 'Total Applications', value: pagination.total, icon: FileText, color: 'text-purple-600', bgColor: 'bg-purple-50' },
+          { title: 'Rejected', value: applications.filter(a => a.status === 'rejected').length, icon: XCircle, color: 'text-red-600', bgColor: 'bg-red-50' }
+        ].map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className={`${stat.bgColor} rounded-2xl p-6 border-2 border-accent/20 hover:scale-105 transition-transform`}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-bold text-neutral/70 uppercase tracking-wide">{stat.title}</p>
+                  <p className="text-3xl font-extrabold text-info mt-2">{stat.value}</p>
+                </div>
+                <div className={`${stat.color} bg-white/50 p-3 rounded-xl`}>
+                  <Icon className="w-6 h-6" />
+                </div>
               </div>
-              <label className="text-sm font-semibold text-gray-700">Filter by Status:</label>
-              <select
-                aria-label="Filter by status"
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="px-5 py-2.5 bg-white/90 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] font-medium text-gray-700 shadow-sm hover:shadow-md transition-all cursor-pointer"
-              >
-                <option value="all">All Applications</option>
-                <option value="pending">⏳ Pending</option>
-                <option value="approved">✅ Approved</option>
-                <option value="rejected">❌ Rejected</option>
-              </select>
-              <div className="px-5 py-2.5 bg-linear-to-r from-blue-100 to-indigo-100 rounded-xl border border-blue-200 shadow-sm">
-                <span className="text-sm font-semibold text-blue-900">
-                  Total: <span className="text-lg">{pagination.total}</span> applications
-                </span>
-              </div>
-            </div>
-            <RefreshButton
-              onClick={() => fetchApplications(true)}
-              isRefreshing={isRefreshing}
-              variant="primary"
-            />
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Filters Card */}
+      <Card className="rounded-3xl shadow-xl border-t-4 border-secondary p-8 space-y-6">
+        <h2 className="text-2xl font-extrabold text-info mb-6 flex items-center gap-3">
+          <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-white">
+            <Search className="w-6 h-6" />
           </div>
-        </motion.div>
+          Filter Applications
+        </h2>
 
-        {/* Applications List */}
-        {applications.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl shadow-lg border border-gray-100 p-16 text-center"
-          >
-            <div className="w-24 h-24 bg-linear-to-br from-gray-100 to-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center">
-              <span className="text-5xl">📋</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Status Filter */}
+          <div>
+            <label className="block text-sm font-bold text-info mb-3 uppercase tracking-wide">
+              Filter by Status
+            </label>
+            <select
+              aria-label="Filter by status"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="w-full px-4 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium"
+            >
+              <option value="all">All Applications</option>
+              <option value="pending">⏳ Pending</option>
+              <option value="approved">✅ Approved</option>
+              <option value="rejected">❌ Rejected</option>
+            </select>
+          </div>
+
+          {/* Total Display */}
+          <div className="flex items-end">
+            <div className="w-full p-4 bg-linear-to-br from-primary/5 to-secondary/5 rounded-xl border border-primary/10">
+              <p className="text-sm font-bold text-neutral/70 uppercase tracking-wide mb-2">Total Applications</p>
+              <p className="text-3xl font-extrabold text-info">{pagination.total}</p>
             </div>
-            <p className="text-gray-600 text-xl font-medium">No applications found</p>
-            <p className="text-gray-500 mt-2">Try adjusting your filters</p>
-          </motion.div>
-        ) : (
-          <div className="space-y-6">
-            {applications.map((app, index) => (
-              <motion.div
-                key={app._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: Math.min(index * 0.03, 0.3) }}
-                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-200 p-6 border border-gray-200 hover:border-[#2a7d2f]/50"
-              >
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-4 mb-4">
-                      <h3 className="text-xl font-semibold text-gray-900">
-                        {app.fullName}
-                      </h3>
-                      {getStatusBadge(app.status)}
-                    </div>
+          </div>
+        </div>
+      </Card>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-600">
-                      <div className="flex items-center">
-                        <FaEnvelope className="mr-2 text-[#2a7d2f]" />
-                        {app.email}
-                      </div>
-                      <div className="flex items-center">
-                        <FaPhone className="mr-2 text-[#2a7d2f]" />
-                        {app.phone}
-                      </div>
-                      <div className="flex items-center">
-                        <FaMapMarkerAlt className="mr-2 text-[#2a7d2f]" />
-                        {app.district}, {app.division}
-                      </div>
-                      <div className="flex items-center">
-                        <FaBriefcase className="mr-2 text-[#2a7d2f]" />
-                        {app.profession}
-                      </div>
-                      <div className="flex items-center">
-                        <FaCalendar className="mr-2 text-[#2a7d2f]" />
-                        Applied: {new Date(app.appliedAt).toLocaleDateString()}
-                      </div>
-                      <div className="flex items-center">
-                        <FaTransgender className="mr-2 text-[#2a7d2f]" />
-                        {app.gender}
-                      </div>
-                    </div>
+      {/* Applications List */}
+      {applications.length === 0 ? (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-base-100 rounded-3xl shadow-xl p-12 text-center border-2 border-accent/20"
+        >
+          <FileText className="w-20 h-20 text-neutral/30 mx-auto mb-4" />
+          <p className="text-neutral/70 text-lg font-bold">No applications found</p>
+          <p className="text-neutral/50 mt-1">Try adjusting your filters</p>
+        </motion.div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6">
+          {applications.map((app, index) => (
+            <motion.div
+              key={app._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ y: -4 }}
+              className="bg-base-100 rounded-3xl shadow-xl border-2 border-accent/20 overflow-hidden hover:shadow-2xl transition-all p-6 sm:p-8"
+            >
+              <div className="flex justify-between items-start mb-6 pb-6 border-b border-accent/10">
+                <div className="flex-1">
+                  <div className="flex items-center gap-4 mb-4 flex-wrap">
+                    <h3 className="text-2xl font-extrabold text-info">
+                      {app.fullName}
+                    </h3>
+                    {getStatusBadge(app.status)}
+                  </div>
 
-                    <div className="mt-3">
-                      <p className="text-sm text-gray-700">
-                        <strong>Skills:</strong> {app.skills.join(', ')}
-                      </p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-neutral/70">
+                    <div className="flex items-center gap-2">
+                      <FaEnvelope className="text-secondary shrink-0" />
+                      <span className="font-medium truncate">{app.email}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FaPhone className="text-secondary shrink-0" />
+                      <span className="font-medium">{app.phone}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FaMapMarkerAlt className="text-accent shrink-0" />
+                      <span className="font-medium">{app.district}, {app.division}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FaBriefcase className="text-primary shrink-0" />
+                      <span className="font-medium">{app.profession}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FaCalendar className="text-primary shrink-0" />
+                      <span className="font-medium">{new Date(app.appliedAt).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FaTransgender className="text-secondary shrink-0" />
+                      <span className="font-medium">{app.gender}</span>
                     </div>
                   </div>
 
-                  <Button
-                    onClick={() => openModal(app)}
-                    variant="primary"
-                    size="md"
-                    iconPosition="right"
-                    className="ml-4"
-                  >
-                    View Details
-                  </Button>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {app.skills.slice(0, 3).map((skill, idx) => (
+                      <span key={idx} className="px-3 py-1 bg-primary/20 text-primary text-xs font-bold rounded-full">
+                        {skill}
+                      </span>
+                    ))}
+                    {app.skills.length > 3 && (
+                      <span className="px-3 py-1 bg-neutral/20 text-neutral text-xs font-bold rounded-full">
+                        +{app.skills.length - 3}
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        )}
 
-        {/* Pagination */}
-        {pagination.pages > 1 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-8 flex justify-center space-x-3"
-          >
-            {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((page) => (
-              <Button
-                key={page}
-                onClick={() => setPagination({ ...pagination, page })}
-                variant={pagination.page === page ? 'primary' : 'ghost'}
-                size="sm"
-                className={pagination.page === page ? 'scale-110' : ''}
-              >
-                {page}
-              </Button>
-            ))}
-          </motion.div>
-        )}
-      </div>
+                <Button
+                  onClick={() => openModal(app)}
+                  variant="primary"
+                  size="md"
+                  className="ml-4 shrink-0"
+                >
+                  View Details
+                </Button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {pagination.pages > 1 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex justify-center flex-wrap gap-3"
+        >
+          {Array.from({ length: pagination.pages }, (_, i) => i + 1).map((page) => (
+            <Button
+              key={page}
+              onClick={() => setPagination({ ...pagination, page })}
+              variant={pagination.page === page ? 'primary' : 'ghost'}
+              size="sm"
+              className={pagination.page === page ? 'scale-110' : ''}
+            >
+              {page}
+            </Button>
+          ))}
+        </motion.div>
+      )}
 
       {/* Modal */}
       {showModal && selectedApp && (
@@ -365,13 +419,14 @@ export default function ProblemSolverApplications() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2 }}
-            className="bg-white rounded-3xl max-w-4xl w-full my-8 shadow-2xl border border-gray-200 overflow-hidden"
+            className="bg-base-100 rounded-3xl max-w-4xl w-full my-8 shadow-2xl border-2 border-accent/20 overflow-hidden"
           >
-            <div className="bg-linear-to-r from-[#2a7d2f] to-[#1e5a23] text-white p-6 flex justify-between items-center">
+            <div className="bg-primary text-white p-6 flex justify-between items-center border-b-4 border-accent">
               <h2 className="text-2xl font-bold">Application Details</h2>
               <button
                 onClick={closeModal}
                 className="w-10 h-10 flex items-center justify-center bg-white/20 hover:bg-white/30 rounded-full text-white text-2xl transition-colors"
+                title="Close"
               >
                 ×
               </button>
@@ -381,51 +436,52 @@ export default function ProblemSolverApplications() {
               <div className="space-y-6">
                 {/* Personal Info */}
                 <div className="bg-linear-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <span className="w-2 h-8 bg-linear-to-b from-blue-500 to-indigo-600 rounded-full mr-3"></span>
+                  <h3 className="text-xl font-bold text-info mb-4 flex items-center gap-3">
+                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                      <FaUser className="w-4 h-4" />
+                    </div>
                     Personal Information
                   </h3>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <strong>Full Name:</strong> {selectedApp.fullName}
+                      <strong className="text-neutral/70">Full Name:</strong> <span className="text-info">{selectedApp.fullName}</span>
                     </div>
                     <div>
-                      <strong>Email:</strong> {selectedApp.email}
+                      <strong className="text-neutral/70">Email:</strong> <span className="text-info">{selectedApp.email}</span>
                     </div>
                     <div>
-                      <strong>Phone:</strong> {selectedApp.phone}
+                      <strong className="text-neutral/70">Phone:</strong> <span className="text-info">{selectedApp.phone}</span>
                     </div>
                     <div>
-                      <strong>Date of Birth:</strong>{' '}
-                      {new Date(selectedApp.dateOfBirth).toLocaleDateString()}
+                      <strong className="text-neutral/70">Date of Birth:</strong> <span className="text-info">{new Date(selectedApp.dateOfBirth).toLocaleDateString()}</span>
                     </div>
                     <div>
-                      <strong>Gender:</strong> {selectedApp.gender}
+                      <strong className="text-neutral/70">Gender:</strong> <span className="text-info">{selectedApp.gender}</span>
                     </div>
                     <div>
-                      <strong>Profession:</strong> {selectedApp.profession}
+                      <strong className="text-neutral/70">Profession:</strong> <span className="text-info">{selectedApp.profession}</span>
                     </div>
                     {selectedApp.nidNumber && (
                       <div>
-                        <strong>NID Number:</strong> {selectedApp.nidNumber}
+                        <strong className="text-neutral/70">NID Number:</strong> <span className="text-info">{selectedApp.nidNumber}</span>
                       </div>
                     )}
                     {selectedApp.educationLevel && (
                       <div>
-                        <strong>Education Level:</strong> {selectedApp.educationLevel}
+                        <strong className="text-neutral/70">Education Level:</strong> <span className="text-info">{selectedApp.educationLevel}</span>
                       </div>
                     )}
                     {selectedApp.availability && (
                       <div>
-                        <strong>Availability:</strong> {selectedApp.availability}
+                        <strong className="text-neutral/70">Availability:</strong> <span className="text-info">{selectedApp.availability}</span>
                       </div>
                     )}
                     {selectedApp.languagesSpoken && selectedApp.languagesSpoken.length > 0 && (
                       <div className="col-span-2">
-                        <strong>Languages Spoken:</strong>
+                        <strong className="text-neutral/70">Languages Spoken:</strong>
                         <div className="flex flex-wrap gap-2 mt-2">
                           {selectedApp.languagesSpoken.map((lang, idx) => (
-                            <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                            <span key={idx} className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium">
                               {lang}
                             </span>
                           ))}
@@ -438,19 +494,21 @@ export default function ProblemSolverApplications() {
                 {/* Emergency Contact */}
                 {selectedApp.emergencyContactName && (
                   <div className="bg-linear-to-br from-red-50 to-orange-50 rounded-2xl p-6 border border-red-100">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                      <span className="w-2 h-8 bg-linear-to-b from-red-500 to-orange-600 rounded-full mr-3"></span>
+                    <h3 className="text-xl font-bold text-info mb-4 flex items-center gap-3">
+                      <div className="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center text-white">
+                        <FaPhone className="w-4 h-4" />
+                      </div>
                       Emergency Contact
                     </h3>
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div>
-                        <strong>Name:</strong> {selectedApp.emergencyContactName}
+                        <strong className="text-neutral/70">Name:</strong> <span className="text-info">{selectedApp.emergencyContactName}</span>
                       </div>
                       <div>
-                        <strong>Phone:</strong> {selectedApp.emergencyContact}
+                        <strong className="text-neutral/70">Phone:</strong> <span className="text-info">{selectedApp.emergencyContact}</span>
                       </div>
                       <div>
-                        <strong>Relation:</strong> {selectedApp.emergencyContactRelation}
+                        <strong className="text-neutral/70">Relation:</strong> <span className="text-info">{selectedApp.emergencyContactRelation}</span>
                       </div>
                     </div>
                   </div>
@@ -458,40 +516,44 @@ export default function ProblemSolverApplications() {
 
                 {/* Location */}
                 <div className="bg-linear-to-br from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <span className="w-2 h-8 bg-linear-to-b from-green-500 to-emerald-600 rounded-full mr-3"></span>
+                  <h3 className="text-xl font-bold text-info mb-4 flex items-center gap-3">
+                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                      <FaMapMarkerAlt className="w-4 h-4" />
+                    </div>
                     Location
                   </h3>
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
-                      <strong>Division:</strong> {selectedApp.division}
+                      <strong className="text-neutral/70">Division:</strong> <span className="text-info">{selectedApp.division}</span>
                     </div>
                     <div>
-                      <strong>District:</strong> {selectedApp.district}
+                      <strong className="text-neutral/70">District:</strong> <span className="text-info">{selectedApp.district}</span>
                     </div>
                     <div className="col-span-2">
-                      <strong>Address:</strong> {selectedApp.address}
+                      <strong className="text-neutral/70">Address:</strong> <span className="text-info">{selectedApp.address}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Professional Info */}
                 <div className="bg-linear-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-100">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <span className="w-2 h-8 bg-linear-to-b from-purple-500 to-pink-600 rounded-full mr-3"></span>
+                  <h3 className="text-xl font-bold text-info mb-4 flex items-center gap-3">
+                    <div className="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center text-white">
+                      <FaBriefcase className="w-4 h-4" />
+                    </div>
                     Professional Information
                   </h3>
                   <div className="space-y-2 text-sm">
                     {selectedApp.organization && (
                       <div>
-                        <strong>Organization:</strong> {selectedApp.organization}
+                        <strong className="text-neutral/70">Organization:</strong> <span className="text-info">{selectedApp.organization}</span>
                       </div>
                     )}
                     <div>
-                      <strong>Skills:</strong>
+                      <strong className="text-neutral/70">Skills:</strong>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {selectedApp.skills.map((skill, idx) => (
-                          <span key={idx} className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                          <span key={idx} className="px-3 py-1 bg-primary/20 text-primary rounded-full text-sm font-medium">
                             {skill}
                           </span>
                         ))}
@@ -499,8 +561,8 @@ export default function ProblemSolverApplications() {
                     </div>
                     {selectedApp.previousVolunteerWork && (
                       <div>
-                        <strong>Previous Volunteer Work:</strong>
-                        <p className="mt-1 text-gray-700 whitespace-pre-wrap wrap-break-word bg-white p-3 rounded-lg">{selectedApp.previousVolunteerWork}</p>
+                        <strong className="text-neutral/70">Previous Volunteer Work:</strong>
+                        <p className="mt-1 text-neutral whitespace-pre-wrap wrap-break-word bg-white p-3 rounded-lg">{selectedApp.previousVolunteerWork}</p>
                       </div>
                     )}
                   </div>
@@ -509,19 +571,21 @@ export default function ProblemSolverApplications() {
                 {/* Social Media Links */}
                 {(selectedApp.linkedinProfile || selectedApp.facebookProfile || selectedApp.twitterProfile || selectedApp.websiteProfile) && (
                   <div className="bg-linear-to-br from-cyan-50 to-blue-50 rounded-2xl p-6 border border-cyan-100">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                      <span className="w-2 h-8 bg-linear-to-b from-cyan-500 to-blue-600 rounded-full mr-3"></span>
+                    <h3 className="text-xl font-bold text-info mb-4 flex items-center gap-3">
+                      <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                        <FaEnvelope className="w-4 h-4" />
+                      </div>
                       Social Media & Professional Links
                     </h3>
                     <div className="space-y-2 text-sm">
                       {selectedApp.linkedinProfile && (
                         <div>
-                          <strong>LinkedIn:</strong>{' '}
+                          <strong className="text-neutral/70">LinkedIn:</strong>{' '}
                           <a
                             href={selectedApp.linkedinProfile}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
+                            className="text-primary hover:underline font-medium"
                           >
                             {selectedApp.linkedinProfile}
                           </a>
@@ -529,12 +593,12 @@ export default function ProblemSolverApplications() {
                       )}
                       {selectedApp.facebookProfile && (
                         <div>
-                          <strong>Facebook:</strong>{' '}
+                          <strong className="text-neutral/70">Facebook:</strong>{' '}
                           <a
                             href={selectedApp.facebookProfile}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
+                            className="text-primary hover:underline font-medium"
                           >
                             {selectedApp.facebookProfile}
                           </a>
@@ -542,12 +606,12 @@ export default function ProblemSolverApplications() {
                       )}
                       {selectedApp.twitterProfile && (
                         <div>
-                          <strong>Twitter/X:</strong>{' '}
+                          <strong className="text-neutral/70">Twitter/X:</strong>{' '}
                           <a
                             href={selectedApp.twitterProfile}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
+                            className="text-primary hover:underline font-medium"
                           >
                             {selectedApp.twitterProfile}
                           </a>
@@ -555,12 +619,12 @@ export default function ProblemSolverApplications() {
                       )}
                       {selectedApp.websiteProfile && (
                         <div>
-                          <strong>Personal Website:</strong>{' '}
+                          <strong className="text-neutral/70">Personal Website:</strong>{' '}
                           <a
                             href={selectedApp.websiteProfile}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
+                            className="text-primary hover:underline font-medium"
                           >
                             {selectedApp.websiteProfile}
                           </a>
@@ -573,8 +637,10 @@ export default function ProblemSolverApplications() {
                 {/* Documents & Images */}
                 {selectedApp.nidOrIdDoc && (
                   <div className="bg-linear-to-br from-amber-50 to-yellow-50 rounded-2xl p-6 border border-amber-100">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                      <span className="w-2 h-8 bg-linear-to-b from-amber-500 to-yellow-600 rounded-full mr-3"></span>
+                    <h3 className="text-xl font-bold text-info mb-4 flex items-center gap-3">
+                      <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center text-white">
+                        <FaCalendar className="w-4 h-4" />
+                      </div>
                       NID & Important Documents
                     </h3>
                     <div>
@@ -587,30 +653,34 @@ export default function ProblemSolverApplications() {
                         <img
                           src={selectedApp.nidOrIdDoc}
                           alt="NID Document"
-                          className="max-w-full h-auto max-h-96 rounded-lg object-contain border-2 border-gray-300 hover:border-[#2a7d2f] transition-colors cursor-pointer"
+                          className="max-w-full h-auto max-h-96 rounded-lg object-contain border-2 border-accent/20 hover:border-accent/60 transition-colors cursor-pointer"
                         />
                       </a>
-                      <p className="text-xs text-gray-500 mt-2">Click image to view in full size</p>
+                      <p className="text-xs text-neutral/60 mt-2 font-medium">Click image to view in full size</p>
                     </div>
                   </div>
                 )}
 
                 {/* Motivation & Experience */}
                 <div className="bg-linear-to-br from-teal-50 to-cyan-50 rounded-2xl p-6 border border-teal-100">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                    <span className="w-2 h-8 bg-linear-to-b from-teal-500 to-cyan-600 rounded-full mr-3"></span>
+                  <h3 className="text-xl font-bold text-info mb-4 flex items-center gap-3">
+                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                      <FaBriefcase className="w-4 h-4" />
+                    </div>
                     Motivation
                   </h3>
-                  <p className="text-sm text-gray-700 whitespace-pre-wrap wrap-break-word bg-white p-4 rounded-lg overflow-wrap-anywhere">
+                  <p className="text-sm text-neutral whitespace-pre-wrap wrap-break-word bg-white p-4 rounded-lg overflow-wrap-anywhere font-medium">
                     {selectedApp.motivation}
                   </p>
                   {selectedApp.experience && (
                     <>
-                      <h3 className="text-xl font-bold text-gray-900 mb-4 mt-6 flex items-center">
-                        <span className="w-2 h-8 bg-linear-to-b from-teal-500 to-cyan-600 rounded-full mr-3"></span>
+                      <h3 className="text-xl font-bold text-info mb-4 mt-6 flex items-center gap-3">
+                        <div className="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center text-white">
+                          <FaEnvelope className="w-4 h-4" />
+                        </div>
                         Experience
                       </h3>
-                      <p className="text-sm text-gray-700 whitespace-pre-wrap wrap-break-word bg-white p-4 rounded-lg overflow-wrap-anywhere">
+                      <p className="text-sm text-neutral whitespace-pre-wrap wrap-break-word bg-white p-4 rounded-lg overflow-wrap-anywhere font-medium">
                         {selectedApp.experience}
                       </p>
                     </>
@@ -619,42 +689,40 @@ export default function ProblemSolverApplications() {
 
                 {/* Review Section */}
                 {selectedApp.status === 'pending' && (
-                  <div className="bg-linear-to-br from-slate-50 to-gray-100 rounded-2xl p-6 border-2 border-dashed border-gray-300 space-y-4">
+                  <div className="bg-linear-to-br from-slate-50 to-gray-100 rounded-2xl p-6 border-2 border-dashed border-accent/30 space-y-4">
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-3">
+                      <label className="block text-sm font-bold text-info mb-3 uppercase tracking-wide">
                         📝 Review Note (Optional)
                       </label>
                       <textarea
                         value={reviewNote}
                         onChange={(e) => setReviewNote(e.target.value)}
-                        className="w-full px-5 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] resize-none shadow-sm"
+                        className="w-full px-5 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral resize-none shadow-sm font-medium"
                         rows={4}
                         placeholder="Add any notes about your decision..."
                       />
                     </div>
 
-                    <div className="flex space-x-4">
+                    <div className="flex gap-4">
                       <Button
                         onClick={() => handleReview(selectedApp._id, 'approved')}
                         disabled={isReviewing}
                         variant="primary"
                         size="xl"
-                        iconPosition="right"
                         isLoading={isReviewing}
                         className="flex-1"
                       >
-                        Approve Application
+                        ✅ Approve Application
                       </Button>
                       <Button
                         onClick={() => handleReview(selectedApp._id, 'rejected')}
                         disabled={isReviewing}
                         variant="danger"
                         size="xl"
-                        iconPosition="right"
                         isLoading={isReviewing}
                         className="flex-1"
                       >
-                        Reject Application
+                        ❌ Reject Application
                       </Button>
                     </div>
                   </div>
@@ -662,15 +730,17 @@ export default function ProblemSolverApplications() {
 
                 {/* Review Info if already reviewed */}
                 {selectedApp.status !== 'pending' && selectedApp.reviewNote && (
-                  <div className="bg-linear-to-br from-gray-50 to-slate-100 rounded-2xl p-6 border-2 border-gray-200">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 flex items-center">
-                      <span className="w-2 h-8 bg-linear-to-b from-gray-500 to-slate-600 rounded-full mr-3"></span>
+                  <div className="bg-linear-to-br from-gray-50 to-slate-100 rounded-2xl p-6 border-2 border-neutral/20">
+                    <h3 className="text-xl font-bold text-info mb-3 flex items-center gap-3">
+                      <div className="w-8 h-8 bg-neutral rounded-lg flex items-center justify-center text-white">
+                        <FaCheckCircle className="w-4 h-4" />
+                      </div>
                       Review Note
                     </h3>
-                    <p className="text-base text-gray-700 bg-white p-4 rounded-lg">{selectedApp.reviewNote}</p>
+                    <p className="text-base text-neutral bg-white p-4 rounded-lg font-medium">{selectedApp.reviewNote}</p>
                     {selectedApp.reviewedAt && (
-                      <p className="text-sm text-gray-500 mt-3 flex items-center">
-                        <FaCalendar className="mr-2" />
+                      <p className="text-sm text-neutral/60 mt-3 flex items-center gap-2 font-medium">
+                        <FaCalendar />
                         Reviewed on {new Date(selectedApp.reviewedAt).toLocaleString()}
                       </p>
                     )}
