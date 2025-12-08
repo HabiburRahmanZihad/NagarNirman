@@ -217,6 +217,14 @@ export const getSummaryStatistics = async (req, res) => {
  */
 export const getAnalytics = async (req, res) => {
   try {
+    // Check if user exists in request
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not authenticated'
+      });
+    }
+
     // Check if user is Problem Solver or SuperAdmin
     if (req.user.role !== 'problemSolver' && req.user.role !== 'superAdmin') {
       return res.status(403).json({
@@ -341,7 +349,7 @@ export const getAnalytics = async (req, res) => {
     // Solver performance statistics
     const solverStats = await Promise.all(
       users.map(async (user) => {
-        const userTasks = tasks.filter(t => t.assignedTo.toString() === user._id.toString());
+        const userTasks = tasks.filter(t => t.assignedTo && t.assignedTo.toString() === user._id.toString());
         const completedTasks = userTasks.filter(t => t.status === 'completed').length;
         const totalTasks = userTasks.length;
 
