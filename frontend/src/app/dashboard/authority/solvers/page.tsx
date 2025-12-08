@@ -7,7 +7,6 @@ import { toast } from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { userAPI } from '@/utils/api';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { FullPageLoading } from '@/components/common';
 import Card from '@/components/common/Card';
 import {

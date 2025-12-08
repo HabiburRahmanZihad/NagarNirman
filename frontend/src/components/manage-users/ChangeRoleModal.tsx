@@ -3,7 +3,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, User, Lightbulb, Shield, Check } from "lucide-react";
 import { useState } from "react";
-import Button from '@/components/common/Button';
 
 interface User {
   _id: string;
@@ -71,13 +70,6 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
     }
   };
 
-  const getRoleColor = (role: any) => {
-    switch (role) {
-      case 'authority': return 'from-red-500 to-rose-500';
-      case 'problemSolver': return 'from-amber-500 to-orange-500';
-      default: return 'from-blue-500 to-cyan-500';
-    }
-  };
 
   const getRoleTextColor = (role: any) => {
     switch (role) {
