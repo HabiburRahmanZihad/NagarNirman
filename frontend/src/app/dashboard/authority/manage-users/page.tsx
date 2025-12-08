@@ -6,7 +6,14 @@ import { useRouter } from "next/navigation";
 import UsersTable from "@/components/manage-users/UsersTable";
 import UserFilterBar from "@/components/manage-users/UserFilterBar";
 import toast from "react-hot-toast";
-import { Users } from "lucide-react";
+import Card from "@/components/common/Card";
+import {
+  Users,
+  RefreshCw,
+  UserCheck,
+  UserX,
+  Trash2,
+} from "lucide-react";
 import RefreshButton from "@/components/common/RefreshButton";
 import { useAuth } from "@/context/AuthContext";
 import { userAPI } from "@/utils/api";
@@ -189,49 +196,62 @@ export default function ManageUsersPage() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="px-6 pb-6 space-y-6"
-    >
-      <div className="flex justify-between items-center">
+    <div className="space-y-8 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
+      {/* Welcome Section with Gradient Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent flex items-center justify-between"
+      >
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Manage Users</h1>
-          <p className="text-gray-600 mt-1">
-            Manage and monitor user accounts in {authUser?.division || 'your'} division
+          <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
+            Manage Users 👥
+          </h1>
+          <p className="text-white/90 text-lg font-semibold">
+            Manage and monitor user accounts in <span className="text-accent font-bold">{authUser?.division} Division</span>
           </p>
-          {authUser?.division && (
-            <div className="mt-2 flex items-center space-x-2">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clipRule="evenodd" />
-                </svg>
-                Division: {authUser.division}
-              </div>
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-medium">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                </svg>
-                District: {authUser.district}
-              </div>
-            </div>
-          )}
         </div>
-        <div className="flex items-center gap-3">
-          <div className="px-6 py-4 bg-linear-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-[#2a7d2f] rounded-lg">
-                <Users className="text-white" size={20} />
+        <motion.button
+          onClick={loadUsers}
+          whileHover={{ rotate: 180 }}
+          whileTap={{ scale: 0.95 }}
+          disabled={isLoading}
+          className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all disabled:opacity-50 shrink-0"
+          title="Refresh users"
+        >
+          <RefreshCw className={`w-6 h-6 ${isLoading ? 'animate-spin' : ''}`} />
+        </motion.button>
+      </motion.div>
+
+      {/* Quick Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { title: 'Total Users', value: users.length, icon: Users, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+          { title: 'Active Users', value: users.filter(u => u.isActive).length, icon: UserCheck, color: 'text-green-600', bgColor: 'bg-green-50' },
+          { title: 'Inactive Users', value: users.filter(u => !u.isActive).length, icon: UserX, color: 'text-red-600', bgColor: 'bg-red-50' },
+          { title: 'Problem Solvers', value: users.filter(u => u.role === 'problemSolver').length, icon: Trash2, color: 'text-purple-600', bgColor: 'bg-purple-50' }
+        ].map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className={`${stat.bgColor} rounded-2xl p-6 border-2 border-accent/20 hover:scale-105 transition-transform`}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-bold text-neutral/70 uppercase tracking-wide">{stat.title}</p>
+                  <p className="text-3xl font-extrabold text-info mt-2">{stat.value}</p>
+                </div>
+                <div className={`${stat.color} bg-white/50 p-3 rounded-xl`}>
+                  <Icon className="w-6 h-6" />
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">User Management</h3>
-                <p className="text-sm text-gray-600">{users.length} users in {authUser?.division}</p>
-              </div>
-            </div>
-          </div>
-          <RefreshButton onClick={loadUsers} className="ml-2" label="Refresh Users" />
-        </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       <UserFilterBar
@@ -251,6 +271,6 @@ export default function ManageUsersPage() {
         onPageChange={handlePageChange}
         isLoading={isLoading}
       />
-    </motion.div>
+    </div>
   );
 }

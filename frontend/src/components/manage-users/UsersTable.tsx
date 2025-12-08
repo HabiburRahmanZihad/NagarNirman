@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Edit, Trash2, Users, Loader2 } from "lucide-react";
+import { Edit, Trash2, Users, ChevronLeft, ChevronRight, CheckCircle, AlertCircle } from "lucide-react";
 import ChangeRoleModal from "./ChangeRoleModal";
 import DeleteUserModal from "./DeleteUserModal";
 import ToggleStatusSwitch from "./ToggleStatusSwitch";
+import Card from "@/components/common/Card";
 import { InlineLoading } from "@/components/common";
 
 interface User {
@@ -76,7 +77,6 @@ export default function UsersTable({
     switch (role) {
       case 'authority': return 'bg-red-500/10 text-red-700 border border-red-200';
       case 'problemSolver': return 'bg-blue-500/10 text-blue-700 border border-blue-200';
-
       default: return 'bg-gray-500/10 text-gray-700 border border-gray-200';
     }
   };
@@ -85,7 +85,6 @@ export default function UsersTable({
     switch (role) {
       case 'authority': return '👑';
       case 'problemSolver': return '💡';
-
       default: return '👤';
     }
   };
@@ -94,7 +93,6 @@ export default function UsersTable({
     switch (role) {
       case 'authority': return 'Authority';
       case 'problemSolver': return 'Problem Solver';
-
       case 'user': return 'User';
       default: return role;
     }
@@ -106,159 +104,165 @@ export default function UsersTable({
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
-      >
-        {/* Table Header */}
-        {/* <div className="px-6 py-4 bg-linear-to-r from-gray-50 to-gray-100 border-b border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-[#2a7d2f] rounded-lg">
-              <Users className="text-white" size={20} />
+      <Card className="rounded-3xl shadow-xl border-t-4 border-secondary p-8 overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6 pb-6 border-b border-accent/10">
+          <h2 className="text-2xl font-extrabold text-info flex items-center gap-3">
+            <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-white">
+              <Users className="w-6 h-6" />
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">User Management</h3>
-              <p className="text-sm text-gray-600">{users.length} users found</p>
-            </div>
-          </div>
-        </div> */}
-
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-linear-to-r from-gray-900 to-black text-white">
-                <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">User</th>
-                <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">Role</th>
-                <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">District</th>
-                <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">Points</th>
-                <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">Join Date</th>
-                <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {users.map((user, index) => (
-                <motion.tr
-                  key={user._id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="hover:bg-linear-to-r hover:from-gray-50 hover:to-gray-100 transition-all duration-200 group"
-                >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-4">
-                      <div className="relative">
-                        <div className="w-12 h-12 bg-linear-to-br from-[#2a7d2f] to-[#1e5c22] rounded-2xl flex items-center justify-center text-white font-semibold text-lg shadow-lg">
-                          {user.name.charAt(0)}
-                        </div>
-                        {user.isActive && (
-                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
-                        )}
-                      </div>
-                      <div>
-                        <div className="font-semibold text-gray-900 group-hover:text-[#2a7d2f] transition-colors">
-                          {user.name}
-                        </div>
-                        <div className="text-gray-500 text-sm">{user.email}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-lg">{getRoleIcon(user.role)}</span>
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
-                        {getRoleLabel(user.role)}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium border border-blue-200">
-                      📍 {user.district}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-[#2a7d2f] rounded-full"></div>
-                      <span className="font-bold text-[#2a7d2f] text-lg">{user.points}</span>
-                      <span className="text-gray-500 text-sm">pts</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-3">
-                      <ToggleStatusSwitch
-                        isActive={user.isActive}
-                        onToggle={(isActive) => onStatusToggle(user._id, isActive)}
-                      />
-                      <span className={`text-sm font-semibold ${user.isActive ? 'text-green-600' : 'text-red-600'}`}>
-                        {user.isActive ? '🟢 Active' : '🔴 Inactive'}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-gray-600 font-medium">{formatDate(user.createdAt)}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center space-x-2">
-                      <motion.button
-                        whileHover={{ scale: 1.1, backgroundColor: "#2a7d2f" }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => handleRoleChange(user)}
-                        className="p-2 text-gray-600 hover:text-white hover:bg-[#2a7d2f] rounded-xl transition-all duration-200 border border-gray-300 hover:border-[#2a7d2f] shadow-sm"
-                        title="Change Role"
-                      >
-                        <Edit size={18} />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.1, backgroundColor: "#dc2626" }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => handleDeleteClick(user)}
-                        className="p-2 text-gray-600 hover:text-white hover:bg-red-600 rounded-xl transition-all duration-200 border border-gray-300 hover:border-red-600 shadow-sm"
-                        title="Delete User"
-                      >
-                        <Trash2 size={18} />
-                      </motion.button>
-                    </div>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
+            Users Table
+          </h2>
+          <span className="px-4 py-2 bg-info/10 text-info rounded-full text-sm font-bold">
+            {users.length} users
+          </span>
         </div>
 
-        {users.length === 0 && (
+        {/* Table or Empty State */}
+        {users.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-center py-16"
           >
-            <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Users Found</h3>
-            <p className="text-gray-500 max-w-sm mx-auto">
+            <Users className="w-20 h-20 text-neutral/30 mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-neutral/70 mb-2">No Users Found</h3>
+            <p className="text-neutral/50 max-w-sm mx-auto">
               No users match your current search criteria. Try adjusting your filters or search terms.
             </p>
           </motion.div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-linear-to-r from-primary/5 to-secondary/5 border-b-2 border-accent/20">
+                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">User</th>
+                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">Role</th>
+                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">District</th>
+                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">Points</th>
+                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">Joined</th>
+                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-accent/10">
+                {users.map((user, index) => (
+                  <motion.tr
+                    key={user._id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="hover:bg-linear-to-r hover:from-primary/5 hover:to-secondary/5 transition-all duration-200 group"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="relative">
+                          <div className="w-12 h-12 bg-linear-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                            {user.name.charAt(0)}
+                          </div>
+                          {user.isActive && (
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-bold text-info group-hover:text-primary transition-colors">
+                            {user.name}
+                          </div>
+                          <div className="text-neutral/60 text-sm font-medium">{user.email}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg">{getRoleIcon(user.role)}</span>
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${getRoleBadgeColor(user.role)}`}>
+                          {getRoleLabel(user.role)}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="inline-flex items-center gap-2 px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-bold border border-accent/40">
+                        📍 {user.district}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                        <span className="font-bold text-primary text-lg">{user.points}</span>
+                        <span className="text-neutral/60 text-sm font-medium">pts</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-3">
+                        <ToggleStatusSwitch
+                          isActive={user.isActive}
+                          onToggle={(isActive) => onStatusToggle?.(user._id, isActive)}
+                        />
+                        <span className={`text-sm font-bold flex items-center gap-1 ${user.isActive ? 'text-green-600' : 'text-red-600'}`}>
+                          {user.isActive ? (
+                            <>
+                              <CheckCircle className="w-4 h-4" />
+                              Active
+                            </>
+                          ) : (
+                            <>
+                              <AlertCircle className="w-4 h-4" />
+                              Inactive
+                            </>
+                          )}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-neutral/70 font-medium text-sm">{formatDate(user.createdAt)}</div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-2">
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => handleRoleChange(user)}
+                          className="p-2 text-primary hover:text-white hover:bg-primary rounded-lg transition-all duration-200 border border-primary/30 hover:border-primary shadow-sm"
+                          title="Change Role"
+                        >
+                          <Edit size={18} />
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => handleDeleteClick(user)}
+                          className="p-2 text-red-600 hover:text-white hover:bg-red-600 rounded-lg transition-all duration-200 border border-red-300/30 hover:border-red-600 shadow-sm"
+                          title="Delete User"
+                        >
+                          <Trash2 size={18} />
+                        </motion.button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
 
         {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-700">
-                Showing <span className="font-semibold">{(currentPage - 1) * 10 + 1}</span> to{" "}
-                <span className="font-semibold">{Math.min(currentPage * 10, users.length)}</span> of{" "}
-                <span className="font-semibold">{users.length}</span> results
+        {totalPages && totalPages > 1 && (
+          <div className="mt-6 pt-6 border-t border-accent/10">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="text-sm font-medium text-neutral/70">
+                Showing <span className="text-info font-bold">{(currentPage! - 1) * 10 + 1}</span> to{" "}
+                <span className="text-info font-bold">{Math.min(currentPage! * 10, users.length)}</span> of{" "}
+                <span className="text-info font-bold">{users.length}</span> results
               </div>
               <div className="flex items-center space-x-2">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => onPageChange(currentPage - 1)}
+                  onClick={() => onPageChange?.(currentPage! - 1)}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white transition-colors font-medium text-gray-700"
+                  className="p-2 border border-accent/20 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary hover:text-white hover:border-primary transition-all font-medium"
                 >
-                  Previous
+                  <ChevronLeft size={20} />
                 </motion.button>
 
                 <div className="flex space-x-1">
@@ -267,10 +271,10 @@ export default function UsersTable({
                       key={page}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      onClick={() => onPageChange(page)}
-                      className={`px-3 py-2 rounded-lg font-medium transition-all duration-200 ${currentPage === page
-                        ? 'bg-[#2a7d2f] text-white shadow-lg'
-                        : 'text-gray-700 hover:bg-gray-100 border border-transparent'
+                      onClick={() => onPageChange?.(page)}
+                      className={`px-3 py-2 rounded-lg font-bold transition-all duration-200 ${currentPage === page
+                        ? 'bg-primary text-white shadow-lg border border-primary'
+                        : 'text-neutral/70 hover:bg-primary/10 border border-accent/20'
                         }`}
                     >
                       {page}
@@ -281,17 +285,17 @@ export default function UsersTable({
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => onPageChange(currentPage + 1)}
+                  onClick={() => onPageChange?.(currentPage! + 1)}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white transition-colors font-medium text-gray-700"
+                  className="p-2 border border-accent/20 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary hover:text-white hover:border-primary transition-all font-medium"
                 >
-                  Next
+                  <ChevronRight size={20} />
                 </motion.button>
               </div>
             </div>
           </div>
         )}
-      </motion.div>
+      </Card>
 
       {showRoleModal && selectedUser && (
         <ChangeRoleModal
