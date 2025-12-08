@@ -87,43 +87,50 @@ export default function FaqSection() {
           </div>
 
           {/* RIGHT CONTENT */}
-          <div className="space-y-6">
-            <div>
-              <p className="text-neutral/80 max-w-md mb-8 leading-relaxed text-base">
-                Get quick answers to common questions about our services, pricing, and security. Can't find what you're looking for?
-              </p>
-            </div>
+          <div className="h-full">
+            <div className="bg-linear-to-br from-primary/95 via-primary to-primary/90 rounded-3xl shadow-2xl p-8 sm:p-10 border-2 border-accent/30 hover:border-accent/50 transition-all duration-300 hover:shadow-3xl min-h-full flex flex-col justify-between">
+              {/* Text Content */}
+              <div className="space-y-6 mb-8">
+                <div>
+                  <p className="text-white/90 max-w-sm leading-relaxed text-base font-medium">
+                    Get quick answers to common questions about our services, pricing, and security. Can't find what you're looking for?
+                  </p>
+                </div>
 
-            {/* BUTTON */}
-            <Link href="/about">
-              <Button variant="primary" size="lg">
-                Have Any Questions?
-              </Button>
-            </Link>
-
-            {/* REGISTERED */}
-            <div className="flex items-center gap-4 pt-6 border-t border-base-300">
-              <div className="flex -space-x-3">
-                {avatars.map((avatar, i) => (
-                  <div key={i} className="relative">
-                    <img
-                      src={avatar}
-                      alt="User"
-                      className="w-10 h-10 rounded-full border-2 border-white object-cover shadow-md"
-                    />
-                    {/* Plus Icon on last avatar */}
-                    {i === avatars.length - 1 && (
-                      <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center border-2 border-white text-white text-xs font-bold">
-                        +
-                      </div>
-                    )}
-                  </div>
-                ))}
+                {/* BUTTON */}
+                <Link href="/about" className="inline-block">
+                  <button className="px-8 py-3 bg-linear-to-r from-accent to-accent/80 text-white font-bold rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 border-2 border-accent/50 hover:border-accent">
+                    Have Any Questions?
+                  </button>
+                </Link>
               </div>
 
-              <div>
-                <h4 className="font-bold text-info text-lg">2603</h4>
-                <p className="text-sm text-neutral/70">Peoples Registered</p>
+              {/* REGISTERED SECTION */}
+              <div className="pt-8 border-t-2 border-white/20">
+                <div className="flex items-center gap-5">
+                  <div className="flex -space-x-4">
+                    {avatars.map((avatar, i) => (
+                      <div key={i} className="relative">
+                        <img
+                          src={avatar}
+                          alt="User"
+                          className="w-12 h-12 rounded-full border-3 border-white object-cover shadow-lg hover:scale-110 transition-transform duration-300"
+                        />
+                        {/* Plus Icon on last avatar */}
+                        {i === avatars.length - 1 && (
+                          <div className="absolute inset-0 bg-white/30 rounded-full flex items-center justify-center border-3 border-white text-white text-sm font-bold hover:bg-white/50 transition-all duration-300">
+                            +
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div>
+                    <h4 className="font-extrabold text-white text-xl">2603</h4>
+                    <p className="text-sm text-white/80 font-semibold">People Registered</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
