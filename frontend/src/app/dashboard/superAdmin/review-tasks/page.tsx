@@ -158,7 +158,7 @@ export default function TaskReviewPage() {
 
   return (
     <div className="min-h-screen bg-base-200 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="container mx-auto space-y-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -167,7 +167,7 @@ export default function TaskReviewPage() {
         >
           <div>
             <h1 className="text-4xl sm:text-5xl font-extrabold mb-2">
-              Task Review Center 📋
+              Task Review Center
             </h1>
             <p className="text-white/90 text-base sm:text-lg font-semibold">
               Review submitted work & approve or request improvements

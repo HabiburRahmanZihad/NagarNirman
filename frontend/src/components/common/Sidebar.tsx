@@ -67,10 +67,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { href: '/dashboard/superAdmin', icon: 'settings', label: 'SuperAdmin Panel' },
         { href: '/dashboard/superAdmin/users', icon: 'users', label: 'All Users' },
         { href: '/dashboard/superAdmin/applications', icon: 'filetext', label: 'Applications' },
-        { href: '/dashboard/superAdmin/all-reports', icon: 'filetext', label: 'All Reports' },
         { href: '/dashboard/superAdmin/assign-task', icon: 'edit', label: 'Assign Task' },
         { href: '/dashboard/superAdmin/review-tasks', icon: 'filecheck', label: 'Review Tasks' },
         { href: '/dashboard/superAdmin/solver-statistics', icon: 'barchart', label: 'Solver Statistics' },
+        { href: '/dashboard/superAdmin/all-reports', icon: 'filetext', label: 'All Reports' },
         { href: '/dashboard/superAdmin/map-search', icon: 'map', label: 'Map Search' },
       ];
     }
