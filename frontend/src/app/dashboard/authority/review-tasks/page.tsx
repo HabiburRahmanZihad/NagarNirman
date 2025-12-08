@@ -4,29 +4,21 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FullPageLoading } from '@/components/common';
 import { useNotifications } from '@/context/NotificationContext';
-import Button from '@/components/common/Button';
 import { useAuth } from '@/context/AuthContext';
 import { taskAPI } from '@/utils/api';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import Card from '@/components/common/Card';
 import {
   CheckCircle,
   XCircle,
   Clock,
   Eye,
-  ImageIcon,
   FileText,
   Award,
   Star,
-  ArrowLeft,
-  RefreshCw,
   AlertCircle,
-  ClipboardCheck,
   TrendingUp,
-  Zap,
 } from 'lucide-react';
-import Link from 'next/link';
 import Image from 'next/image';
 
 interface TaskReview {
