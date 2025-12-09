@@ -136,3 +136,7 @@ body {
 .report-progress-2 {
   width: 0%;
 }
+
+#map {
+    border-radius: 20px;
+}

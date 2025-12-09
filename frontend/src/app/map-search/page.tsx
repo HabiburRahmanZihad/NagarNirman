@@ -904,7 +904,7 @@ export default function MapSearchPage() {
     setSelectedItem(null);
     setShowDistricts(false);
     setDivisionStats(null);
-    setTimeout(() => setShowAlert(false), 99999);
+    setTimeout(() => setShowAlert(false), 5000);
   }, [searchQuery]);
 
   const handleDivisionClick = useCallback(async (division: Division) => {
@@ -1073,7 +1073,7 @@ export default function MapSearchPage() {
     <div className={`container mx-auto min-h-screen transition-all duration-500 ${
       isDark
         ? 'bg-linear-to-br from-gray-950 via-gray-900 to-gray-950'
-        : 'bg-linear-to-br from-gray-50 via-blue-50/30 to-gray-50'
+        : ''
     }`}>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0" />
@@ -1082,28 +1082,24 @@ export default function MapSearchPage() {
       <header
         className={`relative backdrop-blur-xl ${
           isDark
-            ? 'bg-gray-900/80 border-gray-800/50'
-            : 'bg-white/80 border-gray-200/50'
-        } border-b px-4 md:px-8 py-4 shadow-lg`}
+            ? ' border-gray-800/50'
+            : ''
+        } border-t-6 border-accent px-4 md:px-8 py-5 shadow-lg rounded-xl my-5`}
       >
         <div>
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
             <div className="flex items-center gap-4">
               <div>
-                <h1 className={`text-2xl font-bold tracking-tight ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>
+                <h1 className="text-5xl font-extrabold text-[#002E2E] mb-2">
                   Search your area
                 </h1>
-                <p className={`text-sm font-medium ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                }`}>
+                <p className="text-[#6B7280] text-lg">
                   Bangladesh Municipal Issue Tracking & Analytics
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 w-full lg:w-auto">
+            <div className="lg:w-[800px] grid grid-cols-2 lg:grid-cols-4 gap-3 w-full">
               {[
                 {
                   label: 'Total Reports',
@@ -1165,7 +1161,7 @@ export default function MapSearchPage() {
         </div>
       </header>
 
-      <div className="relative h-[calc(100vh-140px)]">
+      <div className="relative h-[calc(100vh-140px)] mb-10">
         {showAlert && (
           <div className="absolute top-24 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-[1001] animate-in slide-in-from-top duration-300">
             <div className={`p-4 rounded-xl backdrop-blur-xl ${
@@ -1276,7 +1272,7 @@ export default function MapSearchPage() {
                   }}
                 />
 
-                <div className="relative flex justify-between items-start mb-6">
+                <div className="relative flex justify-between items-start mb-6 bg-white px-2 py-3 rounded-xl">
                   <div className="flex items-center gap-3">
                     <div
                       className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl"
