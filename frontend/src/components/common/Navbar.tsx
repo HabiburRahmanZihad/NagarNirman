@@ -133,7 +133,7 @@ const Navbar: React.FC = () => {
 
     if (active) {
       return isHomePage && isDesktop && !isScrolled
-        ? "text-[#004d40] font-semibold bg-white/60"
+        ? "text-[#004d40] font-semibold bg-white/35"
         : "text-[#004d40] font-semibold bg-gray-100";
     }
 
@@ -189,7 +189,7 @@ const Navbar: React.FC = () => {
           {isDesktop && (
             <div className="hidden lg:flex items-center justify-center flex-1">
               {isHomePage && !isScrolled ? (
-                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1">
+                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1 h-15">
                   {navLinks.map((link) => (
                     <div key={link.href} className="relative group">
                       <Link
@@ -260,7 +260,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center gap-4">
             {/* Desktop User/Auth Section */}
             {isDesktop && (
-              <div className={`flex items-center gap-2 ${isHomePage && !isScrolled ? 'bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1' : ''}`}>
+              <div className={`flex items-center gap-2 ${isHomePage && !isScrolled ? 'bg-white/30 backdrop-blur-sm rounded-lg px-2 py-1' : ''}`}>
                 {isAuthenticated && user ? (
                   <>
                     <NotificationCenter />
@@ -285,7 +285,7 @@ const Navbar: React.FC = () => {
                           )}
                         </div>
                         <div className="flex flex-col items-start text-left">
-                          <span className="text-sm font-semibold leading-tight">
+                          <span className="text-sm font-semibold leading-tight text-primary">
                             {user.name}
                           </span>
                           <span className={`text-xs leading-tight truncate max-w-[120px] ${getUserSubtextColor()}`}>
