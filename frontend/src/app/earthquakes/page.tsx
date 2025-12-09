@@ -136,7 +136,7 @@ export default function EarthquakesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [allEarthquakesData, setAllEarthquakesData] = useState<Earthquake[]>([]);
-  const itemsPerPage = 10;
+  const itemsPerPage = 16;
 
   // Fetch earthquakes from USGS API once on component mount
   useEffect(() => {
@@ -285,8 +285,8 @@ export default function EarthquakesPage() {
           </div>
         </div>
 
-        {/* Earthquakes List */}
-        <div className="space-y-4">
+        {/* Earthquakes List - Grid Layout */}
+        <div>
           {loading ? (
             <div className="flex justify-center items-center h-40">
               <div className="animate-spin">
@@ -300,140 +300,94 @@ export default function EarthquakesPage() {
               <p className="text-neutral/70">Try adjusting your search or filters</p>
             </div>
           ) : (
-            filteredEarthquakes.map((earthquake, index) => (
-              <motion.div
-                key={earthquake._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className={`rounded-2xl shadow-lg border-2 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 bg-white ${getAlertColor(
-                  earthquake.alertLevel
-                )}`}
-              >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Left Content */}
-                  <div className="space-y-4">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className="text-4xl">
-                            {getIntensityEmoji(earthquake.intensity)}
-                          </span>
-                          <div>
-                            <h3 className="text-xl font-extrabold text-info">
-                              {earthquake.location}
-                            </h3>
-                            <p className="text-sm text-neutral/70">
-                              Event ID: {earthquake.eventId}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      <span
-                        className={`px-4 py-2 rounded-full font-bold text-sm ${getAlertBadgeColor(
-                          earthquake.alertLevel
-                        )}`}
-                      >
-                        {earthquake.alertLevel} Alert
-                      </span>
-                    </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredEarthquakes.map((earthquake, index) => (
+                <motion.div
+                  key={earthquake._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`rounded-2xl shadow-lg border-2 p-6 hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 bg-white flex flex-col ${getAlertColor(
+                    earthquake.alertLevel
+                  )}`}
+                >
+                  {/* Alert Badge */}
+                  <div className="flex items-start justify-between mb-4">
+                    <span className="text-3xl">
+                      {getIntensityEmoji(earthquake.intensity)}
+                    </span>
+                    <span
+                      className={`px-3 py-1 rounded-full font-bold text-xs ${getAlertBadgeColor(
+                        earthquake.alertLevel
+                      )}`}
+                    >
+                      {earthquake.alertLevel}
+                    </span>
+                  </div>
 
-                    {/* Key metrics */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-base-100/50 rounded-xl p-3">
-                        <div className="flex items-center gap-2 text-xs font-bold text-neutral/70 mb-1">
-                          <Gauge className="w-4 h-4" />
-                          Magnitude
-                        </div>
-                        <p className="text-2xl font-extrabold text-primary">
-                          {earthquake.magnitude.toFixed(1)}
-                        </p>
-                      </div>
-                      <div className="bg-base-100/50 rounded-xl p-3">
-                        <div className="flex items-center gap-2 text-xs font-bold text-neutral/70 mb-1">
-                          <MapPin className="w-4 h-4" />
-                          Depth
-                        </div>
-                        <p className="text-2xl font-extrabold text-secondary">
-                          {earthquake.depth} km
-                        </p>
-                      </div>
-                    </div>
+                  {/* Location */}
+                  <h3 className="text-lg font-extrabold text-info mb-1 line-clamp-2">
+                    {earthquake.location}
+                  </h3>
+                  <p className="text-xs text-neutral/70 mb-4">
+                    Event ID: {earthquake.eventId}
+                  </p>
 
-                    {/* Intensity and affected areas */}
-                    <div className="space-y-2">
-                      <div className="text-sm">
-                        <span className="font-bold text-info">Intensity:</span>
-                        <span className="ml-2 font-semibold">{earthquake.intensity}</span>
+                  {/* Key Metrics */}
+                  <div className="space-y-2 mb-4 flex-1">
+                    <div className="bg-base-100/50 rounded-lg p-2">
+                      <div className="flex items-center gap-2 text-xs font-bold text-neutral/70 mb-1">
+                        <Gauge className="w-3 h-3" />
+                        Magnitude
                       </div>
-                      {earthquake.affectedAreas?.length > 0 && (
-                        <div className="text-sm">
-                          <span className="font-bold text-info">Affected Areas:</span>
-                          <p className="text-neutral/70 mt-1">
-                            {earthquake.affectedAreas.join(', ')}
-                          </p>
-                        </div>
-                      )}
+                      <p className="text-xl font-extrabold text-primary">
+                        {earthquake.magnitude.toFixed(1)}
+                      </p>
+                    </div>
+                    <div className="bg-base-100/50 rounded-lg p-2">
+                      <div className="flex items-center gap-2 text-xs font-bold text-neutral/70 mb-1">
+                        <MapPin className="w-3 h-3" />
+                        Depth
+                      </div>
+                      <p className="text-xl font-extrabold text-secondary">
+                        {earthquake.depth} km
+                      </p>
+                    </div>
+                    <div className="bg-base-100/50 rounded-lg p-2">
+                      <div className="flex items-center gap-2 text-xs font-bold text-neutral/70 mb-1">
+                        <AlertTriangle className="w-3 h-3" />
+                        Intensity
+                      </div>
+                      <p className="text-sm font-semibold text-info">
+                        {earthquake.intensity}
+                      </p>
                     </div>
                   </div>
 
-                  {/* Right Content */}
-                  <div className="space-y-3">
-                    {/* Time */}
-                    <div className="flex items-start gap-3 bg-base-100/50 rounded-xl p-4">
-                      <Clock className="w-5 h-5 text-primary shrink-0 mt-1" />
-                      <div>
-                        <p className="text-xs font-bold text-neutral/70 uppercase">
-                          Timestamp
-                        </p>
-                        <p className="font-semibold text-info">
-                          {new Date(earthquake.timestamp).toLocaleString()}
-                        </p>
-                      </div>
+                  {/* Time */}
+                  <div className="flex items-start gap-2 bg-base-100/50 rounded-lg p-2 mb-4 text-xs">
+                    <Clock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-neutral/70">Time</p>
+                      <p className="font-semibold text-info text-xs line-clamp-2">
+                        {new Date(earthquake.timestamp).toLocaleString()}
+                      </p>
                     </div>
-
-                    {/* Location */}
-                    <div className="flex items-start gap-3 bg-base-100/50 rounded-xl p-4">
-                      <MapPin className="w-5 h-5 text-secondary shrink-0 mt-1" />
-                      <div>
-                        <p className="text-xs font-bold text-neutral/70 uppercase">
-                          Coordinates
-                        </p>
-                        <p className="font-semibold text-info">
-                          {earthquake.latitude.toFixed(3)}°, {earthquake.longitude.toFixed(3)}°
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Casualties */}
-                    {earthquake.casualties > 0 && (
-                      <div className="flex items-start gap-3 bg-error/10 rounded-xl p-4 border-2 border-error/20">
-                        <Users className="w-5 h-5 text-error shrink-0 mt-1" />
-                        <div>
-                          <p className="text-xs font-bold text-error uppercase">
-                            Reported Casualties
-                          </p>
-                          <p className="font-extrabold text-error text-lg">
-                            {earthquake.casualties}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* View Details Button */}
-                    <Link href={`/earthquakes/${earthquake._id}`}>
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="w-full px-4 py-3 bg-linear-to-r from-primary to-secondary text-white rounded-xl font-bold hover:shadow-lg transition-all duration-300"
-                      >
-                        View Details
-                      </motion.button>
-                    </Link>
                   </div>
-                </div>
-              </motion.div>
-            ))
+
+                  {/* View Details Button */}
+                  <Link href={`/earthquakes/${earthquake._id}`}>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full px-3 py-2 bg-linear-to-r from-primary to-secondary text-white rounded-lg font-bold text-sm hover:shadow-lg transition-all duration-300"
+                    >
+                      View Details
+                    </motion.button>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
           )}
         </div>
 
