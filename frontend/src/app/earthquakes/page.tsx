@@ -135,82 +135,83 @@ export default function EarthquakesPage() {
   const [filterLevel, setFilterLevel] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [allEarthquakesData, setAllEarthquakesData] = useState<Earthquake[]>([]);
   const itemsPerPage = 10;
 
+  // Fetch earthquakes from USGS API once on component mount
   useEffect(() => {
-    fetchEarthquakes();
-  }, [currentPage, filterLevel]);
+    const initialFetch = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson', {
+          cache: 'no-store',
+        });
 
-  const fetchEarthquakes = async () => {
-    setLoading(true);
-    try {
-      // Fetch real data directly from USGS API (free, no authentication needed)
-      const response = await fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson', {
-        cache: 'no-store',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch from USGS');
-      }
-
-      const data = await response.json();
-
-      if (data.features && Array.isArray(data.features)) {
-        // Transform USGS data to our format
-        const allTransformed = transformUSGSData(data.features);
-
-        // Separate Bangladesh and global earthquakes
-        const bangladeshEarthquakes = allTransformed.filter(
-          (eq) => isBangladeshEarthquake(eq.latitude, eq.longitude)
-        );
-        const globalEarthquakes = allTransformed.filter(
-          (eq) => !isBangladeshEarthquake(eq.latitude, eq.longitude)
-        );
-
-        // Combine: Bangladesh first, then global, sorted by recent
-        let allEarthquakes = [
-          ...bangladeshEarthquakes.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
-          ...globalEarthquakes.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
-        ];
-
-        // Apply filters
-        if (filterLevel !== 'All') {
-          allEarthquakes = allEarthquakes.filter((eq) => eq.alertLevel === filterLevel);
+        if (!response.ok) {
+          throw new Error('Failed to fetch from USGS');
         }
 
-        // Apply search filter
-        if (searchTerm) {
-          allEarthquakes = allEarthquakes.filter(
-            (eq) =>
-              eq.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              eq.eventId.toLowerCase().includes(searchTerm.toLowerCase())
+        const data = await response.json();
+
+        if (data.features && Array.isArray(data.features)) {
+          const allTransformed = transformUSGSData(data.features);
+          const bangladeshEarthquakes = allTransformed.filter(
+            (eq) => isBangladeshEarthquake(eq.latitude, eq.longitude)
           );
+          const globalEarthquakes = allTransformed.filter(
+            (eq) => !isBangladeshEarthquake(eq.latitude, eq.longitude)
+          );
+
+          const sortedEarthquakes = [
+            ...bangladeshEarthquakes.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+            ...globalEarthquakes.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+          ];
+
+          setAllEarthquakesData(sortedEarthquakes);
+          setLoading(false);
         }
-
-        // Paginate
-        const total = allEarthquakes.length;
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const paginatedEarthquakes = allEarthquakes.slice(startIndex, startIndex + itemsPerPage);
-
-        setEarthquakes(paginatedEarthquakes);
-        setTotalPages(Math.ceil(total / itemsPerPage));
+      } catch (error) {
+        console.error('❌ Error fetching from USGS:', error);
+        setAllEarthquakesData([]);
         setLoading(false);
-        return;
       }
+    };
 
-      throw new Error('Invalid data format');
-    } catch (error) {
-      console.error('❌ Error fetching from USGS:', error);
-      setEarthquakes([]);
-      setLoading(false);
+    initialFetch();
+  }, []);
+
+  // Apply filters and search, and paginate
+  useEffect(() => {
+    let filtered = allEarthquakesData;
+
+    // Apply alert level filter
+    if (filterLevel !== 'All') {
+      filtered = filtered.filter((eq) => eq.alertLevel === filterLevel);
     }
-  };
+
+    // Apply search term filter
+    if (searchTerm.trim()) {
+      filtered = filtered.filter(
+        (eq) =>
+          eq.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          eq.eventId.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Paginate
+    const total = filtered.length;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedEarthquakes = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+    setEarthquakes(paginatedEarthquakes);
+    setTotalPages(Math.ceil(total / itemsPerPage));
+  }, [allEarthquakesData, filterLevel, searchTerm, currentPage, itemsPerPage]);
 
   const filteredEarthquakes = earthquakes;
 
   return (
     <div className="min-h-screen bg-base-200 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="container mx-auto space-y-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -256,7 +257,7 @@ export default function EarthquakesPage() {
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  setCurrentPage(1);
+                  setCurrentPage(1); // Reset to page 1 when search changes
                 }}
                 className="w-full pl-12 pr-4 py-3 border-2 border-base-200 rounded-xl focus:outline-none focus:border-primary transition-colors"
               />
