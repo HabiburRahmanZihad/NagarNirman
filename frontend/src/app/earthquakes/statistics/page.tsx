@@ -255,26 +255,25 @@ export default function EarthquakeAnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-base-100 p-4 sm:p-6 lg:p-8 container mx-auto space-y-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-linear-to-r from-primary to-secondary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
-        >
-          <div className="flex items-center gap-4 mb-4">
-            <div className="text-5xl">🌍</div>
-            <h1 className="text-4xl sm:text-5xl font-extrabold">Earthquake Analytics</h1>
-          </div>
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-linear-to-r from-primary to-secondary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
+      >
+        <div className="flex items-center gap-4 mb-4">
+          <div className="text-5xl">🌍</div>
+          <h1 className="text-4xl sm:text-5xl font-extrabold">Earthquake Analytics</h1>
+        </div>
         <p className="text-white/90 text-lg">Comprehensive statistics and seismic analysis worldwide</p>
         <p className="text-white/80 text-sm">Last updated: {stats.lastUpdated}</p>
-        </motion.div>
+      </motion.div>
 
       {/* Quick Navigation */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
             { href: '/earthquakes', label: '📋 Earthquake List', icon: '📝' },
-            { href: '/earthquakes/map', label: '🗺️ Interactive Map', icon: '🗺️' },
             { href: '/earthquakes/guidelines', label: '🛡️ Safety Guide', icon: '📚' },
           ].map((link) => (
             <Link key={link.href} href={link.href}>

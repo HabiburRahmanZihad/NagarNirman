@@ -3,12 +3,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import {
   MapPin,
   AlertTriangle,
   Gauge,
   RotateCcw,
   Loader,
+  ChevronRight,
 } from 'lucide-react';
 
 interface Earthquake {
@@ -84,12 +86,41 @@ const transformUSGSData = (usgsFeatures: any[]): Earthquake[] => {
   });
 };
 
+// Extract country/region from location string
+const extractCountry = (location: string): string => {
+  const parts = location.split(',').map(p => p.trim());
+  return parts[parts.length - 1] || location;
+};
+
+// Group earthquakes by country
+const groupByCountry = (earthquakes: Earthquake[]) => {
+  const countries: { [key: string]: { count: number; maxMagnitude: number; alertLevel: string } } = {};
+
+  earthquakes.forEach((eq) => {
+    const country = extractCountry(eq.location);
+    if (!countries[country]) {
+      countries[country] = { count: 0, maxMagnitude: 0, alertLevel: 'Green' };
+    }
+    countries[country].count++;
+    countries[country].maxMagnitude = Math.max(countries[country].maxMagnitude, eq.magnitude);
+
+    // Update alert level to highest severity
+    const alertLevels = { 'Red': 3, 'Orange': 2, 'Yellow': 1, 'Green': 0 };
+    if ((alertLevels[eq.alertLevel as keyof typeof alertLevels] || 0) > (alertLevels[countries[country].alertLevel as keyof typeof alertLevels] || 0)) {
+      countries[country].alertLevel = eq.alertLevel;
+    }
+  });
+
+  return countries;
+};
+
 export default function EarthquakeMapPage() {
   const [earthquakes, setEarthquakes] = useState<Earthquake[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedEarthquake, setSelectedEarthquake] = useState<Earthquake | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [affectedCountries, setAffectedCountries] = useState<{ [key: string]: { count: number; maxMagnitude: number; alertLevel: string } }>({});
 
   // Handle component mounting to prevent hydration mismatch
   useEffect(() => {
@@ -173,6 +204,7 @@ export default function EarthquakeMapPage() {
 
         // Store all earthquakes for map display, but track Bangladesh separately
         setEarthquakes(globalEarthquakes);
+        setAffectedCountries(groupByCountry(globalEarthquakes));
         // Store Bangladesh data in sessionStorage for sidebar display
         try {
           sessionStorage.setItem('bangladeshEarthquakes', JSON.stringify(bangladeshEarthquakes));
@@ -238,49 +270,131 @@ export default function EarthquakeMapPage() {
       }).addTo(map);
       console.log('✅ Tile layer added');
 
+      // Inject global styles for animations
+      if (!document.getElementById('earthquake-styles')) {
+        const styleElement = document.createElement('style');
+        styleElement.id = 'earthquake-styles';
+        styleElement.textContent = `
+          @keyframes pulse-ring {
+            0% {
+              transform: scale(0.8);
+              opacity: 1;
+            }
+            100% {
+              transform: scale(1.8);
+              opacity: 0;
+            }
+          }
+
+          .earthquake-marker {
+            filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.4));
+          }
+        `;
+        document.head.appendChild(styleElement);
+        console.log('✅ Earthquake styles injected');
+      }
+
       // Add styled HTML markers for earthquakes
       let markerCount = 0;
       earthquakes.forEach((earthquake) => {
         try {
           const color = getAlertColor(earthquake.alertLevel);
           const isBD = isBangladeshEarthquake(earthquake.latitude, earthquake.longitude);
+          const magnitude = earthquake.magnitude;
 
-          // Create styled HTML marker like map-search
+          // Calculate pin size based on magnitude
+          const baseSize = 24;
+          const sizeMultiplier = Math.min(magnitude / 5, 2.5);
+          const pinSize = Math.max(baseSize, baseSize * sizeMultiplier);
+
+          // Extract location name (first part before comma)
+          const locationParts = earthquake.location.split(',');
+          const displayLocation = locationParts[0].trim();
+
+          // Create styled HTML marker with label
           const markerHtml = `
-            <div style="position: relative; width: 28px; height: 28px;">
+            <div style="position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%;">
+              <!-- Main circle with concentric rings -->
+              <div style="position: relative; width: ${pinSize + 20}px; height: ${pinSize + 20}px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <!-- Outer glow circle -->
+                <div style="
+                  position: absolute;
+                  width: ${pinSize + 20}px;
+                  height: ${pinSize + 20}px;
+                  background: ${color}22;
+                  border: 3px solid ${color}44;
+                  border-radius: 50%;
+                  z-index: 1;
+                "></div>
+                <!-- Middle ring -->
+                <div style="
+                  position: absolute;
+                  width: ${pinSize + 10}px;
+                  height: ${pinSize + 10}px;
+                  background: ${color}33;
+                  border: 2px solid ${color}77;
+                  border-radius: 50%;
+                  z-index: 2;
+                "></div>
+                <!-- Main circle with gradient -->
+                <div style="
+                  position: absolute;
+                  width: ${pinSize}px;
+                  height: ${pinSize}px;
+                  background: linear-gradient(135deg, ${color} 0%, ${color} 100%);
+                  border: 4px solid white;
+                  border-radius: 50%;
+                  box-shadow: 0 0 20px ${color}99, 0 0 8px rgba(0,0,0,0.3), inset 0 0 6px rgba(0,0,0,0.1);
+                  z-index: 3;
+                "></div>
+                <!-- Pulsing animation overlay -->
+                <div style="
+                  position: absolute;
+                  width: ${pinSize}px;
+                  height: ${pinSize}px;
+                  background: transparent;
+                  border: 2px solid ${color};
+                  border-radius: 50%;
+                  animation: pulse-ring 2s infinite;
+                  z-index: 0;
+                "></div>
+                <!-- Magnitude text in center -->
+                <div style="
+                  position: absolute;
+                  z-index: 4;
+                  color: white;
+                  font-weight: bold;
+                  font-size: ${Math.max(10, pinSize * 0.4)}px;
+                  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+                  font-family: system-ui;
+                  line-height: 1;
+                ">${magnitude.toFixed(1)}</div>
+              </div>
+              <!-- Location label below pin -->
               <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 14px;
-                height: 14px;
-                background: linear-gradient(135deg, ${color} 0%, ${color}dd 100%);
-                border: 2px solid white;
-                border-radius: 50% 50% 50% 0;
-                transform: translate(-50%, -50%) rotate(-45deg);
-                box-shadow: 0 2px 10px rgba(0,0,0,0.3), 0 0 0 2px ${color}33;
-                cursor: pointer;
-                transition: transform 0.3s ease;
-              "></div>
-              <div style="
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 6px;
-                height: 6px;
+                margin-top: 4px;
                 background: white;
-                border-radius: 50%;
-              "></div>
+                color: ${color};
+                padding: 4px 10px;
+                border-radius: 14px;
+                font-size: 12px;
+                font-weight: 700;
+                white-space: nowrap;
+                border: 2px solid ${color};
+                box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+                font-family: system-ui, -apple-system, sans-serif;
+                letter-spacing: 0.3px;
+                flex-shrink: 0;
+              ">${displayLocation}</div>
             </div>
           `;
 
           const markerIcon = L.divIcon({
             className: 'earthquake-marker',
             html: markerHtml,
-            iconSize: [28, 28],
-            iconAnchor: [14, 28]
+            iconSize: [pinSize + 20, pinSize + 60],
+            iconAnchor: [(pinSize + 20) / 2, pinSize + 20],
+            popupAnchor: [0, -(pinSize + 60) / 2]
           });
 
           const tooltipContent = `
@@ -356,55 +470,81 @@ export default function EarthquakeMapPage() {
   }, [earthquakes]);
 
   return (
-    <div className="min-h-screen bg-base-100">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-primary to-primary/80 text-white py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto space-y-4">
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-4xl sm:text-5xl font-bold">Natural Disaster Monitoring</h1>
-            <p className="text-white/90 text-lg mt-2">Real-time earthquake detection and analysis for disaster preparedness</p>
-          </motion.div>
+    <div className="min-h-screen bg-base-200 p-4 sm:p-6 lg:p-8">
+      <div className="container mx-auto space-y-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-linear-to-r from-primary to-secondary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
+        >
+          <div className="flex items-center gap-4 mb-4">
+            <div className="text-5xl">🌍</div>
+            <h1 className="text-4xl sm:text-5xl font-extrabold">Earthquake Map</h1>
+          </div>
+          <p className="text-white/90 text-lg">See real-time earthquake data visualized on an interactive map.</p>
+        </motion.div>
+
+        {/* Quick Navigation */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { href: '/earthquakes', label: '📋 Earthquake Alerts', icon: '📝' },
+              { href: '/earthquakes/guidelines', label: '🛡️ Safety Guidelines', icon: '📚' },
+              { href: '/earthquakes/statistics', label: '📊 Statistics', icon: '📈' },
+            ].map((link) => (
+              <Link key={link.href} href={link.href}>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full px-6 py-4 bg-white rounded-2xl shadow-lg border-2 border-accent/20 font-bold text-primary hover:shadow-xl transition-all duration-300 flex items-center justify-between"
+                >
+                  <span className="text-lg">{link.label}</span>
+                  <ChevronRight className="w-5 h-5" />
+                </motion.button>
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Main Content */}
-      {isMounted ? (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Map Container */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="lg:col-span-2"
-            >
-              <div className="bg-white rounded-3xl shadow-lg overflow-hidden h-[550px] border-2 border-primary/10 relative">
-                <div id="earthquake-map" className="w-full h-full" />
-                {loading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-10 backdrop-blur-sm">
-                    <div className="flex flex-col items-center gap-3">
-                      <Loader className="w-10 h-10 text-primary animate-spin" />
-                      <p className="text-sm text-base-content/70">Loading earthquake data...</p>
+        {/* Main Content */}
+        {isMounted ? (
+          <div className="c mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Map Container */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="lg:col-span-2"
+              >
+                <div className="bg-white rounded-3xl shadow-2xl overflow-hidden h-[600px] border-2 border-primary/10 hover:shadow-3xl transition-all duration-300">
+                  <div id="earthquake-map" className="w-full h-full" />
+                  {loading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white/90 z-10 backdrop-blur-sm">
+                      <div className="flex flex-col items-center gap-3">
+                        <Loader className="w-12 h-12 text-primary animate-spin" />
+                        <p className="text-base text-base-content/70 font-semibold">Loading earthquake data...</p>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-
-            {/* Sidebar */}
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
-              {/* Bangladesh Data Card */}
-              <div className="card-root">
-                <div className="card-svg-trace">
-                  <svg viewBox="0 0 100 150" preserveAspectRatio="none">
-                    <rect x="2" y="2" width="96" height="146" rx="20" className="trace-path" />
-                  </svg>
+                  )}
                 </div>
-                <div className="card-inner space-y-5">
-                  <h3 className="text-xl font-bold text-primary">Bangladesh Data</h3>
+              </motion.div>
+
+              {/* Sidebar */}
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+                {/* Bangladesh Data Card */}
+                <motion.div
+                  whileHover={{ y: -5 }}
+                  className="bg-white rounded-3xl shadow-lg border-2 border-primary/10 p-6 hover:shadow-xl transition-all duration-300"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="text-3xl">🇧🇩</div>
+                    <h3 className="text-xl font-bold text-primary">Bangladesh Data</h3>
+                  </div>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between pb-4 border-b border-base-200">
-                      <span className="text-sm text-base-content/70">Total in Bangladesh</span>
-                      <span className="text-2xl font-bold text-primary">
+                    <motion.div whileHover={{ scale: 1.02 }} className="bg-linear-to-br from-primary/5 to-primary/10 rounded-xl p-4 border-l-4 border-primary">
+                      <span className="text-xs font-bold text-base-content/70 uppercase">Total in Bangladesh</span>
+                      <p className="text-3xl font-extrabold text-primary mt-1">
                         {(() => {
                           try {
                             const bd = JSON.parse(sessionStorage.getItem('bangladeshEarthquakes') || '[]');
@@ -413,11 +553,11 @@ export default function EarthquakeMapPage() {
                             return 0;
                           }
                         })()}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between pb-4 border-b border-base-200">
-                      <span className="text-sm text-base-content/70">Red Alerts (M≥7.0)</span>
-                      <span className="text-2xl font-bold text-error">
+                      </p>
+                    </motion.div>
+                    <motion.div whileHover={{ scale: 1.02 }} className="bg-linear-to-br from-error/5 to-error/10 rounded-xl p-4 border-l-4 border-error">
+                      <span className="text-xs font-bold text-base-content/70 uppercase">Red Alerts (M≥7.0)</span>
+                      <p className="text-3xl font-extrabold text-error mt-1">
                         {(() => {
                           try {
                             const bd = JSON.parse(sessionStorage.getItem('bangladeshEarthquakes') || '[]');
@@ -426,167 +566,216 @@ export default function EarthquakeMapPage() {
                             return 0;
                           }
                         })()}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-base-content/70">Global Map Markers</span>
-                      <span className="text-2xl font-bold text-info">{earthquakes.length}</span>
-                    </div>
+                      </p>
+                    </motion.div>
+                    <motion.div whileHover={{ scale: 1.02 }} className="bg-linear-to-br from-info/5 to-info/10 rounded-xl p-4 border-l-4 border-info">
+                      <span className="text-xs font-bold text-base-content/70 uppercase">Global Map Markers</span>
+                      <p className="text-3xl font-extrabold text-info mt-1">{earthquakes.length}</p>
+                    </motion.div>
                   </div>
-                </div>
-              </div>
+                </motion.div>
 
-              {/* Selected Earthquake Details - Show Bangladesh or Global */}
-              {selectedEarthquake && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="card-root">
-                  <div className="card-svg-trace">
-                    <svg viewBox="0 0 100 180" preserveAspectRatio="none">
-                      <rect x="2" y="2" width="96" height="176" rx="20" className="trace-path" />
-                    </svg>
-                  </div>
-                  <div className="card-inner space-y-4">
-                    <h3 className="text-lg font-bold text-primary">
-                      {isBangladeshEarthquake(selectedEarthquake.latitude, selectedEarthquake.longitude)
-                        ? 'Bangladesh Event'
-                        : 'Global Event'}
-                    </h3>
-                    <div className="space-y-4 text-sm">
+                {/* Selected Earthquake Details */}
+                {selectedEarthquake && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    whileHover={{ y: -5 }}
+                    className="bg-white rounded-3xl shadow-lg border-2 border-primary/10 p-6 hover:shadow-xl transition-all duration-300"
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="text-3xl">
+                        {isBangladeshEarthquake(selectedEarthquake.latitude, selectedEarthquake.longitude) ? '🇧🇩' : '🌍'}
+                      </div>
+                      <h3 className="text-lg font-bold text-primary">
+                        {isBangladeshEarthquake(selectedEarthquake.latitude, selectedEarthquake.longitude)
+                          ? 'Bangladesh Event'
+                          : 'Global Event'}
+                      </h3>
+                    </div>
+                    <div className="space-y-3 text-sm">
                       <div className="flex gap-3 pb-3 border-b border-base-200">
                         <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                         <div>
-                          <span className="text-xs text-base-content/70">Location</span>
-                          <p className="font-semibold">{selectedEarthquake.location}</p>
+                          <span className="text-xs font-bold text-base-content/70 uppercase">Location</span>
+                          <p className="font-semibold text-base-content">{selectedEarthquake.location}</p>
                         </div>
                       </div>
                       <div className="flex gap-3 pb-3 border-b border-base-200">
                         <Gauge className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
                         <div>
-                          <span className="text-xs text-base-content/70">Magnitude</span>
-                          <p className="font-semibold">{selectedEarthquake.magnitude.toFixed(1)}</p>
+                          <span className="text-xs font-bold text-base-content/70 uppercase">Magnitude</span>
+                          <p className="font-semibold text-2xl text-warning">{selectedEarthquake.magnitude.toFixed(1)}</p>
                         </div>
                       </div>
                       <div className="flex gap-3 pb-3 border-b border-base-200">
                         <AlertTriangle className="w-5 h-5 text-error flex-shrink-0 mt-0.5" />
                         <div>
-                          <span className="text-xs text-base-content/70">Alert Level</span>
-                          <p className="font-semibold uppercase text-error">{selectedEarthquake.alertLevel}</p>
+                          <span className="text-xs font-bold text-base-content/70 uppercase">Alert Level</span>
+                          <p className={`font-extrabold uppercase text-lg ${selectedEarthquake.alertLevel === 'Red' ? 'text-error' : selectedEarthquake.alertLevel === 'Orange' ? 'text-orange-500' : selectedEarthquake.alertLevel === 'Yellow' ? 'text-warning' : 'text-success'}`}>
+                            {selectedEarthquake.alertLevel}
+                          </p>
                         </div>
                       </div>
                       <div className="flex gap-3">
                         <div className="w-5 h-5 text-info flex-shrink-0 mt-0.5">⏱️</div>
                         <div>
-                          <span className="text-xs text-base-content/70">Time</span>
-                          <p className="font-semibold text-sm">{new Date(selectedEarthquake.timestamp).toLocaleString()}</p>
+                          <span className="text-xs font-bold text-base-content/70 uppercase">Time</span>
+                          <p className="font-semibold text-xs text-base-content mt-1">{new Date(selectedEarthquake.timestamp).toLocaleString()}</p>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              )}
+                  </motion.div>
+                )}
 
-              {/* Refresh Button */}
-              <button
-                onClick={() => {
-                  setLoading(true);
-                  fetchEarthquakes();
-                }}
-                disabled={loading}
-                className="w-full px-6 py-3 bg-primary text-white font-semibold rounded-2xl hover:bg-primary/90 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <RotateCcw className="w-4 h-4" />
-                Refresh Data
-              </button>
+                {/* Refresh Button */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setLoading(true);
+                    fetchEarthquakes();
+                  }}
+                  disabled={loading}
+                  className="w-full px-6 py-4 bg-linear-to-r from-primary to-secondary text-white font-bold rounded-2xl hover:shadow-xl active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <RotateCcw className="w-5 h-5" />
+                  Refresh Data
+                </motion.button>
+              </motion.div>
+            </div>
+          </div>
+        ) : null}
+
+        {/* Affected Countries/Regions Section */}
+        <div className="bg-white rounded-3xl shadow-lg border-2 border-primary/10 p-8">
+          <div className="mb-6">
+            <h2 className="text-3xl font-extrabold text-primary mb-2">🌎 Affected Countries & Regions</h2>
+            <p className="text-base-content/70">Regions experiencing earthquake activity in the past 7 days</p>
+          </div>
+
+          {Object.keys(affectedCountries).length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Object.entries(affectedCountries)
+                .sort((a, b) => b[1].count - a[1].count)
+                .map(([country, data]) => {
+                  const alertColor = getAlertColor(data.alertLevel);
+                  return (
+                    <motion.div
+                      key={country}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      whileHover={{ y: -3 }}
+                      className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 border-2 border-gray-200 hover:shadow-lg transition-all duration-300"
+                      style={{ borderLeftColor: alertColor, borderLeftWidth: '6px' }}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-lg text-base-content truncate">{country}</h3>
+                          <p className="text-xs text-base-content/60 mt-1">
+                            <span
+                              className="inline-block w-3 h-3 rounded-full mr-2"
+                              style={{ backgroundColor: alertColor }}
+                            ></span>
+                            Alert Level: <span style={{ color: alertColor }} className="font-bold">{data.alertLevel}</span>
+                          </p>
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between items-center">
+                          <span className="text-base-content/70">Total Events:</span>
+                          <span className="font-bold text-base-content">{data.count}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-base-content/70">Max Magnitude:</span>
+                          <span className="font-bold" style={{ color: alertColor }}>{data.maxMagnitude.toFixed(1)}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-base-content/70 text-lg">Loading affected regions data...</p>
+            </div>
+          )}
+        </div>
+        <div className="bg-white border-t border-base-300 py-12 px-4 sm:px-6 lg:px-8">
+          <div className="c mx-auto space-y-8">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              <h2 className="text-3xl font-extrabold text-primary mb-4">About This Data</h2>
+              <p className="text-base-content/70 leading-relaxed text-lg">
+                This monitoring system tracks earthquake activity from the USGS Earthquake Hazards Program. Data is updated in real-time and focuses on events from the past 7 days. Bangladesh region activity is prioritized to help disaster preparedness efforts in the region.
+              </p>
             </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                whileHover={{ y: -5 }}
+                className="bg-linear-to-br from-primary/5 to-primary/10 rounded-2xl p-6 border-2 border-primary/20 hover:shadow-lg transition-all duration-300"
+              >
+                <h4 className="font-bold text-primary text-lg mb-2">📊 Alert Levels</h4>
+                <p className="text-sm text-base-content/70">Red: M≥7.0 | Orange: M≥6.0 | Yellow: M≥4.5 | Green: M&lt;4.5</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                whileHover={{ y: -5 }}
+                className="bg-linear-to-br from-success/5 to-success/10 rounded-2xl p-6 border-2 border-success/20 hover:shadow-lg transition-all duration-300"
+              >
+                <h4 className="font-bold text-success text-lg mb-2">🌐 Data Source</h4>
+                <p className="text-sm text-base-content/70">USGS Earthquake Hazards Program (Free & Open)</p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                whileHover={{ y: -5 }}
+                className="bg-linear-to-br from-info/5 to-info/10 rounded-2xl p-6 border-2 border-info/20 hover:shadow-lg transition-all duration-300"
+              >
+                <h4 className="font-bold text-info text-lg mb-2">⏱️ Update Frequency</h4>
+                <p className="text-sm text-base-content/70">Real-time data from past 7 days globally</p>
+              </motion.div>
+            </div>
           </div>
         </div>
-      ) : null}
 
-      {/* Info Section */}
-      <div className="bg-base-200/50 py-12 px-4 sm:px-6 lg:px-8 border-t border-base-300">
-        <div className="max-w-7xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-            <h2 className="text-2xl font-bold text-primary">About This Data</h2>
-            <p className="text-base-content/70 leading-relaxed">
-              This monitoring system tracks earthquake activity from the USGS Earthquake Hazards Program. Data is updated in real-time and focuses on events from the past 7 days. Bangladesh region activity is prioritized to help disaster preparedness efforts in the region.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-              <div className="bg-white rounded-2xl p-4 border-l-4 border-primary">
-                <h4 className="font-semibold text-primary mb-1">Alert Levels</h4>
-                <p className="text-sm text-base-content/70">Red: M≥7.0 | Orange: M≥6.0 | Yellow: M≥4.5 | Green: M&lt;4.5</p>
-              </div>
-              <div className="bg-white rounded-2xl p-4 border-l-4 border-success">
-                <h4 className="font-semibold text-success mb-1">Data Source</h4>
-                <p className="text-sm text-base-content/70">USGS Earthquake Hazards Program (Free & Open)</p>
-              </div>
-              <div className="bg-white rounded-2xl p-4 border-l-4 border-info">
-                <h4 className="font-semibold text-info mb-1">Update Frequency</h4>
-                <p className="text-sm text-base-content/70">Real-time data from past 7 days globally</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Styles for custom cards */}
-      <style>{`
-        .card-root {
-          position: relative;
-          --accent-color: var(--color-primary, #003B31);
+        {/* Styles for custom cards */}
+        <style>{`
+        @keyframes pulse-ring {
+          0% {
+            transform: scale(0.8);
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1.8);
+            opacity: 0;
+          }
         }
 
-        .card-svg-trace {
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          z-index: 2;
+        .earthquake-marker {
+          filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.4));
         }
 
-        .card-svg-trace svg {
-          width: 100%;
-          height: 100%;
-          display: block;
+        .earthquake-tooltip {
+          background: transparent !important;
+          border: none !important;
+          box-shadow: none !important;
         }
-
-        .trace-path {
-          fill: none;
-          stroke: var(--accent-color);
-          stroke-width: 2.8;
-          stroke-linecap: round;
-          stroke-linejoin: round;
-          vector-effect: non-scaling-stroke;
-          stroke-dasharray: 150;
-          stroke-dashoffset: 0;
-          animation: borderMove 30s linear infinite;
-          opacity: 0.9;
-          filter: drop-shadow(0 0 5px var(--accent-color));
-        }
-
-        @keyframes borderMove {
-          0% { stroke-dashoffset: 0; }
-          100% { stroke-dashoffset: -1010; }
-        }
-
-        .card-root:hover .trace-path {
-          animation-duration: 10s;
-          opacity: 1;
-          filter: drop-shadow(0 0 8px var(--accent-color));
-        }
-
-        .card-inner {
-          position: relative;
-          z-index: 1;
-          background: white;
-          border-radius: 1.5rem;
-          padding: 1.5rem;
-          height: 100%;
-          border: 2px solid var(--accent-color);
-          transition: all 0.28s ease;
-        }
-
-        .card-inner:hover {
-          box-shadow: 0 18px 30px rgba(0,0,0,0.14);
+        .earthquake-tooltip .leaflet-tooltip-content {
+          background: transparent !important;
+          border: none !important;
+          padding: 0 !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
         }
       `}</style>
+      </div>
     </div>
   );
 }

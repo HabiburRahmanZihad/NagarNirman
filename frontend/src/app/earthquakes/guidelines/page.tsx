@@ -146,10 +146,9 @@ export default function EarthquakeGuidelinesPage() {
         </motion.div>
 
         {/* Quick Navigation */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
             { href: '/earthquakes', label: '📋 Earthquake Alerts', icon: '📝' },
-            { href: '/earthquakes/map', label: '🗺️ Interactive Map', icon: '🗺️' },
             { href: '/earthquakes/statistics', label: '📊 Statistics', icon: '📈' },
           ].map((link) => (
             <Link key={link.href} href={link.href}>
