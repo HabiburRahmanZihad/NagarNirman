@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-[#002E2E] text-white py-6 md:pt-12">
+    <footer className="relative bg-[#002E2E] text-white py-6 md:pt-12">
       <div className="container mx-auto  py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:mb-12 mb-6 md:px-6">
           {/* About Section */}
@@ -301,6 +301,16 @@ const Footer: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="w-full absolute -top-10">
+        <Image 
+          src={"/images/footer-shape.webp"}
+          alt="footer-shape"
+          width={500}
+          height={500}
+          className="w-fit h-16"
+        >
+        </Image>
       </div>
     </footer>
   );
