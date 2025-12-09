@@ -263,7 +263,7 @@ export default function NewReportPage() {
 
   // Show loading state
   if (isLoading) {
-    return <FullPageLoading message="Preparing Form" submessage="Setting up report submission form..." />;
+    return <FullPageLoading text="Preparing Form" subtext="Setting up report submission form..." />;
   }
 
   // Show access denied if not a user

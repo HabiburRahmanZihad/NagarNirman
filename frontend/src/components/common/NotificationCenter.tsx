@@ -158,7 +158,7 @@ export const NotificationCenter: React.FC = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              clearNotification(notification._id || notification.id);
+                              clearNotification((notification._id || notification.id) as string);
                             }}
                             className="text-gray-400 hover:text-red-500 transition-colors p-1"
                           >

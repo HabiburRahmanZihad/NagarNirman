@@ -28,6 +28,7 @@ import mapRoutes from './routes/mapRoutes.js';
 import statisticsRoutes from './routes/statisticsRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import leaderboardRoutes from './routes/leaderboardRoutes.js';
+import earthquakeRoutes from './routes/earthquakeRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 // Initialize Express app
@@ -64,6 +65,7 @@ app.use('/api/map', mapRoutes);
 app.use('/api/statistics', statisticsRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/earthquakes', earthquakeRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {
