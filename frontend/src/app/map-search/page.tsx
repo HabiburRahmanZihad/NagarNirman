@@ -1080,20 +1080,20 @@ export default function MapSearchPage() {
       </div>
 
       <header
-        className={`relative backdrop-blur-xl ${
+        className={`bg-primary relative backdrop-blur-xl ${
           isDark
             ? ' border-gray-800/50'
             : ''
-        } border-t-6 border-accent px-4 md:px-8 py-5 shadow-lg rounded-xl my-5`}
+        } border-t-8 border-accent px-4 md:px-8 py-5 shadow-lg rounded-xl my-5`}
       >
         <div>
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
             <div className="flex items-center gap-4">
               <div>
-                <h1 className="text-5xl font-extrabold text-[#002E2E] mb-2">
+                <h1 className="text-5xl font-extrabold text-white mb-2">
                   Search your area
                 </h1>
-                <p className="text-[#6B7280] text-lg">
+                <p className="text-accent text-lg">
                   Bangladesh Municipal Issue Tracking & Analytics
                 </p>
               </div>
