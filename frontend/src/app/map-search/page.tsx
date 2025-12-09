@@ -444,7 +444,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
 
       // Enhanced legend with glassmorphism
       const legend = new L.Control({ position: 'bottomright' });
-      legend.onAdd = function() {
+      legend.onAdd = function () {
         const div = L.DomUtil.create('div', 'info legend');
         div.style.cssText = `
           background: ${isDark ? 'rgba(17, 24, 39, 0.85)' : 'rgba(255, 255, 255, 0.85)'};
@@ -587,7 +587,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
 
       // Create new legend with updated data
       const legend = new L.Control({ position: 'bottomright' });
-      legend.onAdd = function() {
+      legend.onAdd = function () {
         const div = L.DomUtil.create('div', 'info legend');
         div.style.cssText = `
           background: ${isDark ? 'rgba(17, 24, 39, 0.85)' : 'rgba(255, 255, 255, 0.85)'};
@@ -818,6 +818,12 @@ export default function MapSearchPage() {
   const [divisionsData, setDivisionsData] = useState<Division[]>(DIVISIONS_DATA);
   const [loading, setLoading] = useState<boolean>(true);
   const [divisionStats, setDivisionStats] = useState<any>(null);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Fetch all divisions stats on mount using comprehensive statistics API
   useEffect(() => {
@@ -1077,12 +1083,24 @@ export default function MapSearchPage() {
 
   const displayItem = selectedItem || searchedLocationData;
 
+  if (!isMounted) {
+    return (
+      <div className="container mx-auto min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-50">
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading map...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className={`container mx-auto min-h-screen transition-all duration-500 ${
-      isDark
+    <div className={`container mx-auto min-h-screen transition-all duration-500 ${isDark
         ? 'bg-linear-to-br from-gray-950 via-gray-900 to-gray-950'
         : 'bg-linear-to-br from-gray-50 via-blue-50/30 to-gray-50'
-    }`}>
+      }`}>
       {/* Animated background gradient overlay */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0" />
@@ -1090,25 +1108,22 @@ export default function MapSearchPage() {
 
       {/* Premium Header */}
       <header
-        className={`relative backdrop-blur-xl ${
-          isDark
+        className={`relative backdrop-blur-xl ${isDark
             ? 'bg-gray-900/80 border-gray-800/50'
             : 'bg-white/80 border-gray-200/50'
-        } border-b px-4 md:px-8 py-4 shadow-lg`}
+          } border-b px-4 md:px-8 py-4 shadow-lg`}
       >
         <div>
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
             {/* Logo & Title */}
             <div className="flex items-center gap-4">
               <div>
-                <h1 className={`text-2xl font-bold tracking-tight ${
-                  isDark ? 'text-white' : 'text-gray-900'
-                }`}>
+                <h1 className={`text-2xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'
+                  }`}>
                   Search your area
                 </h1>
-                <p className={`text-sm font-medium ${
-                  isDark ? 'text-gray-400' : 'text-gray-600'
-                }`}>
+                <p className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
                   Bangladesh Municipal Issue Tracking & Analytics
                 </p>
               </div>
@@ -1152,19 +1167,16 @@ export default function MapSearchPage() {
               ].map((stat, i) => (
                 <div
                   key={stat.label}
-                  className={`${
-                    isDark ? stat.bgDark : stat.bgLight
-                  } backdrop-blur-sm rounded-xl p-3 border ${
-                    isDark ? 'border-gray-800/50' : 'border-gray-200/50'
-                  }`}
+                  className={`${isDark ? stat.bgDark : stat.bgLight
+                    } backdrop-blur-sm rounded-xl p-3 border ${isDark ? 'border-gray-800/50' : 'border-gray-200/50'
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <stat.icon className={`w-4 h-4 bg-linear-to-r ${stat.color} bg-clip-text text-transparent`} strokeWidth={2.5} />
                     <div className={`w-2 h-2 rounded-full bg-linear-to-r ${stat.color}`} />
                   </div>
-                  <p className={`text-xs font-medium mb-1 ${
-                    isDark ? 'text-gray-400' : 'text-gray-600'
-                  }`}>
+                  <p className={`text-xs font-medium mb-1 ${isDark ? 'text-gray-400' : 'text-gray-600'
+                    }`}>
                     {stat.label}
                   </p>
                   <p className={`text-xl font-bold bg-linear-to-r ${stat.color} bg-clip-text text-transparent`}>
@@ -1181,35 +1193,31 @@ export default function MapSearchPage() {
       <div className="relative h-[calc(100vh-140px)]">
         {/* Premium Search Bar - Moved to right side */}
         <div className="absolute top-6 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-[1000] flex gap-3">
-          <div className={`flex-1 relative backdrop-blur-xl ${
-            isDark
+          <div className={`flex-1 relative backdrop-blur-xl ${isDark
               ? 'bg-gray-900/90 border-gray-700/50'
               : 'bg-white/90 border-gray-200/50'
-          } rounded-2xl shadow-2xl border`}>
-            <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
-              isDark ? 'text-gray-400' : 'text-gray-500'
-            }`} strokeWidth={2.5} />
+            } rounded-2xl shadow-2xl border`}>
+            <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'
+              }`} strokeWidth={2.5} />
             <input
               type="text"
               placeholder="Search divisions or districts (e.g., Narayanganj, Dhaka)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-12 pr-12 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all ${
-                isDark
+              className={`w-full pl-12 pr-12 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all ${isDark
                   ? 'bg-transparent text-white placeholder-gray-500'
                   : 'bg-transparent text-gray-900 placeholder-gray-400'
-              } font-medium`}
+                } font-medium`}
             />
             {searchQuery && (
               <button
                 onClick={handleClearSearch}
                 title="Clear search"
                 aria-label="Clear search"
-                className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 rounded-lg ${
-                  isDark
+                className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 rounded-lg ${isDark
                     ? 'text-gray-400 hover:text-white hover:bg-gray-800'
                     : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
-                } transition-all`}
+                  } transition-all`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1231,439 +1239,399 @@ export default function MapSearchPage() {
         </div>
 
         {/* Premium Sidebar - Now on LEFT side */}
-          {displayItem && (
-            <>
-              {/* Glassmorphic Overlay with reduced opacity */}
-              <div
-                onClick={handleCloseSidebar}
-                className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[999]"
-              />
+        {displayItem && (
+          <>
+            {/* Glassmorphic Overlay with reduced opacity */}
+            <div
+              onClick={handleCloseSidebar}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[999]"
+            />
 
-              {/* Sidebar Content - Now on LEFT */}
-              <div
-                className={`absolute top-0 left-0 w-full md:w-[460px] h-full ${
-                  isDark
-                    ? 'bg-linear-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
-                    : 'bg-linear-to-b from-white/98 via-white/95 to-gray-50/98'
-                } backdrop-blur-2xl shadow-2xl z-[1000] overflow-hidden flex flex-col border-r ${
-                  isDark ? 'border-gray-800/50' : 'border-gray-200/50'
+            {/* Sidebar Content - Now on LEFT */}
+            <div
+              className={`absolute top-0 left-0 w-full md:w-[460px] h-full ${isDark
+                  ? 'bg-linear-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
+                  : 'bg-linear-to-b from-white/98 via-white/95 to-gray-50/98'
+                } backdrop-blur-2xl shadow-2xl z-[1000] overflow-hidden flex flex-col border-r ${isDark ? 'border-gray-800/50' : 'border-gray-200/50'
                 }`}
-              >
-                {/* Sidebar Header with Gradient */}
-                <div className="relative p-6 pb-8">
-                  <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                      background: `linear-gradient(135deg, ${
-                        displayItem.type === 'district'
-                          ? (displayItem.division as Division)?.color || '#6B7280'
-                          : (displayItem.data as Division).color
+            >
+              {/* Sidebar Header with Gradient */}
+              <div className="relative p-6 pb-8">
+                <div
+                  className="absolute inset-0 opacity-10"
+                  style={{
+                    background: `linear-gradient(135deg, ${displayItem.type === 'district'
+                        ? (displayItem.division as Division)?.color || '#6B7280'
+                        : (displayItem.data as Division).color
                       }44 0%, transparent 100%)`
-                    }}
-                  />
+                  }}
+                />
 
-                  <div className="relative flex justify-between items-start mb-6">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl"
-                        style={{
-                          background: `linear-gradient(135deg, ${
-                            displayItem.type === 'district'
-                              ? (displayItem.division as Division)?.color || '#6B7280'
-                              : (displayItem.data as Division).color
-                          } 0%, ${
-                            displayItem.type === 'district'
-                              ? (displayItem.division as Division)?.color || '#6B7280'
-                              : (displayItem.data as Division).color
+                <div className="relative flex justify-between items-start mb-6">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl"
+                      style={{
+                        background: `linear-gradient(135deg, ${displayItem.type === 'district'
+                            ? (displayItem.division as Division)?.color || '#6B7280'
+                            : (displayItem.data as Division).color
+                          } 0%, ${displayItem.type === 'district'
+                            ? (displayItem.division as Division)?.color || '#6B7280'
+                            : (displayItem.data as Division).color
                           }dd 100%)`
-                        }}
-                      >
-                        <MapPin className="w-7 h-7 text-white" strokeWidth={2.5} />
-                      </div>
-                      <div>
-                        <h2 className={`text-2xl font-bold tracking-tight ${
-                          isDark ? 'text-white' : 'text-gray-900'
+                      }}
+                    >
+                      <MapPin className="w-7 h-7 text-white" strokeWidth={2.5} />
+                    </div>
+                    <div>
+                      <h2 className={`text-2xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'
                         }`}>
-                          {displayItem.data.name}
-                        </h2>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className={`text-sm font-medium ${
-                            isDark ? 'text-gray-400' : 'text-gray-600'
+                        {displayItem.data.name}
+                      </h2>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'
                           }`}>
-                            {displayItem.type === 'division'
-                              ? `${(displayItem.data as Division).districts.length} Districts`
-                              : `District of ${(displayItem.division as Division)?.name || 'Unknown'}`
-                            }
-                          </span>
-                          <span className="text-gray-400">•</span>
-                          <span
-                            className="text-sm font-semibold flex items-center gap-1"
-                            style={{
-                              color: displayItem.type === 'district'
-                                ? (displayItem.division as Division)?.color || '#6B7280'
-                                : (displayItem.data as Division).color
-                            }}
-                          >
-                            <TrendingUp className="w-3 h-3" />
-                            {displayItem.type === 'division'
-                              ? (displayItem.data as Division).trend
-                              : '+0%'
-                            }
-                          </span>
-                        </div>
+                          {displayItem.type === 'division'
+                            ? `${(displayItem.data as Division).districts.length} Districts`
+                            : `District of ${(displayItem.division as Division)?.name || 'Unknown'}`
+                          }
+                        </span>
+                        <span className="text-gray-400">•</span>
+                        <span
+                          className="text-sm font-semibold flex items-center gap-1"
+                          style={{
+                            color: displayItem.type === 'district'
+                              ? (displayItem.division as Division)?.color || '#6B7280'
+                              : (displayItem.data as Division).color
+                          }}
+                        >
+                          <TrendingUp className="w-3 h-3" />
+                          {displayItem.type === 'division'
+                            ? (displayItem.data as Division).trend
+                            : '+0%'
+                          }
+                        </span>
                       </div>
                     </div>
-                    <button
-                      onClick={handleCloseSidebar}
-                      title="Close sidebar"
-                      aria-label="Close sidebar"
-                      className={`p-2.5 rounded-xl ${
-                        isDark
-                          ? 'hover:bg-gray-800/80 text-gray-400 hover:text-white'
-                          : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
+                  </div>
+                  <button
+                    onClick={handleCloseSidebar}
+                    title="Close sidebar"
+                    aria-label="Close sidebar"
+                    className={`p-2.5 rounded-xl ${isDark
+                        ? 'hover:bg-gray-800/80 text-gray-400 hover:text-white'
+                        : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
                       } transition-all`}
-                    >
-                      <X className="w-5 h-5" strokeWidth={2.5} />
-                    </button>
-                  </div>
-
-                  {/* Stats Grid */}
-                  <div className="relative grid grid-cols-3 gap-3">
-                    {[
-                      {
-                        label: 'Total',
-                        value: displayItem.type === 'division'
-                          ? (displayItem.data as Division).districts.reduce((a, d) => a + d.total, 0)
-                          : (displayItem.data as District).total,
-                        icon: BarChart3,
-                        gradient: 'from-blue-500 to-blue-600',
-                        bgDark: 'bg-blue-500/10',
-                        bgLight: 'bg-blue-50'
-                      },
-                      {
-                        label: 'Pending',
-                        value: displayItem.type === 'division'
-                          ? (displayItem.data as Division).districts.reduce((a, d) => a + d.pending, 0)
-                          : (displayItem.data as District).pending,
-                        icon: Clock,
-                        gradient: 'from-orange-500 to-amber-500',
-                        bgDark: 'bg-orange-500/10',
-                        bgLight: 'bg-orange-50'
-                      },
-                      {
-                        label: 'Resolved',
-                        value: displayItem.type === 'division'
-                          ? (displayItem.data as Division).districts.reduce((a, d) => a + d.completed, 0)
-                          : (displayItem.data as District).completed,
-                        icon: CheckCircle,
-                        gradient: 'from-green-500 to-emerald-600',
-                        bgDark: 'bg-green-500/10',
-                        bgLight: 'bg-green-50'
-                      }
-                    ].map((stat, i) => (
-                      <div
-                        key={stat.label}
-                        className={`p-4 rounded-xl ${
-                          isDark ? stat.bgDark : stat.bgLight
-                        } border ${
-                          isDark ? 'border-gray-800/50' : 'border-gray-200/30'
-                        } backdrop-blur-sm`}
-                      >
-                        <stat.icon className={`w-4 h-4 mb-2 bg-linear-to-r ${stat.gradient} bg-clip-text text-transparent`} strokeWidth={2.5} />
-                        <p className={`text-xs font-medium mb-1 ${
-                          isDark ? 'text-gray-400' : 'text-gray-600'
-                        }`}>
-                          {stat.label}
-                        </p>
-                        <p className={`text-2xl font-bold bg-linear-to-r ${stat.gradient} bg-clip-text text-transparent`}>
-                          {stat.value}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
+                  >
+                    <X className="w-5 h-5" strokeWidth={2.5} />
+                  </button>
                 </div>
 
-                {/* Content based on selection type */}
-                {displayItem.type === 'division' ? (
-                  <>
-                    {/* Districts Section Header */}
-                    <div className={`px-6 pb-3 border-b ${
-                      isDark ? 'border-gray-800/50' : 'border-gray-200/50'
-                    }`}>
-                      <div className="flex items-center justify-between">
-                        <h3 className={`text-sm font-semibold uppercase tracking-wider ${
-                          isDark ? 'text-gray-400' : 'text-gray-600'
-                        }`}>
-                          District Overview
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs">
-                          <Users className={`w-3 h-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
-                          <span className={isDark ? 'text-gray-500' : 'text-gray-500'}>
-                            {(displayItem.data as Division).districts.length} Locations
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Districts List */}
-                    <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3 custom-scrollbar">
-                      {(displayItem.data as Division).districts.map((district, index) => {
-                        const completionPercent = district.total > 0
-                          ? Math.round((district.completed / district.total) * 100)
-                          : 0;
-                        const priorityColors = {
-                          high: { bg: 'bg-red-500/10', text: 'text-red-500', border: 'border-red-500/20' },
-                          medium: { bg: 'bg-yellow-500/10', text: 'text-yellow-500', border: 'border-yellow-500/20' },
-                          low: { bg: 'bg-green-500/10', text: 'text-green-500', border: 'border-green-500/20' }
-                        };
-                        const priority = priorityColors[district.priority] || priorityColors.low;
-
-                        return (
-                          <div
-                            key={district.name}
-                            className={`group relative p-5 rounded-2xl border ${
-                              isDark
-                                ? 'bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/80'
-                                : 'bg-white/80 border-gray-200/50 hover:bg-white'
-                            } backdrop-blur-sm transition-all cursor-pointer overflow-hidden`}
-                            onClick={() => handleDistrictClick(district, displayItem.data as Division)}
-                          >
-                            {/* Gradient overlay on hover */}
-                            <div
-                              className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity"
-                              style={{
-                                background: `linear-gradient(135deg, ${(displayItem.data as Division).color} 0%, transparent 100%)`
-                              }}
-                            />
-
-                            <div className="relative">
-                              {/* Header */}
-                              <div className="flex justify-between items-start mb-4">
-                                <div>
-                                  <h3 className={`font-bold text-lg mb-1 ${
-                                    isDark ? 'text-white' : 'text-gray-900'
-                                  }`}>
-                                    {district.name}
-                                  </h3>
-                                  <div className="flex items-center gap-2">
-                                    <span className={`text-xs px-2 py-1 rounded-md font-medium uppercase ${priority.bg} ${priority.text} ${priority.border} border`}>
-                                      {district.priority} Priority
-                                    </span>
-                                  </div>
-                                </div>
-                                <div className="text-right">
-                                  <div className={`text-sm font-medium ${
-                                    isDark ? 'text-gray-400' : 'text-gray-600'
-                                  }`}>
-                                    Completion
-                                  </div>
-                                  <div className="text-2xl font-bold" style={{ color: (displayItem.data as Division).color }}>
-                                    {completionPercent}%
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Stats Row */}
-                              <div className="grid grid-cols-3 gap-3 mb-4">
-                                <div className={`text-center p-2 rounded-lg ${
-                                  isDark ? 'bg-gray-900/50' : 'bg-gray-50'
-                                }`}>
-                                  <Activity className={`w-4 h-4 mx-auto mb-1 ${
-                                    isDark ? 'text-blue-400' : 'text-blue-600'
-                                  }`} strokeWidth={2.5} />
-                                  <div className={`text-xs font-medium ${
-                                    isDark ? 'text-gray-500' : 'text-gray-600'
-                                  }`}>
-                                    Total
-                                  </div>
-                                  <div className={`text-lg font-bold ${
-                                    isDark ? 'text-white' : 'text-gray-900'
-                                  }`}>
-                                    {district.total}
-                                  </div>
-                                </div>
-                                <div className={`text-center p-2 rounded-lg ${
-                                  isDark ? 'bg-gray-900/50' : 'bg-gray-50'
-                                }`}>
-                                  <Clock className={`w-4 h-4 mx-auto mb-1 ${
-                                    isDark ? 'text-orange-400' : 'text-orange-600'
-                                  }`} strokeWidth={2.5} />
-                                  <div className={`text-xs font-medium ${
-                                    isDark ? 'text-gray-500' : 'text-gray-600'
-                                  }`}>
-                                    Pending
-                                  </div>
-                                  <div className={`text-lg font-bold ${
-                                    isDark ? 'text-white' : 'text-gray-900'
-                                  }`}>
-                                    {district.pending}
-                                  </div>
-                                </div>
-                                <div className={`text-center p-2 rounded-lg ${
-                                  isDark ? 'bg-gray-900/50' : 'bg-gray-50'
-                                }`}>
-                                  <CheckCircle className={`w-4 h-4 mx-auto mb-1 ${
-                                    isDark ? 'text-green-400' : 'text-green-600'
-                                  }`} strokeWidth={2.5} />
-                                  <div className={`text-xs font-medium ${
-                                    isDark ? 'text-gray-500' : 'text-gray-600'
-                                  }`}>
-                                    Done
-                                  </div>
-                                  <div className={`text-lg font-bold ${
-                                    isDark ? 'text-white' : 'text-gray-900'
-                                  }`}>
-                                    {district.completed}
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Progress Bar */}
-                              <div className={`relative w-full h-2 rounded-full overflow-hidden ${
-                                isDark ? 'bg-gray-900/50' : 'bg-gray-200'
-                              }`}>
-                                <div
-                                  className="absolute left-0 top-0 h-full rounded-full transition-all duration-1000"
-                                  style={{
-                                    width: `${completionPercent}%`,
-                                    background: `linear-gradient(90deg, ${(displayItem.data as Division).color} 0%, ${(displayItem.data as Division).color}cc 100%)`
-                                  }}
-                                />
-                              </div>
-
-                              {/* View Details Link */}
-                              <div className="mt-4 flex items-center justify-between">
-                                <span className={`text-xs ${
-                                  isDark ? 'text-gray-500' : 'text-gray-500'
-                                }`}>
-                                  Click to view details
-                                </span>
-                                <button
-                                  className={`text-xs font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all ${
-                                    isDark
-                                      ? 'text-blue-400 hover:bg-blue-500/10'
-                                      : 'text-blue-600 hover:bg-blue-50'
-                                  }`}
-                                  style={{ color: (displayItem.data as Division).color }}
-                                >
-                                  View Map
-                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-                                  </svg>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </>
-                ) : (
-                  /* District Details View */
-                  <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
-                    <div className={`p-6 rounded-2xl border ${
-                        isDark
-                          ? 'bg-gray-800/50 border-gray-700/50'
-                          : 'bg-white/80 border-gray-200/50'
-                      } backdrop-blur-sm`}
+                {/* Stats Grid */}
+                <div className="relative grid grid-cols-3 gap-3">
+                  {[
+                    {
+                      label: 'Total',
+                      value: displayItem.type === 'division'
+                        ? (displayItem.data as Division).districts.reduce((a, d) => a + d.total, 0)
+                        : (displayItem.data as District).total,
+                      icon: BarChart3,
+                      gradient: 'from-blue-500 to-blue-600',
+                      bgDark: 'bg-blue-500/10',
+                      bgLight: 'bg-blue-50'
+                    },
+                    {
+                      label: 'Pending',
+                      value: displayItem.type === 'division'
+                        ? (displayItem.data as Division).districts.reduce((a, d) => a + d.pending, 0)
+                        : (displayItem.data as District).pending,
+                      icon: Clock,
+                      gradient: 'from-orange-500 to-amber-500',
+                      bgDark: 'bg-orange-500/10',
+                      bgLight: 'bg-orange-50'
+                    },
+                    {
+                      label: 'Resolved',
+                      value: displayItem.type === 'division'
+                        ? (displayItem.data as Division).districts.reduce((a, d) => a + d.completed, 0)
+                        : (displayItem.data as District).completed,
+                      icon: CheckCircle,
+                      gradient: 'from-green-500 to-emerald-600',
+                      bgDark: 'bg-green-500/10',
+                      bgLight: 'bg-green-50'
+                    }
+                  ].map((stat, i) => (
+                    <div
+                      key={stat.label}
+                      className={`p-4 rounded-xl ${isDark ? stat.bgDark : stat.bgLight
+                        } border ${isDark ? 'border-gray-800/50' : 'border-gray-200/30'
+                        } backdrop-blur-sm`}
                     >
-                      <h3 className={`text-lg font-bold mb-4 ${
-                        isDark ? 'text-white' : 'text-gray-900'
-                      }`}>
-                        District Performance
+                      <stat.icon className={`w-4 h-4 mb-2 bg-linear-to-r ${stat.gradient} bg-clip-text text-transparent`} strokeWidth={2.5} />
+                      <p className={`text-xs font-medium mb-1 ${isDark ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
+                        {stat.label}
+                      </p>
+                      <p className={`text-2xl font-bold bg-linear-to-r ${stat.gradient} bg-clip-text text-transparent`}>
+                        {stat.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Content based on selection type */}
+              {displayItem.type === 'division' ? (
+                <>
+                  {/* Districts Section Header */}
+                  <div className={`px-6 pb-3 border-b ${isDark ? 'border-gray-800/50' : 'border-gray-200/50'
+                    }`}>
+                    <div className="flex items-center justify-between">
+                      <h3 className={`text-sm font-semibold uppercase tracking-wider ${isDark ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
+                        District Overview
                       </h3>
-
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                            Report Resolution Rate
-                          </span>
-                          <span className="font-bold" style={{ color: (displayItem.division as Division)?.color || '#6B7280' }}>
-                            {(displayItem.data as District).total > 0
-                              ? Math.round(((displayItem.data as District).completed / (displayItem.data as District).total) * 100)
-                              : 0}%
-                          </span>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                          <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                            Average Resolution Time
-                          </span>
-                          <span className={`font-bold ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {(displayItem.data as District).total > 0 ? '3.2 days' : 'No data'}
-                          </span>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                          <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                            Citizen Satisfaction
-                          </span>
-                          <span className={`font-bold ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {(displayItem.data as District).total > 0 ? '87%' : 'No data'}
-                          </span>
-                        </div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <Users className={`w-3 h-3 ${isDark ? 'text-gray-500' : 'text-gray-400'}`} />
+                        <span className={isDark ? 'text-gray-500' : 'text-gray-500'}>
+                          {(displayItem.data as Division).districts.length} Locations
+                        </span>
                       </div>
-
-                      {(displayItem.data as District).total > 0 && (
-                        <div className="mt-6 pt-6 border-t border-gray-700/50">
-                          <h4 className={`text-sm font-semibold mb-3 ${
-                            isDark ? 'text-gray-400' : 'text-gray-600'
-                          }`}>
-                            Recent Activities
-                          </h4>
-                          <div className="space-y-2">
-                            {['Road repair completed', 'New complaint registered', 'Water supply issue resolved']
-                              .map((activity, i) => (
-                                <div key={i} className={`flex items-center gap-3 text-sm ${
-                                  isDark ? 'text-gray-400' : 'text-gray-600'
-                                }`}>
-                                  <div
-                                    className="w-2 h-2 rounded-full"
-                                    style={{ backgroundColor: (displayItem.division as Division)?.color || '#6B7280' }}
-                                  />
-                                  {activity}
-                                </div>
-                              ))
-                            }
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
-                )}
 
-                {/* Sidebar Footer */}
-                <div className={`p-5 border-t ${
-                  isDark ? 'border-gray-800/50 bg-gray-900/50' : 'border-gray-200/50 bg-gray-50/50'
+                  {/* Districts List */}
+                  <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3 custom-scrollbar">
+                    {(displayItem.data as Division).districts.map((district, index) => {
+                      const completionPercent = district.total > 0
+                        ? Math.round((district.completed / district.total) * 100)
+                        : 0;
+                      const priorityColors = {
+                        high: { bg: 'bg-red-500/10', text: 'text-red-500', border: 'border-red-500/20' },
+                        medium: { bg: 'bg-yellow-500/10', text: 'text-yellow-500', border: 'border-yellow-500/20' },
+                        low: { bg: 'bg-green-500/10', text: 'text-green-500', border: 'border-green-500/20' }
+                      };
+                      const priority = priorityColors[district.priority] || priorityColors.low;
+
+                      return (
+                        <div
+                          key={district.name}
+                          className={`group relative p-5 rounded-2xl border ${isDark
+                              ? 'bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/80'
+                              : 'bg-white/80 border-gray-200/50 hover:bg-white'
+                            } backdrop-blur-sm transition-all cursor-pointer overflow-hidden`}
+                          onClick={() => handleDistrictClick(district, displayItem.data as Division)}
+                        >
+                          {/* Gradient overlay on hover */}
+                          <div
+                            className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity"
+                            style={{
+                              background: `linear-gradient(135deg, ${(displayItem.data as Division).color} 0%, transparent 100%)`
+                            }}
+                          />
+
+                          <div className="relative">
+                            {/* Header */}
+                            <div className="flex justify-between items-start mb-4">
+                              <div>
+                                <h3 className={`font-bold text-lg mb-1 ${isDark ? 'text-white' : 'text-gray-900'
+                                  }`}>
+                                  {district.name}
+                                </h3>
+                                <div className="flex items-center gap-2">
+                                  <span className={`text-xs px-2 py-1 rounded-md font-medium uppercase ${priority.bg} ${priority.text} ${priority.border} border`}>
+                                    {district.priority} Priority
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'
+                                  }`}>
+                                  Completion
+                                </div>
+                                <div className="text-2xl font-bold" style={{ color: (displayItem.data as Division).color }}>
+                                  {completionPercent}%
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Stats Row */}
+                            <div className="grid grid-cols-3 gap-3 mb-4">
+                              <div className={`text-center p-2 rounded-lg ${isDark ? 'bg-gray-900/50' : 'bg-gray-50'
+                                }`}>
+                                <Activity className={`w-4 h-4 mx-auto mb-1 ${isDark ? 'text-blue-400' : 'text-blue-600'
+                                  }`} strokeWidth={2.5} />
+                                <div className={`text-xs font-medium ${isDark ? 'text-gray-500' : 'text-gray-600'
+                                  }`}>
+                                  Total
+                                </div>
+                                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'
+                                  }`}>
+                                  {district.total}
+                                </div>
+                              </div>
+                              <div className={`text-center p-2 rounded-lg ${isDark ? 'bg-gray-900/50' : 'bg-gray-50'
+                                }`}>
+                                <Clock className={`w-4 h-4 mx-auto mb-1 ${isDark ? 'text-orange-400' : 'text-orange-600'
+                                  }`} strokeWidth={2.5} />
+                                <div className={`text-xs font-medium ${isDark ? 'text-gray-500' : 'text-gray-600'
+                                  }`}>
+                                  Pending
+                                </div>
+                                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'
+                                  }`}>
+                                  {district.pending}
+                                </div>
+                              </div>
+                              <div className={`text-center p-2 rounded-lg ${isDark ? 'bg-gray-900/50' : 'bg-gray-50'
+                                }`}>
+                                <CheckCircle className={`w-4 h-4 mx-auto mb-1 ${isDark ? 'text-green-400' : 'text-green-600'
+                                  }`} strokeWidth={2.5} />
+                                <div className={`text-xs font-medium ${isDark ? 'text-gray-500' : 'text-gray-600'
+                                  }`}>
+                                  Done
+                                </div>
+                                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'
+                                  }`}>
+                                  {district.completed}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Progress Bar */}
+                            <div className={`relative w-full h-2 rounded-full overflow-hidden ${isDark ? 'bg-gray-900/50' : 'bg-gray-200'
+                              }`}>
+                              <div
+                                className="absolute left-0 top-0 h-full rounded-full transition-all duration-1000"
+                                style={{
+                                  width: `${completionPercent}%`,
+                                  background: `linear-gradient(90deg, ${(displayItem.data as Division).color} 0%, ${(displayItem.data as Division).color}cc 100%)`
+                                }}
+                              />
+                            </div>
+
+                            {/* View Details Link */}
+                            <div className="mt-4 flex items-center justify-between">
+                              <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-500'
+                                }`}>
+                                Click to view details
+                              </span>
+                              <button
+                                className={`text-xs font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all ${isDark
+                                    ? 'text-blue-400 hover:bg-blue-500/10'
+                                    : 'text-blue-600 hover:bg-blue-50'
+                                  }`}
+                                style={{ color: (displayItem.data as Division).color }}
+                              >
+                                View Map
+                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                /* District Details View */
+                <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
+                  <div className={`p-6 rounded-2xl border ${isDark
+                      ? 'bg-gray-800/50 border-gray-700/50'
+                      : 'bg-white/80 border-gray-200/50'
+                    } backdrop-blur-sm`}
+                  >
+                    <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'
+                      }`}>
+                      District Performance
+                    </h3>
+
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                          Report Resolution Rate
+                        </span>
+                        <span className="font-bold" style={{ color: (displayItem.division as Division)?.color || '#6B7280' }}>
+                          {(displayItem.data as District).total > 0
+                            ? Math.round(((displayItem.data as District).completed / (displayItem.data as District).total) * 100)
+                            : 0}%
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                          Average Resolution Time
+                        </span>
+                        <span className={`font-bold ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                          {(displayItem.data as District).total > 0 ? '3.2 days' : 'No data'}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-center">
+                        <span className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                          Citizen Satisfaction
+                        </span>
+                        <span className={`font-bold ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                          {(displayItem.data as District).total > 0 ? '87%' : 'No data'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {(displayItem.data as District).total > 0 && (
+                      <div className="mt-6 pt-6 border-t border-gray-700/50">
+                        <h4 className={`text-sm font-semibold mb-3 ${isDark ? 'text-gray-400' : 'text-gray-600'
+                          }`}>
+                          Recent Activities
+                        </h4>
+                        <div className="space-y-2">
+                          {['Road repair completed', 'New complaint registered', 'Water supply issue resolved']
+                            .map((activity, i) => (
+                              <div key={i} className={`flex items-center gap-3 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'
+                                }`}>
+                                <div
+                                  className="w-2 h-2 rounded-full"
+                                  style={{ backgroundColor: (displayItem.division as Division)?.color || '#6B7280' }}
+                                />
+                                {activity}
+                              </div>
+                            ))
+                          }
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Sidebar Footer */}
+              <div className={`p-5 border-t ${isDark ? 'border-gray-800/50 bg-gray-900/50' : 'border-gray-200/50 bg-gray-50/50'
                 } backdrop-blur-sm`}>
-                  <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-lg ${
-                      isDark ? 'bg-blue-500/10' : 'bg-blue-50'
+                <div className="flex items-start gap-3">
+                  <div className={`p-2 rounded-lg ${isDark ? 'bg-blue-500/10' : 'bg-blue-50'
                     }`}>
-                      <Info className={`w-4 h-4 ${
-                        isDark ? 'text-blue-400' : 'text-blue-600'
+                    <Info className={`w-4 h-4 ${isDark ? 'text-blue-400' : 'text-blue-600'
                       }`} strokeWidth={2.5} />
-                    </div>
-                    <div className="flex-1">
-                      <p className={`text-xs font-medium mb-1 ${
-                        isDark ? 'text-gray-300' : 'text-gray-700'
+                  </div>
+                  <div className="flex-1">
+                    <p className={`text-xs font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'
                       }`}>
-                        {displayItem.type === 'division' ? 'Division Overview' : 'District Insights'}
-                      </p>
-                      <p className={`text-xs ${
-                        isDark ? 'text-gray-500' : 'text-gray-600'
+                      {displayItem.type === 'division' ? 'Division Overview' : 'District Insights'}
+                    </p>
+                    <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-600'
                       }`}>
-                        {displayItem.type === 'division'
-                          ? 'Click on any district to view detailed performance metrics and recent activities.'
-                          : 'Real-time data synced with municipal reporting systems. Updated every 15 minutes.'
-                        }
-                      </p>
-                    </div>
+                      {displayItem.type === 'division'
+                        ? 'Click on any district to view detailed performance metrics and recent activities.'
+                        : 'Real-time data synced with municipal reporting systems. Updated every 15 minutes.'
+                      }
+                    </p>
                   </div>
                 </div>
               </div>
-            </>
-          )}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Custom Scrollbar Styles */}

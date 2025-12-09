@@ -30,12 +30,12 @@ const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
           </h3>
           <div className="w-3 h-3 bg-[#2563eb] rounded-full animate-pulse"></div>
         </div>
-        
+
         <div className="h-80 relative">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={data}
+                data={data as any}
                 cx="50%"
                 cy="50%"
                 innerRadius={60}
@@ -44,20 +44,20 @@ const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
                 dataKey="count"
                 animationBegin={200}
                 animationDuration={1500}
-                label={({ category, percentage }) => `${category}: ${percentage.toFixed(1)}%`}
+                label={({ name, percent }: any) => `${name}: ${(percent * 100).toFixed(1)}%`}
               >
                 {data.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
+                  <Cell
+                    key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
                     stroke="white"
                     strokeWidth={2}
                   />
                 ))}
               </Pie>
-              <Tooltip 
+              <Tooltip
                 formatter={(value: number) => [
-                  <span key={value} className="font-bold text-[#2563eb]">{value} reports</span>, 
+                  <span key={value} className="font-bold text-[#2563eb]">{value} reports</span>,
                   'Count'
                 ]}
                 contentStyle={{
@@ -68,7 +68,7 @@ const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
                   boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
                 }}
               />
-              <Legend 
+              <Legend
                 wrapperStyle={{
                   paddingTop: '20px',
                   fontSize: '12px'
@@ -76,7 +76,7 @@ const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
               />
             </PieChart>
           </ResponsiveContainer>
-          
+
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-900">

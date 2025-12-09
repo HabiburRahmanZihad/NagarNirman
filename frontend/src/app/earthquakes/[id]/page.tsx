@@ -132,12 +132,12 @@ export default function EarthquakeDetailPage() {
               source: 'USGS Earthquake Hazards Program',
             };
           })
-          .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+          .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
         setAllEarthquakes(earthquakes);
 
         // Find the specific earthquake by eventId or index
-        const found = earthquakes.find((e) => e.eventId === earthquakeId || e._id === earthquakeId);
+        const found = earthquakes.find((e: any) => e.eventId === earthquakeId || e._id === earthquakeId);
         if (found) {
           setEarthquake(found);
         } else if (earthquakes.length > 0) {
