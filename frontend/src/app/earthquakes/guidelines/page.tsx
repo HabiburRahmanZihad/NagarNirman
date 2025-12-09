@@ -13,7 +13,9 @@ import {
   Building2,
   ChevronDown,
   CheckCircle2,
+  ChevronRight,
 } from 'lucide-react';
+import Link from 'next/link';
 
 interface GuidelineSection {
   title: string;
@@ -126,8 +128,8 @@ export default function EarthquakeGuidelinesPage() {
   const [expandedSection, setExpandedSection] = useState<number | null>(0);
 
   return (
-    <div className="min-h-screen bg-base-200 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-5xl mx-auto space-y-8">
+    <div className="min-h-screen bg-base-200">
+      <div className="container mx-auto space-y-8 p-4 sm:p-6 lg:p-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -136,78 +138,97 @@ export default function EarthquakeGuidelinesPage() {
         >
           <div className="flex items-center gap-4 mb-4">
             <div className="text-5xl">🛡️</div>
-            <h1 className="text-4xl sm:text-5xl font-extrabold">Earthquake Safety Guide</h1>
+            <div>
+              <h1 className="text-4xl sm:text-5xl font-extrabold">Earthquake Safety Guide</h1>
+              <p className="text-white/90 text-lg">Essential information to prepare, protect yourself, and respond to earthquakes</p>
+            </div>
           </div>
-          <p className="text-white/90 text-lg">
-            Essential information to prepare, protect yourself, and respond to earthquakes
-          </p>
         </motion.div>
+
+        {/* Quick Navigation */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            { href: '/earthquakes', label: '📋 Earthquake Alerts', icon: '📝' },
+            { href: '/earthquakes/statistics', label: '📊 Statistics', icon: '📈' },
+          ].map((link) => (
+            <Link key={link.href} href={link.href}>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full px-6 py-4 bg-white rounded-2xl shadow-lg border-2 border-accent/20 font-bold text-primary hover:shadow-xl transition-all duration-300 flex items-center justify-between"
+              >
+                <span className="text-lg">{link.label}</span>
+                <ChevronRight className="w-5 h-5" />
+              </motion.button>
+            </Link>
+          ))}
+        </div>
 
         {/* Quick Tips */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-linear-to-r from-accent/20 via-accent/10 to-transparent rounded-2xl border-2 border-accent/30 p-6 md:p-8"
+          className="bg-white rounded-2xl shadow-lg border-2 border-accent/20 p-6 md:p-8"
         >
           <div className="flex items-start gap-4 mb-6">
             <AlertCircle className="w-8 h-8 text-accent shrink-0 mt-1" />
             <h2 className="text-2xl font-extrabold text-primary">Remember: DROP. COVER. HOLD ON.</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="space-y-3">
-              <div className="text-4xl font-extrabold text-error">1️⃣</div>
-              <h3 className="text-xl font-bold text-primary">DROP</h3>
+            <motion.div whileHover={{ y: -5 }} className="bg-linear-to-br from-error/5 to-error/10 rounded-xl p-6 border-2 border-error/20">
+              <div className="text-4xl font-extrabold text-error mb-3">1️⃣</div>
+              <h3 className="text-xl font-bold text-primary mb-2">DROP</h3>
               <p className="text-neutral">Drop to your hands and knees immediately when you feel shaking</p>
-            </div>
-            <div className="space-y-3">
-              <div className="text-4xl font-extrabold text-warning">2️⃣</div>
-              <h3 className="text-xl font-bold text-primary">COVER</h3>
+            </motion.div>
+            <motion.div whileHover={{ y: -5 }} className="bg-linear-to-br from-warning/5 to-warning/10 rounded-xl p-6 border-2 border-warning/20">
+              <div className="text-4xl font-extrabold text-warning mb-3">2️⃣</div>
+              <h3 className="text-xl font-bold text-primary mb-2">COVER</h3>
               <p className="text-neutral">Cover your head and neck with your arms under a sturdy table</p>
-            </div>
-            <div className="space-y-3">
-              <div className="text-4xl font-extrabold text-success">3️⃣</div>
-              <h3 className="text-xl font-bold text-primary">HOLD ON</h3>
+            </motion.div>
+            <motion.div whileHover={{ y: -5 }} className="bg-linear-to-br from-success/5 to-success/10 rounded-xl p-6 border-2 border-success/20">
+              <div className="text-4xl font-extrabold text-success mb-3">3️⃣</div>
+              <h3 className="text-xl font-bold text-primary mb-2">HOLD ON</h3>
               <p className="text-neutral">Hold on until shaking stops and it's safe to move</p>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
 
-        {/* Guidelines Sections */}
+        {/* Guidelines Sections - Full Width with Expandable Content */}
         <div className="space-y-4">
           {guidelines.map((section, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-2xl shadow-lg border-2 border-accent/20 overflow-hidden"
+              transition={{ delay: index * 0.05 }}
+              className="bg-white rounded-2xl shadow-lg border-2 border-accent/20 overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300"
             >
               {/* Section Header */}
               <button
                 onClick={() => setExpandedSection(expandedSection === index ? null : index)}
-                className={`w-full flex items-center justify-between p-6 transition-all duration-300 ${expandedSection === index ? `bg-linear-to-r ${section.color}` : 'bg-base-50'
+                className={`w-full flex items-center justify-between p-6 transition-all duration-300 ${expandedSection === index ? `bg-linear-to-r ${section.color}` : 'bg-base-50 hover:bg-base-100'
                   }`}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                   <div
                     className={`p-3 rounded-xl transition-all duration-300 ${expandedSection === index
-                        ? 'bg-white text-current'
-                        : `bg-linear-to-r ${section.color} text-white`
+                      ? 'bg-white text-current'
+                      : `bg-linear-to-r ${section.color} text-white`
                       }`}
                   >
                     {section.icon}
                   </div>
                   <h3
-                    className={`text-xl font-extrabold transition-all duration-300 ${expandedSection === index ? 'text-white' : 'text-primary'
+                    className={`text-lg font-extrabold transition-all duration-300 ${expandedSection === index ? 'text-white' : 'text-primary'
                       }`}
                   >
                     {section.title}
                   </h3>
                 </div>
                 <ChevronDown
-                  className={`w-6 h-6 transition-transform duration-300 ${expandedSection === index
-                      ? 'rotate-180 text-white'
-                      : `text-base-400`
+                  className={`w-5 h-5 shrink-0 transition-transform duration-300 ${expandedSection === index
+                    ? 'rotate-180 text-white'
+                    : `text-base-400`
                     }`}
                 />
               </button>
@@ -219,18 +240,18 @@ export default function EarthquakeGuidelinesPage() {
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="px-6 py-8 space-y-3 border-t-2 border-accent/20"
+                  className="px-6 py-6 space-y-2 border-t-2 border-accent/20"
                 >
                   {section.tips.map((tip, tipIndex) => (
                     <motion.div
                       key={tipIndex}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: tipIndex * 0.05 }}
-                      className="flex items-start gap-4 p-4 rounded-xl bg-base-50 hover:bg-base-100 transition-colors duration-300"
+                      transition={{ delay: tipIndex * 0.03 }}
+                      className="flex items-start gap-3 p-3 rounded-lg bg-base-50 hover:bg-base-100 transition-colors duration-300"
                     >
-                      <CheckCircle2 className={`w-5 h-5 shrink-0 mt-1 gradient-text-to-r ${section.color}`} />
-                      <p className="text-neutral leading-relaxed">{tip}</p>
+                      <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-success" />
+                      <p className="text-sm text-neutral leading-relaxed">{tip}</p>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -243,28 +264,52 @@ export default function EarthquakeGuidelinesPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-linear-to-r from-primary via-secondary to-primary/90 text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
+          className="bg-linear-to-r from-primary to-secondary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
         >
-          <h2 className="text-2xl font-extrabold mb-6">Additional Resources</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              <h3 className="text-lg font-bold">Organizations & Services</h3>
-              <ul className="space-y-2 text-white/90">
-                <li>• USGS Earthquake Hazards Program</li>
-                <li>• Federal Emergency Management Agency (FEMA)</li>
-                <li>• Red Cross Disaster Relief</li>
-                <li>• Local Emergency Management Agencies</li>
+          <h2 className="text-3xl font-extrabold mb-8">Additional Resources & What To Do Now</h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <motion.div whileHover={{ y: -5 }} className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
+              <h3 className="text-xl font-bold mb-4 text-white">Organizations & Services</h3>
+              <ul className="space-y-3 text-white/90">
+                <li className="flex items-start gap-3">
+                  <span className="text-xl">🏛️</span>
+                  <span>USGS Earthquake Hazards Program</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-xl">🆘</span>
+                  <span>Federal Emergency Management Agency (FEMA)</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-xl">❤️</span>
+                  <span>Red Cross Disaster Relief</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-xl">📍</span>
+                  <span>Local Emergency Management Agencies</span>
+                </li>
               </ul>
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-lg font-bold">What to Do Now</h3>
-              <ul className="space-y-2 text-white/90">
-                <li>✓ Create an emergency plan with your family</li>
-                <li>✓ Assemble an emergency supplies kit</li>
-                <li>✓ Secure heavy furniture to walls</li>
-                <li>✓ Practice earthquake drills regularly</li>
+            </motion.div>
+            <motion.div whileHover={{ y: -5 }} className="bg-white/10 backdrop-blur rounded-xl p-6 border border-white/20">
+              <h3 className="text-xl font-bold mb-4 text-white">What to Do Now</h3>
+              <ul className="space-y-3 text-white/90">
+                <li className="flex items-start gap-3">
+                  <span className="text-xl">✅</span>
+                  <span>Create an emergency plan with your family</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-xl">✅</span>
+                  <span>Assemble an emergency supplies kit</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-xl">✅</span>
+                  <span>Secure heavy furniture to walls</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-xl">✅</span>
+                  <span>Practice earthquake drills regularly</span>
+                </li>
               </ul>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
 
@@ -274,8 +319,8 @@ export default function EarthquakeGuidelinesPage() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-2xl shadow-lg border-2 border-accent/20 p-8"
         >
-          <h2 className="text-2xl font-extrabold text-primary mb-6">Key Safety Tips</h2>
-          <div className="grid md:grid-cols-2 gap-6">
+          <h2 className="text-3xl font-extrabold text-primary mb-8">Key Safety Tips</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               { emoji: '🏠', title: 'At Home', desc: 'Know where the safest places in your home are' },
               { emoji: '🏢', title: 'At Work', desc: 'Identify safe locations in your workplace' },
@@ -286,12 +331,15 @@ export default function EarthquakeGuidelinesPage() {
             ].map((tip, index) => (
               <motion.div
                 key={index}
-                whileHover={{ scale: 1.02 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ scale: 1.02, y: -5 }}
                 className="p-6 bg-linear-to-br from-base-50 to-base-100 rounded-xl border-2 border-accent/20 hover:border-accent/50 transition-all duration-300"
               >
                 <div className="text-4xl mb-3">{tip.emoji}</div>
                 <h3 className="text-lg font-bold text-primary mb-2">{tip.title}</h3>
-                <p className="text-neutral/70">{tip.desc}</p>
+                <p className="text-neutral/70 text-sm">{tip.desc}</p>
               </motion.div>
             ))}
           </div>
