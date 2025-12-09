@@ -1372,13 +1372,13 @@ export default function MapSearchPage() {
                   ].map((stat, i) => (
                     <div
                       key={stat.label}
-                      className={`p-4 rounded-xl ${
+                      className={`p-3 text-center rounded-xl ${
                         isDark ? stat.bgDark : stat.bgLight
                       } border ${
                         isDark ? 'border-gray-800/50' : 'border-gray-200/30'
                       } backdrop-blur-sm`}
                     >
-                      <stat.icon className={`w-4 h-4 mb-2 bg-linear-to-r ${stat.gradient} bg-clip-text text-transparent`} strokeWidth={2.5} />
+                      <stat.icon className={`mx-auto w-4 h-4 mb-2 bg-linear-to-r ${stat.gradient} bg-clip-text`} strokeWidth={2.5} />
                       <p className={`text-xs font-medium mb-1 ${
                         isDark ? 'text-gray-400' : 'text-gray-600'
                       }`}>
