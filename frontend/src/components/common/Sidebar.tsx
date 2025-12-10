@@ -166,8 +166,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   onClick={() => onClose()}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-xl
                     font-semibold transition-all duration-300 group ${active
-                    ? 'bg-primary text-white shadow-lg scale-105 origin-left'
-                    : 'text-info hover:bg-base-200/60 hover:text-primary'
+                      ? 'bg-primary text-white shadow-lg scale-105 origin-left'
+                      : 'text-info hover:bg-base-200/60 hover:text-primary'
                     }`}
                 >
                   <div className={`transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:scale-110'}`}>

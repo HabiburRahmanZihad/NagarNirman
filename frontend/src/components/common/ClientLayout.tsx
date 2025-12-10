@@ -17,7 +17,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         {children}
       </main>
       <footer>
-        {!isDashboard && <Footer/>}
+        {!isDashboard && <Footer />}
       </footer>
     </>
   );
