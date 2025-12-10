@@ -127,7 +127,7 @@ const Footer: React.FC = () => {
               </div>
             </Link>
 
-            <p className="text-sm md:text-base text-gray-300 leading-relaxed">
+            <p className="text-sm md:text-base text-gray-300 leading-relaxed pt-2 md:pt-4">
               Empowering communities to build cleaner, greener cities through collaborative problem-solving and sustainable development initiatives.
             </p>
 
