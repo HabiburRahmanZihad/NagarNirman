@@ -94,3 +94,46 @@ export interface ApiResponse<T = any> {
   data?: T;
   error?: string;
 }
+
+export interface UserOnboardingStep {
+  icon: React.ComponentType<{ className?: string }>
+  step: string
+  title: string
+  description: string
+  color: string
+}
+
+export interface FeatureCard {
+  icon: React.ComponentType<{ className?: string }>
+  title: string
+  description: string
+  color: string
+}
+
+export interface TimelineStep {
+  step: number
+  icon: React.ComponentType<{ className?: string }>
+  title: string
+  description: string
+  align: 'left' | 'right'
+}
+
+export interface ProblemTypeCard {
+  icon: React.ComponentType<{ className?: string }> | string
+  title: string
+  description: string
+  color: string
+}
+
+export interface FAQItem {
+  question: string
+  answer: string
+}
+
+export interface Milestone {
+  year: string
+  icon: React.ComponentType<{ className?: string }>
+  title: string
+  description: string
+  color: string
+}

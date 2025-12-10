@@ -1,502 +1,600 @@
-'use client';
-
-import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/common';
-import { PUBLIC_ROUTES } from '@/constants/routes';
-import { motion, AnimatePresence, useInView, animate, easeOut } from 'framer-motion';
 import {
-  Github,
-  Linkedin,
-  Target,
-  Shield,
-  Heart,
+  CheckCircle,
   ChevronDown,
-  Code,
-  Database,
-  Map,
-  Server,
-  Calendar,
-  CheckCircle2,
-  ArrowRight,
-  Zap,
+  Clock,
+  Eye,
+  FileText,
+  Filter,
+  Flag,
+  Globe,
+  Lightbulb,
+  MapPin,
+  MessageSquare,
+  Shield,
+  Target,
+  TrendingUp,
   Users,
-  Building2,
-} from 'lucide-react';
+  Zap,
+} from 'lucide-react'
+import FAQAccordion from '@/components/about-us/FAQAccordion'
+import StatCard from '@/components/about-us/StatCard'
+import Timeline from '@/components/about-us/Timeline'
 
-// --- HELPER: ANIMATED NUMBER COUNTER ---
-const AnimatedCounter = ({ from, to }: { from: number; to: number }) => {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true });
-
-  useEffect(() => {
-    if (!inView) return;
-    const node = ref.current;
-    if (!node) return;
-
-    const controls = animate(from, to, {
-      duration: 2.5,
-      ease: "easeOut",
-      onUpdate(value) {
-        node.textContent = Math.round(value).toLocaleString();
-      },
-    });
-
-    return () => controls.stop();
-  }, [from, to, inView]);
-
-  return <span ref={ref}>{from}</span>;
-};
-
-// --- DATA: TEAM MEMBERS ---
-const TEAM_MEMBERS = [
-  {
-    name: 'Adnan Sami',
-    role: 'Full Stack Developer',
-    bio: 'Driving the technical vision and architecture. Loves solving complex backend challenges.',
-    socials: { linkedin: '#', github: '#' },
-  },
-  {
-    name: 'Farhan Ahmed',
-    role: 'Frontend & UI/UX',
-    bio: 'Crafting pixel-perfect, accessible interfaces that make reporting issues a breeze.',
-    socials: { linkedin: '#', github: '#' },
-  },
-  {
-    name: 'Rafiqul Islam',
-    role: 'Backend & DevOps',
-    bio: 'Ensuring 99.9% uptime and managing the database that powers our city insights.',
-    socials: { linkedin: '#', github: '#' },
-  },
-];
-
-// --- DATA: TIMELINE ---
-const TIMELINE_EVENTS = [
-  {
-    year: '2024 Q1',
-    title: 'The Spark',
-    desc: 'The idea was born from a simple pothole that went unfixed for months.',
-  },
-  {
-    year: '2024 Q3',
-    title: 'The Prototype',
-    desc: 'Our team of 3 built the first MVP during a university hackathon.',
-  },
-  {
-    year: '2025 Q1',
-    title: 'Official Launch',
-    desc: 'NagarNirman goes live, connecting 64 districts to authorities.',
-  },
-  {
-    year: 'Future',
-    title: 'AI Integration',
-    desc: 'Planning automated severity detection using Image Recognition.',
-  },
-];
-
-// --- DATA: FAQS ---
-const FAQS = [
-  {
-    question: 'Is NagarNirman connected to the government?',
-    answer:
-      'We act as a bridge. While we are an independent platform, we provide dashboards for city officials to view and act on reports submitted by citizens.',
-  },
-  {
-    question: 'Is it free to use?',
-    answer: 'Yes! Reporting issues and tracking them is 100% free for all citizens.',
-  },
-  {
-    question: 'How do I earn points?',
-    answer:
-      'You earn Karma Points for every verified report and when your report gets resolved. Top contributors appear on our leaderboard.',
-  },
-  {
-    question: 'Can I remain anonymous?',
-    answer:
-      'Yes, you can choose to submit reports anonymously, though creating an account helps you track progress.',
-  },
-];
-
-// --- ANIMATION VARIANTS ---
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
-};
-
-const AboutPage = () => {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  const toggleFaq = (index: number) => {
-    setOpenFaq(openFaq === index ? null : index);
-  };
-
+export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden text-[#002E2E]">
-
-      {/* --- HERO SECTION --- */}
-      <section className="relative py-24 lg:py-32 overflow-hidden bg-[#F6FFF9]">
-        {/* Animated Background Elements */}
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 45, 0] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-          className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#aef452] opacity-10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.1, 1], x: [0, -30, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#2a7d2f] opacity-5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"
-        />
-
-        <div className="container mx-auto px-6 relative z-10">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInUp}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <div className="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-white border border-[#aef452] text-[#2a7d2f] text-sm font-semibold tracking-wide mb-8 shadow-sm">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2a7d2f] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#2a7d2f]" />
-              </span>
-              Built for Bangladesh 🇧🇩
-            </div>
-
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight tracking-tight">
-              We are building the <br />
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#2a7d2f] to-[#aef452]">
-                Operating System
-              </span>{' '}
-              for Cities.
-            </h1>
-
-            <p className="text-xl text-[#6B7280] leading-relaxed mb-10 max-w-2xl mx-auto">
-              NagarNirman transforms the chaos of urban issues into organized, actionable data. We
-              are a small team with a massive vision.
-            </p>
-
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link href={PUBLIC_ROUTES.REPORT}>
-                <Button variant="primary" size="lg">
-                  Start Reporting Now
-                </Button>
-              </Link>
-              <Link href={PUBLIC_ROUTES.ABOUT_TEAM}>
-                <Button variant="outline" size="lg">
-                  Meet the Team
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* --- INFORMATIONAL STATS STRIP (NEW) --- */}
-      <section className="py-12 bg-[#002E2E] text-white -mt-1 relative z-20">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/10">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <div className="text-4xl font-bold text-[#aef452] mb-1">
-                <AnimatedCounter from={0} to={12450} />+
+    <div className="min-h-screen bg-white">
+      {/* 1. Top Hero Section */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-secondary-light/20 to-white" />
+        <div className="relative container mx-auto px-4 py-16 md:py-24">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-6">
+                <Flag className="w-4 h-4" />
+                <span className="text-sm font-medium">Civic Tech Platform</span>
               </div>
-              <div className="text-sm text-white/70 uppercase tracking-widest">Reports Filed</div>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
-              <div className="text-4xl font-bold text-[#aef452] mb-1">
-                <AnimatedCounter from={0} to={64} />
-              </div>
-              <div className="text-sm text-white/70 uppercase tracking-widest">Districts</div>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
-              <div className="text-4xl font-bold text-[#aef452] mb-1">
-                <AnimatedCounter from={0} to={89} />%
-              </div>
-              <div className="text-sm text-white/70 uppercase tracking-widest">Resolution Rate</div>
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 }}>
-              <div className="text-4xl font-bold text-[#aef452] mb-1">
-                24/7
-              </div>
-              <div className="text-sm text-white/70 uppercase tracking-widest">System Uptime</div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- MISSION & VISUAL DEMO --- */}
-      <section className="py-24 bg-white relative">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-
-            {/* Text Content */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="text-4xl font-bold mb-6">
-                Bridging the Gap
-              </h2>
-              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                We realized that the biggest barrier to fixing a broken road or a leaking pipe
-                wasn&apos;t lack of resources—it was <strong>lack of data</strong>.
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6">
+                About NagarNirman
+              </h1>
+              <p className="text-xl text-gray-600 mb-8 max-w-2xl">
+                Building smarter cities through community-powered solutions. NagarNirman transforms urban 
+                problem reporting into a seamless, transparent, and impactful experience.
               </p>
-
-              {/* Informatic Process Flow */}
-              <div className="space-y-6 mt-8">
-                <div className="flex gap-4 group">
-                  <div className="shrink-0 w-12 h-12 bg-[#F6FFF9] rounded-full flex items-center justify-center border border-[#aef452] group-hover:bg-[#2a7d2f] transition-colors duration-300">
-                    <Map className="w-5 h-5 text-[#2a7d2f] group-hover:text-white" />
+              <div className="flex flex-wrap gap-4">
+                <button className="btn btn-primary rounded-full px-8">
+                  Explore Our Impact
+                  <ChevronDown className="w-4 h-4 ml-2" />
+                </button>
+                <button className="btn btn-outline border-primary text-primary hover:bg-primary hover:text-white rounded-full px-8">
+                  Watch Demo
+                </button>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="relative w-full h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+                {/* Dummy illustration - replace with actual image/illustration */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary-light">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="grid grid-cols-3 gap-4 p-8">
+                      {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div
+                          key={i}
+                          className="w-16 h-16 bg-white/20 rounded-xl backdrop-blur-sm"
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-[#002E2E]">1. Report</h3>
-                    <p className="text-sm text-gray-500">Citizen snaps a photo. AI detects location & category.</p>
-                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/20 to-transparent" />
                 </div>
-
-                <div className="flex gap-4 group">
-                  <div className="shrink-0 w-12 h-12 bg-[#F6FFF9] rounded-full flex items-center justify-center border border-[#f2a921] group-hover:bg-[#f2a921] transition-colors duration-300">
-                    <Server className="w-5 h-5 text-[#f2a921] group-hover:text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-[#002E2E]">2. Verify & Assign</h3>
-                    <p className="text-sm text-gray-500">System filters spam and auto-assigns to the nearest Ward Councillor.</p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4 group">
-                  <div className="shrink-0 w-12 h-12 bg-[#F6FFF9] rounded-full flex items-center justify-center border border-[#2a7d2f] group-hover:bg-[#2a7d2f] transition-colors duration-300">
-                    <CheckCircle2 className="w-5 h-5 text-[#2a7d2f] group-hover:text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-[#002E2E]">3. Resolve</h3>
-                    <p className="text-sm text-gray-500">Authority fixes issue. Citizen gets a notification and points.</p>
-                  </div>
+                <div className="absolute bottom-8 left-8 right-8 text-white">
+                  <h3 className="text-xl font-semibold mb-2">Interactive City Dashboard</h3>
+                  <p className="text-white/80">Real-time urban issue monitoring</p>
                 </div>
               </div>
-            </motion.div>
-
-            {/* Visual Abstract Animation (Simulated App UI) */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="relative"
-            >
-              <div className="aspect-square bg-[#F6FFF9] rounded-[3rem] p-8 relative overflow-hidden border border-[#e6f4e7]">
-
-                {/* Card 1: The Problem (Fades Out) */}
-                <motion.div
-                  initial={{ opacity: 1, y: 0 }}
-                  whileInView={{ opacity: 0, y: -20 }}
-                  transition={{ delay: 2, duration: 0.5 }}
-                  className="absolute top-1/4 left-10 right-10 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 transform -rotate-2 z-10"
-                >
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-500">🚨</div>
-                    <div>
-                      <div className="font-bold text-[#002E2E]">Pothole Reported</div>
-                      <div className="text-xs text-gray-400">Mirpur 10 • Just now</div>
-                    </div>
-                  </div>
-                  <div className="h-20 bg-gray-100 rounded-lg w-full animate-pulse" />
-                </motion.div>
-
-                {/* Card 2: The Solution (Slides In) */}
-                <motion.div
-                  initial={{ opacity: 0, y: 50, rotate: 2 }}
-                  whileInView={{ opacity: 1, y: 0, rotate: 2 }}
-                  transition={{ delay: 2.5, duration: 0.5, type: "spring" }}
-                  className="absolute top-1/3 left-10 right-10 bg-white p-6 rounded-2xl shadow-2xl border border-gray-100 z-20"
-                >
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-[#e6f4e7] flex items-center justify-center text-[#2a7d2f]">
-                      <CheckCircle2 className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <div className="font-bold text-[#2a7d2f]">Issue Resolved</div>
-                      <div className="text-xs text-gray-500">Dhaka North • 2h ago</div>
-                    </div>
-                  </div>
-                  {/* Progress Bar Animation */}
-                  <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden mt-4">
-                    <motion.div
-                      initial={{ width: "0%" }}
-                      whileInView={{ width: "100%" }}
-                      transition={{ delay: 3, duration: 1 }}
-                      className="h-full bg-[#aef452]"
-                    />
-                  </div>
-                  <p className="text-xs text-right mt-1 text-gray-400">Status: Completed</p>
-                </motion.div>
-
-              </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* --- TIMELINE SECTION --- */}
-      <section className="py-24 bg-[#F6FFF9]">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">From Idea to Reality</h2>
-            <p className="text-gray-600">The timeline of how NagarNirman came to be.</p>
+      {/* 2. User Onboarding Steps */}
+      <section className="py-16 bg-base-100">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+              Join Our Civic Community
+            </h2>
+            <p className="text-gray-600">
+              Become part of the movement to create better cities in just four simple steps
+            </p>
           </div>
 
-          <div className="max-w-4xl mx-auto relative">
-            {/* Vertical Line with Draw Animation */}
-            <motion.div
-              initial={{ height: 0 }}
-              whileInView={{ height: "100%" }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.5 }}
-              className="absolute left-[20px] md:left-1/2 top-0 bottom-0 w-0.5 bg-[#2a7d2f]/30 transform md:-translate-x-1/2"
-            />
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {[
+              {
+                icon: Users,
+                step: "01",
+                title: "Create Account",
+                description: "Sign up with your email or mobile number in under 2 minutes",
+                color: "bg-secondary",
+              },
+              {
+                icon: Shield,
+                step: "02",
+                title: "Verify Identity",
+                description: "Secure verification process to ensure community safety",
+                color: "bg-accent",
+              },
+              {
+                icon: MapPin,
+                step: "03",
+                title: "Enable Location",
+                description: "Allow location access for accurate issue pinpointing",
+                color: "bg-primary",
+              },
+              {
+                icon: MessageSquare,
+                step: "04",
+                title: "Start Reporting",
+                description: "Begin reporting issues and tracking resolutions",
+                color: "bg-green-500",
+              },
+            ].map((step, index) => (
+              <div
+                key={index}
+                className="card bg-base-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-base-200"
+              >
+                <div className="card-body items-center text-center p-6">
+                  <div className={`w-16 h-16 ${step.color} rounded-full flex items-center justify-center mb-4`}>
+                    <step.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="badge badge-primary badge-outline mb-2">Step {step.step}</div>
+                  <h3 className="card-title text-lg font-semibold text-primary mb-2">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm">{step.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <div className="space-y-12">
-              {TIMELINE_EVENTS.map((event, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.2 }}
-                  className={`relative flex flex-col md:flex-row gap-8 ${index % 2 === 0 ? 'md:flex-row-reverse' : ''
-                    }`}
+      {/* 3. What is NagarNirman + Why Choose Us */}
+      <section className="py-16 bg-secondary-light/30">
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Left Column - What is NagarNirman */}
+            <div>
+              <div className="sticky top-24">
+                <div className="inline-flex items-center gap-2 mb-6">
+                  <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
+                    <Target className="w-6 h-6 text-white" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-primary">Transforming Urban Governance</h2>
+                </div>
+                <p className="text-gray-700 mb-8 text-lg">
+                  NagarNirman is India's premier civic-tech platform that bridges the gap between citizens 
+                  and municipal authorities. We provide a smart, data-driven system for reporting, tracking, 
+                  and resolving urban issues efficiently.
+                </p>
+                
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  <div className="bg-white p-4 rounded-xl shadow-sm border">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-secondary/20 rounded-lg flex items-center justify-center">
+                        <Clock className="w-4 h-4 text-primary" />
+                      </div>
+                      <h4 className="font-semibold">Real-time Tracking</h4>
+                    </div>
+                    <p className="text-sm text-gray-600">Monitor issue status live</p>
+                  </div>
+                  <div className="bg-white p-4 rounded-xl shadow-sm border">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-8 h-8 bg-secondary/20 rounded-lg flex items-center justify-center">
+                        <Filter className="w-4 h-4 text-primary" />
+                      </div>
+                      <h4 className="font-semibold">AI-Powered Routing</h4>
+                    </div>
+                    <p className="text-sm text-gray-600">Smart department assignment</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Why Choose Us */}
+            <div>
+              <div className="bg-white rounded-2xl shadow-lg p-8">
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-12 h-12 bg-accent/20 rounded-xl flex items-center justify-center">
+                    <Shield className="w-6 h-6 text-accent" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-primary">Why Trust NagarNirman</h2>
+                </div>
+
+                <div className="space-y-6">
+                  {[
+                    {
+                      icon: Zap,
+                      title: "Faster Resolution",
+                      description: "AI-powered routing ensures complaints reach the right department within minutes",
+                      color: "text-yellow-500",
+                    },
+                    {
+                      icon: Eye,
+                      title: "Complete Transparency",
+                      description: "Track every stage of your complaint from submission to resolution",
+                      color: "text-blue-500",
+                    },
+                    {
+                      icon: Users,
+                      title: "Community Impact",
+                      description: "Your reports contribute to data-driven urban planning decisions",
+                      color: "text-green-500",
+                    },
+                    {
+                      icon: Globe,
+                      title: "24/7 Accessibility",
+                      description: "Report issues anytime, anywhere via mobile app or web portal",
+                      color: "text-purple-500",
+                    },
+                  ].map((item, index) => (
+                    <div key={index} className="flex items-start gap-4 p-4 rounded-xl hover:bg-base-100 transition-colors">
+                      <div className={`w-10 h-10 rounded-full ${item.color.replace('text', 'bg')}/10 flex items-center justify-center flex-shrink-0`}>
+                        <item.icon className={`w-5 h-5 ${item.color}`} />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg mb-1">{item.title}</h3>
+                        <p className="text-gray-600">{item.description}</p>
+                      </div>
+                      <CheckCircle className="w-5 h-5 text-accent ml-auto flex-shrink-0" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. How Reporting Works - Timeline */}
+      <section className="py-16 bg-base-100">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+              From Report to Resolution
+            </h2>
+            <p className="text-gray-600">
+              Our streamlined process ensures every issue gets the attention it deserves
+            </p>
+          </div>
+
+          <div className="relative">
+            {/* Timeline line */}
+            <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-secondary via-primary to-secondary -translate-x-1/2" />
+
+            {/* Timeline steps */}
+            <div className="space-y-12 lg:space-y-0">
+              {[
+                {
+                  step: 1,
+                  icon: Eye,
+                  title: "Identify Issue",
+                  description: "Spot an urban problem in your area",
+                  align: "left",
+                },
+                {
+                  step: 2,
+                  icon: FileText,
+                  title: "Document Evidence",
+                  description: "Capture photos/videos with details",
+                  align: "right",
+                },
+                {
+                  step: 3,
+                  icon: MapPin,
+                  title: "Pinpoint Location",
+                  description: "Add precise GPS coordinates",
+                  align: "left",
+                },
+                {
+                  step: 4,
+                  icon: MessageSquare,
+                  title: "Submit Report",
+                  description: "Send to relevant authorities",
+                  align: "right",
+                },
+                {
+                  step: 5,
+                  icon: TrendingUp,
+                  title: "Track Progress",
+                  description: "Monitor real-time updates",
+                  align: "left",
+                },
+                {
+                  step: 6,
+                  icon: CheckCircle,
+                  title: "Verify Resolution",
+                  description: "Confirm issue has been fixed",
+                  align: "right",
+                },
+              ].map((item) => (
+                <div
+                  key={item.step}
+                  className={`relative flex flex-col lg:flex-row items-center ${
+                    item.align === 'left' ? 'lg:justify-start' : 'lg:justify-end'
+                  }`}
                 >
-                  {/* Content Box */}
-                  <div className="flex-1 ml-12 md:ml-0">
-                    <div
-                      className={`bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow ${index % 2 === 0 ? 'md:text-left' : 'md:text-right'
-                        }`}
-                    >
-                      <span className="inline-flex items-center gap-2 py-1 px-3 rounded-full bg-[#f2a921]/10 text-[#f2a921] text-xs font-bold mb-2">
-                        <Calendar className="w-3 h-3" /> {event.year}
-                      </span>
-                      <h3 className="text-xl font-bold text-[#002E2E] mb-2">{event.title}</h3>
-                      <p className="text-gray-600 text-sm">{event.desc}</p>
+                  {/* Step content */}
+                  <div
+                    className={`card bg-base-100 shadow-lg w-full max-w-md ${
+                      item.align === 'left' ? 'lg:text-right lg:mr-auto' : 'lg:text-left lg:ml-auto'
+                    }`}
+                  >
+                    <div className="card-body p-6">
+                      <div className="flex items-center gap-4">
+                        {item.align === 'left' && (
+                          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                            <item.icon className="w-6 h-6 text-white" />
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <div className="badge badge-primary mb-2">Step {item.step}</div>
+                          <h3 className="card-title text-lg font-semibold">{item.title}</h3>
+                          <p className="text-gray-600">{item.description}</p>
+                        </div>
+                        {item.align === 'right' && (
+                          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                            <item.icon className="w-6 h-6 text-white" />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Dot on Line */}
-                  <div className="absolute left-[11px] md:left-1/2 top-6 w-5 h-5 rounded-full bg-[#2a7d2f] border-4 border-[#F6FFF9] transform md:-translate-x-1/2 z-10 shadow-md">
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                      className="w-full h-full rounded-full bg-[#2a7d2f]"
-                    />
-                  </div>
-
-                  <div className="flex-1 hidden md:block" />
-                </motion.div>
+                  {/* Timeline node */}
+                  <div className="absolute left-1/2 -translate-x-1/2 lg:translate-x-0 lg:left-1/2 w-8 h-8 bg-white border-4 border-primary rounded-full z-10" />
+                </div>
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- TECH STACK STRIP (Interactive) --- */}
-      <section className="py-16 border-y border-gray-100 bg-white">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-10">
-            Powered by Modern Technology
-          </p>
-          <div className="flex flex-wrap justify-center gap-12 md:gap-20">
+      {/* 5. Problem Type Cards */}
+      <section className="py-16 bg-secondary-light/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+              Common Issues You Can Report
+            </h2>
+            <p className="text-gray-600">
+              From infrastructure to environmental concerns, report any urban issue you encounter
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {[
-              { icon: <Code className="w-10 h-10" />, name: "Next.js", color: "text-black", desc: "Fast & SEO Ready" },
-              { icon: <Database className="w-10 h-10" />, name: "MongoDB", color: "text-green-600", desc: "Scalable Data" },
-              { icon: <Zap className="w-10 h-10" />, name: "Tailwind", color: "text-cyan-500", desc: "Rapid UI" },
-              { icon: <Map className="w-10 h-10" />, name: "Leaflet", color: "text-blue-500", desc: "Open Mapping" },
-            ].map((tech, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ y: -5 }}
-                className="group flex flex-col items-center gap-2 cursor-default"
+              {
+                icon: Lightbulb,
+                title: "Street Light Failure",
+                description: "Non-functional or damaged street lighting",
+                color: "bg-yellow-100 text-yellow-700",
+              },
+              {
+                icon: Flag,
+                title: "Road Damage",
+                description: "Potholes, cracks, or surface deterioration",
+                color: "bg-orange-100 text-orange-700",
+              },
+              {
+                icon: "💧",
+                title: "Water Issues",
+                description: "Pipe leaks, contamination, or shortage",
+                color: "bg-blue-100 text-blue-700",
+              },
+              {
+                icon: "🗑️",
+                title: "Waste Management",
+                description: "Overflowing bins or irregular collection",
+                color: "bg-gray-100 text-gray-700",
+              },
+              {
+                icon: "🌳",
+                title: "Public Parks",
+                description: "Maintenance issues in green spaces",
+                color: "bg-green-100 text-green-700",
+              },
+              {
+                icon: "🚦",
+                title: "Traffic Signals",
+                description: "Malfunctioning traffic control systems",
+                color: "bg-red-100 text-red-700",
+              },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-base-200 cursor-pointer group"
               >
-                <div className={`${tech.color} group-hover:scale-110 transition-transform duration-300`}>
-                  {tech.icon}
+                <div className="card-body p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${item.color.split(' ')[0]}`}>
+                      {typeof item.icon === 'string' ? (
+                        <span className="text-2xl">{item.icon}</span>
+                      ) : (
+                        <item.icon className="w-6 h-6" />
+                      )}
+                    </div>
+                    <div className="badge badge-primary badge-outline opacity-0 group-hover:opacity-100 transition-opacity">
+                      + Report
+                    </div>
+                  </div>
+                  <h3 className="card-title text-lg font-semibold text-primary mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-600">{item.description}</p>
                 </div>
-                <span className="font-bold text-[#002E2E]">{tech.name}</span>
-                <span className="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity absolute mt-16 bg-white px-2 py-1 shadow-md rounded border">
-                  {tech.desc}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* --- FAQ SECTION --- */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6 max-w-3xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Common Questions</h2>
-            <p className="text-gray-600">Everything you need to know about the platform.</p>
-          </div>
-
-          <div className="space-y-4">
-            {FAQS.map((faq, index) => (
-              <div key={index} className="border border-gray-200 rounded-2xl overflow-hidden">
-                <button
-                  onClick={() => toggleFaq(index)}
-                  className="w-full flex items-center justify-between p-6 text-left bg-white hover:bg-gray-50 transition-colors"
-                >
-                  <span className="font-semibold text-lg text-[#002E2E]">{faq.question}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${openFaq === index ? 'rotate-180' : ''
-                      }`}
-                  />
-                </button>
-                <AnimatePresence>
-                  {openFaq === index && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="p-6 pt-0 text-gray-600 border-t border-gray-100">
-                        {faq.answer}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* --- FINAL CTA --- */}
-      <section className="py-24 bg-[#002E2E] text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#2a7d2f] opacity-20 rounded-full blur-[100px]" />
-        <div className="container mx-auto px-6 text-center relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8">Ready to make an impact?</h2>
-          <p className="text-xl text-white/70 mb-10 max-w-2xl mx-auto">
-            Join thousands of other citizens who are actively rebuilding their communities, one
-            report at a time.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/register">
-              <Button
-                variant="accent"
-                size="xl"
-                iconPosition="right"
-              >
-                Get Started Free
-              </Button>
-            </Link>
+      {/* 6. FAQ Section */}
+      <section className="py-16 bg-base-100">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+                Frequently Asked Questions
+              </h2>
+              <p className="text-gray-600">
+                Find answers to common questions about NagarNirman
+              </p>
+            </div>
+
+            <FAQAccordion />
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Mission & Vision */}
+      <section className="py-16 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5" />
+        <div className="relative container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* Mission Card */}
+            <div className="card bg-white shadow-xl border border-base-200">
+              <div className="card-body p-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
+                    <Target className="w-7 h-7 text-primary" />
+                  </div>
+                  <div>
+                    <div className="badge badge-primary badge-outline mb-2">Our Purpose</div>
+                    <h2 className="card-title text-2xl font-bold text-primary">Mission</h2>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-lg mb-6">
+                  To empower every citizen with tools for direct civic engagement, transforming urban 
+                  problem-solving through transparency, technology, and community collaboration.
+                </p>
+                <div className="space-y-3">
+                  {['Citizen Empowerment', 'Technological Innovation', 'Government Accountability'].map(
+                    (value, index) => (
+                      <div key={index} className="flex items-center gap-3">
+                        <CheckCircle className="w-5 h-5 text-accent" />
+                        <span className="font-medium">{value}</span>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Vision Card */}
+            <div className="card bg-white shadow-xl border border-base-200">
+              <div className="card-body p-8">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center">
+                    <Eye className="w-7 h-7 text-accent" />
+                  </div>
+                  <div>
+                    <div className="badge badge-accent badge-outline mb-2">Our Future</div>
+                    <h2 className="card-title text-2xl font-bold text-primary">Vision</h2>
+                  </div>
+                </div>
+                <p className="text-gray-700 text-lg mb-6">
+                  A future where Indian cities leverage community-reported data for predictive governance, 
+                  creating self-healing urban ecosystems that are responsive, sustainable, and citizen-centric.
+                </p>
+                <div className="bg-base-100 rounded-xl p-4">
+                  <h4 className="font-semibold mb-3">Future Goals</h4>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-primary">AI-Powered Analytics</span>
+                    <span className="badge badge-primary badge-outline">2024</span>
+                  </div>
+                  <div className="divider my-2" />
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-primary">Pan-India Coverage</span>
+                    <span className="badge badge-primary badge-outline">2025</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Extra Sections */}
+
+      {/* A. Impact Numbers */}
+      <section className="py-16 bg-primary text-primary-content">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Impact in Numbers</h2>
+            <p className="text-primary-content/80 max-w-2xl mx-auto">
+              Join thousands of citizens making a difference in their communities
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <StatCard
+              number="235,000+"
+              label="Reports Submitted"
+              icon="📄"
+              delay={100}
+            />
+            <StatCard
+              number="1.2M+"
+              label="Active Users"
+              icon="👥"
+              delay={300}
+            />
+            <StatCard
+              number="78%"
+              label="Resolution Rate"
+              icon="📈"
+              delay={500}
+            />
+            <StatCard
+              number="420+"
+              label="Cities Covered"
+              icon="🏙️"
+              delay={700}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* B. Journey Timeline */}
+      <section className="py-16 bg-base-100">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+              Our Journey
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              From a simple idea to India's leading civic-tech platform
+            </p>
+          </div>
+
+          <Timeline />
+        </div>
+      </section>
+
+      {/* C. Final CTA */}
+      <section className="py-20 bg-gradient-to-br from-primary to-primary-light relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-black/10" />
+        </div>
+        <div className="relative container mx-auto px-4 text-center">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to transform your city?
+            </h2>
+            <p className="text-white/90 text-xl mb-8">
+              Join thousands of citizens already making a difference in their communities
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="btn btn-accent btn-lg rounded-full px-8 text-white">
+                Start Reporting Now
+                <ChevronDown className="w-5 h-5 ml-2" />
+              </button>
+              <button className="btn btn-outline btn-lg border-white text-white hover:bg-white hover:text-primary rounded-full px-8">
+                Explore Success Stories →
+              </button>
+            </div>
+            <div className="mt-12 text-white/70">
+              <p className="text-sm">
+                Already using NagarNirman?{' '}
+                <a href="/login" className="underline hover:text-white">
+                  Sign in to your account
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </section>
     </div>
-  );
-};
-
-export default AboutPage;
+  )
+}
