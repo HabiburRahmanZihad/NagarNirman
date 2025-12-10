@@ -209,7 +209,7 @@ export default function EarthquakeDetailPage() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`bg-linear-to-r ${getAlertColor(earthquake.alertLevel)} text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent space-y-8`}
+          className={`bg-primary ${getAlertColor(earthquake.alertLevel)} text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent space-y-8`}
         >
           <div className="flex items-start gap-6">
             <div className="flex items-center justify-center w-24 h-24 sm:w-32 sm:h-32 rounded-2xl bg-white/10">
