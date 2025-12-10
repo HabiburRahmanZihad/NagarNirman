@@ -1,32 +1,40 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp, HelpCircle } from 'lucide-react'
 
 const faqItems = [
   {
-    question: 'Is NagarNirman officially connected to government bodies?',
-    answer: 'Yes, NagarNirman partners with municipal corporations and urban development authorities across India. We have formal agreements that ensure reported issues are directed to the correct departments.',
+    question: 'Is NagarNirman officially connected with local government?',
+    answer: 'Yes, we have formal partnerships with municipal corporations and urban development authorities across India. Reports are directly routed to relevant government departments for resolution, ensuring official action.',
   },
   {
-    question: 'Is reporting completely free for citizens?',
-    answer: 'Absolutely. NagarNirman is completely free for citizens to use. Our platform is funded through government partnerships and corporate social responsibility initiatives.',
-  },
-  {
-    question: 'How does the reward points system work?',
-    answer: 'Users earn points for each verified report. Points can be redeemed for discounts with partner businesses, mobile recharges, or donated to community improvement projects.',
+    question: 'Is reporting civic issues completely free?',
+    answer: 'Absolutely. NagarNirman is completely free for citizens. Our platform is supported through government partnerships and public service grants, ensuring accessibility for all.',
   },
   {
     question: 'Can I report issues anonymously?',
-    answer: 'Yes, we offer anonymous reporting for sensitive issues. However, verified reports with contact information typically get faster resolution and allow for status updates.',
+    answer: 'Yes, you can choose to report anonymously. Your privacy is protected, and anonymous reports are treated with the same priority as verified ones.',
   },
   {
-    question: 'What is the average resolution time for complaints?',
-    answer: 'Resolution time varies by issue type and location. On average, 65% of reports are resolved within 7 days, while critical infrastructure issues are prioritized for immediate attention.',
+    question: 'How long does resolution usually take?',
+    answer: 'Resolution time varies by issue type. Most reports see initial action within 24-48 hours, with complete resolution typically within 3-7 working days for standard issues.',
   },
   {
-    question: 'How is my personal data protected?',
-    answer: 'We use bank-level encryption and comply with Indian data protection regulations. Your personal information is never shared without consent, except with relevant authorities for issue resolution.',
+    question: 'What information is required to submit a report?',
+    answer: 'Minimum requirements: Location (automatic or manual), issue type/category, and photo evidence. Additional details help ensure faster and more accurate resolution.',
+  },
+  {
+    question: 'How do I track my report status?',
+    answer: 'You can track your report in real-time through your personal dashboard. We also send email/SMS notifications at each status update stage.',
+  },
+  {
+    question: 'What types of civic issues can I report?',
+    answer: 'You can report various urban infrastructure issues including road damage, street light problems, waste management, water supply issues, drainage problems, and public space maintenance.',
+  },
+  {
+    question: 'Are reports verified before action?',
+    answer: 'Yes, our community moderators verify reports for accuracy and relevance before routing them to authorities. This ensures efficient use of municipal resources.',
   },
 ]
 
@@ -42,27 +50,60 @@ export default function FAQAccordion() {
       {faqItems.map((item, index) => (
         <div
           key={index}
-          className="card bg-base-100 border border-base-200 shadow-sm"
+          className="group relative"
         >
           <div
-            className="card-body p-6 cursor-pointer hover:bg-base-200/50 transition-colors"
+            className={`relative bg-white rounded-2xl border-2 transition-all duration-500 cursor-pointer overflow-hidden ${
+              openIndex === index
+                ? 'border-[#2a7d2f]/30 shadow-xl shadow-[#2a7d2f]/5'
+                : 'border-gray-200 hover:border-[#2a7d2f]/20 hover:shadow-lg'
+            }`}
             onClick={() => toggleFAQ(index)}
           >
-            <div className="flex items-center justify-between">
-              <h3 className="card-title text-lg font-semibold text-primary">
-                {item.question}
-              </h3>
-              {openIndex === index ? (
-                <ChevronUp className="w-5 h-5 text-primary" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-primary" />
-              )}
-            </div>
-            {openIndex === index && (
-              <div className="mt-4 pt-4 border-t border-base-300">
-                <p className="text-gray-600">{item.answer}</p>
+            {/* Background gradient on hover */}
+            <div className={`absolute inset-0 bg-gradient-to-r from-white to-gray-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+              openIndex === index ? 'opacity-100' : ''
+            }`} />
+            
+            <div className="relative p-8">
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex items-start gap-6">
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors duration-500 ${
+                    openIndex === index
+                      ? 'bg-gradient-to-br from-[#2a7d2f]/10 to-[#2a7d2f]/5'
+                      : 'bg-gray-100'
+                  }`}>
+                    <HelpCircle className={`w-6 h-6 transition-colors duration-500 ${
+                      openIndex === index ? 'text-[#2a7d2f]' : 'text-gray-400'
+                    }`} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      {item.question}
+                    </h3>
+                    {openIndex === index && (
+                      <div className="mt-6 pt-6 border-t border-gray-200">
+                        <p className="text-gray-700 leading-relaxed text-lg">{item.answer}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  {openIndex === index ? (
+                    <ChevronUp className="w-6 h-6 text-[#2a7d2f] transition-transform duration-500" />
+                  ) : (
+                    <ChevronDown className="w-6 h-6 text-gray-400 group-hover:text-[#2a7d2f] transition-colors duration-500" />
+                  )}
+                </div>
               </div>
-            )}
+            </div>
+            
+            {/* Progress indicator */}
+            <div
+              className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#2a7d2f] to-[#ffcc33] transform origin-left transition-transform duration-1000 ${
+                openIndex === index ? 'scale-x-100' : 'scale-x-0'
+              }`}
+            />
           </div>
         </div>
       ))}
