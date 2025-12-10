@@ -1104,7 +1104,7 @@ export default function MapSearchPage() {
                 {
                   label: 'Total Reports',
                   value: summaryStats.total,
-                  icon: Activity,
+                  icon: BarChart3,
                   color: 'from-blue-500 to-blue-600',
                   bgDark: 'bg-blue-500/10',
                   bgLight: 'bg-blue-50'
@@ -1143,7 +1143,7 @@ export default function MapSearchPage() {
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <stat.icon className={`w-4 h-4 bg-linear-to-r ${stat.color} bg-clip-text text-transparent`} strokeWidth={2.5} />
+                    <stat.icon className={`w-4 h-4 bg-linear-to-r ${stat.color} bg-clip-text`} strokeWidth={2.5} />
                     <div className={`w-2 h-2 rounded-full bg-linear-to-r ${stat.color}`} />
                   </div>
                   <p className={`text-xs font-medium mb-1 ${
