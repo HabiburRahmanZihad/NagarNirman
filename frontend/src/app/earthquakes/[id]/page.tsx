@@ -190,8 +190,8 @@ export default function EarthquakeDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-base-200 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-5xl mx-auto space-y-8">
+    <div className="min-h-screen bg-base-200 p-4 sm:p-6 lg:p-8 pb-12">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Back Button */}
         <div>
           <Link href="/earthquakes" className="inline-block">
@@ -205,8 +205,7 @@ export default function EarthquakeDetailPage() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`bg-primary ${getAlertColor(earthquake.alertLevel)}
-          text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent space-y-8`}
+          className={`bg-linear-to-r ${getAlertColor(earthquake.alertLevel)} text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent space-y-8`}
         >
           <div className="flex items-start gap-6">
             <div className="text-6xl sm:text-7xl">{getIntensityEmoji(earthquake.intensity)}</div>
@@ -368,27 +367,31 @@ export default function EarthquakeDetailPage() {
               <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">If You're in the Affected Area:</h3>
               <ul className="space-y-3 sm:space-y-4">
                 <li className="flex items-start gap-3 sm:gap-4">
-                  <span className="text-2xl sm:text-3xl shrink-0">✓</span>
+                  <span className="text-2xl sm:text-3xl shrink-0 font-bold">✓</span>
                   <span className="text-base sm:text-lg leading-relaxed">Check for injuries and provide first aid if needed</span>
                 </li>
                 <li className="flex items-start gap-3 sm:gap-4">
-                  <span className="text-2xl sm:text-3xl shrink-0">✓</span>
+                  <span className="text-2xl sm:text-3xl shrink-0 font-bold">✓</span>
                   <span className="text-base sm:text-lg leading-relaxed">Inspect your surroundings for hazards</span>
                 </li>
                 <li className="flex items-start gap-3 sm:gap-4">
-                  <span className="text-2xl sm:text-3xl shrink-0">✓</span>
+                  <span className="text-2xl sm:text-3xl shrink-0 font-bold">✓</span>
                   <span className="text-base sm:text-lg leading-relaxed">Stay alert for aftershocks</span>
                 </li>
                 <li className="flex items-start gap-3 sm:gap-4">
-                  <span className="text-2xl sm:text-3xl shrink-0">✓</span>
+                  <span className="text-2xl sm:text-3xl shrink-0 font-bold">✓</span>
                   <span className="text-base sm:text-lg leading-relaxed">Follow local authorities' instructions</span>
                 </li>
               </ul>
             </div>
-            <div className="space-y-4 sm:space-y-0 flex flex-col">
-              <h3 className="text-lg sm:text-xl font-bold">Safety Resources:</h3>
-              <Link href="/earthquakes/guidelines" className="flex-1 flex items-end">
-                <Button variant="secondary" fullWidth>
+
+            <div className="flex flex-col justify-between">
+              <div>
+                <h3 className="text-lg sm:text-xl font-bold mb-6 sm:mb-8">Safety Resources:</h3>
+                <p className="text-base sm:text-lg leading-relaxed mb-6 text-white/90">Get comprehensive information about earthquake safety, preparedness tips, and emergency protocols.</p>
+              </div>
+              <Link href="/earthquakes/guidelines" className="w-full">
+                <Button variant="secondary" size="lg" fullWidth>
                   View Safety Guidelines
                 </Button>
               </Link>
