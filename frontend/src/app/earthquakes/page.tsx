@@ -208,7 +208,7 @@ export default function EarthquakesPage() {
   const filteredEarthquakes = earthquakes;
 
   return (
-    <div className="min-h-screen bg-base-200 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-base-100 p-4 sm:p-6 lg:p-8 mb-12">
       <div className="container mx-auto space-y-8">
         {/* Header */}
         <motion.div
