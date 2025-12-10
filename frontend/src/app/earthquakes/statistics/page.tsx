@@ -262,7 +262,7 @@ export default function EarthquakeAnalyticsPage() {
         className="bg-linear-to-r from-primary to-secondary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
       >
         <div className="flex items-center gap-4 mb-4">
-          <div className="text-5xl">🌍</div>
+          <Globe className="w-12 h-12 sm:w-14 sm:h-14" />
           <h1 className="text-4xl sm:text-5xl font-extrabold">Earthquake Analytics</h1>
         </div>
         <p className="text-white/90 text-lg">Comprehensive statistics and seismic analysis worldwide</p>
@@ -273,8 +273,8 @@ export default function EarthquakeAnalyticsPage() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { href: '/earthquakes', label: '📋 Earthquake List', icon: '📝' },
-            { href: '/earthquakes/guidelines', label: '🛡️ Safety Guide', icon: '📚' },
+            { href: '/earthquakes', label: 'Earthquake List', icon: MapPin },
+            { href: '/earthquakes/guidelines', label: 'Safety Guide', icon: AlertTriangle },
           ].map((link) => (
             <Link key={link.href} href={link.href}>
               <motion.button
@@ -282,7 +282,10 @@ export default function EarthquakeAnalyticsPage() {
                 whileTap={{ scale: 0.98 }}
                 className="w-full px-6 py-4 bg-white rounded-2xl shadow-lg border-2 border-accent/20 font-bold text-primary hover:shadow-xl transition-all duration-300 flex items-center justify-between"
               >
-                <span className="text-lg">{link.label}</span>
+                <div className="flex items-center gap-2">
+                  <link.icon className="w-5 h-5" />
+                  <span className="text-lg">{link.label}</span>
+                </div>
                 <ChevronRight className="w-5 h-5" />
               </motion.button>
             </Link>

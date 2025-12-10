@@ -14,6 +14,10 @@ import {
   Zap,
   Globe,
   Shield,
+  Waves,
+  Wind,
+  AlertCircle,
+  Activity,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/common';
@@ -208,7 +212,14 @@ export default function EarthquakeDetailPage() {
           className={`bg-linear-to-r ${getAlertColor(earthquake.alertLevel)} text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent space-y-8`}
         >
           <div className="flex items-start gap-6">
-            <div className="text-6xl sm:text-7xl">{getIntensityEmoji(earthquake.intensity)}</div>
+            <div className="flex items-center justify-center w-24 h-24 sm:w-32 sm:h-32 rounded-2xl bg-white/10">
+              {earthquake.intensity === 'Extreme' && <Zap className="w-16 h-16 sm:w-24 sm:h-24 text-yellow-300" />}
+              {earthquake.intensity === 'Violent' && <AlertTriangle className="w-16 h-16 sm:w-24 sm:h-24 text-red-300" />}
+              {earthquake.intensity === 'Very Strong' && <Waves className="w-16 h-16 sm:w-24 sm:h-24 text-orange-300" />}
+              {earthquake.intensity === 'Strong' && <Wind className="w-16 h-16 sm:w-24 sm:h-24 text-yellow-400" />}
+              {earthquake.intensity === 'Moderate' && <AlertCircle className="w-16 h-16 sm:w-24 sm:h-24 text-amber-400" />}
+              {(earthquake.intensity === 'Light' || earthquake.intensity === 'Weak' || earthquake.intensity === 'Not Felt') && <Activity className="w-16 h-16 sm:w-24 sm:h-24 text-green-400" />}
+            </div>
             <div className="flex-1 min-w-0">
               <h1 className="text-3xl sm:text-5xl font-extrabold mb-3 break-word">{earthquake.location}</h1>
               <p className="text-white/90 text-base sm:text-lg">Event ID: <span className="font-semibold">{earthquake.eventId}</span></p>
