@@ -9,7 +9,6 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FullPageLoading } from '@/components/common';
-import Button from '@/components/common/Button';
 import { Users, BarChart3, RefreshCw, FileText, CheckCircle2, AlertCircle, TrendingUp, Clock } from 'lucide-react';
 import Card from '@/components/common/Card';
 
