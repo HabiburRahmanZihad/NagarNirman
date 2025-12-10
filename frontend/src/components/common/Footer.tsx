@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative bg-[#002E2E] text-white py-6 md:pt-12">
+    <footer className="relative bg-gradient-to-br from-gray-900 to-[#004d40] text-white py-6 md:pt-12">
       <div className="container mx-auto  py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:mb-12 mb-6 md:px-6">
           {/* About Section */}
