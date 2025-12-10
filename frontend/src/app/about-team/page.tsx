@@ -215,7 +215,7 @@ const AboutTeamPage = () => {
       <FloatingElements />
 
       {/* Hero Section - Enhanced */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-[#004d40] to-transparent opacity-10" />
@@ -267,7 +267,7 @@ const AboutTeamPage = () => {
               </motion.div>
               
               {/* Main Title */}
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
+              <h1 className="text-2xl md:text-5xl lg:text-7xl font-bold mb-8 leading-tight">
                 <span className="block text-gray-800">Meet The Team</span>
                 <span className="relative">
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] via-[#00695c] to-[#f2a921]">
@@ -575,7 +575,7 @@ const AboutTeamPage = () => {
               <Building2 className="w-12 h-12 text-[#004d40] mx-auto mb-4" />
               <h3 className="text-xl font-bold text-gray-900 mb-3">Modern Architecture</h3>
               <p className="text-gray-600">
-                Our tech stack follows a modern, scalable architecture with clear separation of concerns, 
+                Our tech stack follows a modern, scalable architecture with clear separation of concerns, <br></br> 
                 ensuring maintainability, performance, and the ability to handle thousands of concurrent civic reports.
               </p>
             </div>
@@ -606,7 +606,7 @@ const AboutTeamPage = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {PROJECT_STATS.map((stat, index) => (
               <motion.div
                 key={index}
@@ -686,7 +686,7 @@ const AboutTeamPage = () => {
             </p>
           </motion.div>
 
-          <div className="relative max-w-6xl mx-auto">
+          <div className="relative">
             {/* Timeline Line */}
             <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-[#004d40] via-[#f2a921] to-[#004d40] -translate-x-1/2" />
             
