@@ -214,25 +214,37 @@ const AboutTeamPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white text-gray-900 font-sans overflow-hidden">
       <FloatingElements />
 
-      {/* Hero Section with Parallax */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#004d40]/5 via-transparent to-[#f2a921]/5" />
-        
-        <motion.div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 20% 50%, rgba(0, 77, 64, 0.1) 0%, transparent 50%),
-                             radial-gradient(circle at 80% 20%, rgba(242, 169, 33, 0.1) 0%, transparent 50%)`,
-          }}
-          animate={{
-            backgroundPosition: ['0% 0%', '100% 100%'],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            repeatType: 'reverse',
-          }}
-        />
+      {/* Hero Section - Enhanced */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        {/* Animated Background */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-[#004d40] to-transparent opacity-10" />
+          <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#f2a921] to-transparent opacity-10" />
+          
+          {/* Animated Orbs */}
+          <motion.div
+            className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-[#004d40]/20 to-transparent rounded-full blur-3xl"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+            }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-transparent to-[#f2a921]/20 rounded-full blur-3xl"
+            animate={{
+              scale: [1.2, 1, 1.2],
+              opacity: [0.5, 0.3, 0.5],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+            }}
+          />
+        </div>
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-6xl mx-auto">
@@ -242,35 +254,42 @@ const AboutTeamPage = () => {
               transition={{ duration: 0.8 }}
               className="text-center"
             >
+              {/* Badge */}
               <motion.div
-                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-[#004d40]/20 mb-8 shadow-lg"
-                whileHover={{ scale: 1.05 }}
+                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/80 backdrop-blur-sm border border-[#004d40]/20 mb-8 shadow-lg"
+                whileHover={{ scale: 1.05, rotate: 1 }}
+                transition={{ type: "spring", stiffness: 300 }}
               >
                 <Sparkles className="w-5 h-5 text-[#f2a921]" />
-                <span className="text-sm font-semibold text-[#004d40] tracking-wider">THE BUILDERS OF CHANGE</span>
+                <span className="text-sm font-semibold text-[#004d40] tracking-wider">
+                  BUILDING THE FUTURE OF URBAN GOVERNANCE
+                </span>
               </motion.div>
               
+              {/* Main Title */}
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight">
-                <span className="block">We Build</span>
+                <span className="block text-gray-800">Meet The Team</span>
                 <span className="relative">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] via-[#004d40] to-[#f2a921]">
-                    Smarter Cities
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] via-[#00695c] to-[#f2a921]">
+                    Behind NagarNirman
                   </span>
                   <motion.span
-                    className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-[#004d40] to-[#f2a921] rounded-full"
+                    className="absolute -bottom-4 left-1/4 w-1/2 h-2 bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
                     initial={{ width: 0 }}
-                    animate={{ width: '100%' }}
-                    transition={{ delay: 0.5, duration: 1.5 }}
+                    animate={{ width: '50%' }}
+                    transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
                   />
                 </span>
               </h1>
               
+              {/* Subtitle */}
               <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed">
-                Three students transforming urban governance through technology. 
-                Building NagarNirman—a platform that makes civic reporting 
-                <span className="font-semibold text-[#004d40]"> seamless, transparent, and impactful.</span>
+                Three passionate students revolutionizing how Bangladesh addresses urban challenges. 
+                We combine cutting-edge technology with deep civic engagement to build 
+                <span className="font-semibold text-[#004d40]"> smarter, more responsive cities.</span>
               </p>
               
+              {/* CTA Buttons */}
               <motion.div
                 className="flex flex-col sm:flex-row gap-6 justify-center items-center"
                 initial={{ opacity: 0, y: 20 }}
@@ -285,7 +304,7 @@ const AboutTeamPage = () => {
                 >
                   <span className="relative z-10 flex items-center gap-3">
                     <Users className="w-5 h-5" />
-                    Meet The Team
+                    Meet Our Team
                   </span>
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-[#f2a921] to-[#ffb74d]"
@@ -296,12 +315,15 @@ const AboutTeamPage = () => {
                 </motion.a>
                 
                 <motion.a
-                  href="#impact"
+                  href="#tech"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="group px-8 py-4 border-2 border-[#004d40] text-[#004d40] rounded-full font-semibold hover:bg-[#004d40] hover:text-white transition-all duration-300"
+                  className="group px-8 py-4 border-2 border-[#004d40] text-[#004d40] rounded-full font-semibold hover:bg-[#004d40] hover:text-white transition-all duration-300 shadow-lg"
                 >
-                  See Our Impact
+                  <span className="flex items-center gap-3">
+                    <Code2 className="w-5 h-5" />
+                    Our Tech Stack
+                  </span>
                 </motion.a>
               </motion.div>
             </motion.div>
@@ -314,12 +336,15 @@ const AboutTeamPage = () => {
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
-          <div className="w-6 h-10 border-2 border-[#004d40]/30 rounded-full flex justify-center">
-            <motion.div
-              className="w-1 h-3 bg-gradient-to-b from-[#004d40] to-[#f2a921] rounded-full mt-2"
-              animate={{ y: [0, 12, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            />
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-sm text-gray-500 font-medium">Scroll</span>
+            <div className="w-6 h-10 border-2 border-[#004d40]/30 rounded-full flex justify-center">
+              <motion.div
+                className="w-1 h-3 bg-gradient-to-b from-[#004d40] to-[#f2a921] rounded-full mt-2"
+                animate={{ y: [0, 12, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
+            </div>
           </div>
         </motion.div>
       </section>
