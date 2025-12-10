@@ -705,54 +705,6 @@ const AboutTeamPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 bg-gradient-to-br from-gray-900 to-[#004d40] text-white/80">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div>
-              <div className="flex items-center gap-3 mb-4">
-                <Building2 className="w-8 h-8 text-[#f2a921]" />
-                <span className="text-2xl font-bold text-white">NagarNirman</span>
-              </div>
-              <p className="text-white/60">Building smarter cities, one report at a time</p>
-            </div>
-            
-            <div className="flex gap-6">
-              <motion.a
-                href="/about"
-                whileHover={{ y: -3 }}
-                className="text-white/80 hover:text-white transition-colors"
-              >
-                About Us
-              </motion.a>
-              <motion.a
-                href="/contact"
-                whileHover={{ y: -3 }}
-                className="text-white/80 hover:text-white transition-colors"
-              >
-                Contact
-              </motion.a>
-              <motion.a
-                href="/privacy"
-                whileHover={{ y: -3 }}
-                className="text-white/80 hover:text-white transition-colors"
-              >
-                Privacy
-              </motion.a>
-            </div>
-            
-            <div className="text-sm text-white/60">
-              © {new Date().getFullYear()} NagarNirman Team. All rights reserved.
-            </div>
-          </div>
-          
-          <div className="mt-8 pt-8 border-t border-white/10 text-center">
-            <p className="text-white/40 text-xs">
-              Part of our commitment to SDG 11: Sustainable Cities and Communities
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
