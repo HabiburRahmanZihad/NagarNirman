@@ -7,15 +7,13 @@ import {
   AlertTriangle,
   Gauge,
   Clock,
-  Users,
   Zap,
   ChevronRight,
   Search,
-  Filter,
 } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from '@/components/common';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 interface Earthquake {
   _id: string;
@@ -375,14 +373,10 @@ export default function EarthquakesPage() {
                   </div>
 
                   {/* View Details Button */}
-                  <Link href={`/earthquakes/${earthquake._id}`}>
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full px-3 py-2 bg-linear-to-r from-primary to-secondary text-white rounded-lg font-bold text-sm hover:shadow-lg transition-all duration-300"
-                    >
+                  <Link href={`/earthquakes/${earthquake._id}`} className="w-full">
+                    <Button variant="primary" fullWidth>
                       View Details
-                    </motion.button>
+                    </Button>
                   </Link>
                 </motion.div>
               ))}
