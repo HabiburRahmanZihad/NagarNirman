@@ -12,7 +12,9 @@ import {
   Sparkles, Rocket, Lightbulb, Heart,
   Building2, Shield, Leaf, Globe2,
   MessageSquare, PieChart, BarChart3,
-  Smartphone, Cloud, Lock, Wifi
+  Smartphone, Cloud, Lock, Wifi,
+  Layers, Key, Upload, Bell,
+  Code, Palette, CpuIcon, BarChart
 } from 'lucide-react';
 import CountUp from 'react-countup';
 
@@ -98,6 +100,8 @@ const FloatingElements = () => {
 };
 
 const AboutTeamPage = () => {
+
+  // Team Members Data
   const TEAM_MEMBERS = [
     {
       name: 'Ahmed Rahman',
@@ -109,7 +113,8 @@ const AboutTeamPage = () => {
       skills: ['Cloud Architecture', 'API Design', 'System Scaling', 'DevOps'],
       contributions: ['System Infrastructure', 'API Development', 'Deployment Strategy'],
       social: { github: '#', linkedin: '#', email: '#' },
-      funFact: 'Can deploy a full-stack app in under 10 minutes'
+      funFact: 'Can troubleshoot server issues in his sleep',
+      stats: { commits: 980, projects: 12 }
     },
     {
       name: 'Fatima Khan',
@@ -121,7 +126,8 @@ const AboutTeamPage = () => {
       skills: ['MongoDB', 'Data Security', 'Node.js', 'GDPR Compliance'],
       contributions: ['Database Design', 'Security Protocols', 'Data Analytics'],
       social: { github: '#', linkedin: '#', email: '#' },
-      funFact: 'Has never lost a single user data record'
+      funFact: 'Perfectionist who notices 1px alignment issues',
+      stats: { commits: 980, projects: 12 }
     },
     {
       name: 'Rafi Hassan',
@@ -133,10 +139,12 @@ const AboutTeamPage = () => {
       skills: ['React/Next.js', 'UI/UX Design', 'Accessibility', 'Performance'],
       contributions: ['User Interface', 'Mobile Design', 'Frontend Architecture'],
       social: { github: '#', linkedin: '#', email: '#' },
-      funFact: 'Dreams in CSS animations'
+      funFact: 'Has interviewed over 100 citizens about civic issues',
+      stats: { commits: 980, projects: 12 }
     },
   ];
 
+  // Stats Data
   const PROJECT_STATS = [
     { value: 235000, suffix: '+', label: 'Reports Processed', icon: <FileText className="w-6 h-6" /> },
     { value: 78, suffix: '%', label: 'Resolution Rate', icon: <CheckCircle className="w-6 h-6" /> },
@@ -144,14 +152,54 @@ const AboutTeamPage = () => {
     { value: 99.9, suffix: '%', label: 'System Uptime', icon: <Server className="w-6 h-6" /> },
   ];
 
+    // Tech Stack Data
   const TECH_STACK = [
-    { icon: <Smartphone className="w-8 h-8" />, name: 'React Native', color: 'from-blue-400 to-cyan-400' },
-    { icon: <Globe2 className="w-8 h-8" />, name: 'Next.js', color: 'from-black to-gray-800' },
-    { icon: <Database className="w-8 h-8" />, name: 'MongoDB', color: 'from-green-500 to-emerald-500' },
-    { icon: <Cloud className="w-8 h-8" />, name: 'Cloudinary', color: 'from-yellow-500 to-orange-500' },
-    { icon: <Lock className="w-8 h-8" />, name: 'Auth.js', color: 'from-red-500 to-pink-500' },
-    { icon: <Wifi className="w-8 h-8" />, name: 'Socket.io', color: 'from-purple-500 to-indigo-500' },
+    { 
+      category: 'Frontend',
+      technologies: [
+        { name: 'Next.js', icon: <Globe2 className="w-6 h-6" />, color: 'from-black to-gray-800' },
+        { name: 'TypeScript', icon: <Code className="w-6 h-6" />, color: 'from-blue-600 to-blue-800' },
+        { name: 'Tailwind CSS', icon: <Palette className="w-6 h-6" />, color: 'from-cyan-500 to-teal-500' },
+        { name: 'ShadCN/UI', icon: <Layers className="w-6 h-6" />, color: 'from-gray-700 to-gray-900' },
+      ]
+    },
+    { 
+      category: 'Backend & Database',
+      technologies: [
+        { name: 'Node.js', icon: <CpuIcon className="w-6 h-6" />, color: 'from-green-600 to-emerald-700' },
+        { name: 'Express.js', icon: <Server className="w-6 h-6" />, color: 'from-gray-600 to-gray-800' },
+        { name: 'MongoDB', icon: <Database className="w-6 h-6" />, color: 'from-green-500 to-emerald-600' },
+        { name: 'Mongoose', icon: <Database className="w-6 h-6" />, color: 'from-red-500 to-red-700' },
+      ]
+    },
+    { 
+      category: 'Authentication & Security',
+      technologies: [
+        { name: 'NextAuth.js', icon: <Key className="w-6 h-6" />, color: 'from-blue-500 to-indigo-600' },
+        { name: 'JWT', icon: <Shield className="w-6 h-6" />, color: 'from-purple-500 to-purple-700' },
+        { name: 'Firebase Auth', icon: <Lock className="w-6 h-6" />, color: 'from-yellow-500 to-orange-600' },
+      ]
+    },
+    { 
+      category: 'Services & APIs',
+      technologies: [
+        { name: 'Mapbox/Leaflet', icon: <MapPin className="w-6 h-6" />, color: 'from-blue-400 to-blue-600' },
+        { name: 'Cloudinary', icon: <Cloud className="w-6 h-6" />, color: 'from-yellow-400 to-orange-500' },
+        { name: 'Multer', icon: <Upload className="w-6 h-6" />, color: 'from-gray-500 to-gray-700' },
+        { name: 'Nodemailer', icon: <Mail className="w-6 h-6" />, color: 'from-red-400 to-red-600' },
+      ]
+    },
+    { 
+      category: 'State & Deployment',
+      technologies: [
+        { name: 'Context API', icon: <BarChart3 className="w-6 h-6" />, color: 'from-purple-400 to-purple-600' },
+        { name: 'Redux Toolkit', icon: <GitBranch className="w-6 h-6" />, color: 'from-violet-500 to-violet-700' },
+        { name: 'Vercel', icon: <Globe className="w-6 h-6" />, color: 'from-black to-gray-800' },
+        { name: 'Render/Heroku', icon: <Server className="w-6 h-6" />, color: 'from-pink-500 to-rose-600' },
+      ]
+    },
   ];
+
 
   const WORKFLOW_STEPS = [
     { step: '01', title: 'Report Submission', desc: 'Citizens report issues via mobile/web', icon: <MessageSquare className="w-6 h-6" /> },
@@ -298,7 +346,7 @@ const AboutTeamPage = () => {
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-3 gap-8">
             {TEAM_MEMBERS.map((member, index) => (
               <TiltCard key={index} className="relative group">
                 {/* Glow Effect */}
@@ -332,6 +380,20 @@ const AboutTeamPage = () => {
                     </div>
                   </div>
 
+                  {/* Stats */}
+                  <div className="relative z-10 mb-6">
+                    <div className="flex justify-center gap-6">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-[#004d40]">{member.stats.commits}+</div>
+                        <div className="text-xs text-gray-500">Commits</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-[#f2a921]">{member.stats.projects}</div>
+                        <div className="text-xs text-gray-500">Projects</div>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Bio */}
                   <div className="relative z-10 mb-8">
                     <p className="text-gray-600 leading-relaxed mb-6">{member.bio}</p>
@@ -340,7 +402,7 @@ const AboutTeamPage = () => {
                     <div className="bg-gradient-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-xl p-4 border border-[#004d40]/10">
                       <div className="flex items-center gap-2 mb-2">
                         <Lightbulb className="w-4 h-4 text-[#f2a921]" />
-                        <span className="text-sm font-semibold text-[#004d40]">Fun Fact</span>
+                        <span className="text-sm font-semibold text-[#004d40]">Developer Trivia</span>
                       </div>
                       <p className="text-sm text-gray-600">{member.funFact}</p>
                     </div>
@@ -387,7 +449,9 @@ const AboutTeamPage = () => {
                         whileHover={{ scale: 1.05 }}
                       >
                         <span className="text-[#004d40] font-bold">Core </span>
-                        Contributor
+                        <span className='text-accent'>
+                          Contributor
+                        </span>
                       </motion.div>
                     </div>
                   </div>
@@ -399,7 +463,9 @@ const AboutTeamPage = () => {
       </section>
 
       {/* Tech Stack - Animated Grid */}
-      <section className="py-24 bg-gradient-to-br from-gray-50 to-white">
+
+      {/* Tech Stack Section */}
+      <section id="tech" className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0 }}
@@ -408,41 +474,90 @@ const AboutTeamPage = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-6xl font-bold mb-6">
-              <span className="text-gray-900">Our </span>
+              <span className="text-gray-800">Our </span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] to-[#f2a921]">
                 Tech Arsenal
               </span>
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Cutting-edge technologies powering Bangladesh&apos;s smartest civic platform
+              The cutting-edge technologies powering NagarNirman&apos;s civic reporting platform
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-5xl mx-auto">
-            {TECH_STACK.map((tech, index) => (
+          <div className="space-y-12">
+            {TECH_STACK.map((category, catIndex) => (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -10 }}
-                className="relative group"
+                key={catIndex}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: catIndex * 0.1 }}
+                className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${tech.color} rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500`} />
-                
-                <div className="relative bg-white rounded-2xl p-8 shadow-xl border border-gray-100 group-hover:shadow-2xl transition-all duration-300 h-full flex flex-col items-center justify-center">
-                  <div className={`w-16 h-16 bg-gradient-to-br ${tech.color} rounded-2xl flex items-center justify-center mb-6 shadow-lg`}>
-                    <div className="text-white">
-                      {tech.icon}
-                    </div>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#004d40] to-[#f2a921] rounded-xl flex items-center justify-center">
+                    <Code2 className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="font-bold text-gray-900 text-center">{tech.name}</h3>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">{category.category}</h3>
+                    <p className="text-gray-500">Modern, scalable, and battle-tested technologies</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {category.technologies.map((tech, techIndex) => (
+                    <motion.div
+                      key={techIndex}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: techIndex * 0.05 }}
+                      whileHover={{ y: -5 }}
+                      className="group"
+                    >
+                      <div className={`absolute inset-0 bg-gradient-to-br ${tech.color} rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition duration-500`} />
+                      
+                      <div className="relative bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-100 group-hover:border-transparent transition-all duration-300 h-full flex flex-col items-center justify-center text-center shadow-sm group-hover:shadow-xl">
+                        <div className={`w-16 h-16 bg-gradient-to-br ${tech.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg`}>
+                          <div className="text-white">
+                            {tech.icon}
+                          </div>
+                        </div>
+                        <h4 className="font-bold text-gray-900 text-lg mb-2">{tech.name}</h4>
+                        
+                        {/* Usage Description */}
+                        <div className="text-xs text-gray-500 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          {category.category === 'Frontend' && 'Responsive UI Components'}
+                          {category.category === 'Backend & Database' && 'Data Storage & APIs'}
+                          {category.category === 'Authentication & Security' && 'Secure User Auth'}
+                          {category.category === 'Services & APIs' && 'External Service Integration'}
+                          {category.category === 'State & Deployment' && 'State Management & Hosting'}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
               </motion.div>
             ))}
           </div>
+
+          {/* Architecture Note */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-16 text-center"
+          >
+            <div className="bg-gradient-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-2xl p-8 border border-[#004d40]/10">
+              <Building2 className="w-12 h-12 text-[#004d40] mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Modern Architecture</h3>
+              <p className="text-gray-600">
+                Our tech stack follows a modern, scalable architecture with clear separation of concerns, 
+                ensuring maintainability, performance, and the ability to handle thousands of concurrent civic reports.
+              </p>
+            </div>
+          </motion.div>
         </div>
       </section>
+
 
       {/* Impact Stats - Circular Progress */}
       <section id="impact" className="py-24 relative">
