@@ -88,7 +88,7 @@ export default function AboutPage() {
             }}
           />
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#2a7d2f]/90 via-[#2a7d2f]/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#004d40]/90 via-[#004d40]/70 to-transparent" />
           {/* Pattern Overlay - Fixed syntax */}
           <div 
             className="absolute inset-0 opacity-10"
@@ -103,7 +103,7 @@ export default function AboutPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-white">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                About <span className="text-[#ffcc33]">NagarNirman</span>
+                About <span className="text-[#f2a921]">NagarNirman</span>
               </h1>
               <p className="text-lg md:text-xl mb-6 leading-relaxed opacity-95">
                 NagarNirman is a civic-reporting platform designed to empower citizens by providing a seamless interface to identify local problems, report them instantly with proper evidence, and track their resolution with complete transparency.
@@ -114,7 +114,7 @@ export default function AboutPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/report"
-                  className="bg-[#ffcc33] text-gray-900 font-semibold py-3 px-8 rounded-lg hover:bg-[#e6b82e] transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="bg-[#f2a921] text-gray-900 font-semibold py-3 px-8 rounded-lg hover:bg-[#e6b82e] transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   Get Started Reporting
                 </Link>
@@ -132,14 +132,14 @@ export default function AboutPage() {
                 <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-white/20">
                   <div className="aspect-square rounded-xl bg-white/5 flex items-center justify-center p-6">
                     <div className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-2xl shadow-inner border border-white/10">
-                      <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#ffcc33] to-[#e6b82e] rounded-full mb-6 shadow-lg">
+                      <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-full mb-6 shadow-lg">
                         <CheckCircle2 className="w-10 h-10 text-white" />
                       </div>
                       <h3 className="text-2xl font-bold text-white mb-3">Your Voice Matters</h3>
                       <p className="text-white/80 mb-4">Report civic issues with photo evidence and location tracking</p>
                       <div className="flex items-center justify-center gap-4">
                         <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-[#ffcc33] rounded-full"></div>
+                          <div className="w-2 h-2 bg-[#f2a921] rounded-full"></div>
                           <span className="text-sm text-white/80">Real-time Tracking</span>
                         </div>
                         <div className="flex items-center gap-2">
@@ -160,7 +160,7 @@ export default function AboutPage() {
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
-            Join Our <span className="text-[#2a7d2f]">Civic Community</span>
+            Join Our <span className="text-[#004d40]">Civic Community</span>
             <span className="block text-lg font-normal text-gray-600 mt-3">Simple Steps to Become an Active Citizen Reporter</span>
           </h2>
           
@@ -189,17 +189,17 @@ export default function AboutPage() {
             ].map((card, index) => (
               <div 
                 key={index}
-                className="relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-2 border-transparent hover:border-[#ffcc33] group cursor-pointer overflow-hidden"
+                className="relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-2 border-transparent hover:border-[#f2a921] group cursor-pointer overflow-hidden"
               >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#2a7d2f] to-[#ffcc33]"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#004d40] to-[#f2a921]"></div>
                 <div className="relative z-10">
-                  <div className="w-20 h-20 bg-gradient-to-br from-[#ffcc33]/20 to-[#ffcc33]/40 rounded-2xl flex items-center justify-center mb-8 group-hover:from-[#ffcc33]/30 group-hover:to-[#ffcc33]/50 transition-all duration-300">
-                    <div className="text-[#ffcc33]">
+                  <div className="w-20 h-20 bg-gradient-to-br from-[#f2a921]/20 to-[#f2a921]/40 rounded-2xl flex items-center justify-center mb-8 group-hover:from-[#f2a921]/30 group-hover:to-[#f2a921]/50 transition-all duration-300">
+                    <div className="text-[#f2a921]">
                       {card.icon}
                     </div>
                   </div>
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 bg-[#2a7d2f] text-white rounded-full flex items-center justify-center font-bold">
+                    <div className="w-8 h-8 bg-[#004d40] text-white rounded-full flex items-center justify-center font-bold">
                       {index + 1}
                     </div>
                     <h3 className="text-xl font-bold text-gray-900">{card.title}</h3>
@@ -207,7 +207,7 @@ export default function AboutPage() {
                   <p className="text-gray-600 leading-relaxed">{card.desc}</p>
                 </div>
                 <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <ArrowRight className="w-5 h-5 text-[#2a7d2f]" />
+                  <ArrowRight className="w-5 h-5 text-[#004d40]" />
                 </div>
               </div>
             ))}
@@ -221,11 +221,11 @@ export default function AboutPage() {
           <div className="grid lg:grid-cols-2 gap-12">
             {/* What is NagarNirman */}
             <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border border-gray-100">
-              <div className="absolute -top-4 left-10 bg-[#2a7d2f] text-white px-6 py-2 rounded-full font-semibold text-lg">
+              <div className="absolute -top-4 left-10 bg-[#004d40] text-white px-6 py-2 rounded-full font-semibold text-lg">
                 What We Are
               </div>
               <div className="flex items-center gap-6 mb-8 mt-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#2a7d2f] to-[#1e5a22] rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#004d40] to-[#1e5a22] rounded-2xl flex items-center justify-center shadow-lg">
                   <div className="text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
@@ -243,22 +243,22 @@ export default function AboutPage() {
                 <p className="text-gray-700 text-lg leading-relaxed">
                   NagarNirman is a comprehensive digital ecosystem that serves as a bridge between citizens and municipal authorities. Our platform transforms how urban problems are reported, tracked, and resolved through technology-driven solutions.
                 </p>
-                <div className="bg-[#f8f8f8] rounded-xl p-6 border-l-4 border-[#2a7d2f]">
+                <div className="bg-[#f8f8f8] rounded-xl p-6 border-l-4 border-[#004d40]">
                   <p className="text-gray-700">
                     We provide a structured framework where every reported issue follows a transparent workflow, from submission to resolution, ensuring accountability at every step of the governance process.
                   </p>
                 </div>
                 <ul className="space-y-4">
                   <li className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-[#2a7d2f]" />
+                    <CheckCircle className="w-5 h-5 text-[#004d40]" />
                     <span className="text-gray-700">Real-time issue reporting with GPS tracking</span>
                   </li>
                   <li className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-[#2a7d2f]" />
+                    <CheckCircle className="w-5 h-5 text-[#004d40]" />
                     <span className="text-gray-700">Photo and video evidence support</span>
                   </li>
                   <li className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-[#2a7d2f]" />
+                    <CheckCircle className="w-5 h-5 text-[#004d40]" />
                     <span className="text-gray-700">Direct communication channel with authorities</span>
                   </li>
                 </ul>
@@ -267,11 +267,11 @@ export default function AboutPage() {
 
             {/* Why NagarNirman Matters */}
             <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border border-gray-100">
-              <div className="absolute -top-4 left-10 bg-[#ffcc33] text-gray-900 px-6 py-2 rounded-full font-semibold text-lg">
+              <div className="absolute -top-4 left-10 bg-[#f2a921] text-gray-900 px-6 py-2 rounded-full font-semibold text-lg">
                 Why We Matter
               </div>
               <div className="flex items-center gap-6 mb-8 mt-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#ffcc33] to-[#e6b82e] rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-2xl flex items-center justify-center shadow-lg">
                   <Star className="w-8 h-8 text-gray-900" />
                 </div>
                 <div>
@@ -290,8 +290,8 @@ export default function AboutPage() {
                 ].map((item, index) => (
                   <div key={index} className="bg-white rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow border border-gray-100">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-[#2a7d2f]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <div className="text-[#2a7d2f]">
+                      <div className="w-12 h-12 bg-[#004d40]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="text-[#004d40]">
                           {item.icon}
                         </div>
                       </div>
@@ -312,7 +312,7 @@ export default function AboutPage() {
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            Step-by-Step <span className="text-[#2a7d2f]">Reporting Process</span>
+            Step-by-Step <span className="text-[#004d40]">Reporting Process</span>
           </h2>
           <p className="text-lg text-gray-600 text-center mb-16 max-w-3xl mx-auto">
             Follow this structured timeline to report civic issues effectively and track their resolution progress
@@ -320,7 +320,7 @@ export default function AboutPage() {
           
           <div className="relative">
             {/* Main Timeline Line */}
-            <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-[#2a7d2f] via-[#ffcc33] to-[#2a7d2f] top-0"></div>
+            <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-[#004d40] via-[#f2a921] to-[#004d40] top-0"></div>
             
             {/* Timeline Steps */}
             <div className="space-y-24">
@@ -381,24 +381,24 @@ export default function AboutPage() {
                 >
                   {/* Year Label */}
                   <div className={`absolute lg:static left-4 lg:left-auto top-0 lg:top-auto ${index % 2 === 0 ? 'lg:mr-12' : 'lg:ml-12'} z-10`}>
-                    <div className="w-16 h-16 bg-gradient-to-br from-[#ffcc33] to-[#e6b82e] rounded-full flex items-center justify-center shadow-lg border-4 border-white">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-full flex items-center justify-center shadow-lg border-4 border-white">
                       <span className="text-xl font-bold text-gray-900">{step.year}</span>
                     </div>
                   </div>
 
                   {/* Step Content */}
                   <div className={`w-full lg:w-5/12 ml-20 lg:ml-0 ${index % 2 === 0 ? 'lg:pr-12' : 'lg:pl-12'}`}>
-                    <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 hover:border-[#2a7d2f]/30 transition-all duration-300">
+                    <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 hover:border-[#004d40]/30 transition-all duration-300">
                       <div className="flex items-start gap-6">
-                        <div className="w-14 h-14 bg-[#2a7d2f]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                          <div className="text-[#2a7d2f]">
+                        <div className="w-14 h-14 bg-[#004d40]/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                          <div className="text-[#004d40]">
                             {step.icon}
                           </div>
                         </div>
                         <div>
                           <h3 className="text-2xl font-bold text-gray-900 mb-3">{step.title}</h3>
                           <p className="text-gray-700 mb-4 leading-relaxed">{step.desc}</p>
-                          <div className="bg-[#f8f8f8] rounded-lg p-4 border-l-3 border-[#ffcc33]">
+                          <div className="bg-[#f8f8f8] rounded-lg p-4 border-l-3 border-[#f2a921]">
                             <p className="text-gray-600 text-sm">{step.details}</p>
                           </div>
                         </div>
@@ -407,8 +407,8 @@ export default function AboutPage() {
                   </div>
                   
                   {/* Timeline Dot */}
-                  <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 bg-white rounded-full border-4 border-[#ffcc33] items-center justify-center z-10 shadow-lg">
-                    <div className="w-4 h-4 bg-[#ffcc33] rounded-full"></div>
+                  <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 bg-white rounded-full border-4 border-[#f2a921] items-center justify-center z-10 shadow-lg">
+                    <div className="w-4 h-4 bg-[#f2a921] rounded-full"></div>
                   </div>
                 </div>
               ))}
@@ -421,7 +421,7 @@ export default function AboutPage() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            Common <span className="text-[#2a7d2f]">Civic Issues</span> You Can Report
+            Common <span className="text-[#004d40]">Civic Issues</span> You Can Report
           </h2>
           <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
             Identify and report these common urban problems to help create cleaner, safer, and better-maintained neighborhoods
@@ -474,11 +474,11 @@ export default function AboutPage() {
             ].map((issue, index) => (
               <div 
                 key={index}
-                className="bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-gray-100 group"
+                className="bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border group border-t-6 border-accent"
               >
                 <div className="flex items-start justify-between mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#2a7d2f]/20 to-[#2a7d2f]/10 rounded-2xl flex items-center justify-center group-hover:from-[#2a7d2f]/30 group-hover:to-[#2a7d2f]/20 transition-all">
-                    <div className="text-[#2a7d2f]">
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#f2a921]/20 to-[#004d40]/10 rounded-2xl flex items-center justify-center group-hover:from-[#004d40]/30 group-hover:to-[#004d40]/20 transition-all">
+                    <div className="text-[#004d40]">
                       {issue.icon}
                     </div>
                   </div>
@@ -496,10 +496,10 @@ export default function AboutPage() {
                 <div className="pt-4 border-t border-gray-100">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <Lightbulb className="w-4 h-4 text-[#ffcc33]" />
+                      <Lightbulb className="w-4 h-4 text-[#f2a921]" />
                       <span>Tip: {issue.tips}</span>
                     </div>
-                    <button className="text-[#2a7d2f] font-semibold hover:text-[#236b27] transition-colors group">
+                    <button className="text-[#004d40] font-semibold hover:text-[#236b27] transition-colors group">
                       Report Issue
                       <ArrowRight className="w-4 h-4 ml-2 inline group-hover:translate-x-1 transition-transform" />
                     </button>
@@ -515,7 +515,7 @@ export default function AboutPage() {
       <section className="py-20 bg-gradient-to-br from-gray-50 to-[#f8f8f8]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
-            Frequently Asked <span className="text-[#2a7d2f]">Questions</span>
+            Frequently Asked <span className="text-[#004d40]">Questions</span>
           </h2>
           
           <div className="grid lg:grid-cols-2 gap-12">
@@ -533,8 +533,8 @@ export default function AboutPage() {
                     <h3 className="text-lg font-semibold text-gray-900 pr-8">
                       {faq.q}
                     </h3>
-                    <div className={`w-10 h-10 bg-[#2a7d2f]/10 rounded-full flex items-center justify-center flex-shrink-0 transition-transform ${openFaq === index ? 'rotate-180' : ''}`}>
-                      <ChevronDown className="w-5 h-5 text-[#2a7d2f]" />
+                    <div className={`w-10 h-10 bg-[#004d40]/10 rounded-full flex items-center justify-center flex-shrink-0 transition-transform ${openFaq === index ? 'rotate-180' : ''}`}>
+                      <ChevronDown className="w-5 h-5 text-[#004d40]" />
                     </div>
                   </button>
                   <div 
@@ -550,7 +550,7 @@ export default function AboutPage() {
 
             {/* Interactive Info Column */}
             <div className="lg:sticky lg:top-24">
-              <div className="bg-gradient-to-br from-[#2a7d2f] to-[#1e5a22] rounded-2xl p-10 text-white shadow-2xl">
+              <div className="bg-gradient-to-br from-[#004d40] to-[#1e5a22] rounded-2xl p-10 text-white shadow-2xl">
                 <div className="text-center mb-8">
                   <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Headphones className="w-10 h-10 text-white" />
@@ -563,14 +563,14 @@ export default function AboutPage() {
                   <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-                        <MessageCircle className="w-6 h-6 text-[#2a7d2f]" />
+                        <MessageCircle className="w-6 h-6 text-[#004d40]" />
                       </div>
                       <div>
                         <h4 className="font-bold text-lg">Live Chat Support</h4>
                         <p className="text-white/80 text-sm">Available 9 AM - 6 PM</p>
                       </div>
                     </div>
-                    <button className="w-full bg-white text-[#2a7d2f] font-semibold py-3 rounded-lg hover:bg-gray-100 transition-colors">
+                    <button className="w-full bg-white text-[#004d40] font-semibold py-3 rounded-lg hover:bg-gray-100 transition-colors">
                       Start Chat Now
                     </button>
                   </div>
@@ -578,7 +578,7 @@ export default function AboutPage() {
                   <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
                     <div className="flex items-center gap-4 mb-4">
                       <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-                        <Mail className="w-6 h-6 text-[#2a7d2f]" />
+                        <Mail className="w-6 h-6 text-[#004d40]" />
                       </div>
                       <div>
                         <h4 className="font-bold text-lg">Email Support</h4>
@@ -593,11 +593,11 @@ export default function AboutPage() {
                   <div className="text-center pt-6 border-t border-white/20">
                     <p className="text-white/80 mb-4">Average response time: <span className="font-bold">Under 2 hours</span></p>
                     <div className="flex items-center justify-center gap-2 text-sm">
-                      <Star className="w-4 h-4 fill-[#ffcc33] text-[#ffcc33]" />
-                      <Star className="w-4 h-4 fill-[#ffcc33] text-[#ffcc33]" />
-                      <Star className="w-4 h-4 fill-[#ffcc33] text-[#ffcc33]" />
-                      <Star className="w-4 h-4 fill-[#ffcc33] text-[#ffcc33]" />
-                      <Star className="w-4 h-4 fill-[#ffcc33] text-[#ffcc33]" />
+                      <Star className="w-4 h-4 fill-[#f2a921] text-[#f2a921]" />
+                      <Star className="w-4 h-4 fill-[#f2a921] text-[#f2a921]" />
+                      <Star className="w-4 h-4 fill-[#f2a921] text-[#f2a921]" />
+                      <Star className="w-4 h-4 fill-[#f2a921] text-[#f2a921]" />
+                      <Star className="w-4 h-4 fill-[#f2a921] text-[#f2a921]" />
                       <span className="ml-2">4.9/5 Support Rating</span>
                     </div>
                   </div>
@@ -615,12 +615,12 @@ export default function AboutPage() {
             {/* Mission Card */}
             <div className="flex flex-col h-full">
               <div className="relative group flex-1">
-                <div className="absolute -inset-4 bg-gradient-to-r from-[#2a7d2f]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border-t-4 border-[#ffcc33] overflow-hidden h-full">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#ffcc33]/5 rounded-full -translate-y-16 translate-x-16"></div>
+                <div className="absolute -inset-4 bg-gradient-to-r from-[#004d40]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border-t-6 border-[#f2a921] overflow-hidden h-full">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#f2a921]/5 rounded-full -translate-y-16 translate-x-16"></div>
                   <div className="relative z-10 h-full flex flex-col">
                     <div className="flex items-center gap-6 mb-8">
-                      <div className="w-20 h-20 bg-gradient-to-br from-[#2a7d2f] to-[#1e5a22] rounded-2xl flex items-center justify-center shadow-lg">
+                      <div className="w-20 h-20 bg-gradient-to-br from-[#004d40] to-[#1e5a22] rounded-2xl flex items-center justify-center shadow-lg">
                         <Target className="w-10 h-10 text-white" />
                       </div>
                       <div>
@@ -632,7 +632,7 @@ export default function AboutPage() {
                       <p className="text-gray-700 text-lg leading-relaxed">
                         To empower every citizen with intuitive digital tools that enhance transparency in urban governance, accelerate problem-solving through streamlined processes, and foster collaborative participation between communities and municipal authorities.
                       </p>
-                      <div className="bg-[#f8f8f8] rounded-xl p-6 border-l-4 border-[#2a7d2f] flex-1">
+                      <div className="bg-[#f8f8f8] rounded-xl p-6 border-l-4 border-[#004d40] flex-1">
                         <p className="text-gray-700">
                           We aim to democratize civic engagement by making issue reporting accessible, efficient, and impactful for every resident, regardless of technical expertise or social background.
                         </p>
@@ -640,15 +640,15 @@ export default function AboutPage() {
                     </div>
                     <div className="flex items-center gap-4 pt-6 border-t border-gray-100 mt-6">
                       <div className="flex-1 text-center">
-                        <div className="text-2xl font-bold text-[#2a7d2f]">100,000+</div>
+                        <div className="text-2xl font-bold text-[#004d40]">100,000+</div>
                         <div className="text-sm text-gray-600">Issues Resolved</div>
                       </div>
                       <div className="flex-1 text-center">
-                        <div className="text-2xl font-bold text-[#2a7d2f]">500+</div>
+                        <div className="text-2xl font-bold text-[#004d40]">500+</div>
                         <div className="text-sm text-gray-600">Municipal Partners</div>
                       </div>
                       <div className="flex-1 text-center">
-                        <div className="text-2xl font-bold text-[#2a7d2f]">24/7</div>
+                        <div className="text-2xl font-bold text-[#004d40]">24/7</div>
                         <div className="text-sm text-gray-600">Platform Availability</div>
                       </div>
                     </div>
@@ -660,12 +660,12 @@ export default function AboutPage() {
             {/* Vision Card */}
             <div className="flex flex-col h-full">
               <div className="relative group flex-1">
-                <div className="absolute -inset-4 bg-gradient-to-r from-[#ffcc33]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border-t-4 border-[#2a7d2f] overflow-hidden h-full">
-                  <div className="absolute top-0 left-0 w-32 h-32 bg-[#2a7d2f]/5 rounded-full -translate-y-16 -translate-x-16"></div>
+                <div className="absolute -inset-4 bg-gradient-to-r from-[#f2a921]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border-t-6 border-[#004d40] overflow-hidden h-full">
+                  <div className="absolute top-0 left-0 w-32 h-32 bg-[#004d40]/5 rounded-full -translate-y-16 -translate-x-16"></div>
                   <div className="relative z-10 h-full flex flex-col">
                     <div className="flex items-center gap-6 mb-8">
-                      <div className="w-20 h-20 bg-gradient-to-br from-[#ffcc33] to-[#e6b82e] rounded-2xl flex items-center justify-center shadow-lg">
+                      <div className="w-20 h-20 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-2xl flex items-center justify-center shadow-lg">
                         <Eye className="w-10 h-10 text-gray-900" />
                       </div>
                       <div>
@@ -677,7 +677,7 @@ export default function AboutPage() {
                       <p className="text-gray-700 text-lg leading-relaxed">
                         To create cleaner, safer, and digitally connected cities where every citizen can effortlessly contribute to community improvement, and where urban governance evolves into a participatory, data-driven ecosystem that proactively addresses civic needs.
                       </p>
-                      <div className="bg-[#f8f8f8] rounded-xl p-6 border-l-4 border-[#ffcc33] flex-1">
+                      <div className="bg-[#f8f8f8] rounded-xl p-6 border-l-4 border-[#f2a921] flex-1">
                         <p className="text-gray-700">
                           We envision a future where civic reporting becomes as natural as social media sharing, creating a self-sustaining cycle of urban improvement driven by engaged communities and responsive governance.
                         </p>
@@ -687,19 +687,19 @@ export default function AboutPage() {
                       <h4 className="font-bold text-gray-900 mb-4">Future Goals</h4>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="flex items-center gap-3">
-                          <CheckCircle className="w-4 h-4 text-[#2a7d2f]" />
+                          <CheckCircle className="w-4 h-4 text-[#004d40]" />
                           <span className="text-sm text-gray-700">AI-powered issue prediction</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <CheckCircle className="w-4 h-4 text-[#2a7d2f]" />
+                          <CheckCircle className="w-4 h-4 text-[#004d40]" />
                           <span className="text-sm text-gray-700">Smart city integrations</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <CheckCircle className="w-4 h-4 text-[#2a7d2f]" />
+                          <CheckCircle className="w-4 h-4 text-[#004d40]" />
                           <span className="text-sm text-gray-700">Multi-language support</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <CheckCircle className="w-4 h-4 text-[#2a7d2f]" />
+                          <CheckCircle className="w-4 h-4 text-[#004d40]" />
                           <span className="text-sm text-gray-700">Citizen reward systems</span>
                         </div>
                       </div>
@@ -713,10 +713,10 @@ export default function AboutPage() {
       </section>
 
       {/* 8️⃣ Our Impact in Numbers with CountUp */}
-      <section className="py-20 bg-gradient-to-r from-[#2a7d2f]/5 via-[#ffcc33]/5 to-[#2a7d2f]/5">
+      <section className="py-20 bg-gradient-to-r from-[#004d40]/5 via-[#f2a921]/5 to-[#004d40]/5">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            Our Growing <span className="text-[#2a7d2f]">Impact</span>
+            Our Growing <span className="text-[#004d40]">Impact</span>
           </h2>
           <p className="text-lg text-gray-600 text-center mb-16 max-w-3xl mx-auto">
             Real numbers that demonstrate our commitment to transforming civic engagement and urban governance
@@ -729,7 +729,7 @@ export default function AboutPage() {
                 suffix: "+",
                 label: "Reports Successfully Submitted",
                 icon: <FileText className="w-8 h-8" />,
-                color: "from-[#2a7d2f] to-[#1e5a22]",
+                color: "from-[#004d40] to-[#1e5a22]",
                 description: "Civic issues reported and processed",
                 duration: 2.5
               },
@@ -738,7 +738,7 @@ export default function AboutPage() {
                 suffix: "+",
                 label: "Active Citizen Reporters",
                 icon: <Users className="w-8 h-8" />,
-                color: "from-[#ffcc33] to-[#e6b82e]",
+                color: "from-[#f2a921] to-[#e6b82e]",
                 description: "Monthly active users improving cities",
                 duration: 2
               },
@@ -747,7 +747,7 @@ export default function AboutPage() {
                 suffix: "%",
                 label: "Average Resolution Rate",
                 icon: <TrendingUp className="w-8 h-8" />,
-                color: "from-[#2a7d2f] to-[#ffcc33]",
+                color: "from-[#004d40] to-[#f2a921]",
                 description: "Issues resolved satisfactorily",
                 duration: 1.5
               },
@@ -756,7 +756,7 @@ export default function AboutPage() {
                 suffix: "+",
                 label: "Cities & Municipalities Covered",
                 icon: <Globe className="w-8 h-8" />,
-                color: "from-[#ffcc33] to-[#2a7d2f]",
+                color: "from-[#f2a921] to-[#004d40]",
                 description: "Urban areas using our platform",
                 duration: 2
               }
@@ -771,20 +771,20 @@ export default function AboutPage() {
                   <div className="absolute inset-0 bg-gradient-to-br opacity-20 rounded-full blur-lg group-hover:blur-xl transition-all duration-500"></div>
                 </div>
                 <div className="relative">
-                  <div className="text-5xl md:text-6xl font-bold text-[#ffcc33] mb-3 group-hover:scale-105 transition-transform duration-300">
+                  <div className="text-5xl md:text-6xl font-bold text-[#f2a921] mb-3 group-hover:scale-105 transition-transform duration-300">
                     <CountUp 
                       end={stat.number} 
                       duration={stat.duration}
                       separator=","
                     />
-                    <span className="text-[#2a7d2f]">{stat.suffix}</span>
+                    <span className="text-[#004d40]">{stat.suffix}</span>
                   </div>
                   <div className="text-lg font-semibold text-gray-900 mb-2">{stat.label}</div>
                   <div className="text-gray-600 text-sm">{stat.description}</div>
                 </div>
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <div className="inline-flex items-center gap-2 text-sm text-gray-500">
-                    <Award className="w-4 h-4 text-[#ffcc33]" />
+                    <Award className="w-4 h-4 text-[#f2a921]" />
                     <span>Tracked & Verified Data</span>
                   </div>
                 </div>
