@@ -10,7 +10,7 @@ interface Notification {
   id?: string;
   title: string;
   message: string;
-  type: 'success' | 'error' | 'info' | 'warning';
+  type: 'success' | 'error' | 'info' | 'warning' | 'task_assigned' | 'task_approved' | 'report_submitted';
   timestamp: Date;
   createdAt?: Date;
   read: boolean;
@@ -49,72 +49,44 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
     try {
       setIsLoading(true);
+      const response = await notificationAPI.getAll({ limit: 50 });
 
-      // Try to fetch notifications with a timeout
-      let response;
-      try {
-        response = await Promise.race([
-          notificationAPI.getAll({ limit: 50 }),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Notification fetch timeout')), 5000)
-          )
-        ]);
-      } catch (fetchError) {
-        // If fetch fails, just set empty notifications and return
-        setNotifications([]);
-        setIsLoading(false);
-        return;
-      }
-
-      // Validate response is an object
       if (!response || typeof response !== 'object') {
         setNotifications([]);
-        setIsLoading(false);
         return;
       }
 
-      // Handle different response formats safely
+      // Handle API response format
       let dataArray: any[] = [];
 
       if (Array.isArray(response)) {
         dataArray = response;
-      } else if (response && typeof response === 'object' && 'data' in response) {
-        if (Array.isArray(response.data)) {
-          dataArray = response.data;
-        }
+      } else if (response.data && Array.isArray(response.data)) {
+        dataArray = response.data;
       }
 
-      // Transform and set notifications if we have data
+      // Transform notifications
       if (Array.isArray(dataArray) && dataArray.length > 0) {
-        const transformedNotifications = dataArray
-          .filter((notif: any) => notif && typeof notif === 'object')
-          .map((notif: any) => {
-            try {
-              const id = notif._id || notif.id || `notif-${Date.now()}-${Math.random()}`;
-              return {
-                ...notif,
-                _id: id,
-                id: id,
-                title: notif.title || 'Notification',
-                message: notif.message || '',
-                type: (notif.type || 'info') as 'success' | 'error' | 'info' | 'warning',
-                timestamp: notif.createdAt ? new Date(notif.createdAt) : new Date(),
-                read: notif.read ?? false,
-              };
-            } catch (transformError) {
-              console.error('Error transforming notification:', transformError);
-              return null;
-            }
-          })
-          .filter((notif: any) => notif !== null);
+        const transformed = dataArray
+          .filter((n: any) => n && typeof n === 'object')
+          .map((n: any) => ({
+            _id: n._id || n.id,
+            id: n._id || n.id,
+            title: n.title || 'Notification',
+            message: n.message || '',
+            type: n.type || 'info',
+            timestamp: new Date(n.createdAt || new Date()),
+            createdAt: n.createdAt,
+            read: n.read ?? false,
+            actionUrl: n.actionUrl,
+          }));
 
-        setNotifications(transformedNotifications);
+        setNotifications(transformed);
       } else {
         setNotifications([]);
       }
     } catch (error) {
-      // Silently handle any unexpected errors
-      console.debug('Notification fetch error:', error instanceof Error ? error.message : 'Unknown error');
+      console.error('Error fetching notifications:', error);
       setNotifications([]);
     } finally {
       setIsLoading(false);
@@ -124,40 +96,24 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   // Fetch notifications on mount and set up polling
   useEffect(() => {
     if (isAuthenticated) {
-      // DISABLED: Don't fetch notifications automatically on mount
-      // The notifications endpoint may not be ready yet
-      // Users can still use notifications for local toast messages
-      // and the backend endpoint works when called directly
-
-      // Optional: Set up polling if notifications are needed
-      // Uncomment below when backend is fully ready:
-      /*
-      Promise.resolve()
-        .then(() => fetchNotifications())
-        .catch(() => {
-          // Silently fail if notifications aren't available
-          setIsLoading(false);
-        });
+      // Fetch immediately
+      fetchNotifications();
 
       // Poll for new notifications every 30 seconds
       const interval = setInterval(() => {
-        Promise.resolve()
-          .then(() => fetchNotifications())
-          .catch(() => {
-            // Silently ignore polling errors
-          });
+        fetchNotifications();
       }, 30000);
 
       return () => clearInterval(interval);
-      */
     }
   }, [isAuthenticated, fetchNotifications]);
 
   const addNotification = useCallback((notification: Omit<Notification, '_id' | 'id' | 'timestamp' | 'read'>) => {
+    const id = `notif-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const newNotification: Notification = {
       ...notification,
-      _id: `notif-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      id: `notif-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      _id: id,
+      id: id,
       timestamp: new Date(),
       read: false,
     };
@@ -174,22 +130,19 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         toast.error(toastMessage, { duration: 5000 });
         break;
       case 'warning':
-        toast(toastMessage, {
-          icon: '⚠️',
-          duration: 4000,
-        });
+        toast(toastMessage, { icon: '⚠️', duration: 4000 });
         break;
       default:
         toast(toastMessage, { duration: 4000 });
     }
 
     // Browser notification (if permission granted)
-    if ('Notification' in window && Notification.permission === 'granted') {
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
       new Notification(notification.title, {
         body: notification.message,
         icon: '/logo/logo.png',
         badge: '/logo/logo.png',
-        tag: newNotification.id,
+        tag: id,
       });
     }
   }, []);
@@ -197,7 +150,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   const markAsRead = useCallback(async (id: string) => {
     if (!id) return;
 
-    // Update local state immediately for better UX
+    // Update local state immediately
     setNotifications(prev =>
       prev.map(n => (n.id === id || n._id === id ? { ...n, read: true } : n))
     );
@@ -206,7 +159,6 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       // Update backend in background
       await notificationAPI.markAsRead(id);
     } catch (error) {
-      // Silently fail - local state is already updated
       console.error('Failed to mark notification as read:', error);
     }
   }, []);
@@ -219,7 +171,6 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       // Update backend in background
       await notificationAPI.markAllAsRead();
     } catch (error) {
-      // Silently fail - local state is already updated
       console.error('Failed to mark all notifications as read:', error);
     }
   }, []);
@@ -234,7 +185,6 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       // Delete from backend in background
       await notificationAPI.delete(id);
     } catch (error) {
-      // Silently fail - local state is already updated
       console.error('Failed to delete notification:', error);
     }
   }, []);

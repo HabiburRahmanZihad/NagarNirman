@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { useState } from "react";
 import CountUp from "react-countup";
-import { 
-  CheckCircle, 
-  Users, 
-  FileText, 
-  MapPin, 
-  Camera, 
-  Edit, 
-  Send, 
-  BarChart, 
+import {
+  CheckCircle,
+  Users,
+  FileText,
+  MapPin,
+  Camera,
+  Edit,
+  Send,
+  BarChart,
   CheckCircle2,
   Lightbulb,
   Shield,
@@ -22,7 +22,6 @@ import {
   Trash2,
   TreePine,
   Droplets,
-  Road,
   Eye,
   Target,
   Headphones,
@@ -81,7 +80,7 @@ export default function AboutPage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           {/* Background Image */}
-          <div 
+          <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage: 'url("https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80")',
@@ -90,7 +89,7 @@ export default function AboutPage() {
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#004d40]/90 via-[#004d40]/70 to-transparent" />
           {/* Pattern Overlay - Fixed syntax */}
-          <div 
+          <div
             className="absolute inset-0 opacity-10"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
@@ -98,7 +97,7 @@ export default function AboutPage() {
             }}
           />
         </div>
-        
+
         <div className="container relative mx-auto px-4 py-20 md:py-28">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-white">
@@ -163,7 +162,7 @@ export default function AboutPage() {
             Join Our <span className="text-[#004d40]">Civic Community</span>
             <span className="block text-lg font-normal text-gray-600 mt-3">Simple Steps to Become an Active Citizen Reporter</span>
           </h2>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
@@ -187,7 +186,7 @@ export default function AboutPage() {
                 desc: "Submit your first civic report with photos and details. Join thousands of citizens actively improving their neighborhoods."
               }
             ].map((card, index) => (
-              <div 
+              <div
                 key={index}
                 className="relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-2 border-transparent hover:border-[#f2a921] group cursor-pointer overflow-hidden"
               >
@@ -317,11 +316,11 @@ export default function AboutPage() {
           <p className="text-lg text-gray-600 text-center mb-16 max-w-3xl mx-auto">
             Follow this structured timeline to report civic issues effectively and track their resolution progress
           </p>
-          
+
           <div className="relative">
             {/* Main Timeline Line */}
             <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-[#004d40] via-[#f2a921] to-[#004d40] top-0"></div>
-            
+
             {/* Timeline Steps */}
             <div className="space-y-24">
               {[
@@ -375,7 +374,7 @@ export default function AboutPage() {
                   details: "Option to submit before/after photos and rate the resolution quality"
                 }
               ].map((step, index) => (
-                <div 
+                <div
                   key={index}
                   className={`relative flex flex-col lg:flex-row items-center ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}
                 >
@@ -405,7 +404,7 @@ export default function AboutPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Timeline Dot */}
                   <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 bg-white rounded-full border-4 border-[#f2a921] items-center justify-center z-10 shadow-lg">
                     <div className="w-4 h-4 bg-[#f2a921] rounded-full"></div>
@@ -426,7 +425,7 @@ export default function AboutPage() {
           <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
             Identify and report these common urban problems to help create cleaner, safer, and better-maintained neighborhoods
           </p>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
@@ -472,7 +471,7 @@ export default function AboutPage() {
                 tips: "Mark as urgent if immediate danger exists"
               }
             ].map((issue, index) => (
-              <div 
+              <div
                 key={index}
                 className="bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border group border-t-6 border-accent"
               >
@@ -517,12 +516,12 @@ export default function AboutPage() {
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
             Frequently Asked <span className="text-[#004d40]">Questions</span>
           </h2>
-          
+
           <div className="grid lg:grid-cols-2 gap-12">
             {/* FAQ Column */}
             <div className="space-y-4">
               {faqs.map((faq, index) => (
-                <div 
+                <div
                   key={index}
                   className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 overflow-hidden"
                 >
@@ -537,7 +536,7 @@ export default function AboutPage() {
                       <ChevronDown className="w-5 h-5 text-[#004d40]" />
                     </div>
                   </button>
-                  <div 
+                  <div
                     className={`px-6 overflow-hidden transition-all duration-300 ${openFaq === index ? 'max-h-96 pb-6' : 'max-h-0'}`}
                   >
                     <p className="text-gray-600 leading-relaxed">
@@ -558,7 +557,7 @@ export default function AboutPage() {
                   <h3 className="text-2xl font-bold mb-4">Need More Help?</h3>
                   <p className="text-white/90 mb-8">Our support team is here to assist you with any questions about civic reporting.</p>
                 </div>
-                
+
                 <div className="space-y-6">
                   <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
                     <div className="flex items-center gap-4 mb-4">
@@ -721,7 +720,7 @@ export default function AboutPage() {
           <p className="text-lg text-gray-600 text-center mb-16 max-w-3xl mx-auto">
             Real numbers that demonstrate our commitment to transforming civic engagement and urban governance
           </p>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               {
@@ -772,8 +771,8 @@ export default function AboutPage() {
                 </div>
                 <div className="relative">
                   <div className="text-5xl md:text-6xl font-bold text-[#f2a921] mb-3 group-hover:scale-105 transition-transform duration-300">
-                    <CountUp 
-                      end={stat.number} 
+                    <CountUp
+                      end={stat.number}
                       duration={stat.duration}
                       separator=","
                     />
