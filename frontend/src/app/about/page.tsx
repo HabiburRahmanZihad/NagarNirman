@@ -1,4 +1,5 @@
 'use client';
+
 import {
   AlertTriangle,
   ArrowRight,
@@ -348,7 +349,7 @@ export default function AboutPage() {
 
           <div className="relative">
             {/* Main Timeline Line */}
-            <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-linear-to-br from-[#004d40] via-[#f2a921] to-[#004d40] top-0"></div>
+            <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-[#004d40] via-[#f2a921] to-[#004d40] top-0"></div>
 
             {/* Timeline Steps */}
             <div className="space-y-24">
@@ -570,8 +571,6 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-
-      {/* 6️⃣ Frequently Asked Questions */}
 
       {/* 7️⃣ Mission & Vision - Equal Height Cards */}
       <section className="py-20">

@@ -126,6 +126,23 @@ export default function SuperAdminUsersPage() {
     }
   };
 
+  const handleStatusToggle = async (userId: string, isActive: boolean) => {
+    try {
+      const response = await userAPI.updateUserStatus(userId, isActive);
+      if (response.success) {
+        setUsers(prevUsers =>
+          prevUsers.map(user =>
+            user._id === userId ? { ...user, isActive } : user
+          )
+        );
+        toast.success(`User ${isActive ? 'activated' : 'deactivated'} successfully!`);
+      }
+    } catch (error: any) {
+      console.error('Error updating user status:', error);
+      toast.error(error.message || 'Failed to update user status');
+    }
+  };
+
   const handleDelete = async (userId: string) => {
     if (!confirm("Are you sure you want to delete this user?")) return;
 
@@ -222,7 +239,7 @@ export default function SuperAdminUsersPage() {
       <UsersTable
         users={currentUsers}
         onRoleChange={handleRoleChange}
-        onStatusToggle={() => { }}
+        onStatusToggle={handleStatusToggle}
         onDeleteUser={handleDelete}
         currentPage={currentPage}
         totalPages={totalPages}

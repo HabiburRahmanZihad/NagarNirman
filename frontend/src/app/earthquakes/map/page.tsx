@@ -11,6 +11,8 @@ import {
   RotateCcw,
   Loader,
   ChevronRight,
+  Globe,
+  AlertCircle,
 } from 'lucide-react';
 
 interface Earthquake {
@@ -479,7 +481,7 @@ export default function EarthquakeMapPage() {
           className="bg-linear-to-r from-primary to-secondary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
         >
           <div className="flex items-center gap-4 mb-4">
-            <div className="text-5xl">🌍</div>
+            <MapPin className="w-12 h-12 sm:w-14 sm:h-14" />
             <h1 className="text-4xl sm:text-5xl font-extrabold">Earthquake Map</h1>
           </div>
           <p className="text-white/90 text-lg">See real-time earthquake data visualized on an interactive map.</p>

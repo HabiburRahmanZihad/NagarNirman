@@ -14,6 +14,13 @@ import {
   ChevronDown,
   CheckCircle2,
   ChevronRight,
+  Zap,
+  TrendingUp,
+  Hand,
+  Phone,
+  Backpack,
+  Users2,
+  Car,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -137,7 +144,7 @@ export default function EarthquakeGuidelinesPage() {
           className="bg-linear-to-r from-primary to-secondary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
         >
           <div className="flex items-center gap-4 mb-4">
-            <div className="text-5xl">🛡️</div>
+            <Shield className="w-12 h-12 sm:w-14 sm:h-14" />
             <div>
               <h1 className="text-4xl sm:text-5xl font-extrabold">Earthquake Safety Guide</h1>
               <p className="text-white/90 text-lg">Essential information to prepare, protect yourself, and respond to earthquakes</p>
@@ -148,8 +155,8 @@ export default function EarthquakeGuidelinesPage() {
         {/* Quick Navigation */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { href: '/earthquakes', label: '📋 Earthquake Alerts', icon: '📝' },
-            { href: '/earthquakes/statistics', label: '📊 Statistics', icon: '📈' },
+            { href: '/earthquakes', label: 'Earthquake Alerts', icon: Zap },
+            { href: '/earthquakes/statistics', label: 'Statistics', icon: TrendingUp },
           ].map((link) => (
             <Link key={link.href} href={link.href}>
               <motion.button
@@ -157,7 +164,10 @@ export default function EarthquakeGuidelinesPage() {
                 whileTap={{ scale: 0.98 }}
                 className="w-full px-6 py-4 bg-white rounded-2xl shadow-lg border-2 border-accent/20 font-bold text-primary hover:shadow-xl transition-all duration-300 flex items-center justify-between"
               >
-                <span className="text-lg">{link.label}</span>
+                <div className="flex items-center gap-2">
+                  <link.icon className="w-5 h-5" />
+                  <span className="text-lg">{link.label}</span>
+                </div>
                 <ChevronRight className="w-5 h-5" />
               </motion.button>
             </Link>
@@ -176,17 +186,26 @@ export default function EarthquakeGuidelinesPage() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             <motion.div whileHover={{ y: -5 }} className="bg-linear-to-br from-error/5 to-error/10 rounded-xl p-6 border-2 border-error/20">
-              <div className="text-4xl font-extrabold text-error mb-3">1️⃣</div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="text-2xl font-extrabold text-error">1</div>
+                <AlertTriangle className="w-6 h-6 text-error" />
+              </div>
               <h3 className="text-xl font-bold text-primary mb-2">DROP</h3>
               <p className="text-neutral">Drop to your hands and knees immediately when you feel shaking</p>
             </motion.div>
             <motion.div whileHover={{ y: -5 }} className="bg-linear-to-br from-warning/5 to-warning/10 rounded-xl p-6 border-2 border-warning/20">
-              <div className="text-4xl font-extrabold text-warning mb-3">2️⃣</div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="text-2xl font-extrabold text-warning">2</div>
+                <Shield className="w-6 h-6 text-warning" />
+              </div>
               <h3 className="text-xl font-bold text-primary mb-2">COVER</h3>
               <p className="text-neutral">Cover your head and neck with your arms under a sturdy table</p>
             </motion.div>
             <motion.div whileHover={{ y: -5 }} className="bg-linear-to-br from-success/5 to-success/10 rounded-xl p-6 border-2 border-success/20">
-              <div className="text-4xl font-extrabold text-success mb-3">3️⃣</div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="text-2xl font-extrabold text-success">3</div>
+                <Hand className="w-6 h-6 text-success" />
+              </div>
               <h3 className="text-xl font-bold text-primary mb-2">HOLD ON</h3>
               <p className="text-neutral">Hold on until shaking stops and it's safe to move</p>
             </motion.div>
@@ -322,12 +341,12 @@ export default function EarthquakeGuidelinesPage() {
           <h2 className="text-3xl font-extrabold text-primary mb-8">Key Safety Tips</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { emoji: '🏠', title: 'At Home', desc: 'Know where the safest places in your home are' },
-              { emoji: '🏢', title: 'At Work', desc: 'Identify safe locations in your workplace' },
-              { emoji: '🚗', title: 'In Your Car', desc: 'Pull over safely and stay in the vehicle' },
-              { emoji: '📞', title: 'Emergency Contact', desc: 'Have important numbers saved in your phone' },
-              { emoji: '🎒', title: 'Grab & Go Bag', desc: 'Keep emergency supplies in an accessible bag' },
-              { emoji: '👨‍👩‍👧‍👦', title: 'Family Plan', desc: 'Create a communication plan with family' },
+              { icon: Home, title: 'At Home', desc: 'Know where the safest places in your home are' },
+              { icon: Building2, title: 'At Work', desc: 'Identify safe locations in your workplace' },
+              { icon: Car, title: 'In Your Car', desc: 'Pull over safely and stay in the vehicle' },
+              { icon: Phone, title: 'Emergency Contact', desc: 'Have important numbers saved in your phone' },
+              { icon: Backpack, title: 'Grab & Go Bag', desc: 'Keep emergency supplies in an accessible bag' },
+              { icon: Users2, title: 'Family Plan', desc: 'Create a communication plan with family' },
             ].map((tip, index) => (
               <motion.div
                 key={index}
@@ -337,7 +356,7 @@ export default function EarthquakeGuidelinesPage() {
                 whileHover={{ scale: 1.02, y: -5 }}
                 className="p-6 bg-linear-to-br from-base-50 to-base-100 rounded-xl border-2 border-accent/20 hover:border-accent/50 transition-all duration-300"
               >
-                <div className="text-4xl mb-3">{tip.emoji}</div>
+                <tip.icon className="w-8 h-8 mb-3 text-primary" />
                 <h3 className="text-lg font-bold text-primary mb-2">{tip.title}</h3>
                 <p className="text-neutral/70 text-sm">{tip.desc}</p>
               </motion.div>

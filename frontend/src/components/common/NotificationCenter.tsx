@@ -51,7 +51,7 @@ export const NotificationCenter: React.FC = () => {
     }
   };
 
-  const formatTimestamp = (date: Date) => {
+  const formatTimestamp = (date: Date | string) => {
     const now = new Date();
     const diff = Math.floor((now.getTime() - new Date(date).getTime()) / 1000);
 
@@ -67,9 +67,10 @@ export const NotificationCenter: React.FC = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+        aria-label="Notifications"
       >
         <span className="text-2xl text-accent">
-          <FaBell></FaBell>
+          <FaBell />
         </span>
         {unreadCount > 0 && (
           <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
@@ -103,7 +104,7 @@ export const NotificationCenter: React.FC = () => {
                   {unreadCount > 0 && (
                     <button
                       onClick={markAllAsRead}
-                      className="text-xs text-white hover:underline font-medium"
+                      className="text-xs text-white hover:underline font-medium transition-opacity hover:opacity-80"
                     >
                       Mark all read
                     </button>
@@ -146,11 +147,11 @@ export const NotificationCenter: React.FC = () => {
                             <h4 className="font-semibold text-gray-900 text-sm mb-1">
                               {notification.title}
                             </h4>
-                            <p className="text-xs text-gray-600 mb-2">
+                            <p className="text-xs text-gray-600 mb-2 line-clamp-2">
                               {notification.message}
                             </p>
                             <p className="text-xs text-gray-400">
-                              {formatTimestamp(notification.timestamp || notification.createdAt)}
+                              {formatTimestamp(notification.timestamp || notification.createdAt || new Date())}
                             </p>
                           </div>
 
@@ -160,7 +161,8 @@ export const NotificationCenter: React.FC = () => {
                               e.stopPropagation();
                               clearNotification((notification._id || notification.id) as string);
                             }}
-                            className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                            className="text-gray-400 hover:text-red-500 transition-colors p-1 shrink-0"
+                            aria-label="Delete notification"
                           >
                             <span className="text-sm">✕</span>
                           </button>
@@ -170,8 +172,6 @@ export const NotificationCenter: React.FC = () => {
                   </div>
                 )}
               </div>
-
-              {/* Footer - Removed View all notifications button */}
             </motion.div>
           </>
         )}

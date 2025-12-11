@@ -43,6 +43,7 @@ export const protect = async (req, res, next) => {
 
       // Attach user to request
       req.user = {
+        _id: user._id,
         id: user._id.toString(),
         role: user.role,
         approved: user.approved,
