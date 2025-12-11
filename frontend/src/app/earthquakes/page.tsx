@@ -7,15 +7,16 @@ import {
   AlertTriangle,
   Gauge,
   Clock,
-  Users,
   Zap,
   ChevronRight,
   Search,
-  Filter,
+  Globe,
+  Shield,
+  TrendingUp,
 } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from '@/components/common';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 interface Earthquake {
   _id: string;
@@ -210,7 +211,7 @@ export default function EarthquakesPage() {
   const filteredEarthquakes = earthquakes;
 
   return (
-    <div className="min-h-screen bg-base-200 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-base-100 p-4 sm:p-6 lg:p-8 mb-12">
       <div className="container mx-auto space-y-8">
         {/* Header */}
         <motion.div
@@ -219,7 +220,7 @@ export default function EarthquakesPage() {
           className="bg-linear-to-r from-primary to-secondary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
         >
           <div className="flex items-center gap-4 mb-4">
-            <div className="text-5xl">🌍</div>
+            <Globe className="w-12 h-12 sm:w-14 sm:h-14" />
             <h1 className="text-4xl sm:text-5xl font-extrabold">Earthquake Alerts</h1>
           </div>
           <p className="text-white/90 text-lg">Real-time earthquake monitoring and alert system</p>
@@ -228,8 +229,8 @@ export default function EarthquakesPage() {
         {/* Quick Navigation */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { href: '/earthquakes/guidelines', label: '🛡️ Safety Guidelines', icon: '📚' },
-            { href: '/earthquakes/statistics', label: '📊 Statistics', icon: '📈' },
+            { href: '/earthquakes/guidelines', label: 'Safety Guidelines', icon: Shield },
+            { href: '/earthquakes/statistics', label: 'Statistics', icon: TrendingUp },
           ].map((link) => (
             <Link key={link.href} href={link.href}>
               <motion.button
@@ -237,7 +238,10 @@ export default function EarthquakesPage() {
                 whileTap={{ scale: 0.98 }}
                 className="w-full px-6 py-4 bg-white rounded-2xl shadow-lg border-2 border-accent/20 font-bold text-primary hover:shadow-xl transition-all duration-300 flex items-center justify-between"
               >
-                <span className="text-lg">{link.label}</span>
+                <div className="flex items-center gap-2">
+                  <link.icon className="w-5 h-5" />
+                  <span className="text-lg">{link.label}</span>
+                </div>
                 <ChevronRight className="w-5 h-5" />
               </motion.button>
             </Link>
@@ -375,14 +379,10 @@ export default function EarthquakesPage() {
                   </div>
 
                   {/* View Details Button */}
-                  <Link href={`/earthquakes/${earthquake._id}`}>
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full px-3 py-2 bg-linear-to-r from-primary to-secondary text-white rounded-lg font-bold text-sm hover:shadow-lg transition-all duration-300"
-                    >
+                  <Link href={`/earthquakes/${earthquake._id}`} className="w-full">
+                    <Button variant="primary" fullWidth>
                       View Details
-                    </motion.button>
+                    </Button>
                   </Link>
                 </motion.div>
               ))}
