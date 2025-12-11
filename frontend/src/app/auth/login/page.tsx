@@ -4,13 +4,12 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
 import { isValidEmail } from "@/utils/helpers";
 import { getRoleDashboardPath } from "@/hooks/useRoleProtection";
 import Lottie from "lottie-react";
-import loginAnimation from "@/../public/Login.json";
+import loginAnimation from "../../../../public/assets/lottie/login.json";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -140,8 +139,8 @@ export default function LoginPage() {
                   onChange={handleChange}
                   placeholder="your.email@example.com"
                   required
-                  className={`w-full px-4 py-2 border border-gray-300 rounded-lg 
-      ${errors.email ? "border-red-500" : ""} 
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-lg
+      ${errors.email ? "border-red-500" : ""}
       focus:outline-none focus:ring-0 focus:border-[#002E2E]`}
                 />
 
@@ -168,8 +167,8 @@ export default function LoginPage() {
                     onChange={handleChange}
                     placeholder="Enter your password"
                     required
-                    className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg 
-                  ${errors.password ? "border-red-500" : ""} 
+                    className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg
+                  ${errors.password ? "border-red-500" : ""}
                   focus:outline-none focus:ring-0 focus:border-[#002E2E]`}
                   />
 

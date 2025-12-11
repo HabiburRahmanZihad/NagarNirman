@@ -11,7 +11,7 @@ import { isValidEmail } from "@/utils/helpers";
 import divisionsData from "@/data/divisionsData.json";
 import { getRoleDashboardPath } from "@/hooks/useRoleProtection";
 import Lottie from "lottie-react";
-import registerAnimation from "@/../public/register.json";
+import registerAnimation from "../../../../public/assets/lottie/Register.json";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -189,8 +189,8 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     placeholder="Enter your full name"
                     required
-                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg 
-                    ${errors.name ? "border-red-500" : ""} 
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg
+                    ${errors.name ? "border-red-500" : ""}
                     focus:outline-none focus:border-[#002E2E]`}
                   />
                   {errors.name && (
@@ -210,8 +210,8 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     placeholder="your.email@example.com"
                     required
-                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg 
-                    ${errors.email ? "border-red-500" : ""} 
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg
+                    ${errors.email ? "border-red-500" : ""}
                     focus:outline-none focus:border-[#002E2E]`}
                   />
                   {errors.email && (
@@ -228,11 +228,12 @@ export default function RegisterPage() {
                     Division
                   </label>
                   <select
+                    title="Select Division"
                     name="division"
                     value={formData.division}
                     onChange={handleDivisionChange}
-                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg 
-                    ${errors.division ? "border-red-500" : ""} 
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg
+                    ${errors.division ? "border-red-500" : ""}
                     focus:outline-none`}
                     required
                   >
@@ -254,11 +255,12 @@ export default function RegisterPage() {
                     District
                   </label>
                   <select
+                    title="Select District"
                     name="district"
                     value={formData.district}
                     onChange={handleChange}
                     disabled={!formData.division}
-                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg disabled:bg-gray-100 
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg disabled:bg-gray-100
                     ${errors.district ? "border-red-500" : ""}`}
                     required
                   >
@@ -288,7 +290,7 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     placeholder="Create a password"
                     required
-                    className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg 
+                    className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg
                     ${errors.password ? "border-red-500" : ""}`}
                   />
                   <button
@@ -317,7 +319,7 @@ export default function RegisterPage() {
                     onChange={handleChange}
                     placeholder="Re-enter your password"
                     required
-                    className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg 
+                    className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg
                     ${errors.confirmPassword ? "border-red-500" : ""}`}
                   />
                   <button
