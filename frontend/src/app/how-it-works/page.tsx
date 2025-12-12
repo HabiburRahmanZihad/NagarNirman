@@ -9,13 +9,17 @@ import {
   FaClock, FaUserShield, FaMapMarkedAlt, FaComments, 
   FaQuestionCircle, FaArrowRight, FaShieldAlt, FaBullhorn,
   FaEye, FaDatabase, FaHandshake, FaMobileAlt, FaSyncAlt,
-  FaChevronDown, FaChevronUp, FaStar, FaCity, FaHardHat
+  FaChevronDown, FaChevronUp, FaStar, FaCity, FaHardHat,
+  FaFileAlt, FaLocationArrow, FaListAlt, FaPaperPlane, FaHistory,
+  FaSearch, FaUpload, FaRoute, FaWrench, FaClipboardCheck
 } from 'react-icons/fa';
 import { 
   MdOutlineDescription, MdAssignment, MdUpdate, MdVerified,
-  MdLocationOn, MdSpeed, MdSecurity, MdGroups, MdTrendingUp
+  MdLocationOn, MdSpeed, MdSecurity, MdGroups, MdTrendingUp,
+  MdFilterCenterFocus, MdEngineering
 } from 'react-icons/md';
-import { GiProgression } from 'react-icons/gi';
+import { GiProgression, GiReceiveMoney } from 'react-icons/gi';
+import { TbProgressCheck } from 'react-icons/tb';
 
 // CountUp Component
 interface CountUpProps {
@@ -37,7 +41,7 @@ function CountUp({ end, duration = 2000, suffix = '', prefix = '' }: CountUpProp
           hasAnimated.current = true;
           
           let start = 0;
-          const increment = end / (duration / 16); // 60fps
+          const increment = end / (duration / 16);
           const timer = setInterval(() => {
             start += increment;
             if (start > end) {
@@ -81,7 +85,6 @@ export default function HowItWorksPage() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* 1️⃣ Page Intro Header */}
       <section className="relative overflow-hidden">
-        {/* Background decorative elements */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#004d40]/5 to-[#f2a921]/5"></div>
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#004d40]/10 rounded-full -translate-y-32 translate-x-32"></div>
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#f2a921]/10 rounded-full translate-y-40 -translate-x-40"></div>
@@ -166,130 +169,257 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* 2️⃣ Step-by-Step Reporting Journey */}
-      <section className="py-20 bg-gradient-to-b from-white to-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Your <span className="text-[#004d40]">Reporting</span> Journey
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Follow these simple steps to report civic issues and track their resolution in real-time
-            </p>
-          </div>
+      {/* 2️⃣ Step-by-Step Reporting Journey - Original Beautiful Design */}
+<section className="py-16 bg-gray-50">
+  <div className="container mx-auto px-4">
+    <div className="text-center mb-8 md:mb-16">
+      <div className="flex items-center justify-center gap-2 mb-3">
+        <FaMapMarkerAlt className="w-5 h-5 text-[#004d40]" />
+        <span className="text-[#555555] text-lg font-medium">
+          Step-by-Step Guide
+        </span>
+      </div>
+      <h2 className="text-4xl md:text-5xl font-bold text-[#004d40]">
+        Your Reporting <span className="font-bold text-[#f2a921]">Journey</span>
+      </h2>
+      <p className="text-xl text-gray-600 max-w-2xl mx-auto mt-4">
+        Follow these simple steps to report civic issues and track their resolution
+      </p>
+    </div>
 
-          <div className="relative">
-            {/* Desktop timeline */}
-            <div className="hidden lg:block">
-              <div className="absolute top-16 left-0 right-0 h-1 bg-gradient-to-r from-[#004d40]/20 via-[#f2a921]/20 to-[#004d40]/20"></div>
+    <div className="relative">
+      {/* Desktop timeline */}
+      <div className="hidden md:grid md:grid-cols-6 gap-4">
+        {steps.map((step, index) => (
+          <div key={step.id} className="relative group">
+            {/* Connecting line */}
+            {index < steps.length - 1 && (
+              <div className="absolute top-8 left-1/2 w-full h-0.5 bg-gradient-to-r from-[#004d40]/20 via-[#f2a921]/20 to-[#004d40]/20 z-0 group-hover:from-[#004d40] group-hover:via-[#f2a921] group-hover:to-[#004d40] transition-all duration-300"></div>
+            )}
+            
+            <div className="relative z-10">
+              <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-4 transition-all duration-300 ${
+                index === 0 ? 'bg-[#004d40] group-hover:scale-110 group-hover:shadow-lg' : 
+                'bg-white border-2 border-[#004d40]/30 group-hover:border-[#f2a921] group-hover:scale-110 group-hover:shadow-md'
+              }`}>
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  index === 0 ? 'bg-white/10' : 'bg-[#004d40]/5 group-hover:bg-[#f2a921]/10'
+                }`}>
+                  <step.icon className={`text-xl transition-colors duration-300 ${
+                    index === 0 ? 'text-white' : 'text-[#004d40] group-hover:text-[#f2a921]'
+                  }`} />
+                </div>
+                <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#f2a921] rounded-full flex items-center justify-center text-sm font-bold shadow-md group-hover:scale-110 transition-transform duration-300">
+                  {step.id}
+                </div>
+              </div>
               
-              <div className="grid grid-cols-6 gap-8 relative">
-                {steps.map((step, index) => (
-                  <div key={step.id} className="relative group">
-                    {/* Connecting line dots */}
-                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-4 border-[#004d40] rounded-full group-hover:scale-150 group-hover:border-[#f2a921] transition-all z-20"></div>
-                    
-                    <div className="text-center pt-12">
-                      <div className={`w-24 h-24 mx-auto rounded-2xl flex items-center justify-center mb-6 transform group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-300 ${
-                        index === 0 ? 'bg-gradient-to-br from-[#004d40] to-[#00695c]' : 'bg-white border-4 border-gray-100'
-                      } shadow-xl group-hover:shadow-2xl`}>
-                        <div className={`w-20 h-20 rounded-xl flex items-center justify-center ${
-                          index === 0 ? 'bg-white/20' : 'bg-gradient-to-br from-gray-50 to-white'
-                        }`}>
-                          <step.icon className={`text-3xl ${
-                            index === 0 ? 'text-white' : 'text-[#004d40] group-hover:text-[#f2a921]'
-                          } transition-colors`} />
-                        </div>
-                        <div className="absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-br from-[#f2a921] to-[#ffb74d] rounded-full flex items-center justify-center text-white font-bold shadow-lg">
-                          {step.id}
-                        </div>
-                      </div>
-                      
-                      <div className="px-2">
-                        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#004d40] transition-colors">
-                          {step.title}
-                        </h3>
-                        <p className="text-gray-600 group-hover:text-gray-800 transition-colors">
-                          {step.description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div className="text-center">
+                <h3 className="font-semibold text-gray-900 mb-2 transition-colors duration-300 group-hover:text-[#004d40]">
+                  {step.title}
+                </h3>
+                <p className="text-sm text-gray-600 transition-colors duration-300 group-hover:text-gray-800">
+                  {step.description}
+                </p>
               </div>
             </div>
+          </div>
+        ))}
+      </div>
 
-            {/* Mobile timeline */}
-            <div className="lg:hidden space-y-8">
-              {steps.map((step) => (
-                <div key={step.id} className="group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300">
-                  <div className="flex items-center gap-6">
-                    <div className="relative">
-                      <div className="w-20 h-20 bg-gradient-to-br from-[#004d40] to-[#00695c] rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform">
-                        <div className="w-16 h-16 bg-white/20 rounded-lg flex items-center justify-center">
-                          <step.icon className="text-2xl text-white" />
-                        </div>
-                        <div className="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-br from-[#f2a921] to-[#ffb74d] rounded-full flex items-center justify-center text-white font-bold shadow-lg">
-                          {step.id}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
-                      <p className="text-gray-600">{step.description}</p>
-                    </div>
-                  </div>
+      {/* Mobile timeline */}
+      <div className="md:hidden space-y-8">
+        {steps.map((step, index) => (
+          <div key={step.id} className="flex gap-4 group">
+            <div className="flex-shrink-0 relative">
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                index === 0 ? 'bg-[#004d40]' : 'bg-[#004d40]/10 group-hover:bg-[#f2a921]/10'
+              }`}>
+                <step.icon className={`text-xl transition-colors duration-300 ${
+                  index === 0 ? 'text-white' : 'text-[#004d40] group-hover:text-[#f2a921]'
+                }`} />
+                <div className="absolute -top-2 -right-2 w-7 h-7 bg-[#f2a921] rounded-full flex items-center justify-center text-xs font-bold text-white">
+                  {step.id}
                 </div>
-              ))}
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className={`w-6 h-6 rounded-full text-sm flex items-center justify-center transition-colors duration-300 ${
+                  index === 0 ? 'bg-[#004d40] text-white' : 'bg-[#004d40]/10 text-[#004d40] group-hover:bg-[#f2a921] group-hover:text-white'
+                }`}>
+                  {step.id}
+                </span>
+                <h3 className="font-semibold text-gray-900 group-hover:text-[#004d40] transition-colors duration-300">
+                  {step.title}
+                </h3>
+              </div>
+              <p className="text-gray-600 group-hover:text-gray-800 transition-colors duration-300">
+                {step.description}
+              </p>
             </div>
           </div>
-        </div>
-      </section>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
 
-      {/* 3️⃣ Authority Workflow */}
+
+      {/* 3️⃣ Authority Workflow - Unique and Beautiful Design */}
       <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              <span className="text-[#004d40]">Authority</span> Workflow Process
+          <div className="text-center mb-8 md:mb-16">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <FaBuilding className="w-5 h-5 text-[#004d40]" />
+              <span className="text-[#555555] text-lg font-medium">
+                Government Process
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#004d40]">
+              Authority <span className="font-bold text-[#f2a921]">Workflow</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
               How municipal departments efficiently handle and resolve citizen reports
             </p>
           </div>
 
-          <div className="">
-            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-8">
-              {authoritySteps.map((step, index) => (
-                <div key={step.id} className="relative group">
-                  {/* Connector lines for desktop */}
-                  {index < authoritySteps.length - 1 && (
-                    <div className="hidden lg:block absolute top-12 -right-8 w-8 h-0.5 bg-gradient-to-r from-[#004d40]/30 to-[#f2a921]/30 group-hover:from-[#004d40] group-hover:to-[#f2a921] transition-all"></div>
-                  )}
-                  
-                  <div className="h-full bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 border border-gray-100">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6 mx-auto transform group-hover:scale-110 group-hover:rotate-12 transition-all ${
-                      step.color === 'primary' ? 'bg-gradient-to-br from-[#004d40] to-[#00695c]' :
-                      'bg-gradient-to-br from-[#f2a921] to-[#ffb74d]'
-                    }`}>
-                      <step.icon className="text-2xl text-white" />
+          <div className="max-w-6xl mx-auto">
+            {/* Unique Workflow Process Cards with Connection Lines */}
+            <div className="relative">
+              {/* Curved Connection Lines */}
+              <svg className="hidden lg:block absolute top-0 left-0 w-full h-full" style={{ zIndex: 1 }}>
+                <defs>
+                  <linearGradient id="workflowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#004d40" stopOpacity="0.3" />
+                    <stop offset="50%" stopColor="#f2a921" stopOpacity="0.3" />
+                    <stop offset="100%" stopColor="#004d40" stopOpacity="0.3" />
+                  </linearGradient>
+                </defs>
+                {/* Connection paths */}
+                <path d="M80,180 C200,180 280,180 400,180" stroke="url(#workflowGradient)" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+                <path d="M400,180 C520,180 600,180 720,180" stroke="url(#workflowGradient)" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+                <path d="M720,180 C840,180 920,180 1040,180" stroke="url(#workflowGradient)" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+                <path d="M1040,180 C1160,180 1240,180 1360,180" stroke="url(#workflowGradient)" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+              </svg>
+
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-4 relative">
+                {authoritySteps.map((step, index) => (
+                  <div key={step.id} className="relative group" style={{ zIndex: 2 }}>
+                    {/* Step Card */}
+                    <div className="h-full bg-gradient-to-b from-white to-gray-50 rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 border border-gray-100">
+                      {/* Step Number Badge */}
+                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <div className="w-12 h-12 bg-gradient-to-br from-[#004d40] to-[#00695c] rounded-full flex items-center justify-center shadow-lg">
+                          <span className="text-white font-bold text-lg">{step.id}</span>
+                        </div>
+                      </div>
+                      
+                      {/* Icon Container */}
+                      <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mx-auto transform group-hover:scale-110 group-hover:rotate-12 transition-all ${
+                        step.color === 'primary' 
+                          ? 'bg-gradient-to-br from-[#004d40] to-[#00695c]' 
+                          : 'bg-gradient-to-br from-[#f2a921] to-[#ffb74d]'
+                      }`}>
+                        <step.icon className="text-3xl text-white" />
+                      </div>
+                      
+                      {/* Content */}
+                      <div className="text-center">
+                        <div className="inline-block px-4 py-2 rounded-full bg-gradient-to-r from-[#004d40]/10 to-[#f2a921]/10 text-[#004d40] text-sm font-medium mb-4">
+                          {step.status}
+                        </div>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4">{step.title}</h3>
+                        <p className="text-gray-600 mb-6">{step.description}</p>
+                        
+                        {/* Duration Badge */}
+                        <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-full">
+                          <FaClock className="text-[#f2a921] mr-2" />
+                          <span className="font-semibold text-[#004d40]">{step.duration}</span>
+                        </div>
+                        
+                        {/* Progress Indicator */}
+                        <div className="mt-6 pt-6 border-t border-gray-200">
+                          <div className="flex items-center justify-center">
+                            <div className="flex items-center">
+                              {[...Array(step.progress)].map((_, i) => (
+                                <div key={i} className="w-2 h-2 bg-[#004d40] rounded-full mx-1"></div>
+                              ))}
+                              {[...Array(5 - step.progress)].map((_, i) => (
+                                <div key={i} className="w-2 h-2 bg-gray-300 rounded-full mx-1"></div>
+                              ))}
+                            </div>
+                            <span className="ml-3 text-sm text-gray-500">{step.progress}/5 completed</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     
-                    <div className="text-center">
-                      <div className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-[#004d40]/10 to-[#f2a921]/10 text-[#004d40] text-sm font-medium mb-4">
-                        {step.status}
+                    {/* Arrow Connector for Mobile */}
+                    {index < authoritySteps.length - 1 && (
+                      <div className="lg:hidden flex justify-center my-8">
+                        <div className="w-16 h-16 text-[#f2a921] transform rotate-90">
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                          </svg>
+                        </div>
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-4">{step.title}</h3>
-                      <p className="text-gray-600 mb-4">{step.description}</p>
-                      
-                      <div className="pt-4 border-t border-gray-200">
-                        <div className="text-sm text-gray-500 font-medium">Avg. Duration</div>
-                        <div className="text-lg font-bold text-[#004d40]">{step.duration}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Process Timeline Bar */}
+            <div className="mt-16 bg-white rounded-2xl p-8 shadow-xl">
+              <div className="mb-8">
+                <h3 className="text-2xl font-bold text-[#004d40] text-center mb-4">Workflow Progress Timeline</h3>
+                <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] opacity-20"></div>
+                  <div className="absolute inset-0 flex">
+                    {[0, 25, 50, 75, 100].map((percent, index) => (
+                      <div key={index} className="relative" style={{ width: `${percent === 0 ? 25 : 25}%` }}>
+                        <div className="absolute -top-2 left-0 transform -translate-x-1/2">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            index < 3 ? 'bg-gradient-to-br from-[#004d40] to-[#00695c]' : 'bg-gray-300'
+                          }`}>
+                            <span className="text-white text-sm font-bold">{index + 1}</span>
+                          </div>
+                        </div>
+                        <div className="absolute top-4 left-0 transform -translate-x-1/2 text-sm text-gray-600 font-medium whitespace-nowrap">
+                          {authoritySteps[index]?.title.split(' ')[0]}
+                        </div>
                       </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="bg-gradient-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-xl p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-[#004d40] rounded-lg flex items-center justify-center">
+                      <MdSpeed className="text-white text-2xl" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900">Average Processing Speed</h4>
+                      <p className="text-2xl font-bold text-[#004d40]">2.3 days</p>
                     </div>
                   </div>
                 </div>
-              ))}
+                
+                <div className="bg-gradient-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-xl p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-[#f2a921] rounded-lg flex items-center justify-center">
+                      <FaClipboardCheck className="text-white text-2xl" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900">Success Rate</h4>
+                      <p className="text-2xl font-bold text-[#004d40]">94%</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -298,12 +428,17 @@ export default function HowItWorksPage() {
       {/* 4️⃣ Who Uses NagarNirman? */}
       <section className="py-20 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Who Uses <span className="text-[#004d40]">Nagar</span>
-              <span className="text-[#f2a921]">Nirman</span>?
+          <div className="text-center mb-8 md:mb-16">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <FaUsers className="w-5 h-5 text-[#004d40]" />
+              <span className="text-[#555555] text-lg font-medium">
+                Platform Users
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#004d40]">
+              Who Uses <span className="font-bold text-[#f2a921]">NagarNirman</span>?
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
               A collaborative platform connecting citizens, authorities, and administrators
             </p>
           </div>
@@ -314,7 +449,7 @@ export default function HowItWorksPage() {
                 <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-6 mx-auto transform group-hover:scale-110 group-hover:rotate-12 transition-all ${
                   persona.id === 1 ? 'bg-gradient-to-br from-[#004d40] to-[#00695c]' :
                   persona.id === 2 ? 'bg-gradient-to-br from-[#f2a921] to-[#ffb74d]' :
-                  'bg-gradient-to-br from-purple-500 to-purple-600'
+                  'bg-gradient-to-br from-[#004d40] to-[#f2a921]'
                 }`}>
                   <persona.icon className="text-3xl text-white" />
                 </div>
@@ -350,11 +485,17 @@ export default function HowItWorksPage() {
       {/* 5️⃣ Common Issues That Can Be Reported */}
       <section className="py-20 bg-gradient-to-br from-[#004d40]/5 to-[#f2a921]/5">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Common <span className="text-[#004d40]">Issues</span> You Can Report
+          <div className="text-center mb-8 md:mb-16">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <FaFileAlt className="w-5 h-5 text-[#004d40]" />
+              <span className="text-[#555555] text-lg font-medium">
+                Report Categories
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#004d40]">
+              Common <span className="font-bold text-[#f2a921]">Issues</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
               Report any civic issue quickly through our platform
             </p>
           </div>
@@ -386,11 +527,17 @@ export default function HowItWorksPage() {
       {/* 6️⃣ Why This Process Works */}
       <section className="py-20 bg-gradient-to-b from-white to-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Our <span className="text-[#004d40]">Process</span> Works
+          <div className="text-center mb-8 md:mb-16">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <FaCheckCircle className="w-5 h-5 text-[#004d40]" />
+              <span className="text-[#555555] text-lg font-medium">
+                Platform Benefits
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#004d40]">
+              Why Our <span className="font-bold text-[#f2a921]">Process</span> Works
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
               Key benefits that make NagarNirman the most effective civic reporting platform
             </p>
           </div>
@@ -459,11 +606,17 @@ export default function HowItWorksPage() {
       {/* 7️⃣ FAQ Section */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Frequently Asked <span className="text-[#004d40]">Questions</span>
+          <div className="text-center mb-8 md:mb-16">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <FaQuestionCircle className="w-5 h-5 text-[#004d40]" />
+              <span className="text-[#555555] text-lg font-medium">
+                Help & Support
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#004d40]">
+              Frequently Asked <span className="font-bold text-[#f2a921]">Questions</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
               Everything you need to know about using NagarNirman
             </p>
           </div>
@@ -591,7 +744,7 @@ const steps = [
     id: 1,
     title: 'Identify the Issue',
     description: 'Spot a civic problem in your area',
-    icon: FaMapMarkerAlt
+    icon: FaSearch
   },
   {
     id: 2,
@@ -603,74 +756,79 @@ const steps = [
     id: 3,
     title: 'Auto-detect Location',
     description: 'GPS pins exact location',
-    icon: MdLocationOn
+    icon: FaLocationArrow
   },
   {
     id: 4,
     title: 'Add Details',
     description: 'Describe the issue briefly',
-    icon: MdOutlineDescription
+    icon: FaListAlt
   },
   {
     id: 5,
     title: 'Submit Report',
     description: 'Send to authorities instantly',
-    icon: FaCheckCircle
+    icon: FaUpload
   },
   {
     id: 6,
     title: 'Track Live Status',
     description: 'Real-time updates until resolution',
-    icon: GiProgression
+    icon: FaHistory
   }
 ];
 
-// Data for authority workflow
+// Data for authority workflow - Updated with unique design
 const authoritySteps = [
   {
     id: 1,
-    title: 'Verification',
-    status: 'Quality Check',
-    duration: '1-24 hours',
-    description: 'Municipal officer reviews report validity and priority',
-    icon: FaUserCheck,
-    color: 'primary'
+    title: 'Report Intake',
+    status: 'Digital Receipt',
+    duration: 'Instant',
+    description: 'Reports received through multiple channels and logged digitally',
+    icon: FaUpload,
+    color: 'primary',
+    progress: 1
   },
   {
     id: 2,
-    title: 'Department Assignment',
-    status: 'Routing',
-    duration: '2-4 hours',
-    description: 'Report routed to appropriate civic department',
-    icon: FaBuilding,
-    color: 'accent'
+    title: 'Smart Screening',
+    status: 'AI Processing',
+    duration: '1-2 hours',
+    description: 'AI-powered screening for duplicates, priority, and categorization',
+    icon: MdFilterCenterFocus,
+    color: 'accent',
+    progress: 2
   },
   {
     id: 3,
-    title: 'Field Assessment',
-    status: 'On-ground',
-    duration: '6-12 hours',
-    description: 'Site inspection and solution planning',
-    icon: FaHardHat,
-    color: 'primary'
+    title: 'Expert Review',
+    status: 'Manual Verification',
+    duration: '2-4 hours',
+    description: 'Municipal experts verify and assign severity levels',
+    icon: FaUserCheck,
+    color: 'primary',
+    progress: 3
   },
   {
     id: 4,
-    title: 'Action & Updates',
-    status: 'Implementation',
-    duration: '1-3 days',
-    description: 'Work execution with regular progress updates',
-    icon: FaSyncAlt,
-    color: 'accent'
+    title: 'Department Dispatch',
+    status: 'Smart Routing',
+    duration: '1 hour',
+    description: 'Automated routing to appropriate department with all details',
+    icon: FaRoute,
+    color: 'accent',
+    progress: 4
   },
   {
     id: 5,
-    title: 'Resolution',
-    status: 'Completion',
-    duration: 'Final',
-    description: 'Issue marked resolved after verification',
-    icon: FaComments,
-    color: 'primary'
+    title: 'Resolution & Closure',
+    status: 'Final Approval',
+    duration: '24-72 hours',
+    description: 'Field work completion with photographic evidence and user feedback',
+    icon: FaClipboardCheck,
+    color: 'primary',
+    progress: 5
   }
 ];
 
