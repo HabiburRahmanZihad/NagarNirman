@@ -21,6 +21,7 @@ import {
   Search,
   Send,
   Shield,
+  Sprout,
   Star,
   Target,
   Trash2,
@@ -158,12 +159,19 @@ export default function AboutPage() {
       {/* 2️⃣ Join Our Civic Community */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
-            Join Our <span className="text-[#004d40]">Civic Community</span>
-            <span className="block text-lg font-normal text-gray-600 mt-3">
+
+
+        <div className="text-center mb-8 md:mb-16">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Sprout className="w-5 h-5 text-[#004d40]" />
+            <span className="text-[#555555] text-lg font-medium">
               Simple Steps to Become an Active Citizen Reporter
             </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-primary">
+            Join Our <span className="text-[#004d40]">Civic Community</span>
           </h2>
+        </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -369,14 +377,20 @@ export default function AboutPage() {
       {/* 4️⃣ How to Report an Issue - Timeline Design */}
       <section id='about-us-report-step' className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+
+        <div className="text-center mb-8 md:mb-16">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Sprout className="w-5 h-5 text-[#004d40]" />
+            <span className="text-[#555555] text-lg font-medium">
+                          Follow this structured timeline to report civic issues effectively
+            and track their resolution progress
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-primary">
             Step-by-Step{' '}
             <span className="text-[#004d40]">Reporting Process</span>
           </h2>
-          <p className="text-lg text-gray-600 text-center mb-16 max-w-3xl mx-auto">
-            Follow this structured timeline to report civic issues effectively
-            and track their resolution progress
-          </p>
+        </div>          
 
           <div className="relative">
             {/* Main Timeline Line */}
@@ -505,14 +519,20 @@ export default function AboutPage() {
       {/* 5️⃣ Common Issues You Can Report */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+
+        <div className="text-center mb-8 md:mb-16">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Sprout className="w-5 h-5 text-[#004d40]" />
+            <span className="text-[#555555] text-lg font-medium">
+              Identify and report these common urban problems to help create
+            cleaner, safer, and better-maintained neighborhoods
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-primary">
             Common <span className="text-[#004d40]">Civic Issues</span> You Can
             Report
           </h2>
-          <p className="text-lg text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-            Identify and report these common urban problems to help create
-            cleaner, safer, and better-maintained neighborhoods
-          </p>
+        </div>          
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
@@ -767,13 +787,19 @@ export default function AboutPage() {
       {/* 8️⃣ Our Impact in Numbers with CountUp */}
       <section ref={impactRef} className="py-20 bg-gradient-to-r from-[#004d40]/5 via-[#f2a921]/5 to-[#004d40]/5">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+
+        <div className="text-center mb-8 md:mb-16">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Sprout className="w-5 h-5 text-[#004d40]" />
+            <span className="text-[#555555] text-lg font-medium">
+              Real numbers that demonstrate our commitment to transforming civic
+            engagement and urban governance
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold text-primary">
             Our Growing <span className="text-[#004d40]">Impact</span>
           </h2>
-          <p className="text-lg text-gray-600 text-center mb-16 max-w-3xl mx-auto">
-            Real numbers that demonstrate our commitment to transforming civic
-            engagement and urban governance
-          </p>
+        </div>          
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
