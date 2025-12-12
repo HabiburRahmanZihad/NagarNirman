@@ -17,6 +17,7 @@ import {
   Code, Palette, CpuIcon, BarChart
 } from 'lucide-react';
 import CountUp from 'react-countup';
+import { Typewriter } from 'react-simple-typewriter';
 
 // 3D Tilt Card Component
 const TiltCard = ({ children, className }: { children: React.ReactNode; className?: string }) => {
@@ -62,15 +63,24 @@ const TiltCard = ({ children, className }: { children: React.ReactNode; classNam
   );
 };
 
-// Floating Elements Background
+// Fixed Floating Elements Background - No Math.random on server
 const FloatingElements = () => {
-  const elements = Array.from({ length: 20 }).map((_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 3 + 1,
-    delay: Math.random() * 5,
-  }));
+  const elements = React.useMemo(() => {
+    // Fixed values for consistent server/client rendering
+    const fixedValues = [
+      { id: 1, x: 10, y: 20, size: 2, delay: 0 },
+      { id: 2, x: 30, y: 40, size: 3, delay: 1 },
+      { id: 3, x: 50, y: 60, size: 1.5, delay: 2 },
+      { id: 4, x: 70, y: 30, size: 2.5, delay: 0.5 },
+      { id: 5, x: 20, y: 70, size: 2.2, delay: 1.5 },
+      { id: 6, x: 80, y: 10, size: 1.8, delay: 3 },
+      { id: 7, x: 40, y: 80, size: 3.2, delay: 2.5 },
+      { id: 8, x: 90, y: 50, size: 2.8, delay: 1.2 },
+      { id: 9, x: 60, y: 90, size: 1.2, delay: 0.8 },
+      { id: 10, x: 15, y: 45, size: 2.7, delay: 3.5 },
+    ];
+    return fixedValues;
+  }, []);
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -85,11 +95,11 @@ const FloatingElements = () => {
             top: `${el.y}%`,
           }}
           animate={{
-            y: [0, -30, 0],
-            opacity: [0.3, 0.8, 0.3],
+            y: [0, -20, 0],
+            opacity: [0.3, 0.6, 0.3],
           }}
           transition={{
-            duration: 3 + Math.random() * 4,
+            duration: 4,
             repeat: Infinity,
             delay: el.delay,
           }}
@@ -98,6 +108,13 @@ const FloatingElements = () => {
     </div>
   );
 };
+
+// Missing icon component
+const FileText = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+  </svg>
+);
 
 const AboutTeamPage = () => {
   // Team Members Data - Added 4th member
@@ -225,7 +242,7 @@ const AboutTeamPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white text-gray-900 font-sans overflow-hidden">
       <FloatingElements />
 
-      {/* Hero Section - Original Version */}
+      {/* Hero Section with Fixed Typewriter */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0">
@@ -277,21 +294,40 @@ const AboutTeamPage = () => {
                 </span>
               </motion.div>
               
-              {/* Main Title - Original Version */}
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-8 leading-tight">
-                <span className="block text-gray-800">Meet The Team</span>
-                <span className="relative">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] via-[#00695c] to-[#f2a921]">
-                    Behind NagarNirman
-                  </span>
-                  <motion.span
-                    className="absolute -bottom-4 left-1/4 w-1/2 h-2 bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: '50%' }}
-                    transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
-                  />
-                </span>
-              </h1>
+              {/* Main Title with Fixed Typewriter */}
+              <div className="mb-12">
+                <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-4">
+                  <span className="block text-gray-800 mb-6">Meet The Team</span>
+                  <div className="relative">
+                    <div className="relative inline-block">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] via-[#00695c] to-[#f2a921]">
+                        <Typewriter
+                          words={[
+                            "Behind NagarNirman",
+                            "Building Better Cities",
+                            "Pioneering Civic Tech",
+                            "Empowering Citizens"
+                          ]}
+                          loop={true}
+                          cursor
+                          cursorStyle="|"
+                          cursorColor="#f2a921"
+                          typeSpeed={70}
+                          deleteSpeed={50}
+                          delaySpeed={1500}
+                        />
+                      </span>
+                    </div>
+                    {/* Animated Bar - Now placed correctly under typewriter text */}
+                    <motion.div
+                      className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-64 h-1 bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: '256px' }}
+                      transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
+                    />
+                  </div>
+                </h1>
+              </div>
               
               {/* Subtitle */}
               <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed">
@@ -884,12 +920,5 @@ const AboutTeamPage = () => {
     </div>
   );
 };
-
-// Missing icon component
-const FileText = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-  </svg>
-);
 
 export default AboutTeamPage;
