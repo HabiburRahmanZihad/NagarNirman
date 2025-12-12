@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@/components/common';
 import {
   AlertTriangle,
   ArrowRight,
@@ -77,16 +78,28 @@ export default function AboutPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
-                  href="/report"
-                  className="bg-[#f2a921] text-gray-900 font-semibold py-3 px-8 rounded-lg hover:bg-[#e6b82e] transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  href="#about-us-report-step"
+                  className=""
                 >
-                  Get Started Reporting
+                  <Button
+                  variant="primary"
+                  size="lg"
+                  iconPosition="right"                  
+                  >
+                    Get Started Reporting
+                  </Button>
                 </Link>
                 <Link
                   href="/how-it-works"
-                  className="border-2 border-white text-white font-semibold py-3 px-8 rounded-lg hover:bg-white/10 transition-all duration-300 text-center"
+                  className=""
                 >
-                  Explore How It Works
+                  <Button
+                  variant="outline"
+                  size="md"
+                  iconPosition="right"                  
+                  >
+                    Explore How It Works
+                  </Button>
                 </Link>
               </div>
             </div>
@@ -336,7 +349,7 @@ export default function AboutPage() {
       </section>
 
       {/* 4️⃣ How to Report an Issue - Timeline Design */}
-      <section className="py-20 bg-linear-to-b from-gray-50 to-white">
+      <section id='about-us-report-step' className="py-20 bg-linear-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
             Step-by-Step{' '}
