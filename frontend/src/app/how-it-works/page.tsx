@@ -22,6 +22,7 @@ import { GiProgression, GiReceiveMoney } from 'react-icons/gi';
 import { TbProgressCheck } from 'react-icons/tb';
 
 // CountUp Component
+// CountUp component update করুন
 interface CountUpProps {
   end: number;
   duration?: number;
@@ -68,7 +69,7 @@ function CountUp({ end, duration = 2000, suffix = '', prefix = '' }: CountUpProp
   }, [end, duration]);
 
   return (
-    <span ref={countRef} className="text-4xl font-bold text-[#004d40]">
+    <span ref={countRef} className="text-4xl font-bold">
       {prefix}{count.toLocaleString()}{suffix}
     </span>
   );
@@ -562,13 +563,13 @@ export default function HowItWorksPage() {
           <div className="bg-gradient-to-r from-[#004d40] to-[#00695c] rounded-3xl p-12 shadow-2xl">
             <div className="grid md:grid-cols-3 gap-12">
               <div className="text-center">
-                <div className="text-5xl font-bold text-white mb-4">
+                <div className="text-5xl font-bold text-accent mb-4">
                   <CountUp end={95} suffix="%" />
                 </div>
                 <p className="text-green-100 text-lg">Reports verified within 24 hours</p>
               </div>
               <div className="text-center">
-                <div className="text-5xl font-bold text-white mb-4">
+                <div className="text-5xl font-bold text-accent mb-4">
                   <CountUp end={85} suffix="%" />
                 </div>
                 <p className="text-green-100 text-lg">Issues resolved within 1 week</p>
@@ -583,13 +584,13 @@ export default function HowItWorksPage() {
             
             <div className="mt-12 pt-12 border-t border-green-400/30 grid md:grid-cols-3 gap-8">
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">
+                <div className="text-3xl font-bold text-accent mb-2">
                   <CountUp end={50000} suffix="+" />
                 </div>
                 <p className="text-green-100">Reports Filed</p>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">
+                <div className="text-3xl font-bold text-accent mb-2">
                   <CountUp end={120} suffix="+" />
                 </div>
                 <p className="text-green-100">Cities Covered</p>
@@ -600,6 +601,7 @@ export default function HowItWorksPage() {
               </div>
             </div>
           </div>
+          
         </div>
       </section>
 
@@ -685,8 +687,8 @@ export default function HowItWorksPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto text-center">
             <div className="inline-flex items-center px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm text-white mb-8">
-              <FaShieldAlt className="mr-2" />
-              Trusted by 100,000+ citizens across India
+              <FaShieldAlt className="mr-2" color='#F2A921' />
+              Trusted by 100,000+ citizens across Bangladesh
             </div>
             
             <h2 className="text-5xl font-bold text-white mb-6">
@@ -709,25 +711,25 @@ export default function HowItWorksPage() {
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-white/80">
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">
+                <div className="text-3xl font-bold text-accent mb-2">
                   <CountUp end={50000} suffix="+" />
                 </div>
                 <div className="text-green-100">Reports Filed</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">
+                <div className="text-3xl font-bold text-accent mb-2">
                   <CountUp end={120} suffix="+" />
                 </div>
                 <div className="text-green-100">Cities Covered</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">
+                <div className="text-3xl font-bold text-accent mb-2">
                   <CountUp end={98} suffix="%" />
                 </div>
                 <div className="text-green-100">Satisfaction Rate</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">24/7</div>
+                <div className="text-3xl font-bold text-accent mb-2">24/7</div>
                 <div className="text-green-100">Platform Availability</div>
               </div>
             </div>
