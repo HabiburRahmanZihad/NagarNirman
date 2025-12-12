@@ -20,6 +20,7 @@ import {
 } from 'react-icons/md';
 import { GiProgression, GiReceiveMoney } from 'react-icons/gi';
 import { TbProgressCheck } from 'react-icons/tb';
+import { Button } from '@/components/common';
 
 // CountUp Component
 // CountUp component update করুন
@@ -107,11 +108,14 @@ export default function HowItWorksPage() {
                 concern receives prompt attention and effective action.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button className="group bg-gradient-to-r from-[#004d40] to-[#00695c] text-white px-8 py-4 rounded-xl font-semibold hover:shadow-2xl hover:shadow-[#004d40]/30 transition-all duration-300 flex items-center justify-center gap-3">
-                  <span>Start Reporting</span>
-                  <FaArrowRight className="group-hover:translate-x-2 transition-transform" />
-                </button>
-                <button className="group border-2 border-[#004d40] text-[#004d40] px-8 py-4 rounded-xl font-semibold hover:bg-[#004d40] hover:text-white transition-all duration-300">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  iconPosition="right"                
+                >
+                  Start Reporting
+                </Button>
+                <button className="group border-2 border-[#004d40] text-[#004d40] px-8 py-4 rounded-full font-semibold hover:bg-accent hover:text-white transition-all duration-300">
                   <span>Watch Platform Tour</span>
                 </button>
               </div>
