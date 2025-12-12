@@ -100,8 +100,7 @@ const FloatingElements = () => {
 };
 
 const AboutTeamPage = () => {
-
-  // Team Members Data
+  // Team Members Data - Added 4th member
   const TEAM_MEMBERS = [
     {
       name: 'Ahmed Rahman',
@@ -142,6 +141,19 @@ const AboutTeamPage = () => {
       funFact: 'Has interviewed over 100 citizens about civic issues',
       stats: { commits: 980, projects: 12 }
     },
+    {
+      name: 'Sabrina Akter',
+      role: 'AI Specialist',
+      subRole: 'Machine Learning & NLP Engineer',
+      bio: 'Builds intelligent systems that understand and categorize civic reports automatically. Specializes in natural language processing for Bengali text and image recognition for issue classification.',
+      avatar: '🤖',
+      color: 'from-[#9c27b0] to-[#673ab7]',
+      skills: ['Python', 'TensorFlow', 'NLP', 'Computer Vision'],
+      contributions: ['AI Classification', 'Report Analysis', 'Predictive Models'],
+      social: { github: '#', linkedin: '#', email: '#' },
+      funFact: 'Can train ML models while binge-watching documentaries',
+      stats: { commits: 720, projects: 8 }
+    },
   ];
 
   // Stats Data
@@ -152,7 +164,7 @@ const AboutTeamPage = () => {
     { value: 99.9, suffix: '%', label: 'System Uptime', icon: <Server className="w-6 h-6" /> },
   ];
 
-    // Tech Stack Data
+  // Tech Stack Data
   const TECH_STACK = [
     { 
       category: 'Frontend',
@@ -200,7 +212,6 @@ const AboutTeamPage = () => {
     },
   ];
 
-
   const WORKFLOW_STEPS = [
     { step: '01', title: 'Report Submission', desc: 'Citizens report issues via mobile/web', icon: <MessageSquare className="w-6 h-6" /> },
     { step: '02', title: 'Smart Routing', desc: 'AI categorizes & routes to authorities', icon: <GitBranch className="w-6 h-6" /> },
@@ -214,7 +225,7 @@ const AboutTeamPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white text-gray-900 font-sans overflow-hidden">
       <FloatingElements />
 
-      {/* Hero Section - Enhanced */}
+      {/* Hero Section - Original Version */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0">
@@ -266,8 +277,8 @@ const AboutTeamPage = () => {
                 </span>
               </motion.div>
               
-              {/* Main Title */}
-              <h1 className="text-2xl md:text-5xl lg:text-7xl font-bold mb-8 leading-tight">
+              {/* Main Title - Original Version */}
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-8 leading-tight">
                 <span className="block text-gray-800">Meet The Team</span>
                 <span className="relative">
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] via-[#00695c] to-[#f2a921]">
@@ -284,7 +295,7 @@ const AboutTeamPage = () => {
               
               {/* Subtitle */}
               <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed">
-                Three passionate students revolutionizing how Bangladesh addresses urban challenges. 
+                Four passionate students revolutionizing how Bangladesh addresses urban challenges. 
                 We combine cutting-edge technology with deep civic engagement to build 
                 <span className="font-semibold text-[#004d40]"> smarter, more responsive cities.</span>
               </p>
@@ -371,7 +382,7 @@ const AboutTeamPage = () => {
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {TEAM_MEMBERS.map((member, index) => (
               <TiltCard key={index} className="relative group">
                 {/* Glow Effect */}
@@ -487,8 +498,6 @@ const AboutTeamPage = () => {
         </div>
       </section>
 
-      {/* Tech Stack - Animated Grid */}
-
       {/* Tech Stack Section */}
       <section id="tech" className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
@@ -583,7 +592,6 @@ const AboutTeamPage = () => {
         </div>
       </section>
 
-
       {/* Impact Stats - Circular Progress */}
       <section id="impact" className="py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-br from-[#004d40]/5 via-transparent to-[#f2a921]/5" />
@@ -666,7 +674,7 @@ const AboutTeamPage = () => {
         </div>
       </section>
 
-      {/* Workflow - Animated Timeline */}
+      {/* Workflow - Simplified Hover Effects */}
       <section className="py-24 bg-gradient-to-br from-white to-gray-50">
         <div className="container mx-auto px-4">
           <motion.div
@@ -706,21 +714,49 @@ const AboutTeamPage = () => {
                     </div>
                   </div>
 
-                  {/* Content Card */}
+                  {/* Content Card with Simplified Hover */}
                   <div className={`w-full lg:w-5/12 ml-20 lg:ml-0 ${index % 2 === 0 ? 'lg:pr-8' : 'lg:pl-8'}`}>
                     <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      className="bg-white rounded-2xl p-8 shadow-2xl border border-gray-100"
+                      whileHover={{ 
+                        scale: 1.02,
+                        y: -3,
+                        transition: { 
+                          type: "spring", 
+                          stiffness: 300, 
+                          damping: 20,
+                          duration: 0.3 
+                        } 
+                      }}
+                      className="group relative bg-white rounded-2xl p-8 shadow-2xl border border-gray-100 hover:shadow-3xl transition-all duration-300"
                     >
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#004d40]/10 to-[#f2a921]/10 rounded-xl flex items-center justify-center">
-                          <div className="text-[#004d40]">
-                            {step.icon}
+                      {/* Simple Hover Background */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-[#004d40]/10 to-[#f2a921]/10 rounded-xl flex items-center justify-center group-hover:from-[#004d40]/20 group-hover:to-[#f2a921]/20 transition-all duration-300">
+                            <div className="text-[#004d40] group-hover:text-[#f2a921] transition-colors duration-300">
+                              {step.icon}
+                            </div>
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#004d40] transition-colors duration-300">
+                            {step.title}
+                          </h3>
+                        </div>
+                        
+                        <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
+                          {step.desc}
+                        </p>
+                        
+                        {/* Simple Arrow Indicator */}
+                        <div className="absolute -right-4 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="w-8 h-8 bg-gradient-to-br from-[#004d40] to-[#f2a921] rounded-full flex items-center justify-center shadow-lg">
+                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                            </svg>
                           </div>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900">{step.title}</h3>
                       </div>
-                      <p className="text-gray-600">{step.desc}</p>
                     </motion.div>
                   </div>
                   
@@ -838,7 +874,7 @@ const AboutTeamPage = () => {
               transition={{ delay: 0.6 }}
             >
               <p className="text-white/60 text-sm font-mono">
-                Open Roles: Frontend Intern • Backend Developer • UI/UX Designer • Community Manager
+                Open Roles: Frontend Intern • Backend Developer • UI/UX Designer • Community Manager • AI Engineer
               </p>
             </motion.div>
           </div>
