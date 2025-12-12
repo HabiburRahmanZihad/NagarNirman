@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import React from 'react';
 import CountUp from 'react-countup';
+import { Typewriter } from 'react-simple-typewriter';
 
 // 3D Tilt Card Component
 const TiltCard = ({ children, className }: { children: React.ReactNode; className?: string }) => {
@@ -80,15 +81,24 @@ const TiltCard = ({ children, className }: { children: React.ReactNode; classNam
   );
 };
 
-// Floating Elements Background
+// Fixed Floating Elements Background - No Math.random on server
 const FloatingElements = () => {
-  const elements = Array.from({ length: 20 }).map((_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 3 + 1,
-    delay: Math.random() * 5,
-  }));
+  const elements = React.useMemo(() => {
+    // Fixed values for consistent server/client rendering
+    const fixedValues = [
+      { id: 1, x: 10, y: 20, size: 2, delay: 0 },
+      { id: 2, x: 30, y: 40, size: 3, delay: 1 },
+      { id: 3, x: 50, y: 60, size: 1.5, delay: 2 },
+      { id: 4, x: 70, y: 30, size: 2.5, delay: 0.5 },
+      { id: 5, x: 20, y: 70, size: 2.2, delay: 1.5 },
+      { id: 6, x: 80, y: 10, size: 1.8, delay: 3 },
+      { id: 7, x: 40, y: 80, size: 3.2, delay: 2.5 },
+      { id: 8, x: 90, y: 50, size: 2.8, delay: 1.2 },
+      { id: 9, x: 60, y: 90, size: 1.2, delay: 0.8 },
+      { id: 10, x: 15, y: 45, size: 2.7, delay: 3.5 },
+    ];
+    return fixedValues;
+  }, []);
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -103,11 +113,11 @@ const FloatingElements = () => {
             top: `${el.y}%`,
           }}
           animate={{
-            y: [0, -30, 0],
-            opacity: [0.3, 0.8, 0.3],
+            y: [0, -20, 0],
+            opacity: [0.3, 0.6, 0.3],
           }}
           transition={{
-            duration: 3 + Math.random() * 4,
+            duration: 4,
             repeat: Infinity,
             delay: el.delay,
           }}
@@ -117,9 +127,15 @@ const FloatingElements = () => {
   );
 };
 
-const AboutTeamPage = () => {
+// Missing icon component
+const FileText = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+  </svg>
+);
 
-  // Team Members Data
+const AboutTeamPage = () => {
+  // Team Members Data - Added 4th member
   const TEAM_MEMBERS = [
     {
       name: 'Ahmed Rahman',
@@ -160,6 +176,19 @@ const AboutTeamPage = () => {
       funFact: 'Has interviewed over 100 citizens about civic issues',
       stats: { commits: 980, projects: 12 }
     },
+    {
+      name: 'Sabrina Akter',
+      role: 'AI Specialist',
+      subRole: 'Machine Learning & NLP Engineer',
+      bio: 'Builds intelligent systems that understand and categorize civic reports automatically. Specializes in natural language processing for Bengali text and image recognition for issue classification.',
+      avatar: '🤖',
+      color: 'from-[#9c27b0] to-[#673ab7]',
+      skills: ['Python', 'TensorFlow', 'NLP', 'Computer Vision'],
+      contributions: ['AI Classification', 'Report Analysis', 'Predictive Models'],
+      social: { github: '#', linkedin: '#', email: '#' },
+      funFact: 'Can train ML models while binge-watching documentaries',
+      stats: { commits: 720, projects: 8 }
+    },
   ];
 
   // Stats Data
@@ -170,7 +199,7 @@ const AboutTeamPage = () => {
     { value: 99.9, suffix: '%', label: 'System Uptime', icon: <Server className="w-6 h-6" /> },
   ];
 
-    // Tech Stack Data
+  // Tech Stack Data
   const TECH_STACK = [
     { 
       category: 'Frontend',
@@ -218,7 +247,6 @@ const AboutTeamPage = () => {
     },
   ];
 
-
   const WORKFLOW_STEPS = [
     { step: '01', title: 'Report Submission', desc: 'Citizens report issues via mobile/web', icon: <MessageSquare className="w-6 h-6" /> },
     { step: '02', title: 'Smart Routing', desc: 'AI categorizes & routes to authorities', icon: <GitBranch className="w-6 h-6" /> },
@@ -232,8 +260,8 @@ const AboutTeamPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white text-gray-900 font-sans overflow-hidden">
       <FloatingElements />
 
-      {/* Hero Section - Enhanced */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Hero Section with Fixed Typewriter */}
+      <section className="relative min-h-[800px] flex items-center justify-center overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-[#004d40] to-transparent opacity-10" />
@@ -284,25 +312,44 @@ const AboutTeamPage = () => {
                 </span>
               </motion.div>
               
-              {/* Main Title */}
-              <h1 className="text-2xl md:text-5xl lg:text-7xl font-bold mb-8 leading-tight">
-                <span className="block text-gray-800">Meet The Team</span>
-                <span className="relative">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] via-[#00695c] to-[#f2a921]">
-                    Behind NagarNirman
-                  </span>
-                  <motion.span
-                    className="absolute -bottom-4 left-1/4 w-1/2 h-2 bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: '50%' }}
-                    transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
-                  />
-                </span>
-              </h1>
+              {/* Main Title with Fixed Typewriter */}
+              <div className="mb-12">
+                <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-4">
+                  <span className="block text-gray-800 mb-6">Meet The Team</span>
+                  <div className="relative">
+                    <div className="relative inline-block">
+                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] via-[#00695c] to-[#f2a921]">
+                        <Typewriter
+                          words={[
+                            "Behind NagarNirman",
+                            "Building Better Cities",
+                            "Pioneering Civic Tech",
+                            "Empowering Citizens"
+                          ]}
+                          loop={true}
+                          cursor
+                          cursorStyle="|"
+                          cursorColor="#f2a921"
+                          typeSpeed={70}
+                          deleteSpeed={50}
+                          delaySpeed={1500}
+                        />
+                      </span>
+                    </div>
+                    {/* Animated Bar - Now placed correctly under typewriter text */}
+                    <motion.div
+                      className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-64 h-2 bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: '356px' }}
+                      transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
+                    />
+                  </div>
+                </h1>
+              </div>
               
               {/* Subtitle */}
               <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed">
-                Three passionate students revolutionizing how Bangladesh addresses urban challenges. 
+                Four passionate students revolutionizing how Bangladesh addresses urban challenges. 
                 We combine cutting-edge technology with deep civic engagement to build 
                 <span className="font-semibold text-[#004d40]"> smarter, more responsive cities.</span>
               </p>
@@ -336,7 +383,7 @@ const AboutTeamPage = () => {
                   href="#tech"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="group px-8 py-4 border-2 border-[#004d40] text-[#004d40] rounded-full font-semibold hover:bg-[#004d40] hover:text-white transition-all duration-300 shadow-lg"
+                  className="group px-8 py-4 border-2 border-[#004d40] text-[#004d40] rounded-full font-semibold hover:bg-accent hover:text-white transition-all duration-300 shadow-lg"
                 >
                   <span className="flex items-center gap-3">
                     <Code2 className="w-5 h-5" />
@@ -389,7 +436,7 @@ const AboutTeamPage = () => {
             </p>
           </motion.div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
             {TEAM_MEMBERS.map((member, index) => (
               <TiltCard key={index} className="relative group">
                 {/* Glow Effect */}
@@ -425,7 +472,7 @@ const AboutTeamPage = () => {
 
                   {/* Stats */}
                   <div className="relative z-10 mb-6">
-                    <div className="flex justify-center gap-6">
+                    <div className="flex justify-start gap-6">
                       <div className="text-center">
                         <div className="text-2xl font-bold text-[#004d40]">{member.stats.commits}+</div>
                         <div className="text-xs text-gray-500">Commits</div>
@@ -504,8 +551,6 @@ const AboutTeamPage = () => {
           </div>
         </div>
       </section>
-
-      {/* Tech Stack - Animated Grid */}
 
       {/* Tech Stack Section */}
       <section id="tech" className="py-20 bg-gradient-to-b from-gray-50 to-white">
@@ -601,7 +646,6 @@ const AboutTeamPage = () => {
         </div>
       </section>
 
-
       {/* Impact Stats - Circular Progress */}
       <section id="impact" className="py-24 relative">
         <div className="absolute inset-0 bg-gradient-to-br from-[#004d40]/5 via-transparent to-[#f2a921]/5" />
@@ -684,7 +728,7 @@ const AboutTeamPage = () => {
         </div>
       </section>
 
-      {/* Workflow - Animated Timeline */}
+      {/* Workflow - Simplified Hover Effects */}
       <section className="py-24 bg-gradient-to-br from-white to-gray-50">
         <div className="container mx-auto px-4">
           <motion.div
@@ -724,21 +768,49 @@ const AboutTeamPage = () => {
                     </div>
                   </div>
 
-                  {/* Content Card */}
+                  {/* Content Card with Simplified Hover */}
                   <div className={`w-full lg:w-5/12 ml-20 lg:ml-0 ${index % 2 === 0 ? 'lg:pr-8' : 'lg:pl-8'}`}>
                     <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      className="bg-white rounded-2xl p-8 shadow-2xl border border-gray-100"
+                      whileHover={{ 
+                        scale: 1.02,
+                        y: -3,
+                        transition: { 
+                          type: "spring", 
+                          stiffness: 300, 
+                          damping: 20,
+                          duration: 0.3 
+                        } 
+                      }}
+                      className="group relative bg-white rounded-2xl p-8 shadow-2xl border border-gray-100 hover:shadow-3xl transition-all duration-300"
                     >
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#004d40]/10 to-[#f2a921]/10 rounded-xl flex items-center justify-center">
-                          <div className="text-[#004d40]">
-                            {step.icon}
+                      {/* Simple Hover Background */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-[#004d40]/10 to-[#f2a921]/10 rounded-xl flex items-center justify-center group-hover:from-[#004d40]/20 group-hover:to-[#f2a921]/20 transition-all duration-300">
+                            <div className="text-[#004d40] group-hover:text-[#f2a921] transition-colors duration-300">
+                              {step.icon}
+                            </div>
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#004d40] transition-colors duration-300">
+                            {step.title}
+                          </h3>
+                        </div>
+                        
+                        <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
+                          {step.desc}
+                        </p>
+                        
+                        {/* Simple Arrow Indicator */}
+                        <div className="absolute -right-4 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="w-8 h-8 bg-gradient-to-br from-[#004d40] to-[#f2a921] rounded-full flex items-center justify-center shadow-lg">
+                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                            </svg>
                           </div>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900">{step.title}</h3>
                       </div>
-                      <p className="text-gray-600">{step.desc}</p>
                     </motion.div>
                   </div>
                   
@@ -856,7 +928,7 @@ const AboutTeamPage = () => {
               transition={{ delay: 0.6 }}
             >
               <p className="text-white/60 text-sm font-mono">
-                Open Roles: Frontend Intern • Backend Developer • UI/UX Designer • Community Manager
+                Open Roles: Frontend Intern • Backend Developer • UI/UX Designer • Community Manager • AI Engineer
               </p>
             </motion.div>
           </div>
@@ -866,12 +938,5 @@ const AboutTeamPage = () => {
     </div>
   );
 };
-
-// Missing icon component
-const FileText = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-  </svg>
-);
 
 export default AboutTeamPage;
