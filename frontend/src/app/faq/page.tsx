@@ -77,7 +77,9 @@ export default function Faq() {
                 Frequently Asked Questions
               </h1>
               <p className="text-xl text-gray-100 mb-6">
-                Clear answers to the most common questions about civic reporting, issue tracking, privacy, and platform usage — all in one place.
+                Clear answers to the most common questions about civic
+                reporting, issue tracking, privacy, and platform usage — all in
+                one place.
               </p>
               <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 inline-block">
                 <p className="text-gray-100">
@@ -89,10 +91,6 @@ export default function Faq() {
           </div>
         </section>
         <div className="container mx-auto px-4 mt-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
-            Frequently Asked <span className="text-[#004d40]">Questions</span>
-          </h2>
-
           <div className="grid lg:grid-cols-2 gap-12">
             {/* FAQ Column */}
             <div className="space-y-4">

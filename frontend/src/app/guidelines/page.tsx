@@ -18,7 +18,7 @@ export default function GuidelinesPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* -------- the hero section placed here => start -------- */}
-      <section className="relative overflow-hidden mb-10">
+      <section className="relative overflow-hidden mb-16">
         <div className="absolute inset-0">
           <Image
             src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80"
@@ -51,14 +51,8 @@ export default function GuidelinesPage() {
       {/* -------- the hero section placed here => end -------- */}
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Community Guidelines
-            </h1>
-            <p className="text-lg text-gray-600">
-              Building a better community together through collaboration and
-              respect
-            </p>
+          <div className="text-center mb-5">
+            
           </div>
 
           <div className="space-y-10">
