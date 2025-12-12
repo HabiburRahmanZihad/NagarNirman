@@ -47,7 +47,7 @@ export default function AboutPage() {
             }}
           />
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-linear-to-b from-[#004d40]/90 via-[#004d40]/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#004d40]/90 via-[#004d40]/70 to-transparent" />
           {/* Pattern Overlay - Fixed syntax */}
           <div
             className="absolute inset-0 opacity-10"
@@ -105,11 +105,11 @@ export default function AboutPage() {
             </div>
             <div className="flex justify-center">
               <div className="relative w-full max-w-lg">
-                <div className="absolute -inset-4 bg-linear-to-b from-white/20 to-transparent rounded-3xl blur-xl opacity-50" />
+                <div className="absolute -inset-4 bg-gradient-to-b from-white/20 to-transparent rounded-3xl blur-xl opacity-50" />
                 <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-white/20">
                   <div className="aspect-square rounded-xl bg-white/5 flex items-center justify-center p-6">
                     <div className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-2xl shadow-inner border border-white/10">
-                      <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-br from-[#f2a921] to-[#e6b82e] rounded-full mb-6 shadow-lg">
+                      <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-full mb-6 shadow-lg">
                         <CheckCircle2 className="w-10 h-10 text-white" />
                       </div>
                       <h3 className="text-2xl font-bold text-white mb-3">
@@ -179,20 +179,24 @@ export default function AboutPage() {
                 key={index}
                 className="relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-2 border-transparent hover:border-[#f2a921] group cursor-pointer overflow-hidden"
               >
-                <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-[#004d40] to-[#f2a921]"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#004d40] to-[#f2a921]"></div>
                 <div className="relative z-10">
-                  <div className="w-20 h-20 bg-linear-to-br from-[#f2a921]/20 to-[#f2a921]/40 rounded-2xl flex items-center justify-center mb-8 group-hover:from-[#f2a921]/30 group-hover:to-[#f2a921]/50 transition-all duration-300">
-                    <div className="text-[#f2a921]">{card.icon}</div>
+                  <div className="w-20 h-20 bg-gradient-to-br from-[#f2a921]/20 to-[#f2a921]/40 rounded-2xl flex items-center justify-center mb-8 group-hover:from-[#f2a921]/30 group-hover:to-[#f2a921]/50 transition-all duration-300">
+                    <div className="text-[#f2a921] group-hover:text-[#004d40] transition-colors duration-300">
+                      {card.icon}
+                    </div>
                   </div>
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 bg-[#004d40] text-white rounded-full flex items-center justify-center font-bold">
+                    <div className="w-8 h-8 bg-[#004d40] text-white rounded-full flex items-center justify-center font-bold group-hover:bg-[#f2a921] transition-colors duration-300">
                       {index + 1}
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900">
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#004d40] transition-colors duration-300">
                       {card.title}
                     </h3>
                   </div>
-                  <p className="text-gray-600 leading-relaxed">{card.desc}</p>
+                  <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
+                    {card.desc}
+                  </p>
                 </div>
               </div>
             ))}
@@ -205,12 +209,12 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* What is NagarNirman */}
-            <div className="relative bg-linear-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border border-gray-100">
+            <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border border-gray-100">
               <div className="absolute -top-4 left-10 bg-[#004d40] text-white px-6 py-2 rounded-full font-semibold text-lg">
                 What We Are
               </div>
               <div className="flex items-center gap-6 mb-8 mt-4">
-                <div className="w-16 h-16 bg-linear-to-br from-[#004d40] to-[#1e5a22] rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#004d40] to-[#1e5a22] rounded-2xl flex items-center justify-center shadow-lg">
                   <div className="text-white">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -274,12 +278,12 @@ export default function AboutPage() {
             </div>
 
             {/* Why NagarNirman Matters */}
-            <div className="relative bg-linear-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border border-gray-100">
+            <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border border-gray-100">
               <div className="absolute -top-4 left-10 bg-[#f2a921] text-gray-900 px-6 py-2 rounded-full font-semibold text-lg">
                 Why We Matter
               </div>
               <div className="flex items-center gap-6 mb-8 mt-4">
-                <div className="w-16 h-16 bg-linear-to-br from-[#f2a921] to-[#e6b82e] rounded-2xl flex items-center justify-center shadow-lg">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-2xl flex items-center justify-center shadow-lg">
                   <Star className="w-8 h-8 text-gray-900" />
                 </div>
                 <div>
@@ -324,17 +328,21 @@ export default function AboutPage() {
                 ].map((item, index) => (
                   <div
                     key={index}
-                    className="bg-white rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow border border-gray-100"
+                    className="bg-white rounded-xl p-5 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#004d40]/30 group"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-[#004d40]/10 rounded-lg flex items-center justify-center shrink-0">
-                        <div className="text-[#004d40]">{item.icon}</div>
+                      <div className="w-12 h-12 bg-[#004d40]/10 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-[#f2a921]/20 transition-all duration-300">
+                        <div className="text-[#004d40] group-hover:text-[#f2a921] transition-colors duration-300">
+                          {item.icon}
+                        </div>
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-900 mb-2">
+                        <h4 className="font-bold text-gray-900 mb-2 group-hover:text-[#004d40] transition-colors duration-300">
                           {item.title}
                         </h4>
-                        <p className="text-sm text-gray-600">{item.desc}</p>
+                        <p className="text-sm text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
+                          {item.desc}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -346,7 +354,7 @@ export default function AboutPage() {
       </section>
 
       {/* 4️⃣ How to Report an Issue - Timeline Design */}
-      <section id='about-us-report-step' className="py-20 bg-linear-to-b from-gray-50 to-white">
+      <section id='about-us-report-step' className="py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
             Step-by-Step{' '}
@@ -423,7 +431,7 @@ export default function AboutPage() {
               ].map((step, index) => (
                 <div
                   key={index}
-                  className={`relative flex flex-col lg:flex-row items-center ${
+                  className={`relative flex flex-col lg:flex-row items-center group ${
                     index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
                   }`}
                 >
@@ -433,8 +441,8 @@ export default function AboutPage() {
                       index % 2 === 0 ? 'lg:mr-12' : 'lg:ml-12'
                     } z-10`}
                   >
-                    <div className="w-16 h-16 bg-linear-to-br from-[#f2a921] to-[#e6b82e] rounded-full flex items-center justify-center shadow-lg border-4 border-white">
-                      <span className="text-xl font-bold text-gray-900">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-full flex items-center justify-center shadow-lg border-4 border-white group-hover:from-[#004d40] group-hover:to-[#1e5a22] group-hover:border-[#f2a921] transition-all duration-300">
+                      <span className="text-xl font-bold text-gray-900 group-hover:text-white transition-colors duration-300">
                         {step.year}
                       </span>
                     </div>
@@ -446,20 +454,22 @@ export default function AboutPage() {
                       index % 2 === 0 ? 'lg:pr-12' : 'lg:pl-12'
                     }`}
                   >
-                    <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 hover:border-[#004d40]/30 transition-all duration-300">
+                    <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 hover:border-[#004d40] hover:shadow-2xl transition-all duration-300 group-hover:bg-gradient-to-br group-hover:from-white group-hover:to-gray-50">
                       <div className="flex items-start gap-6">
-                        <div className="w-14 h-14 bg-[#004d40]/10 rounded-xl flex items-center justify-center shrink-0">
-                          <div className="text-[#004d40]">{step.icon}</div>
+                        <div className="w-14 h-14 bg-[#004d40]/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#f2a921]/20 transition-all duration-300">
+                          <div className="text-[#004d40] group-hover:text-[#f2a921] transition-colors duration-300">
+                            {step.icon}
+                          </div>
                         </div>
                         <div>
-                          <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                          <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-[#004d40] transition-colors duration-300">
                             {step.title}
                           </h3>
-                          <p className="text-gray-700 mb-4 leading-relaxed">
+                          <p className="text-gray-700 mb-4 leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
                             {step.desc}
                           </p>
-                          <div className="bg-[#f8f8f8] rounded-lg p-4 border-l-3 border-[#f2a921]">
-                            <p className="text-gray-600 text-sm">
+                          <div className="bg-[#f8f8f8] rounded-lg p-4 border-l-3 border-[#f2a921] group-hover:bg-[#f2a921]/5 group-hover:border-[#004d40] transition-all duration-300">
+                            <p className="text-gray-600 text-sm group-hover:text-gray-700 transition-colors duration-300">
                               {step.details}
                             </p>
                           </div>
@@ -469,8 +479,8 @@ export default function AboutPage() {
                   </div>
 
                   {/* Timeline Dot */}
-                  <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 bg-white rounded-full border-4 border-[#f2a921] items-center justify-center z-10 shadow-lg">
-                    <div className="w-4 h-4 bg-[#f2a921] rounded-full"></div>
+                  <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 bg-white rounded-full border-4 border-[#f2a921] items-center justify-center z-10 shadow-lg group-hover:border-[#004d40] transition-all duration-300">
+                    <div className="w-4 h-4 bg-[#f2a921] rounded-full group-hover:bg-[#004d40] transition-colors duration-300"></div>
                   </div>
                 </div>
               ))}
@@ -538,30 +548,32 @@ export default function AboutPage() {
             ].map((issue, index) => (
               <div
                 key={index}
-                className="bg-linear-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border group border-t-6 border-accent"
+                className="bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border group border-t-6 border-[#f2a921] hover:border-[#004d40]"
               >
                 <div className="flex items-start justify-between mb-6">
-                  <div className="w-16 h-16 bg-linear-to-br from-[#f2a921]/20 to-[#004d40]/10 rounded-2xl flex items-center justify-center group-hover:from-[#004d40]/30 group-hover:to-[#004d40]/20 transition-all">
-                    <div className="text-[#004d40]">{issue.icon}</div>
+                  <div className="w-16 h-16 bg-gradient-to-br from-[#f2a921]/20 to-[#004d40]/10 rounded-2xl flex items-center justify-center group-hover:from-[#004d40]/30 group-hover:to-[#004d40]/20 transition-all">
+                    <div className="text-[#004d40] group-hover:text-[#f2a921] transition-colors duration-300">
+                      {issue.icon}
+                    </div>
                   </div>
                   <span
                     className={`px-4 py-1 rounded-full text-sm font-semibold ${
                       issue.severity === 'Emergency'
-                        ? 'bg-red-100 text-red-700'
+                        ? 'bg-red-100 text-red-700 group-hover:bg-red-200 transition-colors duration-300'
                         : issue.severity === 'High Priority'
-                        ? 'bg-orange-100 text-orange-700'
+                        ? 'bg-orange-100 text-orange-700 group-hover:bg-orange-200 transition-colors duration-300'
                         : issue.severity === 'Medium Priority'
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-blue-100 text-blue-700'
+                        ? 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-200 transition-colors duration-300'
+                        : 'bg-blue-100 text-blue-700 group-hover:bg-blue-200 transition-colors duration-300'
                     }`}
                   >
                     {issue.severity}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-[#004d40] transition-colors duration-300">
                   {issue.title}
                 </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
+                <p className="text-gray-600 mb-6 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
                   {issue.desc}
                 </p>
                 <div className="pt-4 border-t border-gray-100">
@@ -570,9 +582,9 @@ export default function AboutPage() {
                       <Lightbulb className="w-4 h-4 text-[#f2a921]" />
                       <span>Tip: {issue.tips}</span>
                     </div>
-                    <button className="text-[#004d40] font-semibold hover:text-[#236b27] transition-colors group">
+                    <button className="text-[#004d40] font-semibold hover:text-[#f2a921] transition-colors duration-300 group/report">
                       Report Issue
-                      <ArrowRight className="w-4 h-4 ml-2 inline group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-4 h-4 ml-2 inline group-hover/report:translate-x-1 transition-transform duration-300" />
                     </button>
                   </div>
                 </div>
@@ -589,12 +601,12 @@ export default function AboutPage() {
             {/* Mission Card */}
             <div className="flex flex-col h-full">
               <div className="relative group flex-1">
-                <div className="absolute -inset-4 bg-linear-to-r from-[#004d40]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative bg-linear-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border-t-6 border-[#f2a921] overflow-hidden h-full">
+                <div className="absolute -inset-4 bg-gradient-to-r from-[#004d40]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border-t-6 border-[#f2a921] overflow-hidden h-full">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#f2a921]/5 rounded-full -translate-y-16 translate-x-16"></div>
                   <div className="relative z-10 h-full flex flex-col">
                     <div className="flex items-center gap-6 mb-8">
-                      <div className="w-20 h-20 bg-linear-to-br from-[#004d40] to-[#1e5a22] rounded-2xl flex items-center justify-center shadow-lg">
+                      <div className="w-20 h-20 bg-gradient-to-br from-[#004d40] to-[#1e5a22] rounded-2xl flex items-center justify-center shadow-lg">
                         <Target className="w-10 h-10 text-white" />
                       </div>
                       <div>
@@ -657,12 +669,12 @@ export default function AboutPage() {
             {/* Vision Card */}
             <div className="flex flex-col h-full">
               <div className="relative group flex-1">
-                <div className="absolute -inset-4 bg-linear-to-r from-[#f2a921]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative bg-linear-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border-t-6 border-[#004d40] overflow-hidden h-full">
+                <div className="absolute -inset-4 bg-gradient-to-r from-[#f2a921]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border-t-6 border-[#004d40] overflow-hidden h-full">
                   <div className="absolute top-0 left-0 w-32 h-32 bg-[#004d40]/5 rounded-full -translate-y-16 -translate-x-16"></div>
                   <div className="relative z-10 h-full flex flex-col">
                     <div className="flex items-center gap-6 mb-8">
-                      <div className="w-20 h-20 bg-linear-to-br from-[#f2a921] to-[#e6b82e] rounded-2xl flex items-center justify-center shadow-lg">
+                      <div className="w-20 h-20 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-2xl flex items-center justify-center shadow-lg">
                         <Eye className="w-10 h-10 text-gray-900" />
                       </div>
                       <div>
@@ -670,7 +682,7 @@ export default function AboutPage() {
                           Our Vision
                         </h3>
                         <p className="text-gray-600">
-                          ${`Building Tomorrow's Cities`}
+                          Building Tomorrow&apos;s Cities
                         </p>
                       </div>
                     </div>
@@ -731,7 +743,7 @@ export default function AboutPage() {
       </section>
 
       {/* 8️⃣ Our Impact in Numbers with CountUp */}
-      <section className="py-20 bg-linear-to-r from-[#004d40]/5 via-[#f2a921]/5 to-[#004d40]/5">
+      <section className="py-20 bg-gradient-to-r from-[#004d40]/5 via-[#f2a921]/5 to-[#004d40]/5">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
             Our Growing <span className="text-[#004d40]">Impact</span>
@@ -783,11 +795,11 @@ export default function AboutPage() {
               <div key={index} className="text-center group">
                 <div className="relative inline-block mb-8">
                   <div
-                    className={`w-24 h-24 bg-linear-to-br ${stat.color} rounded-full flex items-center justify-center mx-auto shadow-xl relative z-10 group-hover:scale-110 transition-transform duration-500`}
+                    className={`w-24 h-24 bg-gradient-to-br ${stat.color} rounded-full flex items-center justify-center mx-auto shadow-xl relative z-10 group-hover:scale-110 transition-transform duration-500`}
                   >
                     <div className="text-white">{stat.icon}</div>
                   </div>
-                  <div className="absolute inset-0 bg-linear-to-br opacity-20 rounded-full blur-lg group-hover:blur-xl transition-all duration-500"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br opacity-20 rounded-full blur-lg group-hover:blur-xl transition-all duration-500"></div>
                 </div>
                 <div className="relative">
                   <div className="text-5xl md:text-6xl font-bold text-[#f2a921] mb-3 group-hover:scale-105 transition-transform duration-300">
