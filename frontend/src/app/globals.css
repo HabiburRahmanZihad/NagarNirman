@@ -61,6 +61,9 @@
 /* ============================
     Global Styling
 ============================ */
+body button{
+  cursor: pointer;
+}
 
 /* footer  */
 .footer{

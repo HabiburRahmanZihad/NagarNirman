@@ -114,7 +114,7 @@ export default function SlideContent({
             <Link href={secondaryLink}>
               <Button
                 variant="outline"
-                size="lg"
+                size="md"
                 iconPosition="right"
               >
                 {secondaryBtn}

@@ -4,13 +4,12 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
 import { isValidEmail } from "@/utils/helpers";
 import { getRoleDashboardPath } from "@/hooks/useRoleProtection";
 import Lottie from "lottie-react";
-import loginAnimation from "@/../public/login.json";
+import loginAnimation from "../../../../public/assets/lottie/login.json";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -97,15 +96,15 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center bg-[#F3F4F6] px-4 py-12">
-      <div className="w-full max-w-3xl">
+      <div className="w-full max-w-5xl">
         <div className="flex flex-col md:flex-row items-center justify-center gap-10">
           {/* LOTTIE ANIMATION */}
-          <div className="w-52 md:w-72 flex justify-center">
+          <div className="w-64 md:w-6xl flex justify-center">
             <Lottie animationData={loginAnimation} loop />
           </div>
 
           {/* LOGIN CARD */}
-          <Card className="w-full md:w-1/2 px-6 py-8">
+          <Card className="w-full md:w-5xl px-6 py-8">
             <div className="text-center mb-8">
               <h1 className="text-3xl font-bold text-[#002E2E] mb-2">
                 Welcome Back
@@ -121,17 +120,34 @@ export default function LoginPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <Input
-                label="Email"
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                error={errors.email}
-                placeholder="your.email@example.com"
-                required
-              />
+            <form onSubmit={handleSubmit} className="space-y-6 bg-">
+              {/* EMAIL FIELD */}
+              {/* EMAIL FIELD */}
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-[#002E2E] mb-2"
+                >
+                  Email
+                </label>
+
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="your.email@example.com"
+                  required
+                  className={`w-full px-4 py-2 border border-gray-300 rounded-lg
+      ${errors.email ? "border-red-500" : ""}
+      focus:outline-none focus:ring-0 focus:border-[#002E2E]`}
+                />
+
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                )}
+              </div>
 
               {/* PASSWORD FIELD */}
               <div>
@@ -142,7 +158,7 @@ export default function LoginPage() {
                   Password
                 </label>
 
-                <div className="relative">
+                <div className="">
                   <input
                     type={showPassword ? "text" : "password"}
                     id="password"
@@ -151,9 +167,9 @@ export default function LoginPage() {
                     onChange={handleChange}
                     placeholder="Enter your password"
                     required
-                    className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#81d586] ${
-                      errors.password ? "border-red-500" : ""
-                    }`}
+                    className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg
+                  ${errors.password ? "border-red-500" : ""}
+                  focus:outline-none focus:ring-0 focus:border-[#002E2E]`}
                   />
 
                   {/* SHOW/HIDE BUTTON */}
@@ -221,7 +237,7 @@ export default function LoginPage() {
                 Don&apos;t have an account?{" "}
                 <Link
                   href="/auth/register"
-                  className="text-[#81d586] hover:underline font-semibold"
+                  className="text-[#004540] hover:underline font-semibold"
                 >
                   Register here
                 </Link>
