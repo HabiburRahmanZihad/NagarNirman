@@ -243,7 +243,7 @@ const AboutTeamPage = () => {
       <FloatingElements />
 
       {/* Hero Section with Fixed Typewriter */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[800px] flex items-center justify-center overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-[#004d40] to-transparent opacity-10" />
@@ -320,9 +320,9 @@ const AboutTeamPage = () => {
                     </div>
                     {/* Animated Bar - Now placed correctly under typewriter text */}
                     <motion.div
-                      className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-64 h-1 bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
+                      className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-64 h-2 bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
                       initial={{ width: 0 }}
-                      animate={{ width: '256px' }}
+                      animate={{ width: '356px' }}
                       transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
                     />
                   </div>
@@ -365,7 +365,7 @@ const AboutTeamPage = () => {
                   href="#tech"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="group px-8 py-4 border-2 border-[#004d40] text-[#004d40] rounded-full font-semibold hover:bg-[#004d40] hover:text-white transition-all duration-300 shadow-lg"
+                  className="group px-8 py-4 border-2 border-[#004d40] text-[#004d40] rounded-full font-semibold hover:bg-accent hover:text-white transition-all duration-300 shadow-lg"
                 >
                   <span className="flex items-center gap-3">
                     <Code2 className="w-5 h-5" />
@@ -418,7 +418,7 @@ const AboutTeamPage = () => {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
             {TEAM_MEMBERS.map((member, index) => (
               <TiltCard key={index} className="relative group">
                 {/* Glow Effect */}
@@ -454,7 +454,7 @@ const AboutTeamPage = () => {
 
                   {/* Stats */}
                   <div className="relative z-10 mb-6">
-                    <div className="flex justify-center gap-6">
+                    <div className="flex justify-start gap-6">
                       <div className="text-center">
                         <div className="text-2xl font-bold text-[#004d40]">{member.stats.commits}+</div>
                         <div className="text-xs text-gray-500">Commits</div>
