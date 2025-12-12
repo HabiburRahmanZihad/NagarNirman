@@ -1,11 +1,51 @@
+// added here a hero section only
+
 "use client";
 
-import React from 'react';
+import Image from 'next/image';
+import React, { useMemo } from 'react';
 import { FaShieldAlt } from 'react-icons/fa';
 
 export default function PrivacyPage() {
+  const currentDateShow = useMemo(() => {
+      return new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    }, []);
+
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50 pb-12">
+      <section className="relative overflow-hidden mb-16">
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80"
+            alt="Legal background"
+            fill
+            priority
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-linear-to-r from-[#004d40]/90 via-[#004d40]/75 to-transparent"></div>
+        </div>
+
+        <div className="container relative mx-auto px-4 py-20 md:py-28">
+          <div className="max-w-2xl">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Privacy Policy & Data Protection
+            </h1>
+            <p className="text-xl text-gray-100 mb-6">
+             How we collect, use, secure, and protect your personal information with full transparency and accountability.
+            </p>
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 inline-block">
+              <p className="text-gray-100">
+                <span className="font-semibold">Last Updated:</span>{' '}
+                {currentDateShow || 'Loading...'}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
           <div className="text-center mb-12">
@@ -18,7 +58,7 @@ export default function PrivacyPage() {
             <section>
               <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
               <p className="text-gray-700 leading-relaxed">
-                NagarNirman ("we," "our," or "us") is committed to protecting your privacy.
+                {`NagarNirman ("we," "our," or "us") is committed to protecting your privacy.`}
                 This Privacy Policy explains how we collect, use, disclose, and safeguard your
                 information when you use our platform. Please read this privacy policy carefully.
               </p>
@@ -126,7 +166,7 @@ export default function PrivacyPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">8. Children's Privacy</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{`8. Children's Privacy`}</h2>
               <p className="text-gray-700 leading-relaxed">
                 Our platform is not intended for users under the age of 18. We do not knowingly
                 collect personal information from children. If you believe we have collected
@@ -139,7 +179,7 @@ export default function PrivacyPage() {
               <p className="text-gray-700 leading-relaxed">
                 We may update this privacy policy from time to time. We will notify you of any
                 significant changes by posting the new policy on this page and updating the
-                "Last updated" date. We encourage you to review this policy periodically.
+                {"Last updated"} date. We encourage you to review this policy periodically.
               </p>
             </section>
 
