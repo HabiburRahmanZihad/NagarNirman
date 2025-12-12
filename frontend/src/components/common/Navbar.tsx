@@ -20,6 +20,7 @@ import {
   FaBars,
   FaTimes
 } from "react-icons/fa";
+import { IoGitNetworkSharp } from "react-icons/io5";
 
 const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -93,13 +94,14 @@ const Navbar: React.FC = () => {
   const navLinks = [
     { href: "/", label: "Home", icon: <FaHome className="w-4 h-4" /> },
     { href: "/map-search", label: "Map Search", icon: <FaMapMarkedAlt className="w-4 h-4" /> },
+    { href: "/how-it-works", label: "How It Works", icon: <IoGitNetworkSharp className="w-4 h-4" /> },
     { href: "/reports", label: "All Reports", icon: <FaFileAlt className="w-4 h-4" /> },
     { href: "/earthquakes", label: "Earthquakes", icon: <FaFileAlt className="w-4 h-4" /> },
-    ...(isAuthenticated ? [{
-      href: getDashboardPath(),
-      label: "Dashboard",
-      icon: <FaTachometerAlt className="w-4 h-4" />
-    }] : []),
+    // ...(isAuthenticated ? [{
+    //   href: getDashboardPath(),
+    //   label: "Dashboard",
+    //   icon: <FaTachometerAlt className="w-4 h-4" />
+    // }] : []),
     {
       href: "/about",
       label: "About",
