@@ -1,3 +1,5 @@
+// added here a hero section only
+
 'use client';
 import {
   ChevronDown,
@@ -6,7 +8,8 @@ import {
   MessageCircle,
   Star,
 } from 'lucide-react';
-import { useState } from 'react';
+import Image from 'next/image';
+import { useMemo, useState } from 'react';
 
 const faqs = [
   {
@@ -45,10 +48,47 @@ export default function Faq() {
     setOpenFaq(openFaq === index ? null : index);
   };
 
+  const currentDateShow = useMemo(() => {
+    return new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }, []);
+
   return (
     <div>
-      <section className="py-20 bg-linear-to-br from-gray-50 to-[#f8f8f8]">
-        <div className="container mx-auto px-4">
+      <section className="pb-20 bg-linear-to-br from-gray-50 to-[#f8f8f8]">
+        <section className="relative overflow-hidden mb-10">
+          <div className="absolute inset-0">
+            <Image
+              src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80"
+              alt="Legal background"
+              fill
+              priority
+              className="object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-linear-to-r from-[#004d40]/90 via-[#004d40]/75 to-transparent"></div>
+          </div>
+
+          <div className="container relative mx-auto px-4 py-20 md:py-28">
+            <div className="max-w-2xl">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                Frequently Asked Questions
+              </h1>
+              <p className="text-xl text-gray-100 mb-6">
+                Clear answers to the most common questions about civic reporting, issue tracking, privacy, and platform usage — all in one place.
+              </p>
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 inline-block">
+                <p className="text-gray-100">
+                  <span className="font-semibold">Last Updated:</span>{' '}
+                  {currentDateShow || 'Loading...'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div className="container mx-auto px-4 mt-16">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-16">
             Frequently Asked <span className="text-[#004d40]">Questions</span>
           </h2>

@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { CiLocationOn } from "react-icons/ci";
 import { SiMinutemailer } from "react-icons/si";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaPhoneAlt, FaLink, FaBook, FaComments } from "react-icons/fa";
@@ -14,6 +15,12 @@ import { useAuth } from "@/context/AuthContext";
 
 const Footer: React.FC = () => {
   const { user } = useAuth();
+  const pathname = usePathname();
+
+  // Check if a route is active
+  const isActiveRoute = (href: string) => {
+    return pathname === href;
+  };
 
   // Role-based Quick Links
   const getQuickLinks = () => {
@@ -105,7 +112,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative bg-gradient-to-br from-gray-900 to-[#004d40] text-white py-6 md:pt-12">
+    <footer className="relative bg-linear-to-br from-gray-900 to-[#004d40] text-white py-6 md:pt-12">
       <div className="container mx-auto  py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:mb-12 mb-6 md:px-6">
           {/* About Section */}
@@ -177,11 +184,19 @@ const Footer: React.FC = () => {
                 <li key={index} className="flex items-center group">
                   <Link
                     href={link.href}
-                    className="text-gray-300 hover:text-accent transition-all duration-300 md:text-base font-medium hover:translate-x-1"
+                    className={`md:text-base font-medium hover:translate-x-1 transition-all duration-300 ${
+                      isActiveRoute(link.href)
+                        ? 'text-accent font-semibold'
+                        : 'text-gray-300 hover:text-accent'
+                    }`}
                   >
                     {link.label}
                   </Link>
-                  <span className="ml-2 opacity-0 text-accent group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1">
+                  <span className={`ml-2 transition-all duration-300 group-hover:translate-x-1 ${
+                    isActiveRoute(link.href)
+                      ? 'opacity-100 text-accent'
+                      : 'opacity-0 text-accent group-hover:opacity-100'
+                  }`}>
                     <LucideArrowUpRight size={18} />
                   </span>
                 </li>
@@ -200,11 +215,19 @@ const Footer: React.FC = () => {
                 <li key={index} className="flex items-center group">
                   <Link
                     href={link.href}
-                    className="text-gray-300 hover:text-accent transition-all duration-300 md:text-base font-medium hover:translate-x-1"
+                    className={`md:text-base font-medium hover:translate-x-1 transition-all duration-300 ${
+                      isActiveRoute(link.href)
+                        ? 'text-accent font-semibold'
+                        : 'text-gray-300 hover:text-accent'
+                    }`}
                   >
                     {link.label}
                   </Link>
-                  <span className="ml-2 opacity-0 text-primary group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1">
+                  <span className={`ml-2 transition-all duration-300 group-hover:translate-x-1 ${
+                    isActiveRoute(link.href)
+                      ? 'opacity-100 text-primary'
+                      : 'opacity-0 text-primary group-hover:opacity-100'
+                  }`}>
                     <LucideArrowUpRight size={18} />
                   </span>
                 </li>
