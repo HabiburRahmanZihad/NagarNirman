@@ -1,21 +1,39 @@
 "use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { motion, useMotionValue, useSpring, useTransform, useMotionTemplate } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import {
-  Github, Linkedin, Mail, MapPin,
-  Terminal, Cpu, Globe, GitBranch,
-  ShieldCheck, Database, Zap, Users,
-  Code2, Server, TrendingUp, CheckCircle,
-  Award, Target, Clock, Star, Eye,
-  Sparkles, Rocket, Lightbulb, Heart,
-  Building2, Shield, Leaf, Globe2,
-  MessageSquare, PieChart, BarChart3,
-  Smartphone, Cloud, Lock, Wifi,
-  Layers, Key, Upload, Bell,
-  Code, Palette, CpuIcon, BarChart
+  BarChart3,
+  Building2,
+  CheckCircle,
+  Cloud,
+  Code,
+  Code2,
+  CpuIcon,
+  Database,
+  GitBranch,
+  Github,
+  Globe,
+  Globe2,
+  Heart,
+  Key,
+  Layers,
+  Lightbulb,
+  Linkedin,
+  Lock,
+  Mail, MapPin,
+  MessageSquare,
+  Palette,
+  PieChart,
+  Rocket,
+  Server,
+  Shield,
+  Sparkles,
+  Target,
+  TrendingUp,
+  Upload,
+  Users
 } from 'lucide-react';
+import React from 'react';
 import CountUp from 'react-countup';
 import { Typewriter } from 'react-simple-typewriter';
 
