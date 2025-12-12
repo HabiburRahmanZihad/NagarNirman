@@ -284,7 +284,7 @@ export default function HowItWorksPage() {
             </p>
           </div>
 
-          <div className="max-w-6xl mx-auto">
+          <div>
             {/* Unique Workflow Process Cards with Connection Lines */}
             <div className="relative">
               {/* Curved Connection Lines */}
@@ -307,7 +307,7 @@ export default function HowItWorksPage() {
                 {authoritySteps.map((step, index) => (
                   <div key={step.id} className="relative group" style={{ zIndex: 2 }}>
                     {/* Step Card */}
-                    <div className="h-full bg-gradient-to-b from-white to-gray-50 rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 border border-gray-100">
+                    <div className="h-full bg-gradient-to-b from-white to-gray-50 rounded-lg p-8 shadow-xl hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 border border-gray-100">
                       {/* Step Number Badge */}
                       <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                         <div className="w-12 h-12 bg-gradient-to-br from-[#004d40] to-[#00695c] rounded-full flex items-center justify-center shadow-lg">
