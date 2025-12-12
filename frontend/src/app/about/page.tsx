@@ -31,8 +31,20 @@ import {
 import Link from 'next/link';
 import CountUp from 'react-countup';
 import { FaRoad } from 'react-icons/fa';
+import { useInView } from 'react-intersection-observer';
 
 export default function AboutPage() {
+  // Intersection observers for each counter section
+  const { ref: impactRef, inView: impactInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  const { ref: missionRef, inView: missionInView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
   return (
     <div className="min-h-screen bg-white">
       {/* 1️⃣ Intro Section with Background Image */}
@@ -595,7 +607,7 @@ export default function AboutPage() {
       </section>
 
       {/* 7️⃣ Mission & Vision - Equal Height Cards */}
-      <section className="py-20">
+      <section className="py-20" ref={missionRef}>
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Mission Card */}
@@ -638,7 +650,12 @@ export default function AboutPage() {
                     <div className="flex items-center gap-4 pt-6 border-t border-gray-100 mt-6">
                       <div className="flex-1 text-center">
                         <div className="text-2xl font-bold text-[#004d40]">
-                          100,000+
+                          <CountUp 
+                            end={missionInView ? 100000 : 0} 
+                            duration={2.5} 
+                            separator=","
+                          />
+                          +
                         </div>
                         <div className="text-sm text-gray-600">
                           Issues Resolved
@@ -646,7 +663,11 @@ export default function AboutPage() {
                       </div>
                       <div className="flex-1 text-center">
                         <div className="text-2xl font-bold text-[#004d40]">
-                          500+
+                          <CountUp 
+                            end={missionInView ? 500 : 0} 
+                            duration={2} 
+                          />
+                          +
                         </div>
                         <div className="text-sm text-gray-600">
                           Municipal Partners
@@ -743,7 +764,7 @@ export default function AboutPage() {
       </section>
 
       {/* 8️⃣ Our Impact in Numbers with CountUp */}
-      <section className="py-20 bg-gradient-to-r from-[#004d40]/5 via-[#f2a921]/5 to-[#004d40]/5">
+      <section ref={impactRef} className="py-20 bg-gradient-to-r from-[#004d40]/5 via-[#f2a921]/5 to-[#004d40]/5">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
             Our Growing <span className="text-[#004d40]">Impact</span>
@@ -804,7 +825,7 @@ export default function AboutPage() {
                 <div className="relative">
                   <div className="text-5xl md:text-6xl font-bold text-[#f2a921] mb-3 group-hover:scale-105 transition-transform duration-300">
                     <CountUp
-                      end={stat.number}
+                      end={impactInView ? stat.number : 0}
                       duration={stat.duration}
                       separator=","
                     />
