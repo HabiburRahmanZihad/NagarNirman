@@ -615,10 +615,6 @@ export default function AboutPage() {
                       <Lightbulb className="w-4 h-4 text-[#f2a921]" />
                       <span>Tip: {issue.tips}</span>
                     </div>
-                    <button className="text-[#004d40] font-semibold hover:text-[#f2a921] transition-colors duration-300 group/report">
-                      Report Issue
-                      <ArrowRight className="w-4 h-4 ml-2 inline group-hover/report:translate-x-1 transition-transform duration-300" />
-                    </button>
                   </div>
                 </div>
               </div>
