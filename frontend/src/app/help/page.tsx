@@ -5,7 +5,7 @@ import { PUBLIC_ROUTES } from '@/constants/routes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
-import { FaEnvelope, FaPhone, FaQuestionCircle } from 'react-icons/fa';
+import { FaEnvelope, FaPhone } from 'react-icons/fa';
 
 export default function HelpPage() {
   const currentDateShow = useMemo(() => {
@@ -51,14 +51,7 @@ export default function HelpPage() {
       {/* -------- the hero section placed here => end -------- */}
       <div className="container mx-auto px-4 max-w-4xl mb-10">
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-          <div className="text-center mb-12">
-            <FaQuestionCircle className="text-primary text-6xl mx-auto mb-4" />
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Help Center
-            </h1>
-            <p className="text-lg text-gray-600">
-              {`We're here to help you make the most of NagarNirman`}
-            </p>
+          <div className="text-center mb-5">
           </div>
 
           <div className="space-y-8">
