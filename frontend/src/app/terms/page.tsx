@@ -147,7 +147,7 @@ export default function TermsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-linear-to-b from-base-300 to-base-100">
       {/* Modern Header */}
       <section className="relative overflow-hidden mb-10">
         <div className="absolute inset-0">
@@ -158,7 +158,7 @@ export default function TermsPage() {
             priority
             className="object-cover object-center"
           />
-          <div className="absolute inset-0 bg-linear-to-r from-[#004d40]/90 via-[#004d40]/75 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-r from-primary/90 via-primary/75 to-transparent"></div>
         </div>
 
         <div className="container relative mx-auto px-4 py-20 md:py-28">
@@ -188,15 +188,15 @@ export default function TermsPage() {
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                className="bg-base-100 rounded-2xl p-6 shadow-sm border border-base-200 hover:shadow-md transition-shadow"
               >
-                <div className="text-3xl font-bold text-[#004d40] mb-2">
+                <div className="text-3xl font-bold text-primary mb-2">
                   {stat.number}
                 </div>
-                <div className="font-semibold text-gray-800 mb-1">
+                <div className="font-semibold text-info mb-1">
                   {stat.label}
                 </div>
-                <div className="text-sm text-gray-500">{stat.desc}</div>
+                <div className="text-sm text-neutral">{stat.desc}</div>
               </div>
             ))}
           </div>
@@ -209,9 +209,9 @@ export default function TermsPage() {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Left Navigation - Sticky */}
             <div className="lg:w-1/4">
-              <div className="sticky top-24 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                  <FileText size={20} className="text-[#004d40]" />
+              <div className="sticky top-24 bg-base-100 rounded-2xl shadow-sm border border-base-200 p-6">
+                <h3 className="text-lg font-bold text-info mb-6 flex items-center gap-2">
+                  <FileText size={20} className="text-primary" />
                   Quick Navigation
                 </h3>
                 <div className="space-y-2">
@@ -221,29 +221,29 @@ export default function TermsPage() {
                       onClick={() => scrollToSection(section.id)}
                       className={`w-full flex items-center justify-between p-3 rounded-xl text-left transition-all ${
                         expandedSections.includes(section.id)
-                          ? 'bg-linear-to-r from-[#004d40]/10 to-[#00796b]/10 border-l-4 border-[#004d40]'
-                          : 'hover:bg-gray-50 border-l-4 border-transparent'
+                          ? 'bg-linear-to-r from-primary/10 to-secondary/10 border-l-4 border-primary'
+                          : 'hover:bg-base-200 border-l-4 border-transparent'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <div
                           className={`p-2 rounded-lg ${
                             expandedSections.includes(section.id)
-                              ? 'bg-[#004d40] text-white'
-                              : 'bg-gray-100 text-gray-600'
+                              ? 'bg-primary text-white'
+                              : 'bg-base-200 text-neutral'
                           }`}
                         >
                           {section.icon}
                         </div>
-                        <span className="font-medium text-gray-700 text-sm">
+                        <span className="font-medium text-info text-sm">
                           {section.title}
                         </span>
                       </div>
                       <div
                         className={`p-1 rounded ${
                           expandedSections.includes(section.id)
-                            ? 'bg-[#004d40] text-white'
-                            : 'bg-gray-100 text-gray-600'
+                            ? 'bg-primary text-white'
+                            : 'bg-base-200 text-neutral'
                         }`}
                       >
                         {expandedSections.includes(section.id) ? (
@@ -256,14 +256,14 @@ export default function TermsPage() {
                   ))}
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <div className="bg-linear-to-r from-[#004d40]/5 to-[#00796b]/5 rounded-xl p-4">
-                    <p className="text-sm text-gray-600 mb-2">
+                <div className="mt-8 pt-6 border-t border-base-200">
+                  <div className="bg-linear-to-r from-primary/5 to-secondary/5 rounded-xl p-4">
+                    <p className="text-sm text-neutral mb-2">
                       Need help understanding?
                     </p>
                     <a
                       href="#contact"
-                      className="text-[#004d40] font-semibold hover:underline flex items-center gap-2"
+                      className="text-primary font-semibold hover:underline flex items-center gap-2"
                     >
                       <Mail size={16} />
                       Contact our legal team
@@ -275,9 +275,9 @@ export default function TermsPage() {
 
             {/* Right Content */}
             <div className="lg:w-3/4">
-              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="bg-base-100 rounded-3xl shadow-sm border border-base-200 overflow-hidden">
                 {/* Terms Header */}
-                <div className="bg-linear-to-r from-[#004d40] to-[#00796b] p-8">
+                <div className="bg-linear-to-r from-primary to-info p-8">
                   <div className="flex items-center justify-between">
                     <div>
                       <h2 className="text-2xl font-bold text-white mb-2">
@@ -297,10 +297,10 @@ export default function TermsPage() {
                 <div className="p-8">
                   <div className="prose prose-lg max-w-none space-y-8">
                     <div className="mb-10">
-                      <h3 className="text-xl font-bold text-gray-900 mb-4">
+                      <h3 className="text-xl font-bold text-info mb-4">
                         Introduction
                       </h3>
-                      <p className="text-gray-600">
+                      <p className="text-neutral">
                         Welcome to NagarNirman. These Terms of Service govern
                         your use of our platform and services. By accessing or
                         using NagarNirman, you agree to be bound by these terms.
@@ -314,25 +314,25 @@ export default function TermsPage() {
                         ref={(el) => {
                           sectionRefs.current[section.id] = el;
                         }}
-                        className={`border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 ${
+                        className={`border border-base-200 rounded-2xl overflow-hidden transition-all duration-300 ${
                           expandedSections.includes(section.id)
-                            ? 'ring-2 ring-[#004d40]/20'
+                            ? 'ring-2 ring-primary/20'
                             : ''
                         }`}
                       >
                         <button
                           onClick={() => toggleSection(section.id)}
-                          className="w-full flex items-center justify-between p-6 bg-gray-50 hover:bg-gray-100 transition-colors"
+                          className="w-full flex items-center justify-between p-6 bg-base-200 hover:bg-base-300 transition-colors"
                         >
                           <div className="flex items-center gap-4">
-                            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-linear-to-r from-[#004d40] to-[#00796b] text-white font-bold">
+                            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-linear-to-r from-primary to-info text-white font-bold">
                               {section.id}
                             </div>
                             <div className="text-left">
-                              <h3 className="text-lg font-bold text-gray-900">
+                              <h3 className="text-lg font-bold text-info">
                                 {section.title}
                               </h3>
-                              <p className="text-sm text-gray-500 mt-1">
+                              <p className="text-sm text-neutral mt-1">
                                 Click to{' '}
                                 {expandedSections.includes(section.id)
                                   ? 'collapse'
@@ -341,7 +341,7 @@ export default function TermsPage() {
                               </p>
                             </div>
                           </div>
-                          <div className="text-gray-400">
+                          <div className="text-neutral">
                             {expandedSections.includes(section.id) ? (
                               <ChevronUp size={24} />
                             ) : (
@@ -351,8 +351,8 @@ export default function TermsPage() {
                         </button>
 
                         {expandedSections.includes(section.id) && (
-                          <div className="p-6 bg-white">
-                            <div className="text-gray-700 leading-relaxed">
+                          <div className="p-6 bg-base-100">
+                            <div className="text-neutral leading-relaxed">
                               {section.content}
                             </div>
                             {section.id === 3 && (
@@ -370,25 +370,25 @@ export default function TermsPage() {
                     ))}
 
                     {/* Agreement Section */}
-                    <div className="mt-12 p-8 bg-linear-to-r from-[#004d40]/5 to-[#00796b]/5 rounded-2xl border border-[#004d40]/20">
+                    <div className="mt-12 p-8 bg-linear-to-r from-primary/5 to-info/5 rounded-2xl border border-primary/20">
                       <div className="flex items-start gap-4">
-                        <div className="p-3 bg-white rounded-xl shadow-sm">
-                          <CheckCircle size={24} className="text-[#004d40]" />
+                        <div className="p-3 bg-base-100 rounded-xl shadow-sm">
+                          <CheckCircle size={24} className="text-primary" />
                         </div>
                         <div>
-                          <h3 className="text-xl font-bold text-gray-900 mb-3">
+                          <h3 className="text-xl font-bold text-info mb-3">
                             Your Agreement
                           </h3>
-                          <p className="text-gray-600 mb-4">
+                          <p className="text-neutral mb-4">
                             By continuing to use NagarNirman, you acknowledge
                             that you have read, understood, and agree to be
                             bound by these Terms of Service.
                           </p>
                           <div className="flex items-center gap-4">
-                            <button className="px-8 py-3 bg-linear-to-r from-[#004d40] to-[#00796b] text-white font-semibold rounded-xl hover:shadow-lg transition-all">
+                            <button className="px-8 py-3 bg-linear-to-r from-primary to-info text-white font-semibold rounded-xl hover:shadow-lg transition-all">
                               I Accept Terms
                             </button>
-                            <button className="px-8 py-3 border border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-all">
+                            <button className="px-8 py-3 border border-base-200 text-neutral font-semibold rounded-xl hover:bg-base-200 transition-all">
                               Save for Later
                             </button>
                           </div>
@@ -406,63 +406,63 @@ export default function TermsPage() {
       {/* Contact Section */}
       <section
         id="contact"
-        className="py-16 bg-linear-to-b from-white to-gray-50"
+        className="py-16 bg-linear-to-b from-base-100 to-base-300"
       >
         <div className="container mx-auto px-4">
           <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-info mb-4">
               Need Legal Assistance?
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="text-neutral text-lg">
               Our legal team is here to help you understand our terms and
               address any concerns.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="inline-flex p-3 rounded-xl bg-[#e0f2f1] text-[#004d40] mb-4">
+            <div className="bg-base-100 p-6 rounded-2xl shadow-sm border border-base-200 hover:shadow-md transition-shadow">
+              <div className="inline-flex p-3 rounded-xl bg-primary/10 text-primary mb-4">
                 <Mail size={24} />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">General Support</h4>
-              <p className="text-gray-600 text-sm mb-4">
+              <h4 className="font-bold text-info mb-2">General Support</h4>
+              <p className="text-neutral text-sm mb-4">
                 For general questions about terms
               </p>
               <a
                 href="mailto:support@nagarnirman.com"
-                className="text-[#004d40] font-semibold hover:underline"
+                className="text-primary font-semibold hover:underline"
               >
                 support@nagarnirman.com
               </a>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="inline-flex p-3 rounded-xl bg-[#e0f2f1] text-[#004d40] mb-4">
+            <div className="bg-base-100 p-6 rounded-2xl shadow-sm border border-base-200 hover:shadow-md transition-shadow">
+              <div className="inline-flex p-3 rounded-xl bg-primary/10 text-primary mb-4">
                 <Scale size={24} />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">Legal Department</h4>
-              <p className="text-gray-600 text-sm mb-4">
+              <h4 className="font-bold text-info mb-2">Legal Department</h4>
+              <p className="text-neutral text-sm mb-4">
                 For formal legal inquiries
               </p>
               <a
                 href="mailto:legal@nagarnirman.com"
-                className="text-[#004d40] font-semibold hover:underline"
+                className="text-primary font-semibold hover:underline"
               >
                 legal@nagarnirman.com
               </a>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="inline-flex p-3 rounded-xl bg-[#e0f2f1] text-[#004d40] mb-4">
+            <div className="bg-base-100 p-6 rounded-2xl shadow-sm border border-base-200 hover:shadow-md transition-shadow">
+              <div className="inline-flex p-3 rounded-xl bg-primary/10 text-primary mb-4">
                 <Phone size={24} />
               </div>
-              <h4 className="font-bold text-gray-900 mb-2">Phone Support</h4>
-              <p className="text-gray-600 text-sm mb-4">
+              <h4 className="font-bold text-info mb-2">Phone Support</h4>
+              <p className="text-neutral text-sm mb-4">
                 Available Monday-Friday, 9AM-6PM
               </p>
               <a
                 href="tel:+8801950719346"
-                className="text-[#004d40] font-semibold hover:underline"
+                className="text-primary font-semibold hover:underline"
               >
                 +880 1950 719346
               </a>
@@ -472,7 +472,7 @@ export default function TermsPage() {
       </section>
 
       {/* Footer CTA */}
-      <footer className="bg-linear-to-r from-[#004d40] to-[#00796b] py-16">
+      <footer className="bg-linear-to-r from-primary to-info py-16">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-2xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
@@ -483,10 +483,10 @@ export default function TermsPage() {
               cities better together.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-white text-[#004d40] font-bold rounded-xl hover:bg-gray-100 shadow-lg hover:shadow-xl transition-all">
+              <button className="px-8 py-4 bg-base-100 text-primary font-bold rounded-xl hover:bg-base-200 shadow-lg hover:shadow-xl transition-all">
                 Accept & Continue
               </button>
-              <button className="px-8 py-4 bg-transparent border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition-all">
+              <button className="px-8 py-4 bg-transparent border-2 border-base-100 text-base-100 font-bold rounded-xl hover:bg-base-100/10 transition-all">
                 Download PDF Copy
               </button>
             </div>
