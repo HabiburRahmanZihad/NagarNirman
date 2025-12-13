@@ -68,14 +68,14 @@ export default function PrivacyPage() {
       title: 'Introduction',
       content: (
         <div className="space-y-4">
-          <p className="text-gray-600 leading-relaxed">
+          <p className="text-neutral leading-relaxed">
             {`Welcome to NagarNirman ("we," "our," or "us"). We are committed to`}
             protecting your privacy and handling your data with transparency and
             care. This Privacy Policy explains how we collect, use, disclose,
             and safeguard your information when you use our platform.
           </p>
-          <div className="bg-[#004540]/10 border-l-4 border-[#004540] p-4 rounded-r-lg">
-            <p className="text-[#004540] text-sm">
+          <div className="bg-primary/10 border-l-4 border-primary p-4 rounded-r-lg">
+            <p className="text-primary text-sm">
               <span className="font-semibold">Note:</span> By using our
               platform, you agree to the terms outlined in this policy. We
               encourage you to read it carefully.
@@ -90,12 +90,12 @@ export default function PrivacyPage() {
       content: (
         <div className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-linear-to-br from-[#004540]/5 to-white p-6 rounded-xl border border-[#004540]/20">
+            <div className="bg-linear-to-br from-primary/5 to-base-100 p-6 rounded-xl border border-primary/20">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-[#004540]/10 rounded-lg flex items-center justify-center">
-                  <UserCheck className="w-4 h-4 text-[#004540]" />
+                <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <UserCheck className="w-4 h-4 text-primary" />
                 </div>
-                <h4 className="font-semibold text-gray-900">
+                <h4 className="font-semibold text-info">
                   Personal Information
                 </h4>
               </div>
@@ -110,21 +110,21 @@ export default function PrivacyPage() {
                 ].map((item, idx) => (
                   <li
                     key={idx}
-                    className="flex items-center gap-2 text-gray-700"
+                    className="flex items-center gap-2 text-neutral"
                   >
-                    <CheckCircle className="w-4 h-4 text-[#004540] shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
                     <span className="text-sm">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-linear-to-br from-[#004540]/5 to-white p-6 rounded-xl border border-[#004540]/20">
+            <div className="bg-linear-to-br from-primary/5 to-base-100 p-6 rounded-xl border border-primary/20">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-[#004540]/10 rounded-lg flex items-center justify-center">
-                  <Database className="w-4 h-4 text-[#004540]" />
+                <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <Database className="w-4 h-4 text-primary" />
                 </div>
-                <h4 className="font-semibold text-gray-900">
+                <h4 className="font-semibold text-info">
                   Automated Collection
                 </h4>
               </div>
@@ -139,9 +139,9 @@ export default function PrivacyPage() {
                 ].map((item, idx) => (
                   <li
                     key={idx}
-                    className="flex items-center gap-2 text-gray-700"
+                    className="flex items-center gap-2 text-neutral"
                   >
-                    <ChevronRight className="w-4 h-4 text-[#004540] shrink-0" />
+                    <ChevronRight className="w-4 h-4 text-primary shrink-0" />
                     <span className="text-sm">{item}</span>
                   </li>
                 ))}
@@ -156,7 +156,7 @@ export default function PrivacyPage() {
       title: 'How We Use Your Information',
       content: (
         <div className="space-y-4">
-          <p className="text-gray-600 mb-4">
+          <p className="text-neutral mb-4">
             We use your information responsibly to:
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -188,15 +188,15 @@ export default function PrivacyPage() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all hover:border-[#004540]/30"
+                className="bg-base-100 border border-base-200 rounded-xl p-4 hover:shadow-md transition-all hover:border-primary/30"
               >
-                <div className="w-10 h-10 bg-linear-to-br from-[#004540] to-[#003834] text-white rounded-lg flex items-center justify-center mb-3">
+                <div className="w-10 h-10 bg-linear-to-br from-primary to-info text-white rounded-lg flex items-center justify-center mb-3">
                   <span className="font-bold">{idx + 1}</span>
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2">
+                <h4 className="font-semibold text-info mb-2">
                   {item.title}
                 </h4>
-                <p className="text-gray-600 text-sm">{item.desc}</p>
+                <p className="text-neutral text-sm">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -209,12 +209,12 @@ export default function PrivacyPage() {
       content: (
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 bg-linear-to-br from-[#004540]/5 to-white border border-[#004540]/20 rounded-xl p-5">
+            <div className="flex-1 bg-linear-to-br from-primary/5 to-base-100 border border-primary/20 rounded-xl p-5">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-[#004540]/10 rounded-lg flex items-center justify-center">
-                  <Users className="w-5 h-5 text-[#004540]" />
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <Users className="w-5 h-5 text-primary" />
                 </div>
-                <h4 className="font-semibold text-gray-900">
+                <h4 className="font-semibold text-info">
                   With Other Users
                 </h4>
               </div>
@@ -226,25 +226,25 @@ export default function PrivacyPage() {
                 ].map((item, idx) => (
                   <li
                     key={idx}
-                    className="flex items-start gap-2 text-gray-700"
+                    className="flex items-start gap-2 text-neutral"
                   >
-                    <ChevronRight className="w-4 h-4 text-[#004540] mt-0.5 shrink-0" />
+                    <ChevronRight className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                     <span className="text-sm">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="flex-1 bg-linear-to-br from-[#004540]/5 to-white border border-[#004540]/20 rounded-xl p-5">
+            <div className="flex-1 bg-linear-to-br from-primary/5 to-base-100 border border-primary/20 rounded-xl p-5">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-[#004540]/10 rounded-lg flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-[#004540]" />
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-primary" />
                 </div>
-                <h4 className="font-semibold text-gray-900">
+                <h4 className="font-semibold text-info">
                   With Authorities
                 </h4>
               </div>
-              <p className="text-gray-700 text-sm">
+              <p className="text-neutral text-sm">
                 We share necessary information with local authorities and
                 verified problem solvers to facilitate effective issue
                 resolution and maintain public safety.
@@ -259,7 +259,7 @@ export default function PrivacyPage() {
       title: 'Data Security',
       content: (
         <div className="space-y-4">
-          <div className="bg-linear-to-r from-[#004540] to-[#003834] text-white rounded-xl p-6">
+          <div className="bg-linear-to-r from-primary to-info text-white rounded-xl p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                 <Lock className="w-6 h-6" />
@@ -287,7 +287,7 @@ export default function PrivacyPage() {
               ))}
             </div>
           </div>
-          <p className="text-gray-600 text-sm text-center">
+          <p className="text-neutral text-sm text-center">
             While we implement industry-standard security measures, no method of
             transmission over the internet is 100% secure.
           </p>
@@ -324,16 +324,16 @@ export default function PrivacyPage() {
           ].map((item, idx) => (
             <div
               key={idx}
-              className="group relative bg-white border border-gray-200 rounded-xl p-5 hover:border-[#004540]/40 hover:shadow-lg transition-all"
+              className="group relative bg-base-100 border border-base-200 rounded-xl p-5 hover:border-primary/40 hover:shadow-lg transition-all"
             >
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-[#004540] text-white rounded-full flex items-center justify-center text-xs font-bold">
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold">
                 {idx + 1}
               </div>
-              <div className="w-10 h-10 bg-linear-to-br from-[#004540]/10 to-[#004540]/5 rounded-lg flex items-center justify-center mb-3 group-hover:from-[#004540]/20 transition-colors">
-                <CheckCircle className="w-5 h-5 text-[#004540]" />
+              <div className="w-10 h-10 bg-linear-to-br from-primary/10 to-primary/5 rounded-lg flex items-center justify-center mb-3 group-hover:from-primary/20 transition-colors">
+                <CheckCircle className="w-5 h-5 text-primary" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2">{item.title}</h4>
-              <p className="text-gray-600 text-sm">{item.desc}</p>
+              <h4 className="font-semibold text-info mb-2">{item.title}</h4>
+              <p className="text-neutral text-sm">{item.desc}</p>
             </div>
           ))}
         </div>
@@ -344,17 +344,17 @@ export default function PrivacyPage() {
       title: 'Data Retention',
       content: (
         <div className="space-y-4">
-          <div className="bg-linear-to-br from-[#004540]/5 to-white border border-[#004540]/20 rounded-xl p-6">
-            <p className="text-gray-700 leading-relaxed">
+          <div className="bg-linear-to-br from-primary/5 to-base-100 border border-primary/20 rounded-xl p-6">
+            <p className="text-neutral leading-relaxed">
               We retain your personal information only for as long as necessary
               to fulfill the purposes outlined in this privacy policy. Completed
               reports may be retained for statistical analysis and historical
               archiving while ensuring your privacy is maintained.
             </p>
           </div>
-          <div className="flex items-start gap-3 bg-[#004540]/10 border border-[#004540]/30 rounded-lg p-4">
-            <AlertCircle className="w-5 h-5 text-[#004540] shrink-0 mt-0.5" />
-            <p className="text-[#004540] text-sm">
+          <div className="flex items-start gap-3 bg-primary/10 border border-primary/30 rounded-lg p-4">
+            <AlertCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+            <p className="text-primary text-sm">
               <span className="font-semibold">Note:</span> Some data may be
               retained longer if required by law or for legitimate business
               purposes.
@@ -367,21 +367,21 @@ export default function PrivacyPage() {
       icon: <Baby className="w-5 h-5" />,
       title: "Children's Privacy",
       content: (
-        <div className="bg-linear-to-br from-[#004540]/5 to-white border border-[#004540]/20 rounded-xl p-6">
+        <div className="bg-linear-to-br from-primary/5 to-base-100 border border-primary/20 rounded-xl p-6">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-[#004540]/10 rounded-lg flex items-center justify-center">
-              <Baby className="w-6 h-6 text-[#004540]" />
+            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+              <Baby className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h4 className="font-bold text-gray-900">
+              <h4 className="font-bold text-info">
                 Age Restriction Notice
               </h4>
-              <p className="text-[#004540] text-sm">
+              <p className="text-primary text-sm">
                 Our platform is designed for users 18 years and older
               </p>
             </div>
           </div>
-          <p className="text-gray-700">
+          <p className="text-neutral">
             We do not knowingly collect personal information from individuals
             under the age of 18. If you believe we have inadvertently collected
             information from a minor, please contact us immediately, and we will
@@ -395,27 +395,27 @@ export default function PrivacyPage() {
       title: 'Policy Updates',
       content: (
         <div className="space-y-4">
-          <div className="bg-linear-to-br from-[#004540]/5 to-white border border-[#004540]/20 rounded-xl p-6">
+          <div className="bg-linear-to-br from-primary/5 to-base-100 border border-primary/20 rounded-xl p-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-[#004540]/10 rounded-lg flex items-center justify-center">
-                <RefreshCw className="w-5 h-5 text-[#004540]" />
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                <RefreshCw className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900">Staying Updated</h4>
-                <p className="text-[#004540] text-sm">
+                <h4 className="font-semibold text-info">Staying Updated</h4>
+                <p className="text-primary text-sm">
                   {`We're committed to transparency in our updates`}
                 </p>
               </div>
             </div>
-            <p className="text-gray-700">
+            <p className="text-neutral">
               This privacy policy may be updated periodically to reflect changes
               in our practices or legal requirements. Significant changes will
               be communicated through platform notifications, and we encourage
               you to review this page regularly.
             </p>
           </div>
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-            <div className="w-2 h-2 bg-[#004540] rounded-full"></div>
+          <div className="flex items-center justify-center gap-2 text-sm text-neutral">
+            <div className="w-2 h-2 bg-primary rounded-full"></div>
             <span>Last updated on {currentDateShow}</span>
           </div>
         </div>
@@ -424,7 +424,7 @@ export default function PrivacyPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-[#004540]/5 to-white">
+    <div className="min-h-screen bg-linear-to-b from-base-300 to-base-100">
       <section className="relative overflow-hidden mb-16">
         <div className="absolute inset-0">
           <Image
@@ -434,7 +434,7 @@ export default function PrivacyPage() {
             priority
             className="object-cover object-center"
           />
-          <div className="absolute inset-0 bg-linear-to-r from-[#004540]/90 via-[#004540]/75 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-r from-primary/90 via-primary/75 to-transparent"></div>
         </div>
 
         <div className="container relative mx-auto px-4 py-20 md:py-28">
@@ -461,8 +461,8 @@ export default function PrivacyPage() {
       <div className="container mx-auto px-4 pb-16">
         <div className="grid lg:grid-cols-12 gap-8">
           <div className="lg:col-span-3">
-            <div className="sticky top-24 bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
-              <h3 className="font-bold text-lg text-gray-900 mb-4 flex items-center gap-2">
+            <div className="sticky top-24 bg-base-100 rounded-2xl shadow-lg p-6 border border-base-200">
+              <h3 className="font-bold text-lg text-info mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5" />
                 Table of Contents
               </h3>
@@ -471,13 +471,13 @@ export default function PrivacyPage() {
                   <a
                     key={idx}
                     href={`#section-${idx + 1}`}
-                    className="flex items-center gap-3 p-3 text-gray-700 hover:bg-[#004540]/5 hover:text-[#004540] rounded-lg transition-all group"
+                    className="flex items-center gap-3 p-3 text-neutral hover:bg-primary/5 hover:text-primary rounded-lg transition-all group"
                   >
-                    <div className="w-6 h-6 bg-gray-100 group-hover:bg-[#004540]/10 rounded flex items-center justify-center text-xs font-medium">
+                    <div className="w-6 h-6 bg-base-200 group-hover:bg-primary/10 rounded flex items-center justify-center text-xs font-medium">
                       {idx + 1}
                     </div>
                     <span className="font-medium">{section.title}</span>
-                    <ChevronRight className="w-4 h-4 ml-auto text-gray-400 group-hover:text-[#004540]" />
+                    <ChevronRight className="w-4 h-4 ml-auto text-neutral group-hover:text-primary" />
                   </a>
                 ))}
               </nav>
@@ -489,39 +489,39 @@ export default function PrivacyPage() {
               <div
                 key={idx}
                 id={`section-${idx + 1}`}
-                className="scroll-mt-28 bg-white rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all"
+                className="scroll-mt-28 bg-base-100 rounded-2xl shadow-lg border border-base-200 hover:shadow-xl transition-all"
               >
                 <div className="p-6 md:p-8">
                   <div className="flex items-center gap-4 mb-6">
-                    <div className="w-12 h-12 bg-linear-to-br from-[#004540] to-[#003834] text-white rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-linear-to-br from-primary to-info text-white rounded-xl flex items-center justify-center">
                       {section.icon}
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[#004540] font-bold">
+                        <span className="text-primary font-bold">
                           Section {idx + 1}
                         </span>
-                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
-                        <span className="text-sm text-gray-500">
+                        <div className="w-1 h-1 bg-base-200 rounded-full"></div>
+                        <span className="text-sm text-neutral">
                           {sections.length} total sections
                         </span>
                       </div>
-                      <h2 className="text-2xl font-bold text-gray-900">
+                      <h2 className="text-2xl font-bold text-info">
                         {section.title}
                       </h2>
                     </div>
                   </div>
-                  <div className="border-t border-gray-100 pt-6">
+                  <div className="border-t border-base-200 pt-6">
                     {section.content}
                   </div>
                 </div>
               </div>
             ))}
 
-            <div className="bg-linear-to-br from-[#004540] to-[#003834] text-white rounded-2xl shadow-xl overflow-hidden">
+            <div className="bg-linear-to-br from-primary to-info text-white rounded-2xl shadow-xl overflow-hidden">
               <div className="p-8 md:p-10">
                 <div className="flex items-center gap-4 mb-8">
-                  <div className="w-12 h-12 bg-linear-to-br from-[#004540]/80 to-[#003834]/80 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-linear-to-br from-primary/80 to-info/80 rounded-xl flex items-center justify-center">
                     <Mail className="w-6 h-6" />
                   </div>
                   <div>
