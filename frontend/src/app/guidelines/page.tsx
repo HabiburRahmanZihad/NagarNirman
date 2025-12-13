@@ -1,5 +1,3 @@
-// added here a hero section only
-
 'use client';
 
 import Image from 'next/image';
@@ -16,12 +14,12 @@ export default function GuidelinesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-base-300 pb-20">
       {/* -------- the hero section placed here => start -------- */}
       <section className="relative overflow-hidden mb-16">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=80"
+            src="https://res.cloudinary.com/dfm0bhtyb/image/upload/v1765627352/foc48enu2qo9vf4dcfqt.jpg"
             alt="Legal background"
             fill
             priority
@@ -49,60 +47,97 @@ export default function GuidelinesPage() {
         </div>
       </section>
       {/* -------- the hero section placed here => end -------- */}
-      <div className="container mx-auto px-4 max-w-4xl">
-        <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-          <div className="text-center mb-5">
-            
-          </div>
 
-          <div className="space-y-10">
-            {/* Reporting Guidelines */}
+      <div className="container mx-auto px-4">
+        <div className="bg-base-100 rounded-2xl shadow-lg p-8 md:p-12 border border-base-200">
+          <div className="space-y-12">
+            {/* Reporting Guidelines - Side by Side Layout */}
             <section>
-              <h2 className="text-2xl font-bold text-primary mb-6 flex items-center gap-3">
-                <span>📝</span> Reporting Guidelines
-              </h2>
+              <div className="mb-6">
+                <h2 className="text-3xl font-bold text-info mb-2">
+                  📝 Reporting Guidelines
+                </h2>
+                <div className="h-1 w-24 bg-primary rounded-full"></div>
+              </div>
 
-              <div className="space-y-4">
-                <div className="flex items-start gap-4 bg-green-50 p-4 rounded-lg">
-                  <FaCheckCircle className="text-green-600 text-xl mt-1 shrink-0" />
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Do:</h3>
-                    <ul className="space-y-2 text-gray-700">
-                      <li>
-                        • Provide accurate and detailed information about the
-                        issue
-                      </li>
-                      <li>• Include clear photos showing the problem</li>
-                      <li>• Specify the exact location using our map tool</li>
-                      <li>• Select the appropriate category for your report</li>
-                      <li>
-                        • Be respectful and constructive in your descriptions
-                      </li>
-                      <li>• Follow up on your reports through the dashboard</li>
-                    </ul>
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Do Column */}
+                <div className="bg-base-300 border border-base-200 rounded-xl p-6 shadow-sm h-full">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary/10 p-3 rounded-full">
+                      <FaCheckCircle className="text-primary text-2xl" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-info text-lg mb-3">
+                        Do:
+                      </h3>
+                      <ul className="space-y-2.5 text-neutral">
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                          <span>Provide accurate and detailed information about the issue</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                          <span>Include clear photos showing the problem</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                          <span>Specify the exact location using our map tool</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                          <span>Select the appropriate category for your report</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                          <span>Be respectful and constructive in your descriptions</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                          <span>Follow up on your reports through the dashboard</span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 bg-red-50 p-4 rounded-lg">
-                  <FaExclamationTriangle className="text-red-600 text-xl mt-1 shrink-0" />
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">
-                      {`Don't`}:
-                    </h3>
-                    <ul className="space-y-2 text-gray-700">
-                      <li>• Submit false or misleading reports</li>
-                      <li>• Use offensive or inappropriate language</li>
-                      <li>
-                        • Report private property issues without authorization
-                      </li>
-                      <li>• Duplicate reports for the same issue</li>
-                      <li>
-                        • Share personal information of others without consent
-                      </li>
-                      <li>
-                        • Use the platform for non-civic related complaints
-                      </li>
-                    </ul>
+                {/* Don't Column */}
+                <div className="bg-base-300 border border-base-200 rounded-xl p-6 shadow-sm h-full">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-accent/10 p-3 rounded-full">
+                      <FaExclamationTriangle className="text-accent text-2xl" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-info text-lg mb-3">
+                        {`Don't`}:
+                      </h3>
+                      <ul className="space-y-2.5 text-neutral">
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-accent rounded-full mt-2 shrink-0"></div>
+                          <span>Submit false or misleading reports</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-accent rounded-full mt-2 shrink-0"></div>
+                          <span>Use offensive or inappropriate language</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-accent rounded-full mt-2 shrink-0"></div>
+                          <span>Report private property issues without authorization</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-accent rounded-full mt-2 shrink-0"></div>
+                          <span>Duplicate reports for the same issue</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-accent rounded-full mt-2 shrink-0"></div>
+                          <span>Share personal information of others without consent</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <div className="w-2 h-2 bg-accent rounded-full mt-2 shrink-0"></div>
+                          <span>Use the platform for non-civic related complaints</span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -110,38 +145,75 @@ export default function GuidelinesPage() {
 
             {/* Problem Solver Guidelines */}
             <section>
-              <h2 className="text-2xl font-bold text-accent mb-6 flex items-center gap-3">
-                <span>🛠️</span> Problem Solver Guidelines
-              </h2>
+              <div className="mb-6">
+                <h2 className="text-3xl font-bold text-info mb-2">
+                  🛠️ Problem Solver Guidelines
+                </h2>
+                <div className="h-1 w-24 bg-secondary rounded-full"></div>
+              </div>
 
-              <div className="space-y-4">
-                <div className="bg-primary/5 border-l-4 border-primary p-6 rounded-r-lg">
-                  <h3 className="font-semibold text-gray-900 mb-3">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-base-300 border-l-4 border-primary p-6 rounded-r-xl rounded-l-lg shadow-sm">
+                  <h3 className="font-semibold text-info text-lg mb-4">
                     Professional Conduct
                   </h3>
-                  <ul className="space-y-2 text-gray-700">
-                    <li>• Respond to assigned tasks promptly</li>
-                    <li>• Maintain professionalism in all interactions</li>
-                    <li>• Provide regular updates on task progress</li>
-                    <li>• Complete tasks within the agreed timeline</li>
-                    <li>• Submit proof of completion with clear photos</li>
-                    <li>• Respect community members and their property</li>
+                  <ul className="space-y-3 text-neutral">
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                      <span>Respond to assigned tasks promptly</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                      <span>Maintain professionalism in all interactions</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                      <span>Provide regular updates on task progress</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                      <span>Complete tasks within the agreed timeline</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                      <span>Submit proof of completion with clear photos</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-primary rounded-full mt-2 shrink-0"></div>
+                      <span>Respect community members and their property</span>
+                    </li>
                   </ul>
                 </div>
 
-                <div className="bg-accent/5 border-l-4 border-accent p-6 rounded-r-lg">
-                  <h3 className="font-semibold text-gray-900 mb-3">
+                <div className="bg-base-300 border-l-4 border-secondary p-6 rounded-r-xl rounded-l-lg shadow-sm">
+                  <h3 className="font-semibold text-info text-lg mb-4">
                     Quality Standards
                   </h3>
-                  <ul className="space-y-2 text-gray-700">
-                    <li>• Follow safety protocols and regulations</li>
-                    <li>• Use appropriate tools and materials</li>
-                    <li>• Ensure work meets quality standards</li>
-                    <li>• Clean up work area after completion</li>
-                    <li>
-                      • Report any complications or challenges immediately
+                  <ul className="space-y-3 text-neutral">
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-secondary rounded-full mt-2 shrink-0"></div>
+                      <span>Follow safety protocols and regulations</span>
                     </li>
-                    <li>• Be open to feedback and improvements</li>
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-secondary rounded-full mt-2 shrink-0"></div>
+                      <span>Use appropriate tools and materials</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-secondary rounded-full mt-2 shrink-0"></div>
+                      <span>Ensure work meets quality standards</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-secondary rounded-full mt-2 shrink-0"></div>
+                      <span>Clean up work area after completion</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-secondary rounded-full mt-2 shrink-0"></div>
+                      <span>Report any complications or challenges immediately</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-secondary rounded-full mt-2 shrink-0"></div>
+                      <span>Be open to feedback and improvements</span>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -149,77 +221,170 @@ export default function GuidelinesPage() {
 
             {/* Code of Conduct */}
             <section>
-              <h2 className="text-2xl font-bold text-primary mb-6 flex items-center gap-3">
-                <span>⚖️</span> Code of Conduct
-              </h2>
+              <div className="mb-6">
+                <h2 className="text-3xl font-bold text-info mb-2">
+                  ⚖️ Code of Conduct
+                </h2>
+                <div className="h-1 w-24 bg-primary rounded-full"></div>
+              </div>
 
-              <div className="bg-gray-50 p-6 rounded-xl">
-                <div className="space-y-4 text-gray-700">
-                  <p>
-                    <strong>Respect:</strong> Treat all community members with
-                    respect and dignity. Discrimination, harassment, or bullying
-                    will not be tolerated.
-                  </p>
-                  <p>
-                    <strong>Integrity:</strong> Be honest and transparent in all
-                    your interactions. Report issues accurately and complete
-                    tasks with integrity.
-                  </p>
-                  <p>
-                    <strong>Privacy:</strong> Respect the privacy of others. Do
-                    not share personal information or photos of individuals
-                    without their consent.
-                  </p>
-                  <p>
-                    <strong>Collaboration:</strong> Work together to build a
-                    better community. Support others and share knowledge
-                    constructively.
-                  </p>
-                  <p>
-                    <strong>Accountability:</strong> Take responsibility for
-                    your actions and commitments. Follow through on tasks and
-                    reports you initiate.
-                  </p>
+              <div className="bg-base-300 p-8 rounded-xl border border-base-200 shadow-sm">
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary/10 p-2 rounded-lg shrink-0">
+                      <span className="text-primary font-bold">R</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-info mb-1">Respect</h4>
+                      <p className="text-neutral">
+                        Treat all community members with respect and dignity. Discrimination, 
+                        harassment, or bullying will not be tolerated.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary/10 p-2 rounded-lg shrink-0">
+                      <span className="text-primary font-bold">I</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-info mb-1">Integrity</h4>
+                      <p className="text-neutral">
+                        Be honest and transparent in all your interactions. Report issues 
+                        accurately and complete tasks with integrity.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary/10 p-2 rounded-lg shrink-0">
+                      <span className="text-primary font-bold">P</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-info mb-1">Privacy</h4>
+                      <p className="text-neutral">
+                        Respect the privacy of others. Do not share personal information 
+                        or photos of individuals without their consent.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary/10 p-2 rounded-lg shrink-0">
+                      <span className="text-primary font-bold">C</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-info mb-1">Collaboration</h4>
+                      <p className="text-neutral">
+                        Work together to build a better community. Support others and 
+                        share knowledge constructively.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <div className="bg-primary/10 p-2 rounded-lg shrink-0">
+                      <span className="text-primary font-bold">A</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-info mb-1">Accountability</h4>
+                      <p className="text-neutral">
+                        Take responsibility for your actions and commitments. Follow 
+                        through on tasks and reports you initiate.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </section>
 
             {/* Violations and Consequences */}
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                <span>⚠️</span> Violations and Consequences
-              </h2>
+              <div className="mb-6">
+                <h2 className="text-3xl font-bold text-info mb-2">
+                  ⚠️ Violations and Consequences
+                </h2>
+                <div className="h-1 w-24 bg-accent rounded-full"></div>
+              </div>
 
-              <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-xl">
-                <p className="text-gray-700 mb-4">
-                  Violations of these guidelines may result in:
-                </p>
-                <ul className="space-y-2 text-gray-700">
-                  <li>• Warning notification</li>
-                  <li>• Temporary account suspension</li>
-                  <li>• Removal from problem solver program</li>
-                  <li>• Permanent account termination</li>
-                  <li>• Legal action in cases of serious violations</li>
+              <div className="bg-base-300 border border-accent/20 p-8 rounded-xl shadow-sm">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="bg-accent/10 p-3 rounded-full">
+                    <FaExclamationTriangle className="text-accent text-2xl" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-info text-lg mb-2">
+                      Violations of these guidelines may result in:
+                    </h3>
+                    <p className="text-neutral">
+                      We take guideline violations seriously to maintain a safe and 
+                      productive community environment.
+                    </p>
+                  </div>
+                </div>
+                
+                <ul className="space-y-3 text-neutral">
+                  <li className="flex items-center gap-3 p-3 bg-base-100 rounded-lg">
+                    <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
+                      <span className="text-accent font-bold">1</span>
+                    </div>
+                    <span>Warning notification</span>
+                  </li>
+                  <li className="flex items-center gap-3 p-3 bg-base-100 rounded-lg">
+                    <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
+                      <span className="text-accent font-bold">2</span>
+                    </div>
+                    <span>Temporary account suspension</span>
+                  </li>
+                  <li className="flex items-center gap-3 p-3 bg-base-100 rounded-lg">
+                    <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
+                      <span className="text-accent font-bold">3</span>
+                    </div>
+                    <span>Removal from problem solver program</span>
+                  </li>
+                  <li className="flex items-center gap-3 p-3 bg-base-100 rounded-lg">
+                    <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
+                      <span className="text-accent font-bold">4</span>
+                    </div>
+                    <span>Permanent account termination</span>
+                  </li>
+                  <li className="flex items-center gap-3 p-3 bg-base-100 rounded-lg">
+                    <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
+                      <span className="text-accent font-bold">5</span>
+                    </div>
+                    <span>Legal action in cases of serious violations</span>
+                  </li>
                 </ul>
               </div>
             </section>
 
             {/* Contact */}
-            <section className="text-center bg-primary/5 border border-primary/20 p-8 rounded-xl">
-              <h2 className="text-xl font-bold text-gray-900 mb-3">
-                Questions or Concerns?
-              </h2>
-              <p className="text-gray-600 mb-4">
-                If you have questions about these guidelines or need to report a
-                violation, please contact us.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="mailto:support@nagarnirman.com"
-                  className="bg-primary text-white px-6 py-3 rounded-full font-medium hover:bg-accent transition-colors duration-300 inline-block"
-                >
-                  Email Support
-                </a>
+            <section className="bg-linear-to-br from-base-300 to-primary/5 border border-primary/20 p-10 rounded-2xl text-center shadow-sm">
+              <div className="max-w-lg mx-auto">
+                <h2 className="text-2xl font-bold text-info mb-4">
+                  Questions or Concerns?
+                </h2>
+                <p className="text-neutral mb-8">
+                  If you have questions about these guidelines or need to report a
+                  violation, please contact our support team.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <a
+                    href="mailto:support@nagarnirman.com"
+                    className="bg-primary text-white px-8 py-3.5 rounded-full font-medium hover:bg-info transition-all duration-300 inline-flex items-center justify-center gap-2 hover:shadow-lg"
+                  >
+                    Email Support
+                  </a>
+                  <a
+                    href="/contact"
+                    className="bg-base-100 text-primary border-2 border-primary px-8 py-3.5 rounded-full font-medium hover:bg-primary hover:text-white transition-all duration-300 inline-flex items-center justify-center gap-2 hover:shadow-lg"
+                  >
+                    Contact Form
+                  </a>
+                </div>
+                <p className="text-sm text-neutral mt-6">
+                  We typically respond within 24 hours
+                </p>
               </div>
             </section>
           </div>
