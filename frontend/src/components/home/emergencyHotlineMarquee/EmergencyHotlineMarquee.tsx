@@ -21,24 +21,24 @@ const images = [
 
 export default function EmergencyHotlineMarquee() {
   return (
-    <section className="">
-      <div className="text-center mb-16">
-        <div className="flex items-center justify-center gap-2 mb-3">
-          <Sprout className="w-5 h-5 text-[#3C6E59]" />
-          <span className="text-[#555555] text-lg font-medium tracking-wide">         24/7 Support</span>
+    <section className="py-8 sm:py-12 md:py-16 lg:py-20 px-3 xs:px-4 sm:px-6 md:px-8">
+      <div className="text-center mb-8 xs:mb-10 sm:mb-12 md:mb-14 lg:mb-16">
+        <div className="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 mb-2 xs:mb-2.5 sm:mb-3">
+          <Sprout className="w-4 h-4 xs:w-5 xs:h-5 text-[#3C6E59]" />
+          <span className="text-[#555555] text-sm sm:text-base md:text-lg font-medium">         24/7 Support</span>
         </div>
-        <h2 className="text-4xl md:text-5xl font-bold text-[#003B31]">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary px-2 sm:px-0">
           Emergency Hotline
         </h2>
       </div>
 
-      <div className="relative whitespace-nowrap">
+      <div className="relative whitespace-nowrap px-2 sm:px-0">
         {/* Scroll Wrapper */}
         <div className="flex animate-scroll">
           {[...images, ...images].map((src, i) => (
             <div
               key={i}
-              className="min-w-[200px] h-[120px] rounded-xl flex items-center justify-center p-3 bg-primary mx-2"
+              className="min-w-[140px] xs:min-w-[160px] sm:min-w-[180px] md:min-w-[200px] h-[80px] xs:h-[100px] sm:h-[110px] md:h-[120px] rounded-xl flex items-center justify-center p-2 xs:p-2.5 sm:p-3 bg-primary mx-2"
             >
               <Image
                 src={src}
