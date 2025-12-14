@@ -534,7 +534,7 @@ export default function PrivacyPage() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid lg:grid-cols-3 gap-6">
                   {[
                     {
                       icon: <Mail className="w-5 h-5" />,
