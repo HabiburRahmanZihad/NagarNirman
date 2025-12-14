@@ -45,7 +45,7 @@ export default function Home() {
         <HowToReport></HowToReport>
       </section>
 
-      <section className="pt-24 ">
+      <section className="lg:pt-24 ">
         <Testimonials></Testimonials>
       </section>
 
