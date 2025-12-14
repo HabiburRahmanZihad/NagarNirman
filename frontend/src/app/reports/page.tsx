@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, FullPageLoading } from '@/components/common';
+import { Card, Button } from '@/components/common';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import {
-  FaFilter, FaSearch, FaSync, FaPlus, FaChevronLeft, FaChevronRight,
+  FaFilter, FaSearch, FaSync, FaChevronLeft, FaChevronRight,
   FaFire, FaCheckCircle, FaClock, FaMapMarkerAlt, FaThumbsUp, FaCalendar,
   FaArrowUp
 } from 'react-icons/fa';
@@ -73,7 +73,7 @@ export default function AllReportsPage() {
   };
 
   // Fetch all reports stats (without pagination)
-  const fetchAllReportsStats = async () => {
+  const fetchAllReportsStats = useCallback(async () => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const params = new URLSearchParams({
@@ -114,10 +114,10 @@ export default function AllReportsPage() {
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
-  };
+  }, [filters, searchTerm]);
 
   // Fetch reports with pagination
-  const fetchReports = async (page = 1) => {
+  const fetchReports = useCallback(async (page = 1) => {
     setIsLoading(true);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
@@ -175,26 +175,27 @@ export default function AllReportsPage() {
           reportsPerPage: 12,
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load reports. Please check your connection.';
       console.error('❌ Error fetching reports:', error);
-      toast.error(error.message || 'Failed to load reports. Please check your connection.');
+      toast.error(errorMessage);
       setReports([]);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [filters, searchTerm, pagination.reportsPerPage]);
 
   useEffect(() => {
     setCurrentPage(1);
     fetchAllReportsStats();
     fetchReports(1);
-  }, [filters]);
+  }, [filters, searchTerm, fetchAllReportsStats, fetchReports]);
 
   useEffect(() => {
     if (currentPage >= 1) {
       fetchReports(currentPage);
     }
-  }, [currentPage]);
+  }, [currentPage, fetchReports]);
 
   const handleResetFilters = () => {
     setSearchTerm('');
