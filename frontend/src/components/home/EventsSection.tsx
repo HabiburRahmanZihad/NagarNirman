@@ -65,7 +65,7 @@ const events = [
 
 export default function EventsSection() {
   return (
-    <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8 lg:px-10 font-sans">
+    <section className=" px-4 sm:px-6 md:px-8 lg:px-10 font-sans">
       <div className="container mx-auto">
         {/* --- HEADER --- */}
         <div className="text-center mb-12 sm:mb-16 md:mb-20">

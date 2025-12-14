@@ -167,7 +167,7 @@ export default function Testimonials() {
 
 
           {/* RIGHT SECTION - SLIDER */}
-          <div className="relative h-[650px] w-full order-1 lg:order-2 flex items-center justify-center py-10 px-4 md:px-0">
+          <div className="relative h-[650px] w-full order-1 lg:order-2 flex items-center justify-center py-10 px-0 md:px-0">
             <Swiper
               modules={[Autoplay, EffectCoverflow, Pagination]}
               effect="coverflow"
