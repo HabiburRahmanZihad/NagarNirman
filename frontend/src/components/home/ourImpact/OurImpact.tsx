@@ -9,21 +9,21 @@ const images = [
 
 export default function OurImpact() {
   return (
-    <section className="container mx-auto">
+    <section className="py-8 sm:py-12 md:py-16 lg:py-20 px-3 xs:px-4 sm:px-6 md:px-8 container mx-auto">
       {/* Text & Logo Section */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-8 xs:mb-10 sm:mb-12 md:mb-16">
         <div className="flex items-center justify-center gap-2 mb-3">
-          <Sprout className="w-5 h-5 text-primary" />
-          <span className="text-gray-600 text-lg font-medium tracking-wide">
+          <Sprout className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 text-primary" />
+          <span className="text-gray-600 text-xs xs:text-sm sm:text-base md:text-lg font-medium tracking-wide">
             Building Sustainable Cities Together
           </span>
         </div>
 
-        <h2 className="text-4xl md:text-5xl font-bold text-[#003B31]">
+        <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold text-[#003B31]">
           Every report makes our city better.
         </h2>
 
-        <p className="text-gray-600 max-w-4xl text-center mx-auto pt-3 text-lg">
+        <p className="text-gray-600 max-w-4xl text-center mx-auto pt-3 text-xs xs:text-sm sm:text-base md:text-lg">
           NagarNirman connects citizens with problem solvers to address civic issues in real-time.
           From fixing potholes to maintaining public spaces, your active participation helps build
           cleaner, safer, and more sustainable communities for everyone.
@@ -31,7 +31,7 @@ export default function OurImpact() {
       </div>
 
       {/* Images + Icons */}
-      <div className="relative container mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="relative container mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 xs:gap-5 sm:gap-6 md:gap-8">
 
         {/* Left Image */}
         <div className="group rounded-xl overflow-hidden shadow-md relative">
