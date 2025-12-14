@@ -95,10 +95,10 @@ export const NotificationCenter: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="absolute right-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden"
+              className="absolute right-0 mt-4  w-80 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden"
             >
               {/* Header */}
-              <div className="p-4 border-b border-gray-200 bg-linear-to-r from-[#81d586] to-[#6bc175]">
+              <div className="p-4 border-b border-gray-200 bg-primary">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-bold text-white">Notifications</h3>
                   {unreadCount > 0 && (
