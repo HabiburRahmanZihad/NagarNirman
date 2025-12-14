@@ -262,7 +262,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center gap-4">
             {/* Desktop User/Auth Section */}
             {isDesktop && (
-              <div className={`flex items-center gap-2 ${isHomePage && !isScrolled ? 'bg-white/30 backdrop-blur-sm rounded-lg px-2 py-1' : ''}`}>
+              <div className={`flex items-center gap-2 ${isHomePage && !isScrolled ? 'bg-white/30 backdrop-blur-sm rounded-lg px-2 py-2' : ''}`}>
                 {isAuthenticated && user ? (
                   <>
                     <NotificationCenter />
