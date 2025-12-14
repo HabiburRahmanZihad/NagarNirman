@@ -30,9 +30,21 @@ const Navbar: React.FC = () => {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [windowWidth, setWindowWidth] = useState<number | null>(null);
 
   const isHomePage = pathname === "/";
-  const [windowWidth, setWindowWidth] = useState(0);
+
+  // Responsive breakpoints
+  const isSmallMobile = windowWidth !== null && windowWidth < 380;
+  const isMobile = windowWidth !== null && windowWidth < 640;
+  const isTablet = windowWidth !== null && windowWidth >= 640 && windowWidth < 1024;
+  const isMobileOrTablet = windowWidth !== null && windowWidth < 1024;
+  const isDesktop = windowWidth !== null && windowWidth >= 1024;
+
+  // Initialize on mount to avoid hydration mismatch
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+  }, []);
 
   // Check screen size and scroll position
   useEffect(() => {
@@ -44,7 +56,6 @@ const Navbar: React.FC = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
-    checkWidth();
     window.addEventListener('resize', checkWidth);
     window.addEventListener('scroll', handleScroll);
 
@@ -53,13 +64,6 @@ const Navbar: React.FC = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
-  // Responsive breakpoints
-  const isSmallMobile = windowWidth < 380; // Very small phones
-  const isMobile = windowWidth < 640; // Mobile phones (< 640px)
-  const isTablet = windowWidth >= 640 && windowWidth < 1024; // Tablets (640-1024px)
-  const isMobileOrTablet = windowWidth < 1024; // Mobile and Tablet (< 1024px)
-  const isDesktop = windowWidth >= 1024; // Desktop (≥ 1024px)
 
   // Close menus when clicking outside
   useEffect(() => {
@@ -100,11 +104,6 @@ const Navbar: React.FC = () => {
     { href: "/map-search", label: "Map Search", icon: <FaMapMarkedAlt className="w-4 h-4" /> },
     { href: "/reports", label: "All Reports", icon: <FaFileAlt className="w-4 h-4" /> },
     { href: "/earthquakes", label: "Earthquakes", icon: <FaFileAlt className="w-4 h-4" /> },
-    ...(isAuthenticated ? [{
-      href: getDashboardPath(),
-      label: "Dashboard",
-      icon: <FaTachometerAlt className="w-4 h-4" />
-    }] : []),
     {
       href: "/about",
       label: "About",
@@ -114,8 +113,15 @@ const Navbar: React.FC = () => {
         { href: "/about-team", label: "Meet the Team" }
       ]
     },
-    { href: "/how-it-works", label: "How It Works", icon: <IoGitNetworkSharp className="w-4 h-4" /> },
-    { href: "/gallery", label: "Gallery", icon: <FaImages className="w-4 h-4" /> },
+    {
+      href: "/how-it-works",
+      label: "How It Works",
+      icon: <IoGitNetworkSharp className="w-4 h-4" />,
+      subLinks: [
+        { href: "/how-it-works", label: "How It Works" },
+        { href: "/gallery", label: "Gallery" }
+      ]
+    },
   ];
 
   const toggleMobileMenu = () => {
@@ -124,7 +130,7 @@ const Navbar: React.FC = () => {
 
   // Get navbar background based on page and screen size
   const getNavbarBackground = () => {
-    if (isMobile) {
+    if (isMobileOrTablet) {
       return "bg-white shadow-sm";
     }
     if (isHomePage && isDesktop) {
@@ -150,14 +156,6 @@ const Navbar: React.FC = () => {
     return "text-gray-700 hover:text-[#004d40] hover:bg-gray-50";
   };
 
-  // Get button colors
-  const getButtonClass = () => {
-    if (isHomePage && isDesktop && !isScrolled) {
-      return "bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20";
-    }
-    return "";
-  };
-
   // Get user menu text color
   const getUserTextColor = () => {
     if (isHomePage && isDesktop && !isScrolled) {
@@ -174,13 +172,28 @@ const Navbar: React.FC = () => {
     return "text-gray-500";
   };
 
+  // Prevent hydration mismatch
+  if (windowWidth === null) {
+    return <nav className="sticky top-0 z-50 bg-white shadow-sm h-20" />;
+  }
+
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 ${getNavbarBackground()}`}>
+
       <div className={`container mx-auto ${isSmallMobile ? 'px-2' : isMobile ? 'px-3' : isTablet ? 'px-4' : 'px-0'}`}>
-        <div className={`flex items-center justify-between ${isSmallMobile ? 'h-14' : isMobile ? 'h-16' : isTablet ? 'h-18' : 'h-20'}`}>
-          {/* Logo - Fixed for all screens */}
-          <Link href="/" className="shrink-0">
-            <div className={`relative ${isSmallMobile ? 'w-32 h-10' : isMobile ? 'w-40 h-12' : isTablet ? 'w-44 h-13' : 'w-50 h-15'} ${isHomePage && isDesktop && !isScrolled ? 'bg-white/35 backdrop-blur-sm rounded-lg p-2' : ''}`}>
+
+        <div className={`flex items-center justify-between ${isSmallMobile ? 'h-14' :
+            isMobile ? 'h-16' :
+              isTablet ? 'h-18' :
+                'h-20'
+          }`}>
+          {/* Logo */}
+          <Link href="/" className="shrink-0 flex-1 md:flex-initial">
+            <div className={`relative ${isSmallMobile ? 'w-32 h-10' :
+                isMobile ? 'w-40 h-12' :
+                  isTablet ? 'w-44 h-13' :
+                    'w-50 h-15'
+              } ${isHomePage && isDesktop && !isScrolled ? 'bg-white/35 backdrop-blur-sm rounded-lg p-2' : ''}`}>
               <Image
                 src="/logo/logo.png"
                 alt="NagarNirman Logo"
@@ -191,16 +204,16 @@ const Navbar: React.FC = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation Links - Centered */}
+          {/* Desktop Navigation Links */}
           {isDesktop && (
-            <div className="hidden lg:flex items-center justify-center 1">
+            <div className="hidden lg:flex items-center justify-center flex-1">
               {isHomePage && !isScrolled ? (
-                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1 h-15">
+                <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1 h-15 gap-1">
                   {navLinks.map((link) => (
                     <div key={link.href} className="relative group">
                       <Link
                         href={link.href}
-                        className={`flex items-center justify-center gap-2 px-3 xl:px-4 py-3 rounded-lg font-medium transition-all duration-200 min-w-fit text-sm xl:text-base ${getLinkColor(link.href)}`}
+                        className={`flex items-center gap-2 px-3 xl:px-4 py-3 rounded-lg font-medium transition-all duration-200 whitespace-nowrap text-sm xl:text-base ${getLinkColor(link.href)}`}
                       >
                         {link.icon}
                         <span className="hidden sm:inline">{link.label}</span>
@@ -232,7 +245,7 @@ const Navbar: React.FC = () => {
                     <div key={link.href} className="relative group">
                       <Link
                         href={link.href}
-                        className={`flex items-center justify-center gap-2 px-3 xl:px-4 py-3 rounded-lg font-medium transition-all duration-200 min-w-fit text-sm xl:text-base ${isActiveLink(link.href) ? 'text-[#004d40] font-semibold bg-gray-100' : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'}`}
+                        className={`flex items-center gap-2 px-3 xl:px-4 py-3 rounded-lg font-medium transition-all duration-200 whitespace-nowrap text-sm xl:text-base ${isActiveLink(link.href) ? 'text-[#004d40] font-semibold bg-gray-100' : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'}`}
                       >
                         {link.icon}
                         <span className="hidden sm:inline">{link.label}</span>
@@ -263,7 +276,7 @@ const Navbar: React.FC = () => {
           )}
 
           {/* Right Side Components */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-end gap-2 sm:gap-4 flex-1 md:flex-initial">
             {/* Desktop User/Auth Section */}
             {isDesktop && (
               <div className={`flex items-center gap-2 ${isHomePage && !isScrolled ? 'bg-white/30 backdrop-blur-sm rounded-lg px-2 py-1 h-15' : ''}`}>
@@ -290,8 +303,8 @@ const Navbar: React.FC = () => {
                             <FaUser className="w-4 h-4" />
                           )}
                         </div>
-                        <div className="hidden xl:flex col items-start text-left">
-                          <span className="text-xs xl:text-sm font-semibold leading-tight text-primary">
+                        <div className="hidden xl:flex flex-col items-start text-left">
+                          <span className="text-xs xl:text-sm font-semibold leading-tight">
                             {user.name.split(' ')[0]}
                           </span>
                           <span className={`text-xs leading-tight truncate max-w-[100px] ${getUserSubtextColor()}`}>
@@ -305,7 +318,7 @@ const Navbar: React.FC = () => {
 
                       {/* User Dropdown Menu */}
                       {isUserMenuOpen && (
-                        <div className={`absolute ${isTablet ? 'right-0' : 'right-0'} mt-2 ${isMobile ? 'w-56' : 'w-64'} bg-white rounded-lg shadow-lg border border-gray-100 z-50 max-h-[80vh] overflow-y-auto`}>
+                        <div className={`absolute right-0 mt-2 w-56 sm:w-64 bg-white rounded-lg shadow-lg border border-gray-100 z-50 max-h-[80vh] overflow-y-auto`}>
                           <div className="p-3 lg:p-4 border-b border-gray-100">
                             <div className="flex items-center gap-3">
                               <div className="w-10 h-10 bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold shrink-0">
@@ -321,7 +334,7 @@ const Navbar: React.FC = () => {
                                   <FaUser className="w-5 h-5" />
                                 )}
                               </div>
-                              <div className="flex col min-w-0">
+                              <div className="flex flex-col min-w-0">
                                 <span className="text-xs lg:text-sm font-semibold text-gray-900 truncate">
                                   {user.name}
                                 </span>
@@ -394,9 +407,9 @@ const Navbar: React.FC = () => {
               </div>
             )}
 
-            {/* Mobile & Tablet View (< 1024px): [LOGO] [NOTIFICATION] [HAMBURGER] */}
+            {/* Mobile & Tablet View */}
             {isMobileOrTablet && (
-              <div className="flex items-center gap-2 lg:gap-4">
+              <div className="flex items-center gap-2">
                 {isAuthenticated && (
                   <NotificationCenter />
                 )}
@@ -405,13 +418,13 @@ const Navbar: React.FC = () => {
                 <button
                   data-mobile-toggle
                   onClick={toggleMobileMenu}
-                  className={`p-2 rounded-lg hover:bg-gray-100 transition-colors ${isMobile ? 'p-1.5' : 'p-2'}`}
+                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   aria-label="Toggle menu"
                 >
                   {isMobileMenuOpen ? (
-                    <FaTimes className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-gray-700`} />
+                    <FaTimes className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
                   ) : (
-                    <FaBars className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-gray-700`} />
+                    <FaBars className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
                   )}
                 </button>
               </div>
@@ -419,19 +432,18 @@ const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile & Tablet Menu (< 1024px) */}
+        {/* Mobile & Tablet Menu */}
         {isMobileOrTablet && isMobileMenuOpen && (
           <div
             ref={mobileMenuRef}
             className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-100 shadow-lg z-40 max-h-[calc(100vh-70px)] overflow-y-auto"
           >
             <div className={`container mx-auto ${isMobile ? 'px-3' : 'px-4'} ${isMobile ? 'py-3' : 'py-4'}`}>
-              {/* User Info - Inside hamburger menu */}
+              {/* User Info */}
               {isAuthenticated && user && (
                 <div className={`mb-4 pb-4 border-b border-gray-100 ${isMobile ? 'mb-3 pb-3' : ''}`}>
-                  <div className={`flex items-center gap-3 p-3 lg:p-4 bg-gray-50 rounded-lg`}>
-                    <div className={`${isMobile ? 'w-10 h-10' : 'w-12 h-12'} bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold
-                    shrink-0`}>
+                  <div className="flex items-center gap-3 p-3 lg:p-4 bg-gray-50 rounded-lg">
+                    <div className={`${isMobile ? 'w-10 h-10' : 'w-12 h-12'} bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold shrink-0`}>
                       {user.profilePicture ? (
                         <Image
                           src={user.profilePicture}
@@ -444,7 +456,7 @@ const Navbar: React.FC = () => {
                         <FaUser className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'}`} />
                       )}
                     </div>
-                    <div className="1 min-w-0">
+                    <div className="flex flex-col min-w-0">
                       <div className="font-semibold text-gray-900 text-sm lg:text-base truncate">{user.name}</div>
                       <div className="text-xs lg:text-sm text-gray-600 truncate">{user.email}</div>
                       <div className="text-xs text-[#004d40] font-medium mt-1 bg-gray-100 px-2 py-1 rounded inline-block">
@@ -457,7 +469,7 @@ const Navbar: React.FC = () => {
                   <div className={`mt-3 lg:mt-4 grid grid-cols-2 gap-2`}>
                     <Link
                       href={getDashboardPath()}
-                      className={`flex col items-center justify-center p-2 lg:p-3 rounded-lg transition-colors text-xs lg:text-sm
+                      className={`flex flex-col items-center justify-center p-2 lg:p-3 rounded-lg transition-colors text-xs lg:text-sm
                         ${isActiveLink(getDashboardPath()) ? 'bg-[#004d40] text-white' : 'bg-gray-50 hover:bg-[#004d40] hover:text-white'}`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -466,8 +478,7 @@ const Navbar: React.FC = () => {
                     </Link>
                     <Link
                       href={`/dashboard/${user.role}/profile`}
-                      className="flex col items-center justify-center p-2 lg:p-3 bg-gray-50 rounded-lg hover:bg-[#004d40]
-                                        hover:text-white transition-colors text-xs lg:text-sm"
+                      className="flex flex-col items-center justify-center p-2 lg:p-3 bg-gray-50 rounded-lg hover:bg-[#004d40] hover:text-white transition-colors text-xs lg:text-sm"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <FaUser className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} mb-1`} />
@@ -477,8 +488,8 @@ const Navbar: React.FC = () => {
                 </div>
               )}
 
-              {/* Navigation Links - Inside hamburger menu */}
-              <div className="flex col gap-1">
+              {/* Navigation Links */}
+              <div className="flex flex-col gap-1">
                 {navLinks.map((link) => (
                   <div key={link.href} className="mb-0.5">
                     <Link
@@ -509,9 +520,9 @@ const Navbar: React.FC = () => {
                   </div>
                 ))}
 
-                {/* Auth Buttons - Inside hamburger menu */}
+                {/* Auth Buttons */}
                 {!isAuthenticated && (
-                  <div className={`flex col gap-2 mt-3 lg:mt-4 pt-3 lg:pt-4 border-t border-gray-100`}>
+                  <div className={`flex flex-col gap-2 mt-3 lg:mt-4 pt-3 lg:pt-4 border-t border-gray-100`}>
                     <Link
                       href="/auth/login"
                       className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg border font-medium transition-colors text-sm lg:text-base ${isActiveLink('/auth/login') ? 'border-[#004d40] text-[#004d40]' : 'border-gray-300 text-gray-700 hover:border-[#004d40] hover:text-[#004d40]'}`}
@@ -531,7 +542,7 @@ const Navbar: React.FC = () => {
                   </div>
                 )}
 
-                {/* Logout Button - Inside hamburger menu */}
+                {/* Logout Button */}
                 {isAuthenticated && user && (
                   <div className={`mt-3 lg:mt-4 pt-3 lg:pt-4 border-t border-gray-100`}>
                     <button
@@ -539,8 +550,7 @@ const Navbar: React.FC = () => {
                         logout();
                         setIsMobileMenuOpen(false);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg bg-red-50 text-red-600 font-medium
-                      hover:bg-red-100 transition-colors text-sm lg:text-base"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg bg-red-50 text-red-600 font-medium hover:bg-red-100 transition-colors text-sm lg:text-base"
                     >
                       Logout
                     </button>
@@ -550,7 +560,9 @@ const Navbar: React.FC = () => {
             </div>
           </div>
         )}
+
       </div>
+
     </nav>
   );
 };
