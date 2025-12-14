@@ -54,7 +54,11 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
-  const isMobile = windowWidth < 1024; // Mobile and Tablet (< 1024px)
+  // Responsive breakpoints
+  const isSmallMobile = windowWidth < 380; // Very small phones
+  const isMobile = windowWidth < 640; // Mobile phones (< 640px)
+  const isTablet = windowWidth >= 640 && windowWidth < 1024; // Tablets (640-1024px)
+  const isMobileOrTablet = windowWidth < 1024; // Mobile and Tablet (< 1024px)
   const isDesktop = windowWidth >= 1024; // Desktop (≥ 1024px)
 
   // Close menus when clicking outside
@@ -172,11 +176,11 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 ${getNavbarBackground()}`}>
-      <div className="container mx-auto px-4 lg:px-0">
-        <div className="flex items-center justify-between h-20">
+      <div className={`container mx-auto ${isSmallMobile ? 'px-2' : isMobile ? 'px-3' : isTablet ? 'px-4' : 'px-0'}`}>
+        <div className={`flex items-center justify-between ${isSmallMobile ? 'h-14' : isMobile ? 'h-16' : isTablet ? 'h-18' : 'h-20'}`}>
           {/* Logo - Fixed for all screens */}
           <Link href="/" className="shrink-0">
-            <div className={`relative w-50 h-15 ${isHomePage && isDesktop && !isScrolled ? 'bg-white/35 backdrop-blur-sm rounded-lg p-2' : ''}`}>
+            <div className={`relative ${isSmallMobile ? 'w-32 h-10' : isMobile ? 'w-40 h-12' : isTablet ? 'w-44 h-13' : 'w-50 h-15'} ${isHomePage && isDesktop && !isScrolled ? 'bg-white/35 backdrop-blur-sm rounded-lg p-2' : ''}`}>
               <Image
                 src="/logo/logo.png"
                 alt="NagarNirman Logo"
@@ -196,10 +200,10 @@ const Navbar: React.FC = () => {
                     <div key={link.href} className="relative group">
                       <Link
                         href={link.href}
-                        className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 min-w-[100px] ${getLinkColor(link.href)}`}
+                        className={`flex items-center justify-center gap-2 px-3 xl:px-4 py-3 rounded-lg font-medium transition-all duration-200 min-w-fit text-sm xl:text-base ${getLinkColor(link.href)}`}
                       >
                         {link.icon}
-                        <span>{link.label}</span>
+                        <span className="hidden sm:inline">{link.label}</span>
                         {link.subLinks && (
                           <FaChevronDown className="w-3 h-3 ml-1" />
                         )}
@@ -212,7 +216,7 @@ const Navbar: React.FC = () => {
                             <Link
                               key={subLink.href}
                               href={subLink.href}
-                              className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50/80 font-medium transition-colors ${isActiveLink(subLink.href) ? 'text-[#004d40] font-semibold' : ''}`}
+                              className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50/80 font-medium transition-colors text-sm ${isActiveLink(subLink.href) ? 'text-[#004d40] font-semibold' : ''}`}
                             >
                               {subLink.label}
                             </Link>
@@ -228,10 +232,10 @@ const Navbar: React.FC = () => {
                     <div key={link.href} className="relative group">
                       <Link
                         href={link.href}
-                        className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 min-w-[100px] ${isActiveLink(link.href) ? 'text-[#004d40] font-semibold bg-gray-100' : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'}`}
+                        className={`flex items-center justify-center gap-2 px-3 xl:px-4 py-3 rounded-lg font-medium transition-all duration-200 min-w-fit text-sm xl:text-base ${isActiveLink(link.href) ? 'text-[#004d40] font-semibold bg-gray-100' : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'}`}
                       >
                         {link.icon}
-                        <span>{link.label}</span>
+                        <span className="hidden sm:inline">{link.label}</span>
                         {link.subLinks && (
                           <FaChevronDown className="w-3 h-3 ml-1" />
                         )}
@@ -244,7 +248,7 @@ const Navbar: React.FC = () => {
                             <Link
                               key={subLink.href}
                               href={subLink.href}
-                              className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50 font-medium transition-colors ${isActiveLink(subLink.href) ? 'text-[#004d40] font-semibold' : ''}`}
+                              className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50 font-medium transition-colors text-sm ${isActiveLink(subLink.href) ? 'text-[#004d40] font-semibold' : ''}`}
                             >
                               {subLink.label}
                             </Link>
@@ -262,7 +266,7 @@ const Navbar: React.FC = () => {
           <div className="flex items-center gap-4">
             {/* Desktop User/Auth Section */}
             {isDesktop && (
-              <div className={`flex items-center gap-2 ${isHomePage && !isScrolled ? 'bg-white/30 backdrop-blur-sm rounded-lg px-2 py-2' : ''}`}>
+              <div className={`flex items-center gap-2 ${isHomePage && !isScrolled ? 'bg-white/30 backdrop-blur-sm rounded-lg px-2 py-1 h-15' : ''}`}>
                 {isAuthenticated && user ? (
                   <>
                     <NotificationCenter />
@@ -271,9 +275,9 @@ const Navbar: React.FC = () => {
                     <div className="relative" ref={userMenuRef}>
                       <button
                         onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-white/20 transition-colors duration-200 ${getUserTextColor()}`}
+                        className={`flex items-center gap-2 px-2 xl:px-4 py-2 xl:py-3 rounded-lg hover:bg-white/20 transition-colors duration-200 ${getUserTextColor()}`}
                       >
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold ${isHomePage && !isScrolled ? 'bg-white/20 text-white' : 'bg-[#004d40] text-white'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold flex-shrink-0 ${isHomePage && !isScrolled ? 'bg-white/20 text-white' : 'bg-[#004d40] text-white'}`}>
                           {user.profilePicture ? (
                             <Image
                               src={user.profilePicture}
@@ -286,25 +290,25 @@ const Navbar: React.FC = () => {
                             <FaUser className="w-4 h-4" />
                           )}
                         </div>
-                        <div className="flex flex-col items-start text-left">
-                          <span className="text-sm font-semibold leading-tight text-primary">
-                            {user.name}
+                        <div className="hidden xl:flex flex-col items-start text-left">
+                          <span className="text-xs xl:text-sm font-semibold leading-tight text-primary">
+                            {user.name.split(' ')[0]}
                           </span>
-                          <span className={`text-xs leading-tight truncate max-w-[120px] ${getUserSubtextColor()}`}>
+                          <span className={`text-xs leading-tight truncate max-w-[100px] ${getUserSubtextColor()}`}>
                             {user.email}
                           </span>
                         </div>
                         <FaChevronDown
-                          className={`w-3 h-3 transition-transform duration-200 ${isUserMenuOpen ? "rotate-180" : ""} ${getUserSubtextColor()}`}
+                          className={`w-3 h-3 transition-transform duration-200 hidden xl:block ${isUserMenuOpen ? "rotate-180" : ""} ${getUserSubtextColor()}`}
                         />
                       </button>
 
                       {/* User Dropdown Menu */}
                       {isUserMenuOpen && (
-                        <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
-                          <div className="p-4 border-b border-gray-100">
+                        <div className={`absolute ${isTablet ? 'right-0' : 'right-0'} mt-2 ${isMobile ? 'w-56' : 'w-64'} bg-white rounded-lg shadow-lg border border-gray-100 z-50 max-h-[80vh] overflow-y-auto`}>
+                          <div className="p-3 lg:p-4 border-b border-gray-100">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold">
+                              <div className="w-10 h-10 bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
                                 {user.profilePicture ? (
                                   <Image
                                     src={user.profilePicture}
@@ -317,14 +321,14 @@ const Navbar: React.FC = () => {
                                   <FaUser className="w-5 h-5" />
                                 )}
                               </div>
-                              <div className="flex flex-col">
-                                <span className="text-sm font-semibold text-gray-900">
+                              <div className="flex flex-col min-w-0">
+                                <span className="text-xs lg:text-sm font-semibold text-gray-900 truncate">
                                   {user.name}
                                 </span>
-                                <span className="text-xs text-gray-600 truncate max-w-[150px]">
+                                <span className="text-xs text-gray-600 truncate">
                                   {user.email}
                                 </span>
-                                <span className="text-xs text-[#004d40] font-medium mt-1 bg-gray-100 px-2 py-1 rounded">
+                                <span className="text-xs text-[#004d40] font-medium mt-1 bg-gray-100 px-2 py-1 rounded inline-block">
                                   {formatRole(user.role)}
                                 </span>
                               </div>
@@ -334,18 +338,18 @@ const Navbar: React.FC = () => {
                           <div className="p-2">
                             <Link
                               href={getDashboardPath()}
-                              className={`flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors ${isActiveLink(getDashboardPath()) ? 'text-[#004d40] font-semibold bg-gray-50' : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'}`}
+                              className={`flex items-center gap-3 px-3 py-2 text-xs lg:text-sm rounded-lg transition-colors ${isActiveLink(getDashboardPath()) ? 'text-[#004d40] font-semibold bg-gray-50' : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'}`}
                               onClick={() => setIsUserMenuOpen(false)}
                             >
-                              <FaTachometerAlt className="w-4 h-4" />
+                              <FaTachometerAlt className="w-4 h-4 flex-shrink-0" />
                               Dashboard
                             </Link>
                             <Link
                               href={`/dashboard/${user.role}/profile`}
-                              className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:text-[#004d40] hover:bg-gray-50 rounded-lg transition-colors"
+                              className="flex items-center gap-3 px-3 py-2 text-xs lg:text-sm text-gray-700 hover:text-[#004d40] hover:bg-gray-50 rounded-lg transition-colors"
                               onClick={() => setIsUserMenuOpen(false)}
                             >
-                              <FaUser className="w-4 h-4" />
+                              <FaUser className="w-4 h-4 flex-shrink-0" />
                               My Profile
                             </Link>
                           </div>
@@ -356,7 +360,7 @@ const Navbar: React.FC = () => {
                                 logout();
                                 setIsUserMenuOpen(false);
                               }}
-                              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs lg:text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             >
                               Logout
                             </button>
@@ -391,8 +395,8 @@ const Navbar: React.FC = () => {
             )}
 
             {/* Mobile & Tablet View (< 1024px): [LOGO] [NOTIFICATION] [HAMBURGER] */}
-            {isMobile && (
-              <div className="flex items-center gap-4">
+            {isMobileOrTablet && (
+              <div className="flex items-center gap-2 lg:gap-4">
                 {isAuthenticated && (
                   <NotificationCenter />
                 )}
@@ -401,13 +405,13 @@ const Navbar: React.FC = () => {
                 <button
                   data-mobile-toggle
                   onClick={toggleMobileMenu}
-                  className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  className={`p-2 rounded-lg hover:bg-gray-100 transition-colors ${isMobile ? 'p-1.5' : 'p-2'}`}
                   aria-label="Toggle menu"
                 >
                   {isMobileMenuOpen ? (
-                    <FaTimes className="w-6 h-6 text-gray-700" />
+                    <FaTimes className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-gray-700`} />
                   ) : (
-                    <FaBars className="w-6 h-6 text-gray-700" />
+                    <FaBars className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-gray-700`} />
                   )}
                 </button>
               </div>
@@ -416,32 +420,32 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile & Tablet Menu (< 1024px) */}
-        {isMobile && isMobileMenuOpen && (
+        {isMobileOrTablet && isMobileMenuOpen && (
           <div
             ref={mobileMenuRef}
-            className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-100 shadow-lg z-40"
+            className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-100 shadow-lg z-40 max-h-[calc(100vh-70px)] overflow-y-auto"
           >
-            <div className="container mx-auto px-4 py-4">
+            <div className={`container mx-auto ${isMobile ? 'px-3' : 'px-4'} ${isMobile ? 'py-3' : 'py-4'}`}>
               {/* User Info - Inside hamburger menu */}
               {isAuthenticated && user && (
-                <div className="mb-6 pb-4 border-b border-gray-100">
-                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
-                    <div className="w-12 h-12 bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold">
+                <div className={`mb-4 pb-4 border-b border-gray-100 ${isMobile ? 'mb-3 pb-3' : ''}`}>
+                  <div className={`flex items-center gap-3 p-3 lg:p-4 bg-gray-50 rounded-lg`}>
+                    <div className={`${isMobile ? 'w-10 h-10' : 'w-12 h-12'} bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0`}>
                       {user.profilePicture ? (
                         <Image
                           src={user.profilePicture}
                           alt={user.name}
-                          width={48}
-                          height={48}
+                          width={isMobile ? 40 : 48}
+                          height={isMobile ? 40 : 48}
                           className="rounded-full object-cover"
                         />
                       ) : (
-                        <FaUser className="w-6 h-6" />
+                        <FaUser className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'}`} />
                       )}
                     </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900">{user.name}</div>
-                      <div className="text-sm text-gray-600 truncate">{user.email}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-gray-900 text-sm lg:text-base truncate">{user.name}</div>
+                      <div className="text-xs lg:text-sm text-gray-600 truncate">{user.email}</div>
                       <div className="text-xs text-[#004d40] font-medium mt-1 bg-gray-100 px-2 py-1 rounded inline-block">
                         {formatRole(user.role)}
                       </div>
@@ -449,34 +453,34 @@ const Navbar: React.FC = () => {
                   </div>
 
                   {/* Quick User Links */}
-                  <div className="mt-4 grid grid-cols-2 gap-2">
+                  <div className={`mt-3 lg:mt-4 grid grid-cols-2 gap-2`}>
                     <Link
                       href={getDashboardPath()}
-                      className={`flex flex-col items-center justify-center p-3 rounded-lg transition-colors ${isActiveLink(getDashboardPath()) ? 'bg-[#004d40] text-white' : 'bg-gray-50 hover:bg-[#004d40] hover:text-white'}`}
+                      className={`flex flex-col items-center justify-center p-2 lg:p-3 rounded-lg transition-colors text-xs lg:text-sm ${isActiveLink(getDashboardPath()) ? 'bg-[#004d40] text-white' : 'bg-gray-50 hover:bg-[#004d40] hover:text-white'}`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <FaTachometerAlt className="w-5 h-5 mb-1" />
-                      <span className="text-sm">Dashboard</span>
+                      <FaTachometerAlt className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} mb-1`} />
+                      <span>Dashboard</span>
                     </Link>
                     <Link
                       href={`/dashboard/${user.role}/profile`}
-                      className="flex flex-col items-center justify-center p-3 bg-gray-50 rounded-lg hover:bg-[#004d40] hover:text-white transition-colors"
+                      className="flex flex-col items-center justify-center p-2 lg:p-3 bg-gray-50 rounded-lg hover:bg-[#004d40] hover:text-white transition-colors text-xs lg:text-sm"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <FaUser className="w-5 h-5 mb-1" />
-                      <span className="text-sm">Profile</span>
+                      <FaUser className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} mb-1`} />
+                      <span>Profile</span>
                     </Link>
                   </div>
                 </div>
               )}
 
               {/* Navigation Links - Inside hamburger menu */}
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1">
                 {navLinks.map((link) => (
-                  <div key={link.href} className="mb-1">
+                  <div key={link.href} className="mb-0.5">
                     <Link
                       href={link.href}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${isActiveLink(link.href) ? "text-[#004d40] bg-gray-50 font-semibold" : "text-gray-700 hover:text-[#004d40] hover:bg-gray-50"}`}
+                      className={`flex items-center gap-3 px-3 lg:px-4 py-2 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm lg:text-base ${isActiveLink(link.href) ? "text-[#004d40] bg-gray-50 font-semibold" : "text-gray-700 hover:text-[#004d40] hover:bg-gray-50"}`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {link.icon}
@@ -485,15 +489,15 @@ const Navbar: React.FC = () => {
 
                     {/* Submenu for About */}
                     {link.subLinks && (
-                      <div className="ml-8 mt-1 space-y-1">
+                      <div className="ml-6 lg:ml-8 mt-0.5 space-y-0.5">
                         {link.subLinks.map((subLink) => (
                           <Link
                             key={subLink.href}
                             href={subLink.href}
-                            className={`flex items-center gap-3 px-4 py-2 text-sm rounded-lg transition-colors ${isActiveLink(subLink.href) ? "text-[#004d40] font-semibold" : "text-gray-600 hover:text-[#004d40]"}`}
+                            className={`flex items-center gap-3 px-4 py-2 text-xs lg:text-sm rounded-lg transition-colors ${isActiveLink(subLink.href) ? "text-[#004d40] font-semibold" : "text-gray-600 hover:text-[#004d40]"}`}
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
-                            <div className="w-1 h-1 bg-[#004d40] rounded-full"></div>
+                            <div className="w-1 h-1 bg-[#004d40] rounded-full flex-shrink-0"></div>
                             {subLink.label}
                           </Link>
                         ))}
@@ -504,10 +508,10 @@ const Navbar: React.FC = () => {
 
                 {/* Auth Buttons - Inside hamburger menu */}
                 {!isAuthenticated && (
-                  <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-gray-100">
+                  <div className={`flex flex-col gap-2 mt-3 lg:mt-4 pt-3 lg:pt-4 border-t border-gray-100`}>
                     <Link
                       href="/auth/login"
-                      className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border font-medium transition-colors ${isActiveLink('/auth/login') ? 'border-[#004d40] text-[#004d40]' : 'border-gray-300 text-gray-700 hover:border-[#004d40] hover:text-[#004d40]'}`}
+                      className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg border font-medium transition-colors text-sm lg:text-base ${isActiveLink('/auth/login') ? 'border-[#004d40] text-[#004d40]' : 'border-gray-300 text-gray-700 hover:border-[#004d40] hover:text-[#004d40]'}`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <FaUser className="w-4 h-4" />
@@ -515,7 +519,7 @@ const Navbar: React.FC = () => {
                     </Link>
                     <Link
                       href="/auth/register"
-                      className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-colors ${isActiveLink('/auth/register') ? 'bg-[#004d40] text-white' : 'bg-[#004d40] text-white hover:bg-[#004d40]/90'}`}
+                      className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg font-medium transition-colors text-sm lg:text-base ${isActiveLink('/auth/register') ? 'bg-[#004d40] text-white' : 'bg-[#004d40] text-white hover:bg-[#004d40]/90'}`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <FaUser className="w-4 h-4" />
@@ -526,13 +530,13 @@ const Navbar: React.FC = () => {
 
                 {/* Logout Button - Inside hamburger menu */}
                 {isAuthenticated && user && (
-                  <div className="mt-4 pt-4 border-t border-gray-100">
+                  <div className={`mt-3 lg:mt-4 pt-3 lg:pt-4 border-t border-gray-100`}>
                     <button
                       onClick={() => {
                         logout();
                         setIsMobileMenuOpen(false);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-red-50 text-red-600 font-medium hover:bg-red-100 transition-colors"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg bg-red-50 text-red-600 font-medium hover:bg-red-100 transition-colors text-sm lg:text-base"
                     >
                       Logout
                     </button>
