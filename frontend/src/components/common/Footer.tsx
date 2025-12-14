@@ -303,9 +303,9 @@ const Footer: React.FC = () => {
                   size="sm"
                   iconPosition="right"
                   className="w-full text-xs sm:text-sm md:text-base py-2 sm:py-2.5"
-                  onClick={() => window.location.href = '/reports/new'}
+                  onClick={() => window.location.href = '/about'}
                 >
-                  Report an Issue
+                  About NagarNirman
                 </Button>
               </div>
             </div>
