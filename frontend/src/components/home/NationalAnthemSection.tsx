@@ -117,7 +117,7 @@ const NationalAnthemSection: React.FC = () => {
       <div className="absolute inset-0 bg-black/50" />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-6 lg:px-12 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+      <div className="relative z-10 container mx-auto px-6 lg:px-0 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
 
         {/* Left: text + audio card */}
         <div className="w-full lg:w-[60%] text-white">
