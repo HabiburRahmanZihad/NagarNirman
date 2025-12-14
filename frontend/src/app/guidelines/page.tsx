@@ -61,7 +61,7 @@ export default function GuidelinesPage() {
                 <div className="h-1 w-24 bg-primary rounded-full"></div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid lg:grid-cols-2 gap-6">
                 {/* Do Column */}
                 <div className="bg-base-300 border border-base-200 rounded-xl p-6 shadow-sm h-full">
                   <div className="flex items-start gap-4">
