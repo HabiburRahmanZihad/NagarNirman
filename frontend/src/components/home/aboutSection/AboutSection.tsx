@@ -62,7 +62,7 @@ export default function AboutSection() {
     { id: "vision", label: "Our Vision" },
   ];
 
-  const youtubeVideoId = "dQw4w9WgXcQ"; // Replace with your actual YouTube video ID
+  const youtubeVideoId = "miO5nPX536o"; // Replace with your actual YouTube video ID
 
   const tabContent = {
     history:
@@ -98,7 +98,7 @@ export default function AboutSection() {
             {/* Main large image - Left side */}
             <div className="absolute top-0 left-0 w-[58%] h-[70%] rounded-3xl overflow-hidden shadow-2xl z-10">
               <Image
-                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
+                src="https://res.cloudinary.com/dc3ul4egd/image/upload/v1765708812/Gemini_Generated_Image_dyktqldyktqldykt_lnz63m.png"
                 alt="Team working together"
                 fill
                 className="object-cover"
@@ -129,7 +129,7 @@ export default function AboutSection() {
 
                 <div className="relative w-full h-full shadow-2xl" style={{ clipPath: 'url(#organic-shape)' }}>
                   <Image
-                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80"
+                    src="https://images.unsplash.com/photo-1588854621349-d2f1d0ba3ece?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Community volunteer"
                     fill
                     className="object-cover"
