@@ -193,7 +193,7 @@ const Navbar: React.FC = () => {
 
           {/* Desktop Navigation Links - Centered */}
           {isDesktop && (
-            <div className="hidden lg:flex items-center justify-center flex-1">
+            <div className="hidden lg:flex items-center justify-center 1">
               {isHomePage && !isScrolled ? (
                 <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-2 py-1 h-15">
                   {navLinks.map((link) => (
@@ -277,7 +277,7 @@ const Navbar: React.FC = () => {
                         onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                         className={`flex items-center gap-2 px-2 xl:px-4 py-2 xl:py-3 rounded-lg hover:bg-white/20 transition-colors duration-200 ${getUserTextColor()}`}
                       >
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold flex-shrink-0 ${isHomePage && !isScrolled ? 'bg-white/20 text-white' : 'bg-[#004d40] text-white'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold shrink-0 ${isHomePage && !isScrolled ? 'bg-white/20 text-white' : 'bg-[#004d40] text-white'}`}>
                           {user.profilePicture ? (
                             <Image
                               src={user.profilePicture}
@@ -290,7 +290,7 @@ const Navbar: React.FC = () => {
                             <FaUser className="w-4 h-4" />
                           )}
                         </div>
-                        <div className="hidden xl:flex flex-col items-start text-left">
+                        <div className="hidden xl:flex col items-start text-left">
                           <span className="text-xs xl:text-sm font-semibold leading-tight text-primary">
                             {user.name.split(' ')[0]}
                           </span>
@@ -308,7 +308,7 @@ const Navbar: React.FC = () => {
                         <div className={`absolute ${isTablet ? 'right-0' : 'right-0'} mt-2 ${isMobile ? 'w-56' : 'w-64'} bg-white rounded-lg shadow-lg border border-gray-100 z-50 max-h-[80vh] overflow-y-auto`}>
                           <div className="p-3 lg:p-4 border-b border-gray-100">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0">
+                              <div className="w-10 h-10 bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold shrink-0">
                                 {user.profilePicture ? (
                                   <Image
                                     src={user.profilePicture}
@@ -321,7 +321,7 @@ const Navbar: React.FC = () => {
                                   <FaUser className="w-5 h-5" />
                                 )}
                               </div>
-                              <div className="flex flex-col min-w-0">
+                              <div className="flex col min-w-0">
                                 <span className="text-xs lg:text-sm font-semibold text-gray-900 truncate">
                                   {user.name}
                                 </span>
@@ -341,7 +341,7 @@ const Navbar: React.FC = () => {
                               className={`flex items-center gap-3 px-3 py-2 text-xs lg:text-sm rounded-lg transition-colors ${isActiveLink(getDashboardPath()) ? 'text-[#004d40] font-semibold bg-gray-50' : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'}`}
                               onClick={() => setIsUserMenuOpen(false)}
                             >
-                              <FaTachometerAlt className="w-4 h-4 flex-shrink-0" />
+                              <FaTachometerAlt className="w-4 h-4 shrink-0" />
                               Dashboard
                             </Link>
                             <Link
@@ -349,7 +349,7 @@ const Navbar: React.FC = () => {
                               className="flex items-center gap-3 px-3 py-2 text-xs lg:text-sm text-gray-700 hover:text-[#004d40] hover:bg-gray-50 rounded-lg transition-colors"
                               onClick={() => setIsUserMenuOpen(false)}
                             >
-                              <FaUser className="w-4 h-4 flex-shrink-0" />
+                              <FaUser className="w-4 h-4 shrink-0" />
                               My Profile
                             </Link>
                           </div>
@@ -430,7 +430,8 @@ const Navbar: React.FC = () => {
               {isAuthenticated && user && (
                 <div className={`mb-4 pb-4 border-b border-gray-100 ${isMobile ? 'mb-3 pb-3' : ''}`}>
                   <div className={`flex items-center gap-3 p-3 lg:p-4 bg-gray-50 rounded-lg`}>
-                    <div className={`${isMobile ? 'w-10 h-10' : 'w-12 h-12'} bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold flex-shrink-0`}>
+                    <div className={`${isMobile ? 'w-10 h-10' : 'w-12 h-12'} bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold
+                    shrink-0`}>
                       {user.profilePicture ? (
                         <Image
                           src={user.profilePicture}
@@ -443,7 +444,7 @@ const Navbar: React.FC = () => {
                         <FaUser className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'}`} />
                       )}
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="1 min-w-0">
                       <div className="font-semibold text-gray-900 text-sm lg:text-base truncate">{user.name}</div>
                       <div className="text-xs lg:text-sm text-gray-600 truncate">{user.email}</div>
                       <div className="text-xs text-[#004d40] font-medium mt-1 bg-gray-100 px-2 py-1 rounded inline-block">
@@ -456,7 +457,8 @@ const Navbar: React.FC = () => {
                   <div className={`mt-3 lg:mt-4 grid grid-cols-2 gap-2`}>
                     <Link
                       href={getDashboardPath()}
-                      className={`flex flex-col items-center justify-center p-2 lg:p-3 rounded-lg transition-colors text-xs lg:text-sm ${isActiveLink(getDashboardPath()) ? 'bg-[#004d40] text-white' : 'bg-gray-50 hover:bg-[#004d40] hover:text-white'}`}
+                      className={`flex col items-center justify-center p-2 lg:p-3 rounded-lg transition-colors text-xs lg:text-sm
+                        ${isActiveLink(getDashboardPath()) ? 'bg-[#004d40] text-white' : 'bg-gray-50 hover:bg-[#004d40] hover:text-white'}`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <FaTachometerAlt className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} mb-1`} />
@@ -464,7 +466,8 @@ const Navbar: React.FC = () => {
                     </Link>
                     <Link
                       href={`/dashboard/${user.role}/profile`}
-                      className="flex flex-col items-center justify-center p-2 lg:p-3 bg-gray-50 rounded-lg hover:bg-[#004d40] hover:text-white transition-colors text-xs lg:text-sm"
+                      className="flex col items-center justify-center p-2 lg:p-3 bg-gray-50 rounded-lg hover:bg-[#004d40]
+                                        hover:text-white transition-colors text-xs lg:text-sm"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <FaUser className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'} mb-1`} />
@@ -475,7 +478,7 @@ const Navbar: React.FC = () => {
               )}
 
               {/* Navigation Links - Inside hamburger menu */}
-              <div className="flex flex-col gap-1">
+              <div className="flex col gap-1">
                 {navLinks.map((link) => (
                   <div key={link.href} className="mb-0.5">
                     <Link
@@ -497,7 +500,7 @@ const Navbar: React.FC = () => {
                             className={`flex items-center gap-3 px-4 py-2 text-xs lg:text-sm rounded-lg transition-colors ${isActiveLink(subLink.href) ? "text-[#004d40] font-semibold" : "text-gray-600 hover:text-[#004d40]"}`}
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
-                            <div className="w-1 h-1 bg-[#004d40] rounded-full flex-shrink-0"></div>
+                            <div className="w-1 h-1 bg-[#004d40] rounded-full shrink-0"></div>
                             {subLink.label}
                           </Link>
                         ))}
@@ -508,7 +511,7 @@ const Navbar: React.FC = () => {
 
                 {/* Auth Buttons - Inside hamburger menu */}
                 {!isAuthenticated && (
-                  <div className={`flex flex-col gap-2 mt-3 lg:mt-4 pt-3 lg:pt-4 border-t border-gray-100`}>
+                  <div className={`flex col gap-2 mt-3 lg:mt-4 pt-3 lg:pt-4 border-t border-gray-100`}>
                     <Link
                       href="/auth/login"
                       className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg border font-medium transition-colors text-sm lg:text-base ${isActiveLink('/auth/login') ? 'border-[#004d40] text-[#004d40]' : 'border-gray-300 text-gray-700 hover:border-[#004d40] hover:text-[#004d40]'}`}
@@ -536,7 +539,8 @@ const Navbar: React.FC = () => {
                         logout();
                         setIsMobileMenuOpen(false);
                       }}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg bg-red-50 text-red-600 font-medium hover:bg-red-100 transition-colors text-sm lg:text-base"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg bg-red-50 text-red-600 font-medium
+                      hover:bg-red-100 transition-colors text-sm lg:text-base"
                     >
                       Logout
                     </button>
