@@ -1175,6 +1175,7 @@ export default function MapSearchPage() {
                   </p>
                 </div>
                 <button
+                  title='cancel'
                   onClick={() => setShowAlert(false)}
                   className={`p-1 rounded-lg ${isDark ? 'hover:bg-red-500/20' : 'hover:bg-red-100'
                     }`}
