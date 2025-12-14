@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import Button from '@/components/common/Button';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -71,7 +70,7 @@ export default function SlideContent({
       className="max-w-2xl"
     >
       <div className="relative">
-        <div className="absolute -inset-4 bg-black/20 rounded-2xl blur-lg -z-10" />
+        <div className="absolute -inset-4 bg-black/5 rounded-2xl blur-lg -z-10" />
 
         <motion.h3
           variants={itemVariants}
