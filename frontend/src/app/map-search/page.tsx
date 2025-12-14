@@ -4,6 +4,7 @@ import { Search, X, MapPin, Activity, CheckCircle, Clock, Info, TrendingUp, BarC
 import divisionsDataJson from '@/data/divisionsData.json';
 import { statisticsAPI } from '@/utils/api';
 import 'leaflet/dist/leaflet.css';
+import type { Map as LeafletMap, Marker, Circle, Control } from 'leaflet';
 
 // Type definitions
 interface District {
@@ -84,8 +85,8 @@ const DIVISIONS_DATA: Division[] = transformDivisionsData();
 
 // Helper function to add markers to map
 const addMarkersToMap = (
-  L: any,
-  mapInstance: any,
+  L: typeof import('leaflet'),
+  mapInstance: LeafletMap,
   divisions: Division[],
   isDark: boolean,
   searchQuery: string,
@@ -93,8 +94,8 @@ const addMarkersToMap = (
   onDivisionClick: (division: Division) => void,
   onDistrictClick: (district: District, division: Division) => void
 ) => {
-  const markers: any[] = [];
-  const circles: any[] = [];
+  const markers: Marker[] = [];
+  const circles: Circle[] = [];
 
   // Always show all divisions and districts when there's a search query
   const shouldShowAllMarkers = searchQuery.length > 0;
@@ -351,10 +352,10 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
   onInvalidSearch
 }) => {
   const [mounted, setMounted] = useState(false);
-  const mapRef = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
-  const circlesRef = useRef<any[]>([]);
-  const legendRef = useRef<any>(null);
+  const mapRef = useRef<LeafletMap | null>(null);
+  const markersRef = useRef<Marker[]>([]);
+  const circlesRef = useRef<Circle[]>([]);
+  const legendRef = useRef<Control | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -395,8 +396,8 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
 
       const L = await import('leaflet');
 
-      // Fix for default markers - using any to bypass TypeScript checks
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      // Fix for default markers - using unknown to bypass TypeScript checks
+      delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
         iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
@@ -407,8 +408,9 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       if (!container) return;
 
       // Check if container already has a map
-      if ((container as any)._leaflet_id) {
-        (container as any)._leaflet_id = null;
+      const containerWithLeaflet = container as HTMLElement & { _leaflet_id?: number | null };
+      if (containerWithLeaflet._leaflet_id) {
+        containerWithLeaflet._leaflet_id = null;
       }
 
       const mapInstance = L.map('map', {
@@ -573,7 +575,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       }
       cleanupMap();
     };
-  }, [mounted, isDark]); // Only depend on mounted and isDark
+  }, [mounted, isDark, divisions, onDistrictClick, onDivisionClick, searchQuery, showDistricts]);
 
   // Separate effect to update legend when divisions data changes
   useEffect(() => {
@@ -583,7 +585,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       const L = await import('leaflet');
 
       // Remove old legend
-      if (legendRef.current) {
+      if (legendRef.current && mapRef.current) {
         mapRef.current.removeControl(legendRef.current);
       }
 
@@ -703,7 +705,9 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
         `;
         return div;
       };
-      legend.addTo(mapRef.current);
+      if (mapRef.current) {
+        legend.addTo(mapRef.current);
+      }
       legendRef.current = legend;
     };
 
@@ -737,19 +741,21 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       }
 
       // Add updated markers
-      const { markers, circles } = addMarkersToMap(
-        L,
-        mapRef.current,
-        divisions,
-        isDark,
-        searchQuery,
-        showDistricts,
-        onDivisionClick,
-        onDistrictClick
-      );
+      if (mapRef.current) {
+        const { markers, circles } = addMarkersToMap(
+          L,
+          mapRef.current,
+          divisions,
+          isDark,
+          searchQuery,
+          showDistricts,
+          onDivisionClick,
+          onDistrictClick
+        );
 
-      markersRef.current = markers;
-      circlesRef.current = circles;
+        markersRef.current = markers;
+        circlesRef.current = circles;
+      }
     };
 
     updateMarkers();
@@ -759,7 +765,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
   useEffect(() => {
     if (mapRef.current && selectedItem) {
       const zoomLevel = selectedItem.type === 'district' ? 12 : 10;
-      const data = selectedItem.data as any;
+      const data = selectedItem.data as Division | District;
       mapRef.current.flyTo([data.lat, data.lng], zoomLevel, {
         duration: 1.8,
         easeLinearity: 0.25
@@ -821,8 +827,6 @@ export default function MapSearchPage() {
   const [isDark] = useState<boolean>(false);
   const [showDistricts, setShowDistricts] = useState<boolean>(false);
   const [divisionsData, setDivisionsData] = useState<Division[]>(DIVISIONS_DATA);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [divisionStats, setDivisionStats] = useState<any>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>('');
 
@@ -840,7 +844,7 @@ export default function MapSearchPage() {
 
             if (stats) {
               const updatedDistricts = division.districts.map(district => {
-                const districtStats = stats.districts?.find((d: any) =>
+                const districtStats = stats.districts?.find((d: District) =>
                   d.name.toLowerCase() === district.name.toLowerCase()
                 );
 
@@ -872,8 +876,6 @@ export default function MapSearchPage() {
       } catch (error) {
         console.error('❌ Error fetching divisions stats:', error);
         setDivisionsData(DIVISIONS_DATA);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -893,7 +895,6 @@ export default function MapSearchPage() {
     setSearchQuery('');
     setShowDistricts(false);
     setSelectedItem(null);
-    setDivisionStats(null);
     setShowAlert(false);
   };
 
@@ -903,7 +904,6 @@ export default function MapSearchPage() {
     // Clear selected item and close sidebar for invalid search
     setSelectedItem(null);
     setShowDistricts(false);
-    setDivisionStats(null);
     setTimeout(() => setShowAlert(false), 5000);
   }, [searchQuery]);
 
@@ -921,7 +921,7 @@ export default function MapSearchPage() {
         const updatedDivision: Division = {
           ...division,
           districts: division.districts.map(district => {
-            const stats = response.data.find((s: any) =>
+            const stats = response.data.find((s: { district?: string; total?: number; pending?: number; completed?: number; priority?: 'high' | 'medium' | 'low' }) =>
               district.name.toLowerCase() === s.district?.toLowerCase()
             );
             if (stats) {
@@ -942,7 +942,6 @@ export default function MapSearchPage() {
             };
           })
         };
-        setDivisionStats(updatedDivision);
         setSelectedItem({ type: 'division', data: updatedDivision });
 
         setDivisionsData(prev => prev.map(d =>
@@ -991,7 +990,6 @@ export default function MapSearchPage() {
   const handleCloseSidebar = () => {
     setSelectedItem(null);
     setShowDistricts(false);
-    setDivisionStats(null);
   };
 
   const [summaryStats, setSummaryStats] = useState({
@@ -1071,8 +1069,8 @@ export default function MapSearchPage() {
 
   return (
     <div className={`container mx-auto min-h-screen transition-all duration-500 px-4 ${isDark
-        ? 'bg-linear-to-br from-gray-950 via-gray-900 to-gray-950'
-        : ''
+      ? 'bg-linear-to-br from-gray-950 via-gray-900 to-gray-950'
+      : ''
       }`}>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0" />
@@ -1080,8 +1078,8 @@ export default function MapSearchPage() {
 
       <header
         className={`bg-primary relative backdrop-blur-xl ${isDark
-            ? ' border-gray-800/50'
-            : ''
+          ? ' border-gray-800/50'
+          : ''
           } border-t-8 border-accent px-4 md:px-8 py-5 shadow-lg rounded-xl my-5`}
       >
         <div>
@@ -1131,7 +1129,7 @@ export default function MapSearchPage() {
                   bgDark: 'bg-green-500/10',
                   bgLight: 'bg-green-50'
                 }
-              ].map((stat, i) => (
+              ].map((stat) => (
                 <div
                   key={stat.label}
                   className={`${isDark ? stat.bgDark : stat.bgLight
@@ -1158,10 +1156,10 @@ export default function MapSearchPage() {
 
       <div className="relative h-[calc(100vh-140px)] mb-10">
         {showAlert && (
-          <div className="absolute top-24 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-[1001] animate-in slide-in-from-top duration-300">
+          <div className="absolute top-24 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-1001 animate-in slide-in-from-top duration-300">
             <div className={`p-4 rounded-xl backdrop-blur-xl ${isDark
-                ? 'bg-red-500/10 border-red-500/30 text-red-200'
-                : 'bg-red-50 border-red-200 text-red-700'
+              ? 'bg-red-500/10 border-red-500/30 text-red-200'
+              : 'bg-red-50 border-red-200 text-red-700'
               } border shadow-lg`}>
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-lg ${isDark ? 'bg-red-500/20' : 'bg-red-100'
@@ -1175,6 +1173,7 @@ export default function MapSearchPage() {
                   </p>
                 </div>
                 <button
+                  type="button"
                   title='cancel'
                   onClick={() => setShowAlert(false)}
                   className={`p-1 rounded-lg ${isDark ? 'hover:bg-red-500/20' : 'hover:bg-red-100'
@@ -1187,11 +1186,11 @@ export default function MapSearchPage() {
           </div>
         )}
 
-        <div className="absolute top-6 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-[1000] flex gap-3">
+        <div className="absolute top-6 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-1000 flex gap-3 pointer-events-auto">
           <div className={`flex-1 relative backdrop-blur-xl ${isDark
-              ? 'bg-gray-900/90 border-gray-700/50'
-              : 'bg-white/90 border-gray-200/50'
-            } rounded-2xl shadow-2xl border`}>
+            ? 'bg-gray-900/90 border-gray-700/50'
+            : 'bg-white/90 border-gray-200/50'
+            } rounded-2xl shadow-2xl border pointer-events-auto`}>
             <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'
               }`} strokeWidth={2.5} />
             <input
@@ -1200,19 +1199,24 @@ export default function MapSearchPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full pl-12 pr-12 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all ${isDark
-                  ? 'bg-transparent text-white placeholder-gray-500'
-                  : 'bg-transparent text-gray-900 placeholder-gray-400'
+                ? 'bg-transparent text-white placeholder-gray-500'
+                : 'bg-transparent text-gray-900 placeholder-gray-400'
                 } font-medium`}
             />
             {searchQuery && (
               <button
-                onClick={handleClearSearch}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleClearSearch();
+                }}
+                type="button"
                 title="Clear search"
                 aria-label="Clear search"
-                className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 rounded-lg ${isDark
-                    ? 'text-gray-400 hover:text-white hover:bg-gray-800'
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
-                  } transition-all`}
+                className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 rounded-lg z-10 ${isDark
+                  ? 'text-gray-400 hover:text-white hover:bg-gray-800'
+                  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                  } transition-all cursor-pointer pointer-events-auto hover:scale-110 active:scale-95`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1236,36 +1240,40 @@ export default function MapSearchPage() {
         {displayItem && (
           <>
             <div
-              onClick={handleCloseSidebar}
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[999]"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  handleCloseSidebar();
+                }
+              }}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm z-999 pointer-events-auto cursor-pointer"
             />
 
             <div
               className={`absolute top-0 left-0 w-full md:w-[460px] h-full ${isDark
-                  ? 'bg-linear-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
-                  : 'bg-linear-to-b from-white/98 via-white/95 to-gray-50/98'
-                } backdrop-blur-2xl shadow-2xl z-[1000] overflow-hidden flex flex-col border-r ${isDark ? 'border-gray-800/50' : 'border-gray-200/50'
-                }`}
+                ? 'bg-linear-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
+                : 'bg-linear-to-b from-white/98 via-white/95 to-gray-50/98'
+                } backdrop-blur-2xl shadow-2xl z-1000 overflow-hidden flex flex-col border-r ${isDark ? 'border-gray-800/50' : 'border-gray-200/50'}`}
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="relative p-6 pb-8">
                 <div
                   className="absolute inset-0 opacity-10"
                   style={{
                     background: `linear-gradient(135deg, ${displayItem.type === 'district'
-                        ? (displayItem.division as Division)?.color || '#6B7280'
-                        : (displayItem.data as Division).color
+                      ? (displayItem.division as Division)?.color || '#6B7280'
+                      : (displayItem.data as Division).color
                       }44 0%, transparent 100%)`
                   }}
                 />
 
-                <div className="relative flex justify-between items-start mb-6 bg-white px-2 py-3 rounded-xl">
+                <div className="relative flex justify-between items-start mb-6">
                   <div className="flex items-center gap-3">
                     <div
                       className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl"
                       style={{
                         background: `linear-gradient(135deg, ${displayItem.type === 'district'
-                            ? (displayItem.division as Division)?.color || '#6B7280'
-                            : (displayItem.data as Division).color
+                          ? (displayItem.division as Division)?.color || '#6B7280'
+                          : (displayItem.data as Division).color
                           } 0%, ${displayItem.type === 'district'
                             ? (displayItem.division as Division)?.color || '#6B7280'
                             : (displayItem.data as Division).color
@@ -1306,13 +1314,18 @@ export default function MapSearchPage() {
                     </div>
                   </div>
                   <button
-                    onClick={handleCloseSidebar}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleCloseSidebar();
+                    }}
                     title="Close sidebar"
                     aria-label="Close sidebar"
-                    className={`p-2.5 rounded-xl ${isDark
-                        ? 'hover:bg-gray-800/80 text-gray-400 hover:text-white'
-                        : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
-                      } transition-all`}
+                    className={`p-2.5 rounded-xl z-20 cursor-pointer pointer-events-auto transition-all ${isDark
+                      ? 'hover:bg-gray-800/80 text-gray-400 hover:text-white'
+                      : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
+                      }`}
                   >
                     <X className="w-5 h-5" strokeWidth={2.5} />
                   </button>
@@ -1350,7 +1363,7 @@ export default function MapSearchPage() {
                       bgDark: 'bg-green-500/10',
                       bgLight: 'bg-green-50'
                     }
-                  ].map((stat, i) => (
+                  ].map((stat) => (
                     <div
                       key={stat.label}
                       className={`p-3 text-center rounded-xl ${isDark ? stat.bgDark : stat.bgLight
@@ -1389,7 +1402,7 @@ export default function MapSearchPage() {
                   </div>
 
                   <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3 custom-scrollbar">
-                    {(displayItem.data as Division).districts.map((district, index) => {
+                    {(displayItem.data as Division).districts.map((district) => {
                       const completionPercent = district.total > 0
                         ? Math.round((district.completed / district.total) * 100)
                         : 0;
@@ -1404,8 +1417,8 @@ export default function MapSearchPage() {
                         <div
                           key={district.name}
                           className={`group relative p-5 rounded-2xl border ${isDark
-                              ? 'bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/80'
-                              : 'bg-white/80 border-gray-200/50 hover:bg-white'
+                            ? 'bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/80'
+                            : 'bg-white/80 border-gray-200/50 hover:bg-white'
                             } backdrop-blur-sm transition-all cursor-pointer overflow-hidden`}
                           onClick={() => handleDistrictClick(district, displayItem.data as Division)}
                         >
@@ -1500,8 +1513,8 @@ export default function MapSearchPage() {
                               </span>
                               <button
                                 className={`text-xs font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all ${isDark
-                                    ? 'text-blue-400 hover:bg-blue-500/10'
-                                    : 'text-blue-600 hover:bg-blue-50'
+                                  ? 'text-blue-400 hover:bg-blue-500/10'
+                                  : 'text-blue-600 hover:bg-blue-50'
                                   }`}
                                 style={{ color: (displayItem.data as Division).color }}
                               >
@@ -1520,8 +1533,8 @@ export default function MapSearchPage() {
               ) : (
                 <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
                   <div className={`p-6 rounded-2xl border ${isDark
-                      ? 'bg-gray-800/50 border-gray-700/50'
-                      : 'bg-white/80 border-gray-200/50'
+                    ? 'bg-gray-800/50 border-gray-700/50'
+                    : 'bg-white/80 border-gray-200/50'
                     } backdrop-blur-sm`}
                   >
                     <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'

@@ -219,19 +219,17 @@ export default function TermsPage() {
                     <button
                       key={section.id}
                       onClick={() => scrollToSection(section.id)}
-                      className={`w-full flex items-center justify-between p-3 rounded-xl text-left transition-all ${
-                        expandedSections.includes(section.id)
+                      className={`w-full flex items-center justify-between p-3 rounded-xl text-left transition-all ${expandedSections.includes(section.id)
                           ? 'bg-linear-to-r from-primary/10 to-secondary/10 border-l-4 border-primary'
                           : 'hover:bg-base-200 border-l-4 border-transparent'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <div
-                          className={`p-2 rounded-lg ${
-                            expandedSections.includes(section.id)
+                          className={`p-2 rounded-lg ${expandedSections.includes(section.id)
                               ? 'bg-primary text-white'
                               : 'bg-base-200 text-neutral'
-                          }`}
+                            }`}
                         >
                           {section.icon}
                         </div>
@@ -240,11 +238,10 @@ export default function TermsPage() {
                         </span>
                       </div>
                       <div
-                        className={`p-1 rounded ${
-                          expandedSections.includes(section.id)
+                        className={`p-1 rounded ${expandedSections.includes(section.id)
                             ? 'bg-primary text-white'
                             : 'bg-base-200 text-neutral'
-                        }`}
+                          }`}
                       >
                         {expandedSections.includes(section.id) ? (
                           <ChevronUp size={16} />
@@ -314,11 +311,10 @@ export default function TermsPage() {
                         ref={(el) => {
                           sectionRefs.current[section.id] = el;
                         }}
-                        className={`border border-base-200 rounded-2xl overflow-hidden transition-all duration-300 ${
-                          expandedSections.includes(section.id)
+                        className={`border border-base-200 rounded-2xl overflow-hidden transition-all duration-300 ${expandedSections.includes(section.id)
                             ? 'ring-2 ring-primary/20'
                             : ''
-                        }`}
+                          }`}
                       >
                         <button
                           onClick={() => toggleSection(section.id)}
@@ -368,33 +364,6 @@ export default function TermsPage() {
                         )}
                       </div>
                     ))}
-
-                    {/* Agreement Section */}
-                    <div className="mt-12 p-8 bg-linear-to-r from-primary/5 to-info/5 rounded-2xl border border-primary/20">
-                      <div className="flex items-start gap-4">
-                        <div className="p-3 bg-base-100 rounded-xl shadow-sm">
-                          <CheckCircle size={24} className="text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold text-info mb-3">
-                            Your Agreement
-                          </h3>
-                          <p className="text-neutral mb-4">
-                            By continuing to use NagarNirman, you acknowledge
-                            that you have read, understood, and agree to be
-                            bound by these Terms of Service.
-                          </p>
-                          <div className="flex items-center gap-4">
-                            <button className="px-8 py-3 bg-linear-to-r from-primary to-info text-white font-semibold rounded-xl hover:shadow-lg transition-all">
-                              I Accept Terms
-                            </button>
-                            <button className="px-8 py-3 border border-base-200 text-neutral font-semibold rounded-xl hover:bg-base-200 transition-all">
-                              Save for Later
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -471,31 +440,6 @@ export default function TermsPage() {
         </div>
       </section>
 
-      {/* Footer CTA */}
-      <footer className="bg-linear-to-r from-primary to-info py-16">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Ready to Join Our Community?
-            </h2>
-            <p className="text-gray-100 text-lg mb-8">
-              Thousands of citizens and problem solvers are already making
-              cities better together.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="px-8 py-4 bg-base-100 text-primary font-bold rounded-xl hover:bg-base-200 shadow-lg hover:shadow-xl transition-all">
-                Accept & Continue
-              </button>
-              <button className="px-8 py-4 bg-transparent border-2 border-base-100 text-base-100 font-bold rounded-xl hover:bg-base-100/10 transition-all">
-                Download PDF Copy
-              </button>
-            </div>
-            <p className="text-gray-200 text-sm mt-8">
-              By proceeding, you confirm acceptance of all terms and conditions.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
