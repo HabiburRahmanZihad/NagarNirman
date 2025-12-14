@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button } from '@/components/common';
+import { Card, Button, FullPageLoading } from '@/components/common';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import {
-  FaFilter, FaSearch, FaSync, FaChevronLeft, FaChevronRight,
+  FaFilter, FaSearch, FaSync, FaPlus, FaChevronLeft, FaChevronRight,
   FaFire, FaCheckCircle, FaClock, FaMapMarkerAlt, FaThumbsUp, FaCalendar,
   FaArrowUp
 } from 'react-icons/fa';
@@ -73,7 +73,7 @@ export default function AllReportsPage() {
   };
 
   // Fetch all reports stats (without pagination)
-  const fetchAllReportsStats = useCallback(async () => {
+  const fetchAllReportsStats = async () => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const params = new URLSearchParams({
@@ -114,10 +114,10 @@ export default function AllReportsPage() {
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
-  }, [filters, searchTerm]);
+  };
 
   // Fetch reports with pagination
-  const fetchReports = useCallback(async (page = 1) => {
+  const fetchReports = async (page = 1) => {
     setIsLoading(true);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
@@ -176,26 +176,25 @@ export default function AllReportsPage() {
         });
       }
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to load reports. Please check your connection.';
-      console.error('❌ Error fetching reports:', error);
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
       toast.error(errorMessage);
       setReports([]);
     } finally {
       setIsLoading(false);
     }
-  }, [filters, searchTerm, pagination.reportsPerPage]);
+  };
 
   useEffect(() => {
     setCurrentPage(1);
     fetchAllReportsStats();
     fetchReports(1);
-  }, [filters, searchTerm, fetchAllReportsStats, fetchReports]);
+  }, [filters]);
 
   useEffect(() => {
     if (currentPage >= 1) {
       fetchReports(currentPage);
     }
-  }, [currentPage, fetchReports]);
+  }, [currentPage]);
 
   const handleResetFilters = () => {
     setSearchTerm('');
@@ -283,12 +282,12 @@ export default function AllReportsPage() {
     <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-8">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="bg-primary flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-t-8 border-accent px-4 md:px-8 py-5 shadow-lg rounded-xl">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4  mb-8 border-b pb-4 bg-white rounded-lg shadow-sm px-6 py-4 border-accent/80">
           <div>
-            <h1 className="text-5xl font-extrabold text-[#ffffff] mb-2">
-              Infrastructure <span className="text-accent">Issues</span>
+            <h1 className="text-5xl font-extrabold text-[#002E2E] mb-2">
+              Infrastructure <span className="text-primary">Issues</span>
             </h1>
-            <p className="text-[#b3b6bb] text-lg">
+            <p className="text-[#6B7280] text-lg">
               Discover and track community infrastructure problems reported across Bangladesh
             </p>
           </div>
