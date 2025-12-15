@@ -283,6 +283,7 @@ export default function AllReportsPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-4 xs:py-6 sm:py-8 md:py-10">
       <div className="container mx-auto px-3 xs:px-4 sm:px-5 md:px-6 lg:px-8">
+
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 xs:mb-7 sm:mb-8 md:mb-10 border-b pb-3 xs:pb-4 sm:pb-5 md:pb-6 bg-white rounded-lg shadow-sm px-4 xs:px-5 sm:px-6 md:px-8 py-3 xs:py-4 sm:py-5 md:py-6 border-accent/80">
           <div>
@@ -527,7 +528,7 @@ export default function AllReportsPage() {
             </div>
 
             {/* Cards Grid - 4 per row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 xs:gap-4 sm:gap-5 md:gap-6 mb-8 xs:mb-10 sm:mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-4 gap-3 xs:gap-4 sm:gap-5 md:gap-6 mb-8 xs:mb-10 sm:mb-12">
               {reports.map((report: Report) => {
                 const severityStyles = getSeverityStyles(report.severity);
                 const statusStyles = getStatusStyles(report.status);
