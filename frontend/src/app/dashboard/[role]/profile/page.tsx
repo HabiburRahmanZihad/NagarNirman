@@ -228,7 +228,7 @@ const ProfilePage = () => {
                 <div className="flex-1 text-center xs:text-left pb-2">
                   <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-primary mb-1 xs:mb-2">{user?.name}</h2>
                   <p className="text-xs xs:text-sm sm:text-base text-[#6B7280] capitalize flex flex-col xs:flex-row items-center xs:items-start gap-1 xs:gap-2 justify-center xs:justify-start">
-                    <span className="px-2 xs:px-3 py-1 bg-primary bg-opacity-10 text-primary rounded-full text-xs sm:text-sm font-semibold">
+                    <span className="px-2 xs:px-3 py-1 bg-primary bg-opacity-10 text-accent rounded-full text-xs sm:text-sm font-semibold">
                       {user?.role}
                     </span>
                   </p>
