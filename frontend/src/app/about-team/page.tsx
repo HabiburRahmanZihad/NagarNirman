@@ -41,17 +41,16 @@ import { Typewriter } from 'react-simple-typewriter';
 const TiltCard = ({ children, className }: { children: React.ReactNode; className?: string }) => {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  
+
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
-  
+
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
-  
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
+    const { width, height } = rect;
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
     const xPct = mouseX / width - 0.5;
@@ -59,7 +58,7 @@ const TiltCard = ({ children, className }: { children: React.ReactNode; classNam
     x.set(xPct);
     y.set(yPct);
   };
-  
+
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
@@ -85,7 +84,7 @@ const TiltCard = ({ children, className }: { children: React.ReactNode; classNam
 const FloatingElements = () => {
   const elements = React.useMemo(() => {
     // Fixed values for consistent server/client rendering
-    const fixedValues = [
+    return [
       { id: 1, x: 10, y: 20, size: 2, delay: 0 },
       { id: 2, x: 30, y: 40, size: 3, delay: 1 },
       { id: 3, x: 50, y: 60, size: 1.5, delay: 2 },
@@ -97,7 +96,6 @@ const FloatingElements = () => {
       { id: 9, x: 60, y: 90, size: 1.2, delay: 0.8 },
       { id: 10, x: 15, y: 45, size: 2.7, delay: 3.5 },
     ];
-    return fixedValues;
   }, []);
 
   return (
@@ -105,7 +103,7 @@ const FloatingElements = () => {
       {elements.map((el) => (
         <motion.div
           key={el.id}
-          className="absolute rounded-full bg-gradient-to-r from-[#004d40]/20 to-[#f2a921]/20"
+          className="absolute rounded-full bg-linear-to-r from-[#004d40]/20 to-[#f2a921]/20"
           style={{
             width: `${el.size}px`,
             height: `${el.size}px`,
@@ -201,7 +199,7 @@ const AboutTeamPage = () => {
 
   // Tech Stack Data
   const TECH_STACK = [
-    { 
+    {
       category: 'Frontend',
       technologies: [
         { name: 'Next.js', icon: <Globe2 className="w-6 h-6" />, color: 'from-black to-gray-800' },
@@ -210,7 +208,7 @@ const AboutTeamPage = () => {
         { name: 'ShadCN/UI', icon: <Layers className="w-6 h-6" />, color: 'from-gray-700 to-gray-900' },
       ]
     },
-    { 
+    {
       category: 'Backend & Database',
       technologies: [
         { name: 'Node.js', icon: <CpuIcon className="w-6 h-6" />, color: 'from-green-600 to-emerald-700' },
@@ -219,7 +217,7 @@ const AboutTeamPage = () => {
         { name: 'Mongoose', icon: <Database className="w-6 h-6" />, color: 'from-red-500 to-red-700' },
       ]
     },
-    { 
+    {
       category: 'Authentication & Security',
       technologies: [
         { name: 'NextAuth.js', icon: <Key className="w-6 h-6" />, color: 'from-blue-500 to-indigo-600' },
@@ -227,7 +225,7 @@ const AboutTeamPage = () => {
         { name: 'Firebase Auth', icon: <Lock className="w-6 h-6" />, color: 'from-yellow-500 to-orange-600' },
       ]
     },
-    { 
+    {
       category: 'Services & APIs',
       technologies: [
         { name: 'Mapbox/Leaflet', icon: <MapPin className="w-6 h-6" />, color: 'from-blue-400 to-blue-600' },
@@ -236,7 +234,7 @@ const AboutTeamPage = () => {
         { name: 'Nodemailer', icon: <Mail className="w-6 h-6" />, color: 'from-red-400 to-red-600' },
       ]
     },
-    { 
+    {
       category: 'State & Deployment',
       technologies: [
         { name: 'Context API', icon: <BarChart3 className="w-6 h-6" />, color: 'from-purple-400 to-purple-600' },
@@ -257,19 +255,19 @@ const AboutTeamPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white text-gray-900 font-sans overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-white text-gray-900 font-sans overflow-hidden">
       <FloatingElements />
 
       {/* Hero Section with Fixed Typewriter */}
-      <section className="relative min-h-[800px] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[600px] sm:min-h-[700px] md:min-h-[800px] flex items-center justify-center overflow-hidden py-12 sm:py-16">
         {/* Animated Background */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 right-0 h-1/3 bg-gradient-to-b from-[#004d40] to-transparent opacity-10" />
-          <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#f2a921] to-transparent opacity-10" />
-          
+          <div className="absolute top-0 left-0 right-0 h-1/3 bg-linear-to-b from-[#004d40] to-transparent opacity-10" />
+          <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-linear-to-t from-[#f2a921] to-transparent opacity-10" />
+
           {/* Animated Orbs */}
           <motion.div
-            className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-[#004d40]/20 to-transparent rounded-full blur-3xl"
+            className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-linear-to-r from-[#004d40]/20 to-transparent rounded-full blur-3xl"
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.3, 0.5, 0.3],
@@ -280,7 +278,7 @@ const AboutTeamPage = () => {
             }}
           />
           <motion.div
-            className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-transparent to-[#f2a921]/20 rounded-full blur-3xl"
+            className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-linear-to-r from-transparent to-[#f2a921]/20 rounded-full blur-3xl"
             animate={{
               scale: [1.2, 1, 1.2],
               opacity: [0.5, 0.3, 0.5],
@@ -291,7 +289,7 @@ const AboutTeamPage = () => {
             }}
           />
         </div>
-        
+
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-6xl mx-auto">
             <motion.div
@@ -302,23 +300,23 @@ const AboutTeamPage = () => {
             >
               {/* Badge */}
               <motion.div
-                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/80 backdrop-blur-sm border border-[#004d40]/20 mb-8 shadow-lg"
+                className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white/80 backdrop-blur-sm border border-[#004d40]/20 mb-6 sm:mb-8 shadow-lg"
                 whileHover={{ scale: 1.05, rotate: 1 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <Sparkles className="w-5 h-5 text-[#f2a921]" />
-                <span className="text-sm font-semibold text-[#004d40] tracking-wider">
+                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#f2a921]" />
+                <span className="text-xs sm:text-sm font-semibold text-[#004d40] tracking-wider">
                   BUILDING THE FUTURE OF URBAN GOVERNANCE
                 </span>
               </motion.div>
-              
+
               {/* Main Title with Fixed Typewriter */}
-              <div className="mb-12">
-                <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-4">
-                  <span className="block text-gray-800 mb-6">Meet The Team</span>
+              <div className="mb-8 sm:mb-10 md:mb-12">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4">
+                  <span className="block text-gray-800 mb-4 sm:mb-6">Meet The Team</span>
                   <div className="relative">
                     <div className="relative inline-block">
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] via-[#00695c] to-[#f2a921]">
+                      <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] via-[#00695c] to-[#f2a921]">
                         <Typewriter
                           words={[
                             "Behind NagarNirman",
@@ -338,7 +336,7 @@ const AboutTeamPage = () => {
                     </div>
                     {/* Animated Bar - Now placed correctly under typewriter text */}
                     <motion.div
-                      className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-64 h-2 bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
+                      className="absolute -bottom-6 sm:-bottom-8 left-1/2 transform -translate-x-1/2 w-48 sm:w-64 h-1.5 sm:h-2 bg-linear-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
                       initial={{ width: 0 }}
                       animate={{ width: '356px' }}
                       transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
@@ -346,14 +344,14 @@ const AboutTeamPage = () => {
                   </div>
                 </h1>
               </div>
-              
+
               {/* Subtitle */}
-              <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12 leading-relaxed">
-                Four passionate students revolutionizing how Bangladesh addresses urban challenges. 
-                We combine cutting-edge technology with deep civic engagement to build 
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-10 md:mb-12 leading-relaxed px-2">
+                Four passionate students revolutionizing how Bangladesh addresses urban challenges.
+                We combine cutting-edge technology with deep civic engagement to build
                 <span className="font-semibold text-[#004d40]"> smarter, more responsive cities.</span>
               </p>
-              
+
               {/* CTA Buttons */}
               <motion.div
                 className="flex flex-col sm:flex-row gap-6 justify-center items-center"
@@ -365,28 +363,28 @@ const AboutTeamPage = () => {
                   href="#team"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="group relative px-8 py-4 bg-gradient-to-r from-[#004d40] to-[#00695c] text-white rounded-full font-semibold shadow-2xl overflow-hidden"
+                  className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-[#004d40] to-[#00695c] text-white rounded-full font-semibold shadow-2xl overflow-hidden text-sm sm:text-base"
                 >
                   <span className="relative z-10 flex items-center gap-3">
                     <Users className="w-5 h-5" />
                     Meet Our Team
                   </span>
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-[#f2a921] to-[#ffb74d]"
+                    className="absolute inset-0 bg-linear-to-r from-[#f2a921] to-[#ffb74d]"
                     initial={{ x: '-100%' }}
                     whileHover={{ x: 0 }}
                     transition={{ duration: 0.3 }}
                   />
                 </motion.a>
-                
+
                 <motion.a
                   href="#tech"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="group px-8 py-4 border-2 border-[#004d40] text-[#004d40] rounded-full font-semibold hover:bg-accent hover:text-white transition-all duration-300 shadow-lg"
+                  className="group px-6 sm:px-8 py-3 sm:py-4 border-2 border-[#004d40] text-[#004d40] rounded-full font-semibold hover:bg-accent hover:text-white transition-all duration-300 shadow-lg text-sm sm:text-base"
                 >
-                  <span className="flex items-center gap-3">
-                    <Code2 className="w-5 h-5" />
+                  <span className="flex items-center gap-2 sm:gap-3">
+                    <Code2 className="w-4 h-4 sm:w-5 sm:h-5" />
                     Our Tech Stack
                   </span>
                 </motion.a>
@@ -397,7 +395,7 @@ const AboutTeamPage = () => {
 
         {/* Scroll Indicator */}
         <motion.div
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+          className="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2 hidden sm:block"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
@@ -405,7 +403,7 @@ const AboutTeamPage = () => {
             <span className="text-sm text-gray-500 font-medium">Scroll</span>
             <div className="w-6 h-10 border-2 border-[#004d40]/30 rounded-full flex justify-center">
               <motion.div
-                className="w-1 h-3 bg-gradient-to-b from-[#004d40] to-[#f2a921] rounded-full mt-2"
+                className="w-1 h-3 bg-linear-to-b from-[#004d40] to-[#f2a921] rounded-full mt-2"
                 animate={{ y: [0, 12, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               />
@@ -415,81 +413,81 @@ const AboutTeamPage = () => {
       </section>
 
       {/* Team Section - Hexagon Grid */}
-      <section id="team" className="py-24 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/50 to-white" />
-        
+      <section id="team" className="py-12 sm:py-16 md:py-24 relative">
+        <div className="absolute inset-0 bg-linear-to-b from-white via-gray-50/50 to-white" />
+
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-10 sm:mb-12 md:mb-16"
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
               <span className="text-gray-900">The </span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] to-[#f2a921]">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] to-[#f2a921]">
                 Dream Team
               </span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
               Meet the passionate students behind Bangladesh&apos;s most innovative civic tech platform
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             {TEAM_MEMBERS.map((member, index) => (
               <TiltCard key={index} className="relative group">
                 {/* Glow Effect */}
-                <div className="absolute -inset-1 bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-3xl opacity-0 group-hover:opacity-30 blur-xl transition duration-500" />
-                
-                <div className="relative bg-white rounded-2xl p-8 shadow-2xl border border-gray-100 group-hover:shadow-3xl transition-all duration-300 h-full overflow-hidden">
+                <div className="absolute -inset-1 bg-linear-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-3xl opacity-0 group-hover:opacity-30 blur-xl transition duration-500" />
+
+                <div className="relative bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border border-gray-100 group-hover:shadow-3xl transition-all duration-300 h-full overflow-hidden">
                   {/* Background Pattern */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#004d40]/5 to-transparent rounded-full -translate-y-16 translate-x-16" />
-                  
+                  <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-linear-to-br from-[#004d40]/5 to-transparent rounded-full -translate-y-12 sm:-translate-y-16 translate-x-12 sm:translate-x-16" />
+
                   {/* Member Header */}
-                  <div className="relative z-10 flex items-start gap-6 mb-8">
+                  <div className="relative z-10 flex items-start gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8">
                     <div className="relative">
-                      <div className={`w-24 h-24 bg-gradient-to-br ${member.color} rounded-2xl p-1.5 shadow-2xl`}>
-                        <div className="w-full h-full bg-white rounded-xl flex items-center justify-center text-5xl">
+                      <div className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-linear-to-br ${member.color} rounded-xl sm:rounded-2xl p-1 sm:p-1.5 shadow-2xl`}>
+                        <div className="w-full h-full bg-white rounded-lg sm:rounded-xl flex items-center justify-center text-2xl sm:text-3xl md:text-5xl">
                           {member.avatar}
                         </div>
                       </div>
                       <motion.div
-                        className="absolute -bottom-3 -right-3 w-12 h-12 bg-gradient-to-br from-[#f2a921] to-[#ffb74d] rounded-full flex items-center justify-center shadow-lg"
+                        className="absolute -bottom-2 -right-2 sm:-bottom-3 sm:-right-3 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-linear-to-br from-[#f2a921] to-[#ffb74d] rounded-full flex items-center justify-center shadow-lg"
                         whileHover={{ rotate: 360 }}
                         transition={{ duration: 0.5 }}
                       >
                         <span className="text-sm font-bold text-white">#{index + 1}</span>
                       </motion.div>
                     </div>
-                    
-                    <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-1">{member.name}</h3>
+
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1 truncate">{member.name}</h3>
                       <p className="text-sm font-semibold text-[#004d40] mb-2">{member.role}</p>
                       <p className="text-xs text-gray-500 font-medium">{member.subRole}</p>
                     </div>
                   </div>
 
                   {/* Stats */}
-                  <div className="relative z-10 mb-6">
-                    <div className="flex justify-start gap-6">
+                  <div className="relative z-10 mb-4 sm:mb-6">
+                    <div className="flex justify-start gap-4 sm:gap-6">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-[#004d40]">{member.stats.commits}+</div>
+                        <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#004d40]">{member.stats.commits}+</div>
                         <div className="text-xs text-gray-500">Commits</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-[#f2a921]">{member.stats.projects}</div>
+                        <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#f2a921]">{member.stats.projects}</div>
                         <div className="text-xs text-gray-500">Projects</div>
                       </div>
                     </div>
                   </div>
 
                   {/* Bio */}
-                  <div className="relative z-10 mb-8">
-                    <p className="text-gray-600 leading-relaxed mb-6">{member.bio}</p>
-                    
+                  <div className="relative z-10 mb-4 sm:mb-6 md:mb-8">
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-6">{member.bio}</p>
+
                     {/* Fun Fact */}
-                    <div className="bg-gradient-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-xl p-4 border border-[#004d40]/10">
+                    <div className="bg-linear-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-[#004d40]/10">
                       <div className="flex items-center gap-2 mb-2">
                         <Lightbulb className="w-4 h-4 text-[#f2a921]" />
                         <span className="text-sm font-semibold text-[#004d40]">Developer Trivia</span>
@@ -499,13 +497,13 @@ const AboutTeamPage = () => {
                   </div>
 
                   {/* Skills */}
-                  <div className="relative z-10 mb-8">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-3 uppercase tracking-wider">Specializations</h4>
+                  <div className="relative z-10 mb-4 sm:mb-6 md:mb-8">
+                    <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3 uppercase tracking-wider">Specializations</h4>
                     <div className="flex flex-wrap gap-2">
                       {member.skills.map((skill, i) => (
                         <motion.span
                           key={i}
-                          className="px-3 py-1.5 bg-gradient-to-r from-gray-50 to-white text-gray-700 text-xs font-semibold rounded-full border border-gray-200 shadow-sm"
+                          className="px-2 sm:px-3 py-1 sm:py-1.5 bg-linear-to-r from-gray-50 to-white text-gray-700 text-xs font-semibold rounded-full border border-gray-200 shadow-sm"
                           whileHover={{ scale: 1.05, backgroundColor: '#004d40', color: 'white' }}
                           transition={{ duration: 0.2 }}
                         >
@@ -533,7 +531,7 @@ const AboutTeamPage = () => {
                           </motion.a>
                         ))}
                       </div>
-                      
+
                       <motion.div
                         className="text-xs text-gray-400 font-medium px-3 py-1.5 rounded-full bg-gray-50"
                         whileHover={{ scale: 1.05 }}
@@ -553,21 +551,21 @@ const AboutTeamPage = () => {
       </section>
 
       {/* Tech Stack Section */}
-      <section id="tech" className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section id="tech" className="py-12 sm:py-16 md:py-20 bg-linear-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-10 sm:mb-12 md:mb-16"
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
               <span className="text-gray-800">Our </span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] to-[#f2a921]">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] to-[#f2a921]">
                 Tech Arsenal
               </span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
               The cutting-edge technologies powering NagarNirman&apos;s civic reporting platform
             </p>
           </motion.div>
@@ -579,19 +577,19 @@ const AboutTeamPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: catIndex * 0.1 }}
-                className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100"
+                className="bg-white rounded-xl sm:rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-xl border border-gray-100"
               >
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#004d40] to-[#f2a921] rounded-xl flex items-center justify-center">
-                    <Code2 className="w-6 h-6 text-white" />
+                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 md:mb-8">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-[#004d40] to-[#f2a921] rounded-lg sm:rounded-xl flex items-center justify-center">
+                    <Code2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900">{category.category}</h3>
-                    <p className="text-gray-500">Modern, scalable, and battle-tested technologies</p>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">{category.category}</h3>
+                    <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">Modern, scalable, and battle-tested technologies</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                   {category.technologies.map((tech, techIndex) => (
                     <motion.div
                       key={techIndex}
@@ -601,16 +599,16 @@ const AboutTeamPage = () => {
                       whileHover={{ y: -5 }}
                       className="group"
                     >
-                      <div className={`absolute inset-0 bg-gradient-to-br ${tech.color} rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition duration-500`} />
-                      
-                      <div className="relative bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-100 group-hover:border-transparent transition-all duration-300 h-full flex flex-col items-center justify-center text-center shadow-sm group-hover:shadow-xl">
-                        <div className={`w-16 h-16 bg-gradient-to-br ${tech.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg`}>
+                      <div className={`absolute inset-0 bg-linear-to-br ${tech.color} rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition duration-500`} />
+
+                      <div className="relative bg-linear-to-br from-gray-50 to-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 border border-gray-100 group-hover:border-transparent transition-all duration-300 h-full flex flex-col items-center justify-center text-center shadow-sm group-hover:shadow-xl">
+                        <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-linear-to-br ${tech.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-2 sm:mb-3 md:mb-4 shadow-lg`}>
                           <div className="text-white">
                             {tech.icon}
                           </div>
                         </div>
                         <h4 className="font-bold text-gray-900 text-lg mb-2">{tech.name}</h4>
-                        
+
                         {/* Usage Description */}
                         <div className="text-xs text-gray-500 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                           {category.category === 'Frontend' && 'Responsive UI Components'}
@@ -632,13 +630,13 @@ const AboutTeamPage = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="mt-16 text-center"
+            className="mt-8 sm:mt-12 md:mt-16 text-center"
           >
-            <div className="bg-gradient-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-2xl p-8 border border-[#004d40]/10">
-              <Building2 className="w-12 h-12 text-[#004d40] mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Modern Architecture</h3>
-              <p className="text-gray-600">
-                Our tech stack follows a modern, scalable architecture with clear separation of concerns, <br></br> 
+            <div className="bg-linear-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-[#004d40]/10">
+              <Building2 className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-[#004d40] mx-auto mb-3 sm:mb-4" />
+              <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Modern Architecture</h3>
+              <p className="text-sm sm:text-base text-gray-600">
+                Our tech stack follows a modern, scalable architecture with clear separation of concerns, <br></br>
                 ensuring maintainability, performance, and the ability to handle thousands of concurrent civic reports.
               </p>
             </div>
@@ -647,28 +645,28 @@ const AboutTeamPage = () => {
       </section>
 
       {/* Impact Stats - Circular Progress */}
-      <section id="impact" className="py-24 relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#004d40]/5 via-transparent to-[#f2a921]/5" />
-        
+      <section id="impact" className="py-12 sm:py-16 md:py-24 relative">
+        <div className="absolute inset-0 bg-linear-to-br from-[#004d40]/5 via-transparent to-[#f2a921]/5" />
+
         <div className="container mx-auto px-4 relative z-10">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-10 sm:mb-12 md:mb-16"
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
               <span className="text-gray-900">Numbers That </span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] to-[#f2a921]">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] to-[#f2a921]">
                 Matter
               </span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
               Quantifying our impact on urban governance across Bangladesh
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
             {PROJECT_STATS.map((stat, index) => (
               <motion.div
                 key={index}
@@ -678,8 +676,8 @@ const AboutTeamPage = () => {
                 whileHover={{ scale: 1.05 }}
                 className="relative"
               >
-                <div className="bg-white rounded-2xl p-8 shadow-2xl border border-gray-100 text-center">
-                  <div className="relative w-20 h-20 mx-auto mb-6">
+                <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border border-gray-100 text-center">
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto mb-3 sm:mb-4 md:mb-6">
                     <svg className="w-full h-full transform -rotate-90">
                       <circle
                         cx="40"
@@ -708,17 +706,17 @@ const AboutTeamPage = () => {
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-                    <CountUp 
-                      end={stat.value} 
-                      duration={2.5} 
+
+                  <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1 sm:mb-2">
+                    <CountUp
+                      end={stat.value}
+                      duration={2.5}
                       separator=","
                       decimals={stat.value === 99.9 ? 1 : 0}
                     />
                     {stat.suffix}
                   </div>
-                  <div className="text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                  <div className="text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wider">
                     {stat.label}
                   </div>
                 </div>
@@ -729,30 +727,30 @@ const AboutTeamPage = () => {
       </section>
 
       {/* Workflow - Simplified Hover Effects */}
-      <section className="py-24 bg-gradient-to-br from-white to-gray-50">
+      <section className="py-12 sm:py-16 md:py-24 bg-linear-to-br from-white to-gray-50">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className="text-center mb-10 sm:mb-12 md:mb-16"
           >
-            <h2 className="text-4xl md:text-6xl font-bold mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
               <span className="text-gray-900">Our </span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] to-[#f2a921]">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] to-[#f2a921]">
                 Magic Process
               </span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
               From report to resolution—how we transform civic complaints into action
             </p>
           </motion.div>
 
           <div className="relative">
             {/* Timeline Line */}
-            <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-[#004d40] via-[#f2a921] to-[#004d40] -translate-x-1/2" />
-            
-            <div className="space-y-12">
+            <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-1 bg-linear-to-b from-[#004d40] via-[#f2a921] to-[#004d40] -translate-x-1/2" />
+
+            <div className="space-y-6 sm:space-y-8 md:space-y-12">
               {WORKFLOW_STEPS.map((step, index) => (
                 <motion.div
                   key={index}
@@ -763,32 +761,32 @@ const AboutTeamPage = () => {
                 >
                   {/* Step Number */}
                   <div className={`absolute lg:static left-4 lg:left-auto top-0 lg:top-auto ${index % 2 === 0 ? 'lg:mr-8' : 'lg:ml-8'} z-10`}>
-                    <div className="w-16 h-16 bg-gradient-to-br from-[#004d40] to-[#f2a921] rounded-2xl flex items-center justify-center shadow-2xl">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-linear-to-br from-[#004d40] to-[#f2a921] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-2xl">
                       <span className="text-2xl font-bold text-white">{step.step}</span>
                     </div>
                   </div>
 
                   {/* Content Card with Simplified Hover */}
-                  <div className={`w-full lg:w-5/12 ml-20 lg:ml-0 ${index % 2 === 0 ? 'lg:pr-8' : 'lg:pl-8'}`}>
+                  <div className={`w-full lg:w-5/12 ml-16 sm:ml-20 lg:ml-0 ${index % 2 === 0 ? 'lg:pr-8' : 'lg:pl-8'}`}>
                     <motion.div
-                      whileHover={{ 
+                      whileHover={{
                         scale: 1.02,
                         y: -3,
-                        transition: { 
-                          type: "spring", 
-                          stiffness: 300, 
+                        transition: {
+                          type: "spring",
+                          stiffness: 300,
                           damping: 20,
-                          duration: 0.3 
-                        } 
+                          duration: 0.3
+                        }
                       }}
                       className="group relative bg-white rounded-2xl p-8 shadow-2xl border border-gray-100 hover:shadow-3xl transition-all duration-300"
                     >
                       {/* Simple Hover Background */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      
+                      <div className="absolute inset-0 bg-linear-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
                       <div className="relative z-10">
                         <div className="flex items-center gap-4 mb-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-[#004d40]/10 to-[#f2a921]/10 rounded-xl flex items-center justify-center group-hover:from-[#004d40]/20 group-hover:to-[#f2a921]/20 transition-all duration-300">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-[#004d40]/10 to-[#f2a921]/10 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:from-[#004d40]/20 group-hover:to-[#f2a921]/20 transition-all duration-300">
                             <div className="text-[#004d40] group-hover:text-[#f2a921] transition-colors duration-300">
                               {step.icon}
                             </div>
@@ -797,14 +795,14 @@ const AboutTeamPage = () => {
                             {step.title}
                           </h3>
                         </div>
-                        
+
                         <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
                           {step.desc}
                         </p>
-                        
+
                         {/* Simple Arrow Indicator */}
                         <div className="absolute -right-4 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="w-8 h-8 bg-gradient-to-br from-[#004d40] to-[#f2a921] rounded-full flex items-center justify-center shadow-lg">
+                          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-linear-to-br from-[#004d40] to-[#f2a921] rounded-full flex items-center justify-center shadow-lg">
                             <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
                             </svg>
@@ -813,7 +811,7 @@ const AboutTeamPage = () => {
                       </div>
                     </motion.div>
                   </div>
-                  
+
                   {/* Timeline Dot */}
                   <div className="hidden lg:flex absolute left-1/2 top-8 transform -translate-x-1/2 w-8 h-8 bg-white rounded-full border-4 border-[#f2a921] items-center justify-center z-10 shadow-xl">
                     <div className="w-3 h-3 bg-[#004d40] rounded-full" />
@@ -826,9 +824,9 @@ const AboutTeamPage = () => {
       </section>
 
       {/* CTA Section - Interactive */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#004d40] via-[#00695c] to-[#004d40]" />
-        
+      <section className="py-12 sm:py-16 md:py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-linear-to-br from-[#004d40] via-[#00695c] to-[#004d40]" />
+
         <motion.div
           className="absolute inset-0"
           style={{
@@ -844,46 +842,46 @@ const AboutTeamPage = () => {
             repeatType: 'reverse',
           }}
         />
-        
+
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
-              className="inline-block p-1 rounded-2xl bg-gradient-to-r from-[#f2a921] to-[#ffb74d] mb-8"
+              className="inline-block p-1 rounded-xl sm:rounded-2xl bg-linear-to-r from-[#f2a921] to-[#ffb74d] mb-6 sm:mb-8"
             >
-              <div className="bg-white rounded-xl px-8 py-3">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#004d40] to-[#f2a921] font-bold text-lg tracking-wider flex items-center gap-3">
-                  <Rocket className="w-5 h-5 text-[#f2a921]" />
+              <div className="bg-white rounded-lg sm:rounded-xl px-4 sm:px-6 md:px-8 py-2 sm:py-3">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] to-[#f2a921] font-bold text-sm sm:text-base md:text-lg tracking-wider flex items-center gap-2 sm:gap-3">
+                  <Rocket className="w-4 h-4 sm:w-5 sm:h-5 text-[#f2a921]" />
                   JOIN THE REVOLUTION
                 </span>
               </div>
             </motion.div>
-            
+
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-4xl md:text-6xl font-bold text-white mb-8"
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-6 sm:mb-8"
             >
               Help Us Build The
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#f2a921] to-white">
+              <span className="block text-transparent bg-clip-text bg-linear-to-r from-[#f2a921] to-white">
                 Future of Cities
               </span>
             </motion.h2>
-            
+
             <motion.p
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="text-xl text-white/80 max-w-2xl mx-auto mb-12 leading-relaxed"
+              className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-8 sm:mb-10 md:mb-12 leading-relaxed px-4"
             >
-              We&apos;re looking for passionate students, developers, and civic enthusiasts 
-              to join our mission. Together, we can build smarter, cleaner, and more 
+              We&apos;re looking for passionate students, developers, and civic enthusiasts
+              to join our mission. Together, we can build smarter, cleaner, and more
               transparent cities across Bangladesh.
             </motion.p>
-            
+
             <motion.div
               className="flex flex-col sm:flex-row gap-6 justify-center items-center"
               initial={{ opacity: 0, y: 20 }}
@@ -894,10 +892,10 @@ const AboutTeamPage = () => {
                 href="mailto:e241024@ugrad.iiuc.ac.bd"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="group relative px-10 py-5 bg-gradient-to-r from-[#f2a921] to-[#ffb74d] text-[#004d40] rounded-2xl font-bold text-lg shadow-2xl overflow-hidden"
+                className="group relative px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 bg-linear-to-r from-[#f2a921] to-[#ffb74d] text-[#004d40] rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base md:text-lg shadow-2xl overflow-hidden"
               >
-                <span className="relative z-10 flex items-center gap-3">
-                  <Mail className="w-6 h-6" />
+                <span className="relative z-10 flex items-center gap-2 sm:gap-3">
+                  <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
                   Apply to Join Our Team
                 </span>
                 <motion.div
@@ -907,28 +905,29 @@ const AboutTeamPage = () => {
                   transition={{ duration: 0.3 }}
                 />
               </motion.a>
-              
+
               <motion.a
                 href="/about"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="group px-10 py-5 border-2 border-white/30 text-white rounded-2xl font-bold text-lg hover:bg-white/10 transition-all duration-300"
+                className="group px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 border-2 border-white/30 text-white rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base md:text-lg hover:bg-white/10 transition-all duration-300"
               >
-                <span className="flex items-center gap-3">
-                  <Heart className="w-6 h-6" />
+                <span className="flex items-center gap-2 sm:gap-3">
+                  <Heart className="w-5 h-5 sm:w-6 sm:h-6" />
                   Support Our Mission
                 </span>
               </motion.a>
             </motion.div>
-            
+
             <motion.div
-              className="mt-16 pt-8 border-t border-white/20"
+              className="mt-10 sm:mt-12 md:mt-16 pt-6 sm:pt-8 border-t border-white/20"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
             >
-              <p className="text-white/60 text-sm font-mono">
-                Open Roles: Frontend Intern • Backend Developer • UI/UX Designer • Community Manager • AI Engineer
+              <p className="text-white/60 text-xs sm:text-sm font-mono px-2">
+                <span className="hidden sm:inline">Open Roles: Frontend Intern • Backend Developer • UI/UX Designer • Community Manager • AI Engineer</span>
+                <span className="sm:hidden">Open Roles: Frontend • Backend • UI/UX • AI</span>
               </p>
             </motion.div>
           </div>
