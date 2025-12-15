@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, FullPageLoading } from '@/components/common';
+import { Card, Button } from '@/components/common';
+import Image from 'next/image';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import {
-  FaFilter, FaSearch, FaSync, FaPlus, FaChevronLeft, FaChevronRight,
+  FaFilter, FaSearch, FaSync, FaChevronLeft, FaChevronRight,
   FaFire, FaCheckCircle, FaClock, FaMapMarkerAlt, FaThumbsUp, FaCalendar,
   FaArrowUp
 } from 'react-icons/fa';
@@ -184,17 +185,18 @@ export default function AllReportsPage() {
     }
   };
 
+
   useEffect(() => {
     setCurrentPage(1);
     fetchAllReportsStats();
     fetchReports(1);
-  }, [filters]);
+  }, [filters]); // fetchAllReportsStats and fetchReports are intentionally excluded to prevent infinite loops
 
   useEffect(() => {
     if (currentPage >= 1) {
       fetchReports(currentPage);
     }
-  }, [currentPage]);
+  }, [currentPage]); // fetchReports is intentionally excluded to prevent infinite loops
 
   const handleResetFilters = () => {
     setSearchTerm('');
@@ -279,22 +281,22 @@ export default function AllReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-4 xs:py-6 sm:py-8 md:py-10">
+      <div className="container mx-auto px-3 xs:px-4 sm:px-5 md:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4  mb-8 border-b pb-4 bg-white rounded-lg shadow-sm px-6 py-4 border-accent/80">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 xs:mb-7 sm:mb-8 md:mb-10 border-b pb-3 xs:pb-4 sm:pb-5 md:pb-6 bg-white rounded-lg shadow-sm px-4 xs:px-5 sm:px-6 md:px-8 py-3 xs:py-4 sm:py-5 md:py-6 border-accent/80">
           <div>
-            <h1 className="text-5xl font-extrabold text-[#002E2E] mb-2">
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#002E2E] mb-2 xs:mb-3">
               Infrastructure <span className="text-primary">Issues</span>
             </h1>
-            <p className="text-[#6B7280] text-lg">
+            <p className="text-[#6B7280] text-xs xs:text-sm sm:text-base md:text-lg">
               Discover and track community infrastructure problems reported across Bangladesh
             </p>
           </div>
           {isAuthenticated && user?.role === 'user' && (
             <Link href="/reports/new">
               <Button variant="primary" className="gap-2 bg-linear-to-br from-primary to-[#1e5d22]
-              text-white px-6 py-3 rounded-lg font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+              text-white px-4 xs:px-5 sm:px-6 py-2 xs:py-2.5 sm:py-3 text-xs xs:text-sm sm:text-base rounded-lg font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                 Report New Issue
               </Button>
             </Link>
@@ -302,7 +304,7 @@ export default function AllReportsPage() {
         </div>
 
         {/* Search and Filter Bar */}
-        <Card className="mb-6 p-6">
+        <Card className="mb-6 xs:mb-7 sm:mb-8 p-4 xs:p-5 sm:p-6 md:p-7">
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 flex gap-2">
@@ -314,7 +316,7 @@ export default function AllReportsPage() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyPress={handleSearchSubmit}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2
+                  className="w-full pl-10 xs:pl-11 sm:pl-12 pr-3 xs:pr-4 py-2 xs:py-2.5 sm:py-3 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2
                   outline-none focus:ring-primary focus:border-primary transition"
                 />
               </div>
@@ -324,51 +326,51 @@ export default function AllReportsPage() {
                   fetchAllReportsStats();
                   fetchReports(1);
                 }}
-                className="px-6 py-3 bg-linear-to-br from-primary to-[#1e5d22] text-white rounded-lg font-bold hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                className="px-3 xs:px-4 sm:px-6 py-2 xs:py-2.5 sm:py-3 bg-linear-to-br from-primary to-[#1e5d22] text-white rounded-lg font-bold hover:shadow-lg transition-all duration-300 flex items-center gap-1 xs:gap-2 text-xs xs:text-sm sm:text-base"
                 title="Search"
                 aria-label="Search reports"
               >
-                <FaSearch className="text-lg" />
+                <FaSearch className="text-sm xs:text-base" />
                 <span className="hidden sm:inline">Search</span>
               </button>
             </div>
 
             {/* Filter Toggle */}
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 xs:gap-2">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`px-6 py-3 rounded-lg font-bold transition-all duration-300 flex items-center gap-2 ${showFilters
+                className={`px-3 xs:px-4 sm:px-6 py-2 xs:py-2.5 sm:py-3 rounded-lg font-bold transition-all duration-300 flex items-center gap-1 xs:gap-2 text-xs xs:text-sm sm:text-base ${showFilters
                   ? 'bg-linear-to-br from-primary to-[#1e5d22] text-white shadow-lg'
                   : 'bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white hover:shadow-md'
                   }`}
               >
-                <FaFilter className="text-lg" />
-                Filters
+                <FaFilter className="text-sm xs:text-base" />
+                <span className="hidden xs:inline">Filters</span>
               </button>
               <button
                 onClick={() => fetchReports(currentPage)}
-                className="px-6 py-3 bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-lg font-bold transition-all duration-300 hover:shadow-md"
+                className="px-3 xs:px-4 sm:px-6 py-2 xs:py-2.5 sm:py-3 bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-lg font-bold transition-all duration-300 hover:shadow-md"
                 title="Refresh"
                 aria-label="Refresh reports"
               >
-                <FaSync className="text-lg" />
+                <FaSync className="text-sm xs:text-base" />
               </button>
             </div>
           </div>
 
           {/* Filter Options */}
           {showFilters && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-200">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 mt-4 xs:mt-5 sm:mt-6 pt-4 xs:pt-5 sm:pt-6 border-t border-gray-200">
               {/* District Filter */}
               <div>
-                <label className="block text-sm font-medium text-[#002E2E] mb-2">
+                <label className="block text-xs xs:text-sm font-medium text-[#002E2E] mb-1.5 xs:mb-2">
                   District
                 </label>
                 <select
                   aria-label="Filter reports by district"
                   value={filters.district}
                   onChange={(e) => setFilters({ ...filters, district: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                 >
                   <option value="">All Districts</option>
                   {allDistricts.map((district) => (
@@ -381,14 +383,14 @@ export default function AllReportsPage() {
 
               {/* Status Filter */}
               <div>
-                <label className="block text-sm font-medium text-[#002E2E] mb-2">
+                <label className="block text-xs xs:text-sm font-medium text-[#002E2E] mb-1.5 xs:mb-2">
                   Status
                 </label>
                 <select
                   aria-label="Filter reports by status"
                   value={filters.status}
                   onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                 >
                   <option value="">All Status</option>
                   <option value="pending">Pending</option>
@@ -401,14 +403,14 @@ export default function AllReportsPage() {
 
               {/* Severity Filter */}
               <div>
-                <label className="block text-sm font-medium text-[#002E2E] mb-2">
+                <label className="block text-xs xs:text-sm font-medium text-[#002E2E] mb-1.5 xs:mb-2">
                   Severity
                 </label>
                 <select
                   aria-label="Filter reports by severity"
                   value={filters.severity}
                   onChange={(e) => setFilters({ ...filters, severity: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                 >
                   <option value="">All Severity</option>
                   <option value="low">🟢 Low</option>
@@ -420,14 +422,14 @@ export default function AllReportsPage() {
 
               {/* Problem Type Filter */}
               <div>
-                <label className="block text-sm font-medium text-[#002E2E] mb-2">
+                <label className="block text-xs xs:text-sm font-medium text-[#002E2E] mb-1.5 xs:mb-2">
                   Problem Type
                 </label>
                 <select
                   aria-label="Filter reports by problem type"
                   value={filters.problemType}
                   onChange={(e) => setFilters({ ...filters, problemType: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                 >
                   <option value="">All Types</option>
                   <option value="road">Road</option>
@@ -442,10 +444,10 @@ export default function AllReportsPage() {
               </div>
 
               {/* Reset Button */}
-              <div className="md:col-span-4">
+              <div className="sm:col-span-2 lg:col-span-4">
                 <button
                   onClick={handleResetFilters}
-                  className="px-6 py-2 bg-linear-to-br from-primary to-[#1e5d22] text-white rounded-lg font-bold transition-all duration-300 hover:shadow-lg"
+                  className="w-full xs:w-auto px-4 xs:px-5 sm:px-6 py-1.5 xs:py-2 bg-linear-to-br from-primary to-[#1e5d22] text-white rounded-lg font-bold text-xs xs:text-sm transition-all duration-300 hover:shadow-lg"
                 >
                   Reset Filters
                 </button>
@@ -455,58 +457,58 @@ export default function AllReportsPage() {
         </Card>
 
         {/* Stats - Enhanced */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-linear-to-br from-green-400 to-green-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 xs:gap-3 sm:gap-4 mb-6 xs:mb-7 sm:mb-8">
+          <div className="bg-linear-to-br from-green-400 to-green-600 rounded-xl p-3 xs:p-4 sm:p-5 md:p-6 text-white shadow-lg hover:shadow-xl transition">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-4xl font-bold">{allReportsStats.total}</div>
-                <div className="text-green-100 text-sm mt-2">Total Reports</div>
+                <div className="text-2xl xs:text-3xl sm:text-4xl font-bold">{allReportsStats.total}</div>
+                <div className="text-green-100 text-xs xs:text-sm mt-1.5 xs:mt-2">Total Reports</div>
               </div>
-              <FaFire className="text-5xl opacity-20" />
+              <FaFire className="text-3xl xs:text-4xl sm:text-5xl opacity-20" />
             </div>
           </div>
-          <div className="bg-linear-to-br from-blue-400 to-blue-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition">
+          <div className="bg-linear-to-br from-blue-400 to-blue-600 rounded-xl p-3 xs:p-4 sm:p-5 md:p-6 text-white shadow-lg hover:shadow-xl transition">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-4xl font-bold">{allReportsStats.pending}</div>
-                <div className="text-blue-100 text-sm mt-2">Pending</div>
+                <div className="text-2xl xs:text-3xl sm:text-4xl font-bold">{allReportsStats.pending}</div>
+                <div className="text-blue-100 text-xs xs:text-sm mt-1.5 xs:mt-2">Pending</div>
               </div>
-              <FaClock className="text-5xl opacity-20" />
+              <FaClock className="text-3xl xs:text-4xl sm:text-5xl opacity-20" />
             </div>
           </div>
-          <div className="bg-linear-to-br from-purple-400 to-purple-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition">
+          <div className="bg-linear-to-br from-purple-400 to-purple-600 rounded-xl p-3 xs:p-4 sm:p-5 md:p-6 text-white shadow-lg hover:shadow-xl transition">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-4xl font-bold">{allReportsStats.inProgress}</div>
-                <div className="text-purple-100 text-sm mt-2">In Progress</div>
+                <div className="text-2xl xs:text-3xl sm:text-4xl font-bold">{allReportsStats.inProgress}</div>
+                <div className="text-purple-100 text-xs xs:text-sm mt-1.5 xs:mt-2">In Progress</div>
               </div>
-              <FaArrowUp className="text-5xl opacity-20" />
+              <FaArrowUp className="text-3xl xs:text-4xl sm:text-5xl opacity-20" />
             </div>
           </div>
-          <div className="bg-linear-to-br from-emerald-400 to-emerald-600 rounded-xl p-6 text-white shadow-lg hover:shadow-xl transition">
+          <div className="bg-linear-to-br from-emerald-400 to-emerald-600 rounded-xl p-3 xs:p-4 sm:p-5 md:p-6 text-white shadow-lg hover:shadow-xl transition">
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-4xl font-bold">{allReportsStats.resolved}</div>
-                <div className="text-emerald-100 text-sm mt-2">Resolved</div>
+                <div className="text-2xl xs:text-3xl sm:text-4xl font-bold">{allReportsStats.resolved}</div>
+                <div className="text-emerald-100 text-xs xs:text-sm mt-1.5 xs:mt-2">Resolved</div>
               </div>
-              <FaCheckCircle className="text-5xl opacity-20" />
+              <FaCheckCircle className="text-3xl xs:text-4xl sm:text-5xl opacity-20" />
             </div>
           </div>
         </div>
 
         {/* Reports Grid - Stunning Cards */}
         {reports.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="text-8xl mb-6 opacity-50">📭</div>
-            <h3 className="text-3xl font-bold text-[#002E2E] mb-4">No Reports Found</h3>
-            <p className="text-[#6B7280] text-lg mb-8">
+          <div className="text-center py-8 xs:py-10 sm:py-12 md:py-16">
+            <div className="text-5xl xs:text-6xl sm:text-7xl md:text-8xl mb-4 xs:mb-5 sm:mb-6 opacity-50">📭</div>
+            <h3 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-[#002E2E] mb-3 xs:mb-4 sm:mb-5">No Reports Found</h3>
+            <p className="text-[#6B7280] text-xs xs:text-sm sm:text-base md:text-lg mb-6 xs:mb-7 sm:mb-8">
               {searchTerm || Object.values(filters).some((f) => f)
                 ? 'Try adjusting your filters or search term'
                 : 'Be the first to report an issue!'}
             </p>
             {isAuthenticated && user?.role === 'user' && (
               <Link href="/reports/new">
-                <Button variant="primary" className="inline-flex items-center gap-2 bg-linear-to-br from-primary to-[#1e5d22] text-white px-6 py-3 rounded-lg font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <Button variant="primary" className="inline-flex items-center gap-2 bg-linear-to-br from-primary to-[#1e5d22] text-white px-4 xs:px-5 sm:px-6 py-2 xs:py-2.5 sm:py-3 text-xs xs:text-sm sm:text-base rounded-lg font-bold hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                   Report New Issue
                 </Button>
               </Link>
@@ -515,17 +517,17 @@ export default function AllReportsPage() {
         ) : (
           <>
             {/* Results Info */}
-            <div className="mb-8 pt-4">
-              <h2 className="text-3xl font-bold text-[#002E2E] mb-3">
+            <div className="mb-6 xs:mb-7 sm:mb-8 pt-3 xs:pt-4 sm:pt-5">
+              <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-[#002E2E] mb-2 xs:mb-3">
                 Reports <span className="text-primary font-extrabold">Listing</span>
               </h2>
-              <p className="text-[#6B7280] text-lg">
+              <p className="text-[#6B7280] text-xs xs:text-sm sm:text-base md:text-lg">
                 Showing <span className="font-bold text-[#002E2E]">{reports.length}</span> of <span className="font-bold text-[#002E2E]">{pagination.totalReports}</span> total reports
               </p>
             </div>
 
             {/* Cards Grid - 4 per row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 xs:gap-4 sm:gap-5 md:gap-6 mb-8 xs:mb-10 sm:mb-12">
               {reports.map((report: Report) => {
                 const severityStyles = getSeverityStyles(report.severity);
                 const statusStyles = getStatusStyles(report.status);
@@ -533,14 +535,15 @@ export default function AllReportsPage() {
 
                 return (
                   <Link key={report._id} href={`/reports/${report._id}`}>
-                    <div className="group h-full bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer overflow-hidden border border-gray-100">
+                    <div className="group h-full bg-white rounded-xl xs:rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer overflow-hidden border border-gray-100">
                       {/* Image Section with Overlay */}
-                      <div className="relative h-48 bg-linear-to-br from-[#F6FFF9] to-[#E8F5E9] overflow-hidden">
+                      <div className="relative h-40 xs:h-44 sm:h-48 bg-linear-to-br from-[#F6FFF9] to-[#E8F5E9] overflow-hidden">
                         {hasImage ? (
-                          <img
+                          <Image
                             src={report.images![0]}
                             alt={report.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            fill
+                            className="object-cover group-hover:scale-110 transition-transform duration-300"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-6xl opacity-30">
@@ -549,59 +552,59 @@ export default function AllReportsPage() {
                         )}
 
                         {/* Severity Badge */}
-                        <div className={`absolute top-3 right-3 ${severityStyles.lightBg} ${severityStyles.text} px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1 shadow-lg`}>
+                        <div className={`absolute top-2 xs:top-2.5 sm:top-3 right-2 xs:right-2.5 sm:right-3 ${severityStyles.lightBg} ${severityStyles.text} px-2 xs:px-2.5 sm:px-3 py-0.5 xs:py-1 rounded-full text-xs xs:text-sm font-bold flex items-center gap-0.5 xs:gap-1 shadow-lg`}>
                           {severityStyles.icon}
                           {report.severity?.charAt(0).toUpperCase() + report.severity?.slice(1)}
                         </div>
 
                         {/* Status Badge */}
-                        <div className={`absolute top-3 left-3 ${statusStyles.bg} ${statusStyles.color} px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg`}>
+                        <div className={`absolute top-2 xs:top-2.5 sm:top-3 left-2 xs:left-2.5 sm:left-3 ${statusStyles.bg} ${statusStyles.color} px-2 xs:px-2.5 sm:px-3 py-0.5 xs:py-1 rounded-full text-xs font-bold flex items-center gap-0.5 xs:gap-1 shadow-lg`}>
                           {statusStyles.icon}
                           {report.status?.charAt(0).toUpperCase() + report.status?.slice(1)}
                         </div>
 
                         {/* Upvotes Badge */}
                         {report.upvotes && report.upvotes.length > 0 && (
-                          <div className="absolute bottom-3 right-3 bg-white bg-opacity-90 backdrop-blur px-3 py-1 rounded-full text-sm font-bold text-primary flex items-center gap-1 shadow-lg">
-                            <FaThumbsUp className="text-lg" />
+                          <div className="absolute bottom-2 xs:bottom-2.5 sm:bottom-3 right-2 xs:right-2.5 sm:right-3 bg-white bg-opacity-90 backdrop-blur px-2 xs:px-2.5 sm:px-3 py-0.5 xs:py-1 rounded-full text-xs xs:text-sm font-bold text-primary flex items-center gap-0.5 xs:gap-1 shadow-lg">
+                            <FaThumbsUp className="text-xs xs:text-sm" />
                             {report.upvotes.length}
                           </div>
                         )}
                       </div>
 
                       {/* Content Section */}
-                      <div className="p-5">
+                      <div className="p-3 xs:p-4 sm:p-5">
                         {/* Title */}
-                        <h3 className="font-bold text-[#002E2E] line-clamp-2 group-hover:text-primary transition mb-2 text-lg">
+                        <h3 className="font-bold text-[#002E2E] line-clamp-2 group-hover:text-primary transition mb-1.5 xs:mb-2 text-sm xs:text-base sm:text-lg">
                           {report.title}
                         </h3>
 
                         {/* Description */}
-                        <p className="text-[#6B7280] text-sm line-clamp-2 mb-4">
+                        <p className="text-[#6B7280] text-xs xs:text-sm line-clamp-2 mb-3 xs:mb-4">
                           {report.description}
                         </p>
 
                         {/* Location */}
-                        <div className="flex items-start gap-2 mb-4 text-sm text-[#6B7280]">
-                          <FaMapMarkerAlt className="text-primary mt-1 shrink-0" />
+                        <div className="flex items-start gap-1.5 xs:gap-2 mb-3 xs:mb-4 text-xs xs:text-sm text-[#6B7280]">
+                          <FaMapMarkerAlt className="text-primary mt-0.5 xs:mt-1 shrink-0 text-xs xs:text-sm" />
                           <div className="line-clamp-2">
-                            <div className="font-semibold text-[#002E2E]">{report.location.district}</div>
+                            <div className="font-semibold text-[#002E2E] text-xs xs:text-sm">{report.location.district}</div>
                             <div className="text-xs">{report.location.address}</div>
                           </div>
                         </div>
 
                         {/* Problem Type Badge */}
-                        <div className="mb-4">
-                          <span className="inline-block bg-primary bg-opacity-10 text-base-100 px-3 py-1 rounded-full text-xs font-semibold">
+                        <div className="mb-3 xs:mb-4">
+                          <span className="inline-block bg-primary bg-opacity-10 text-base-100 px-2.5 xs:px-3 py-0.5 xs:py-1 rounded-full text-xs font-semibold">
                             {report.problemType?.charAt(0).toUpperCase() + report.problemType?.slice(1)}
                           </span>
                         </div>
 
                         {/* Footer with Date */}
-                        <div className="flex items-center justify-between pt-4 border-t border-gray-100 text-xs text-[#6B7280]">
-                          <div className="flex items-center gap-1">
-                            <FaCalendar className="text-primary" />
-                            {formatDate(report.createdAt)}
+                        <div className="flex items-center justify-between pt-2.5 xs:pt-3 sm:pt-4 border-t border-gray-100 text-xs text-[#6B7280]">
+                          <div className="flex items-center gap-0.5 xs:gap-1">
+                            <FaCalendar className="text-primary text-xs" />
+                            <span className="text-xs">{formatDate(report.createdAt)}</span>
                           </div>
                           <div className="text-primary font-bold group-hover:translate-x-1 transition">→</div>
                         </div>
@@ -614,9 +617,9 @@ export default function AllReportsPage() {
 
             {/* Pagination */}
             {pagination.totalPages > 0 && (
-              <div className="flex flex-wrap items-center justify-center gap-3 pb-8">
+              <div className="flex flex-wrap items-center justify-center gap-2 xs:gap-2.5 sm:gap-3 pb-6 xs:pb-7 sm:pb-8">
                 {/* Debug Info */}
-                <div className="w-full text-center text-xs text-[#6B7280] mb-2 opacity-70">
+                <div className="w-full text-center text-xs text-[#6B7280] mb-1.5 xs:mb-2 opacity-70">
                   Total: {pagination.totalReports} | Pages: {pagination.totalPages} | Current: {currentPage}
                 </div>
 
@@ -624,15 +627,15 @@ export default function AllReportsPage() {
                 <button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-primary bg-white text-primary hover:bg-primary hover:text-white hover:shadow-lg disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-primary transition-all duration-300 font-semibold"
+                  className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 px-3 xs:px-4 sm:px-6 py-2 xs:py-2.5 sm:py-3 rounded-lg border-2 border-primary bg-white text-primary hover:bg-primary hover:text-white hover:shadow-lg disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-primary transition-all duration-300 font-semibold text-xs xs:text-sm sm:text-base"
                   aria-label="Previous page"
                 >
-                  <FaChevronLeft className="text-lg" />
-                  Previous
+                  <FaChevronLeft className="text-xs xs:text-sm" />
+                  <span className="hidden xs:inline">Previous</span>
                 </button>
 
                 {/* Page Numbers */}
-                <div className="flex gap-2">
+                <div className="flex gap-1 xs:gap-1.5">
                   {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
                     let pageNumber;
                     if (pagination.totalPages <= 5) {
@@ -648,7 +651,7 @@ export default function AllReportsPage() {
                   }).map((pageNumber, idx, arr) => {
                     if (arr[idx - 1] && pageNumber - arr[idx - 1] > 1) {
                       return (
-                        <span key={`ellipsis-${idx}`} className="px-3 py-2 text-[#6B7280] font-bold">
+                        <span key={`ellipsis-${idx}`} className="px-1.5 xs:px-2 py-1.5 xs:py-2 text-[#6B7280] font-bold text-xs xs:text-sm">
                           ••
                         </span>
                       );
@@ -657,7 +660,7 @@ export default function AllReportsPage() {
                       <button
                         key={pageNumber}
                         onClick={() => setCurrentPage(pageNumber)}
-                        className={`px-4 py-2 rounded-lg font-bold transition-all duration-300 ${currentPage === pageNumber
+                        className={`px-2.5 xs:px-3 sm:px-4 py-1.5 xs:py-2 rounded-lg font-bold transition-all duration-300 text-xs xs:text-sm sm:text-base ${currentPage === pageNumber
                           ? 'bg-linear-to-br from-primary to-[#1e5d22] text-white shadow-lg scale-110'
                           : 'bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white hover:shadow-md'
                           }`}
@@ -674,16 +677,16 @@ export default function AllReportsPage() {
                 <button
                   onClick={() => setCurrentPage(Math.min(pagination.totalPages, currentPage + 1))}
                   disabled={currentPage === pagination.totalPages}
-                  className="flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-primary bg-white text-primary hover:bg-primary hover:text-white hover:shadow-lg disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-primary transition-all duration-300 font-semibold"
+                  className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 px-3 xs:px-4 sm:px-6 py-2 xs:py-2.5 sm:py-3 rounded-lg border-2 border-primary bg-white text-primary hover:bg-primary hover:text-white hover:shadow-lg disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-primary transition-all duration-300 font-semibold text-xs xs:text-sm sm:text-base"
                   aria-label="Next page"
                 >
-                  Next
-                  <FaChevronRight className="text-lg" />
+                  <span className="hidden xs:inline">Next</span>
+                  <FaChevronRight className="text-xs xs:text-sm" />
                 </button>
 
                 {/* Page Info */}
-                <div className="w-full text-center text-sm text-[#6B7280] mt-6">
-                  <span className="inline-block bg-primary bg-opacity-10 text-base-100 px-4 py-2 rounded-full font-bold">
+                <div className="w-full text-center text-xs xs:text-sm md:text-base text-[#6B7280] mt-4 xs:mt-5 sm:mt-6">
+                  <span className="inline-block bg-primary bg-opacity-10 text-base-300 px-3 xs:px-4 py-1.5 xs:py-2 rounded-full font-bold">
                     Page <span className="text-base-300">{currentPage}</span> of <span className="text-base-100">{pagination.totalPages}</span>
                   </span>
                 </div>
