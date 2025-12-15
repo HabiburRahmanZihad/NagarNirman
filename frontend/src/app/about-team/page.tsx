@@ -921,100 +921,280 @@ const AboutTeamPage = () => {
         </div>
       </section>
 
-      {/* Workflow - Simplified Hover Effects */}
-      <section className="py-12 sm:py-16 md:py-24 bg-linear-to-br from-white to-gray-50">
-        <div className="container mx-auto px-4">
+      {/* Workflow - BOSS LEVEL UI/UX */}
+      <section className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
+        {/* Epic Background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-linear-to-br from-[#004d40] via-[#00695c] to-[#004d40]" />
+          {/* Animated Mesh Gradient */}
+          <div className="absolute inset-0 opacity-30">
+            <motion.div
+              className="absolute top-0 left-0 w-[500px] h-[500px] bg-[#f2a921] rounded-full mix-blend-multiply filter blur-[128px]"
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 4, repeat: Infinity }}
+            />
+            <motion.div
+              className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#00897b] rounded-full mix-blend-multiply filter blur-[128px]"
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 4, repeat: Infinity, delay: 2 }}
+            />
+            <motion.div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#f2a921]/50 rounded-full mix-blend-multiply filter blur-[128px]"
+              animate={{ opacity: [0.3, 0.6, 0.3] }}
+              transition={{ duration: 4, repeat: Infinity, delay: 4 }}
+            />
+          </div>
+          {/* Grid Pattern Overlay */}
+          <div className="absolute inset-0 opacity-10 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-size-[50px_50px]" />
+        </div>
+
+        {/* Floating Particles */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(12)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-white/40 rounded-full"
+              style={{
+                left: `${8 + i * 8}%`,
+                top: `${15 + (i % 4) * 20}%`,
+              }}
+              animate={{
+                y: [-30, 30, -30],
+                x: [-10, 10, -10],
+                opacity: [0.2, 0.8, 0.2],
+              }}
+              transition={{
+                duration: 5 + i * 0.5,
+                repeat: Infinity,
+                delay: i * 0.3,
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          {/* Section Header - Jaw Dropping */}
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-10 sm:mb-12 md:mb-16"
+            className="text-center mb-16 sm:mb-20 md:mb-28"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
-              <span className="text-gray-900">Our </span>
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] to-[#f2a921]">
-                Magic Process
+            {/* Glowing Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 mb-8 shadow-[0_0_30px_rgba(242,169,33,0.3)]"
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              >
+                <Sparkles className="w-5 h-5 text-[#f2a921]" />
+              </motion.div>
+              <span className="text-sm font-bold text-white tracking-[0.2em] uppercase">How The Magic Happens</span>
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_10px_rgba(74,222,128,0.8)]" />
+            </motion.div>
+
+            {/* Massive Title */}
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-6 sm:mb-8">
+              <span className="text-white drop-shadow-2xl">Our </span>
+              <span className="relative inline-block">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-[#f2a921] via-[#ffb74d] to-[#f2a921]">
+                  Magic Process
+                </span>
+                <motion.span
+                  className="absolute -bottom-2 left-0 right-0 h-1.5 bg-linear-to-r from-[#f2a921] via-white to-[#f2a921] rounded-full"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  transition={{ delay: 0.5, duration: 0.8 }}
+                />
               </span>
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              From report to resolution—how we transform civic complaints into action
+
+            <p className="text-lg sm:text-xl md:text-2xl text-white/70 max-w-3xl mx-auto px-4 font-light leading-relaxed">
+              From report to resolution — watch how we transform
+              <span className="text-[#f2a921] font-semibold"> civic complaints</span> into
+              <span className="text-white font-semibold"> real action</span>
             </p>
           </motion.div>
 
-          <div className="relative">
-            {/* Timeline Line */}
-            <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-1 bg-linear-to-b from-[#004d40] via-[#f2a921] to-[#004d40] -translate-x-1/2" />
+          {/* Workflow Cards - Premium Hexagonal Flow */}
+          <div className="relative max-w-6xl mx-auto">
+            {/* Central Glowing Line */}
+            <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 -translate-x-1/2 z-0">
+              <motion.div
+                className="w-1 h-full bg-linear-to-b from-[#f2a921] via-white/50 to-[#f2a921] rounded-full shadow-[0_0_20px_rgba(242,169,33,0.5)]"
+                initial={{ scaleY: 0 }}
+                whileInView={{ scaleY: 1 }}
+                transition={{ duration: 1.5 }}
+              />
+              {/* Animated Pulse along line */}
+              <motion.div
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#f2a921] rounded-full shadow-[0_0_20px_rgba(242,169,33,0.8)]"
+                animate={{ y: ['0%', '100%'], opacity: [1, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              />
+            </div>
 
-            <div className="space-y-6 sm:space-y-8 md:space-y-12">
+            <div className="space-y-8 sm:space-y-12 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-y-16">
               {WORKFLOW_STEPS.map((step, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className={`relative flex flex-col lg:flex-row items-center ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}
+                  initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.6, delay: index * 0.15 }}
+                  className={`relative ${index % 2 === 0 ? 'lg:pr-16 lg:text-right' : 'lg:pl-16 lg:col-start-2'}`}
                 >
-                  {/* Step Number */}
-                  <div className={`absolute lg:static left-4 lg:left-auto top-0 lg:top-auto ${index % 2 === 0 ? 'lg:mr-8' : 'lg:ml-8'} z-10`}>
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-linear-to-br from-[#004d40] to-[#f2a921] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-2xl">
-                      <span className="text-2xl font-bold text-white">{step.step}</span>
-                    </div>
-                  </div>
-
-                  {/* Content Card with Simplified Hover */}
-                  <div className={`w-full lg:w-5/12 ml-16 sm:ml-20 lg:ml-0 ${index % 2 === 0 ? 'lg:pr-8' : 'lg:pl-8'}`}>
+                  {/* Timeline Connector Dot */}
+                  <div className={`hidden lg:flex absolute top-1/2 -translate-y-1/2 z-20 ${index % 2 === 0 ? 'right-0 translate-x-1/2' : 'left-0 -translate-x-1/2'}`}>
                     <motion.div
-                      whileHover={{
-                        scale: 1.02,
-                        y: -3,
-                        transition: {
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 20,
-                          duration: 0.3
-                        }
-                      }}
-                      className="group relative bg-white rounded-2xl p-8 shadow-2xl border border-gray-100 hover:shadow-3xl transition-all duration-300"
+                      className="relative"
+                      whileHover={{ scale: 1.2 }}
                     >
-                      {/* Simple Hover Background */}
-                      <div className="absolute inset-0 bg-linear-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                      <div className="relative z-10">
-                        <div className="flex items-center gap-4 mb-4">
-                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-[#004d40]/10 to-[#f2a921]/10 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:from-[#004d40]/20 group-hover:to-[#f2a921]/20 transition-all duration-300">
-                            <div className="text-[#004d40] group-hover:text-[#f2a921] transition-colors duration-300">
-                              {step.icon}
-                            </div>
-                          </div>
-                          <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#004d40] transition-colors duration-300">
-                            {step.title}
-                          </h3>
-                        </div>
-
-                        <p className="text-gray-600 group-hover:text-gray-700 transition-colors duration-300">
-                          {step.desc}
-                        </p>
-
-                        {/* Simple Arrow Indicator */}
-                        <div className="absolute -right-4 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="w-6 h-6 sm:w-8 sm:h-8 bg-linear-to-br from-[#004d40] to-[#f2a921] rounded-full flex items-center justify-center shadow-lg">
-                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </div>
-                        </div>
+                      {/* Outer Glow Ring */}
+                      <motion.div
+                        className="absolute inset-0 w-16 h-16 -m-4 rounded-full bg-[#f2a921]/20"
+                        animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0.2, 0.5] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                      {/* Main Dot */}
+                      <div className="w-8 h-8 bg-linear-to-br from-[#f2a921] to-[#ffb74d] rounded-full border-4 border-white shadow-[0_0_25px_rgba(242,169,33,0.6)] flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full" />
                       </div>
                     </motion.div>
                   </div>
 
-                  {/* Timeline Dot */}
-                  <div className="hidden lg:flex absolute left-1/2 top-8 transform -translate-x-1/2 w-8 h-8 bg-white rounded-full border-4 border-[#f2a921] items-center justify-center z-10 shadow-xl">
-                    <div className="w-3 h-3 bg-[#004d40] rounded-full" />
-                  </div>
+                  {/* Premium Card */}
+                  <motion.div
+                    whileHover={{
+                      scale: 1.03,
+                      y: -8,
+                      transition: { type: "spring", stiffness: 300, damping: 20 }
+                    }}
+                    className="group relative"
+                  >
+                    {/* Card Glow Effect */}
+                    <div className="absolute -inset-1 bg-linear-to-r from-[#f2a921] via-white/50 to-[#f2a921] rounded-3xl opacity-0 group-hover:opacity-70 blur-xl transition-all duration-500" />
+
+                    {/* Glassmorphism Card */}
+                    <div className="relative bg-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-white/20 group-hover:border-[#f2a921]/50 transition-all duration-500 overflow-hidden">
+                      {/* Animated Background Gradient */}
+                      <div className="absolute inset-0 bg-linear-to-br from-white/5 via-transparent to-[#f2a921]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                      {/* Floating Sparkles inside card */}
+                      <motion.div
+                        className="absolute top-4 right-4 text-[#f2a921]/30 group-hover:text-[#f2a921]/60 transition-colors"
+                        animate={{ rotate: [0, 15, -15, 0] }}
+                        transition={{ duration: 4, repeat: Infinity }}
+                      >
+                        <Sparkles className="w-6 h-6" />
+                      </motion.div>
+
+                      <div className={`relative z-10 ${index % 2 === 0 ? 'lg:flex lg:flex-row-reverse lg:items-start lg:gap-6' : 'lg:flex lg:items-start lg:gap-6'}`}>
+                        {/* Step Number Badge */}
+                        <motion.div
+                          className="mb-4 lg:mb-0 inline-flex lg:shrink-0"
+                          whileHover={{ rotate: [0, -10, 10, 0] }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <div className="relative">
+                            {/* Rotating Border */}
+                            <motion.div
+                              className="absolute -inset-1 bg-linear-to-r from-[#f2a921] via-white to-[#f2a921] rounded-2xl opacity-80"
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                            />
+                            <div className="relative w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-[#004d40] to-[#00695c] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-2xl">
+                              <span className="text-2xl sm:text-3xl font-black text-white">{step.step}</span>
+                            </div>
+                          </div>
+                        </motion.div>
+
+                        {/* Content */}
+                        <div className={`flex-1 ${index % 2 === 0 ? 'lg:text-right' : ''}`}>
+                          {/* Icon + Title Row */}
+                          <div className={`flex items-center gap-4 mb-4 ${index % 2 === 0 ? 'lg:flex-row-reverse' : ''}`}>
+                            <motion.div
+                              className="w-12 h-12 sm:w-14 sm:h-14 bg-white/10 backdrop-blur-xl rounded-xl sm:rounded-2xl flex items-center justify-center border border-white/20 group-hover:border-[#f2a921]/50 group-hover:bg-[#f2a921]/20 transition-all duration-300"
+                              whileHover={{ scale: 1.1, rotate: 5 }}
+                            >
+                              <div className="text-white group-hover:text-[#f2a921] transition-colors duration-300">
+                                {step.icon}
+                              </div>
+                            </motion.div>
+                            <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-[#f2a921] transition-colors duration-300">
+                              {step.title}
+                            </h3>
+                          </div>
+
+                          {/* Description */}
+                          <p className="text-white/70 group-hover:text-white/90 transition-colors duration-300 text-base sm:text-lg leading-relaxed mb-5">
+                            {step.desc}
+                          </p>
+
+                          {/* Progress Indicator */}
+                          <div className={`flex items-center gap-3 ${index % 2 === 0 ? 'lg:justify-end' : ''}`}>
+                            <div className="flex-1 lg:flex-none lg:w-32 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                              <motion.div
+                                className="h-full bg-linear-to-r from-[#f2a921] to-[#ffb74d] rounded-full"
+                                initial={{ width: 0 }}
+                                whileInView={{ width: '100%' }}
+                                transition={{ duration: 1, delay: index * 0.2 }}
+                              />
+                            </div>
+                            <span className="text-xs sm:text-sm font-bold text-[#f2a921]">Step {index + 1}/6</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Hover Arrow */}
+                      <motion.div
+                        className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 ${index % 2 === 0 ? '-left-4 rotate-180' : '-right-4'}`}
+                        animate={{ x: [0, 5, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        <div className="w-10 h-10 bg-[#f2a921] rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(242,169,33,0.6)]">
+                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </motion.div>
+                    </div>
+                  </motion.div>
                 </motion.div>
               ))}
             </div>
           </div>
+
+          {/* Bottom Summary Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="mt-20 sm:mt-28 flex flex-wrap justify-center gap-6 sm:gap-10"
+          >
+            {[
+              { value: '<2min', label: 'Report Time', icon: <Zap className="w-5 h-5" /> },
+              { value: '24h', label: 'Avg Response', icon: <Target className="w-5 h-5" /> },
+              { value: '98%', label: 'Resolution', icon: <CheckCircle className="w-5 h-5" /> },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.1, y: -5 }}
+                className="group flex items-center gap-4 px-6 sm:px-8 py-4 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 hover:border-[#f2a921]/50 transition-all duration-300"
+              >
+                <div className="w-12 h-12 bg-[#f2a921]/20 rounded-xl flex items-center justify-center text-[#f2a921] group-hover:bg-[#f2a921] group-hover:text-white transition-all duration-300">
+                  {stat.icon}
+                </div>
+                <div>
+                  <div className="text-2xl sm:text-3xl font-black text-white">{stat.value}</div>
+                  <div className="text-xs sm:text-sm text-white/50 uppercase tracking-wider">{stat.label}</div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
