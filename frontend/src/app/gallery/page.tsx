@@ -32,6 +32,20 @@ interface GalleryItem {
   fullDate?: string;
 }
 
+// Problem type icons mapping
+const problemTypeIcons: Record<string, string> = {
+  'Road Damage': 'M13 10V3L4 14h7v7l9-11h-7z',
+  'Water Logging': 'M20 16v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2m16 0v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2m16 0H4m16 0h4M4 16H0',
+  'Garbage': 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 011.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16',
+  'Electricity': 'M13 10V3L4 14h7v7l9-11h-7z',
+  'Sewage': 'M20 16v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2m16 0v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2m16 0H4m16 0h4M4 16H0',
+  'Safety Hazard': 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z',
+  'Drainage': 'M20 16v-2a2 2 0 00-2-2H6a2 2 0 00-2 2v2m16 0v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2m16 0H4m16 0h4M4 16H0',
+  'Public Transport': 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4',
+  'Street Light': 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
+  'Parks & Recreation': 'M12 6v6m0 0v6m0-6h6m-6 0H6',
+};
+
 const GalleryPage = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
@@ -43,6 +57,7 @@ const GalleryPage = () => {
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isBodyOverflowHidden, setIsBodyOverflowHidden] = useState(false);
 
   // Extract unique problem types for filters
   const [filters, setFilters] = useState<string[]>(['All']);
@@ -113,6 +128,13 @@ const GalleryPage = () => {
     fetchReports();
   }, [fetchReports]);
 
+  // Fix scroll when component unmounts or lightbox closes
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   // Filter gallery items
   const filteredItems = activeFilter === 'All' 
     ? galleryItems 
@@ -127,13 +149,15 @@ const GalleryPage = () => {
     setCurrentIndex(index);
     setSelectedItem(item);
     setLightboxOpen(true);
+    setIsBodyOverflowHidden(true);
     document.body.style.overflow = 'hidden';
   };
 
-  // Close lightbox
+  // Close lightbox - FIXED: Properly restore scroll
   const closeLightbox = () => {
     setLightboxOpen(false);
     setSelectedItem(null);
+    setIsBodyOverflowHidden(false);
     document.body.style.overflow = 'unset';
   };
 
@@ -168,32 +192,32 @@ const GalleryPage = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightboxOpen, currentIndex]);
 
-  // Get severity color with strong highlights
+  // Get severity color with proper bg classes - FIXED
   const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'Critical': return {
-        bg: 'bg-red-500',
+    switch (severity?.toLowerCase()) {
+      case 'critical': return {
+        bg: 'bg-red-600',
         text: 'text-white',
-        border: 'border-red-600',
-        glow: 'shadow-lg shadow-red-500/30'
+        border: 'border-red-700',
+        glow: 'shadow-lg shadow-red-600/40'
       };
-      case 'High': return {
-        bg: 'bg-red-400',
-        text: 'text-white',
-        border: 'border-red-500',
-        glow: 'shadow-lg shadow-red-400/30'
-      };
-      case 'Medium': return {
+      case 'high': return {
         bg: 'bg-orange-500',
         text: 'text-white',
         border: 'border-orange-600',
-        glow: 'shadow-lg shadow-orange-500/30'
+        glow: 'shadow-lg shadow-orange-500/40'
       };
-      case 'Low': return {
+      case 'medium': return {
+        bg: 'bg-yellow-500',
+        text: 'text-white',
+        border: 'border-yellow-600',
+        glow: 'shadow-lg shadow-yellow-500/40'
+      };
+      case 'low': return {
         bg: 'bg-green-500',
         text: 'text-white',
         border: 'border-green-600',
-        glow: 'shadow-lg shadow-green-500/30'
+        glow: 'shadow-lg shadow-green-500/40'
       };
       default: return {
         bg: 'bg-gray-500',
@@ -204,34 +228,51 @@ const GalleryPage = () => {
     }
   };
 
-  // Get status color
+  // Get status color - FIXED: Added colors for lightbox
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Resolved': return {
         bg: 'bg-green-100',
         text: 'text-green-800',
         border: 'border-green-200',
-        accent: '#059669'
+        accent: '#059669',
+        lightboxBg: 'bg-green-600',
+        lightboxText: 'text-white',
+        lightboxBorder: 'border-green-700'
       };
       case 'In Progress': return {
         bg: 'bg-blue-100',
         text: 'text-blue-800',
         border: 'border-blue-200',
-        accent: '#2563eb'
+        accent: '#2563eb',
+        lightboxBg: 'bg-blue-600',
+        lightboxText: 'text-white',
+        lightboxBorder: 'border-blue-700'
       };
       case 'Pending': return {
         bg: 'bg-amber-100',
         text: 'text-amber-800',
         border: 'border-amber-200',
-        accent: '#d97706'
+        accent: '#d97706',
+        lightboxBg: 'bg-amber-600',
+        lightboxText: 'text-white',
+        lightboxBorder: 'border-amber-700'
       };
       default: return {
         bg: 'bg-gray-100',
         text: 'text-gray-800',
         border: 'border-gray-200',
-        accent: '#6b7280'
+        accent: '#6b7280',
+        lightboxBg: 'bg-gray-600',
+        lightboxText: 'text-white',
+        lightboxBorder: 'border-gray-700'
       };
     }
+  };
+
+  // Get icon for problem type
+  const getProblemTypeIcon = (problemType: string) => {
+    return problemTypeIcons[problemType] || 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z';
   };
 
   // Calculate stats
@@ -277,7 +318,7 @@ const GalleryPage = () => {
   }
 
   return (
-    <section className="bg-white py-16">
+    <section className={`bg-white py-16 ${isBodyOverflowHidden ? '' : ''}`}>
       <div className="container mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
         {/* Header + filters */}
         <div className="flex flex-col gap-8">
@@ -440,24 +481,27 @@ const GalleryPage = () => {
                     {/* Dark Overlay - Shows on hover */}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/70 transition-all duration-500" />
                     
-                    {/* Top Left - Problem Type (Category) */}
-                    <div className="absolute top-4 left-4">
+                    {/* Top Left - Problem Type (Category) with Icon - HIDES ON HOVER */}
+                    <div className="absolute top-4 left-4 transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:-translate-y-2">
                       <div 
-                        className="px-3 py-1.5 rounded-full backdrop-blur-sm border shadow-sm"
+                        className="px-3 py-1.5 rounded-full backdrop-blur-sm border shadow-sm flex items-center gap-2"
                         style={{ 
                           backgroundColor: '#004d40',
                           borderColor: '#004d40',
                           color: 'white'
                         }}
                       >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={getProblemTypeIcon(item.problemType)} />
+                        </svg>
                         <span className="text-xs font-semibold tracking-wide">
                           {item.problemType}
                         </span>
                       </div>
                     </div>
 
-                    {/* Top Right - Severity Badge with Strong Colors */}
-                    <div className="absolute top-4 right-4">
+                    {/* Top Right - Severity Badge - HIDES ON HOVER */}
+                    <div className="absolute top-4 right-4 transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:-translate-y-2">
                       <div className={`px-3 py-1.5 rounded-full border ${severityColors.bg} ${severityColors.text} ${severityColors.border} ${severityColors.glow}`}>
                         <span className="text-xs font-bold tracking-wide flex items-center gap-1">
                           <div className="w-2 h-2 rounded-full bg-white/90"></div>
@@ -652,9 +696,10 @@ const GalleryPage = () => {
                   </svg>
                 </button>
                 
+                {/* FIXED: Added separate close X button */}
                 <button
                   onClick={closeLightbox}
-                  className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300 text-white group ml-4"
+                  className="p-3 rounded-lg bg-red-500/20 hover:bg-red-500/30 transition-all duration-300 text-white group ml-2"
                   aria-label="Close lightbox"
                 >
                   <svg className="w-6 h-6 group-hover:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -692,7 +737,8 @@ const GalleryPage = () => {
                   <div className="px-4 py-2 rounded-lg font-bold text-white" style={{ backgroundColor: '#004d40' }}>
                     {selectedItem.problemType}
                   </div>
-                  <div className={`px-4 py-2 rounded-lg font-bold ${getStatusColor(selectedItem.status).bg} ${getStatusColor(selectedItem.status).text}`}>
+                  {/* FIXED: Status badge with proper colors */}
+                  <div className={`px-4 py-2 rounded-lg font-bold ${getStatusColor(selectedItem.status).lightboxBg} ${getStatusColor(selectedItem.status).lightboxText}`}>
                     {selectedItem.status}
                   </div>
                 </div>
@@ -734,16 +780,20 @@ const GalleryPage = () => {
                     </div>
                   </div>
 
-                  {/* Description */}
+                  {/* Description - FIXED: Added scrollable container */}
                   {selectedItem.description && (
-                    <div className="bg-white/5 p-5 rounded-xl border border-white/10">
-                      <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                        <div className="w-2 h-4 rounded-full" style={{ backgroundColor: '#f2a921' }}></div>
-                        Issue Description
-                      </h3>
-                      <p className="text-gray-300 leading-relaxed">
-                        {selectedItem.description}
-                      </p>
+                    <div className="bg-white/5 rounded-xl border border-white/10">
+                      <div className="p-5">
+                        <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                          <div className="w-2 h-4 rounded-full" style={{ backgroundColor: '#f2a921' }}></div>
+                          Issue Description
+                        </h3>
+                        <div className="max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                          <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                            {selectedItem.description}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -809,6 +859,24 @@ const GalleryPage = () => {
           </div>
         </div>
       )}
+
+      {/* Add custom scrollbar styles */}
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(242, 169, 33, 0.5);
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(242, 169, 33, 0.8);
+        }
+      `}</style>
     </section>
   );
 };
