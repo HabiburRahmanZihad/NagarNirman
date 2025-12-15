@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
 import UsersTable from "@/components/manage-users/UsersTable";
 import UserFilterBar from "@/components/manage-users/UserFilterBar";
 import toast from "react-hot-toast";
@@ -27,8 +26,7 @@ interface User {
 }
 
 export default function SuperAdminUsersPage() {
-  const router = useRouter();
-  const { user: authUser, isLoading: authLoading, isAuthenticated } = useAuth();
+  const { user: authUser, isLoading: authLoading } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -65,7 +63,7 @@ export default function SuperAdminUsersPage() {
           toast.success(`Loaded ${response.data.length} users from the system`);
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error loading users:', error);
       toast.error('Failed to load users. Please try again.');
     } finally {
@@ -113,14 +111,15 @@ export default function SuperAdminUsersPage() {
       if (response.success) {
         setUsers(prevUsers =>
           prevUsers.map(user =>
-            user._id === userId ? { ...user, role: newRole as any } : user
+            user._id === userId ? { ...user, role: newRole as User['role'] } : user
           )
         );
         toast.success(`User role updated to ${newRole} successfully!`);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating role:', error);
-      toast.error(error.message || 'Failed to update user role');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update user role';
+      toast.error(errorMessage);
     }
   };
 
@@ -135,9 +134,10 @@ export default function SuperAdminUsersPage() {
         );
         toast.success(`User ${isActive ? 'activated' : 'deactivated'} successfully!`);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating user status:', error);
-      toast.error(error.message || 'Failed to update user status');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update user status';
+      toast.error(errorMessage);
     }
   };
 
@@ -150,9 +150,10 @@ export default function SuperAdminUsersPage() {
         setUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
         toast.success("User deleted successfully!");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting user:', error);
-      toast.error(error.message || 'Failed to delete user');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete user';
+      toast.error(errorMessage);
     }
   };
 
