@@ -22,8 +22,6 @@ import {
   BarChart3,
   PlusCircle,
   XCircle,
-  Zap,
-  RotateCcw,
 } from 'lucide-react';
 import Card from '@/components/common/Card';
 
@@ -103,8 +101,8 @@ export default function SolverStatisticsPage() {
     }
 
     filtered.sort((a, b) => {
-      let aValue: any;
-      let bValue: any;
+      let aValue: string | number;
+      let bValue: string | number;
 
       switch (sortBy) {
         case 'name':
@@ -146,7 +144,9 @@ export default function SolverStatisticsPage() {
           : bValue.localeCompare(aValue);
       }
 
-      return sortOrder === 'asc' ? aValue - bValue : bValue - aValue;
+      const numA = aValue as number;
+      const numB = bValue as number;
+      return sortOrder === 'asc' ? numA - numB : numB - numA;
     });
 
     setFilteredStats(filtered);
@@ -160,9 +160,10 @@ export default function SolverStatisticsPage() {
       if (response.success) {
         setStatistics(response.data);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching statistics:', error);
-      toast.error(error.message || 'Failed to load solver statistics');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load solver statistics';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -361,7 +362,7 @@ export default function SolverStatisticsPage() {
               <select
                 title='all-roles'
                 value={filterRole}
-                onChange={(e) => setFilterRole(e.target.value as any)}
+                onChange={(e) => setFilterRole(e.target.value as 'all' | 'problemSolver')}
                 className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all"
               >
                 <option value="all">All Roles</option>
@@ -372,7 +373,7 @@ export default function SolverStatisticsPage() {
               <select
                 title='status-filter'
                 value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value as any)}
+                onChange={(e) => setFilterStatus(e.target.value as 'all' | 'active' | 'free')}
                 className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all"
               >
                 <option value="all">All Status</option>
