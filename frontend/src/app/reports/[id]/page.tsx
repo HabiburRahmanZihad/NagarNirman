@@ -13,7 +13,6 @@ import {
   FaClock,
   FaThumbsUp,
   FaUser,
-  FaExclamationCircle,
   FaTasks,
   FaCheckCircle,
   FaTimesCircle,
@@ -127,9 +126,9 @@ export default function ReportDetailsPage() {
         toast.error('Report not found');
         setReport(null);
       }
-    } catch (error: any) {
-      console.error('Error fetching report:', error);
-      toast.error(error.message || 'Failed to load report details. Please check your connection.');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      toast.error(errorMessage);
       setReport(null);
     } finally {
       setIsLoading(false);
@@ -323,11 +322,11 @@ export default function ReportDetailsPage() {
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Back Button */}
         <button
-          onClick={() => router.push('/reports')}
+          onClick={() => router.back()}
           className="flex items-center gap-2 text-[#6B7280] hover:text-[#2a7d2f] mb-6 transition"
         >
           <FaArrowLeft />
-          <span>Back to Reports</span>
+          <span>Back</span>
         </button>
 
         <div className="grid lg:grid-cols-3 gap-6">

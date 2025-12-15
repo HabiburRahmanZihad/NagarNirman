@@ -14,61 +14,69 @@ import AboutSection from "@/components/home/aboutSection/AboutSection";
 import HowToReport from "@/components/home/HowToReport/HowToReport";
 import OurImpact from "@/components/home/ourImpact/OurImpact";
 
-
 export default function Home() {
-
   return (
     <>
       {/* Hero Section */}
       <section>
-        <HeroSlider></HeroSlider>
-        <ImpactCards></ImpactCards>
+        <HeroSlider />
+        <ImpactCards />
       </section>
 
-      <section>
-        <AboutSection></AboutSection>
+      {/* About Section */}
+      <section className="py-8  lg:py-20">
+        <AboutSection />
       </section>
 
-      <section className="py-24 px-6 lg:px-0 bg-base-200 overflow-hidden">
-        <WhatWeDo></WhatWeDo>
+      {/* What We Do Section */}
+      <section className="py-8  lg:py-20 bg-base-200 overflow-hidden">
+        <WhatWeDo />
       </section>
 
-      <section className="py-24 px-6 lg:px-0 overflow-hidden">
-        <PartnersMarquee></PartnersMarquee>
+      {/* Partners Marquee */}
+      <section className="py-8  lg:py-20 overflow-hidden">
+        <PartnersMarquee />
       </section>
 
-      <section className="pb-24 px-6 lg:px-0 bg-base-100 overflow-hidden">
+      {/* National Anthem Section */}
+      <section className="py-8  lg:py-20 bg-base-100 overflow-hidden">
         <NationalAnthemSection />
       </section>
 
-      <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
-        <HowToReport></HowToReport>
+      {/* How To Report */}
+      <section className="py-8  lg:py-20 bg-base-100 overflow-hidden">
+        <HowToReport />
       </section>
 
-      <section className="pt-24 ">
-        <Testimonials></Testimonials>
+      {/* Testimonials */}
+      <section className="py-8  lg:py-20">
+        <Testimonials />
       </section>
 
-      <section className="py-24 px-6 lg:px-0 bg-base-300 overflow-hidden">
-        <Volunteer></Volunteer>
+      {/* Volunteer */}
+      <section className="py-8  lg:py-20 bg-base-300 overflow-hidden">
+        <Volunteer />
       </section>
 
-      <section className="pb-4 px-6 lg:px-0 bg-base-100 overflow-hidden">
-        <EventsSection></EventsSection>
+      {/* Events Section */}
+      <section className="py-8  lg:py-20 bg-base-100 overflow-hidden">
+        <EventsSection />
       </section>
 
-      <section className="container mx-auto px-6 py-24 lg:px-0 overflow-hidden">
-        <EmergencyHotlineMarquee></EmergencyHotlineMarquee>
+      {/* Emergency Hotline Marquee */}
+      <section className="py-8  lg:py-20 overflow-hidden">
+        <EmergencyHotlineMarquee />
       </section>
 
-      <section className=" pt-24 pb-20 bg-base-300">
-        <OurImpact></OurImpact>
+      {/* Our Impact */}
+      <section className="py-8  lg:py-20 bg-base-300 overflow-hidden">
+        <OurImpact />
       </section>
 
-      <section className="py-24 px-6 lg:px-0 bg-base-100 overflow-hidden">
-        <FaqSection></FaqSection>
+      {/* FAQ Section */}
+      <section className="py-8  lg:py-20 bg-base-100 overflow-hidden">
+        <FaqSection />
       </section>
-
     </>
   );
 }

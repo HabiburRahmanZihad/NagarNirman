@@ -20,7 +20,7 @@ export default function HelpPage() {
     {
       title: 'Report an Issue',
       description: 'Submit reports about civic problems in your area and help make your community better.',
-      icon: <FaChartLine className="text-2xl" />,
+      icon: <FaChartLine className="text-2xl transition-transform duration-300 group-hover:scale-110" />,
       color: 'primary',
       link: PUBLIC_ROUTES.REPORT,
       buttonText: 'Start Reporting',
@@ -31,7 +31,7 @@ export default function HelpPage() {
     {
       title: 'Become a Solver',
       description: 'Join our community of problem solvers and help resolve issues in your area.',
-      icon: <FaUsers className="text-2xl" />,
+      icon: <FaUsers className="text-2xl transition-transform duration-300 group-hover:scale-110" />,
       color: 'accent',
       link: '/dashboard/user/join-as-a-Problem-Solver',
       buttonText: 'Apply Now',
@@ -42,7 +42,7 @@ export default function HelpPage() {
     {
       title: 'Track Reports',
       description: 'Monitor the progress of your submitted issues and see resolution updates.',
-      icon: <FaHistory className="text-2xl" />,
+      icon: <FaHistory className="text-2xl transition-transform duration-300 group-hover:scale-110" />,
       color: 'secondary',
       link: '/dashboard/user/reports',
       buttonText: 'View Dashboard',
@@ -77,7 +77,6 @@ export default function HelpPage() {
 
   return (
     <div className="min-h-screen bg-[#F6FFF9] pb-10">
-      {/* -------- the hero section placed here => start -------- */}
       <section className="relative overflow-hidden mb-10">
         <div className="absolute inset-0">
           <Image
@@ -107,10 +106,8 @@ export default function HelpPage() {
           </div>
         </div>
       </section>
-      {/* -------- the hero section placed here => end -------- */}
 
-      <div className="container mx-auto px-4 max-w-6xl mb-10">
-        {/* Improved Quick Action Cards */}
+      <div className="container mx-auto px-4  mb-10">
         <section className="mb-12">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 bg-[#004540]/10 text-[#004540] px-4 py-2 rounded-full mb-4">
@@ -121,79 +118,50 @@ export default function HelpPage() {
               Choose from our most popular help options to get started
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             {helpCards.map((card, index) => (
-              <div 
-                key={index}
-                className="group relative"
-              >
-                {/* Card with improved UI */}
-                <div className={`
-                  relative bg-white rounded-2xl shadow-lg overflow-hidden
-                  border border-transparent
+              <div key={index} className="group relative">
+                <div className={`relative bg-white rounded-2xl shadow-lg overflow-hidden border border-transparent
                   hover:shadow-2xl transition-all duration-500
                   hover:transform hover:-translate-y-2
                   ${card.color === 'primary' ? 'hover:border-[#004540]/30' : ''}
                   ${card.color === 'secondary' ? 'hover:border-[#2a7d2f]/30' : ''}
-                  ${card.color === 'accent' ? 'hover:border-[#f2a921]/30' : ''}
-                `}>
-                  {/* Gradient background layer */}
-                  <div className={`
-                    absolute inset-0 opacity-0 group-hover:opacity-100 
+                  ${card.color === 'accent' ? 'hover:border-[#f2a921]/30' : ''}`}
+                >
+                  <div className={`absolute inset-0 opacity-0 group-hover:opacity-100
                     transition-opacity duration-500
-                    bg-linear-to-br ${card.gradientFrom} ${card.gradientTo}
-                  `}></div>
-                  
-                  {/* Top color accent */}
-                  <div className={`
-                    h-2 w-full
-                    ${card.color === 'primary' ? 'bg-[#004540]' : ''}
+                    bg-linear-to-br ${card.gradientFrom} ${card.gradientTo}`}></div>
+                  <div className={`h-2 w-full ${card.color === 'primary' ? 'bg-[#004540]' : ''}
                     ${card.color === 'secondary' ? 'bg-[#2a7d2f]' : ''}
-                    ${card.color === 'accent' ? 'bg-[#f2a921]' : ''}
-                  `}></div>
-                  
+                    ${card.color === 'accent' ? 'bg-[#f2a921]' : ''}`}
+                  ></div>
+
                   <div className="relative p-8">
-                    {/* Icon with background */}
-                    <div className={`
-                      w-16 h-16 rounded-2xl flex items-center justify-center mb-6
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-6
                       transition-all duration-300 group-hover:scale-110
                       ${card.color === 'primary' ? 'bg-[#004540]/10 text-[#004540]' : ''}
                       ${card.color === 'secondary' ? 'bg-[#2a7d2f]/10 text-[#2a7d2f]' : ''}
-                      ${card.color === 'accent' ? 'bg-[#f2a921]/10 text-[#f2a921]' : ''}
-                    `}>
+                      ${card.color === 'accent' ? 'bg-[#f2a921]/10 text-[#f2a921]' : ''}`}
+                    >
                       {card.icon}
                     </div>
-                    
-                    {/* Title */}
-                    <h3 className="text-2xl font-bold text-[#002E2E] mb-4">
-                      {card.title}
-                    </h3>
-                    
-                    {/* Description */}
-                    <p className="text-[#6B7280] mb-8 leading-relaxed">
-                      {card.description}
-                    </p>
-                    
-                    {/* Stat badge */}
+
+                    <h3 className="text-2xl font-bold text-[#002E2E] mb-4">{card.title}</h3>
+                    <p className="text-[#6B7280] mb-8 leading-relaxed">{card.description}</p>
+
                     <div className="mb-8">
-                      <span className={`
-                        inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium
+                      <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium
                         ${card.color === 'primary' ? 'bg-[#004540]/10 text-[#004540]' : ''}
                         ${card.color === 'secondary' ? 'bg-[#2a7d2f]/10 text-[#2a7d2f]' : ''}
-                        ${card.color === 'accent' ? 'bg-[#f2a921]/10 text-[#f2a921]' : ''}
-                      `}>
+                        ${card.color === 'accent' ? 'bg-[#f2a921]/10 text-[#f2a921]' : ''}`}
+                      >
                         {card.stat}
                       </span>
                     </div>
-                    
-                    {/* Button with arrow */}
+
                     <Link href={card.link}>
-                      <Button 
-                        variant={card.color === 'primary' ? 'primary' : card.color === 'accent' ? 'accent' : 'secondary'}
-                        size="lg"
-                        className="w-full group/btn"
-                      >
+                      <Button size="lg" className="w-full group/btn">
                         <span className="flex items-center justify-center gap-2">
                           {card.buttonText}
                           <FaArrowRight className="transition-transform duration-300 group-hover/btn:translate-x-1" />
@@ -201,14 +169,12 @@ export default function HelpPage() {
                       </Button>
                     </Link>
                   </div>
-                  
-                  {/* Corner accent */}
-                  <div className={`
-                    absolute top-0 right-0 w-20 h-20 opacity-10
+
+                  <div className={`absolute top-0 right-0 w-20 h-20 opacity-10
                     ${card.color === 'primary' ? 'text-[#004540]' : ''}
                     ${card.color === 'secondary' ? 'text-[#2a7d2f]' : ''}
-                    ${card.color === 'accent' ? 'text-[#f2a921]' : ''}
-                  `}>
+                    ${card.color === 'accent' ? 'text-[#f2a921]' : ''}`}
+                  >
                     <svg width="80" height="80" viewBox="0 0 80 80" fill="currentColor">
                       <path d="M0,0 L80,80 L80,0 Z" />
                     </svg>
@@ -219,9 +185,8 @@ export default function HelpPage() {
           </div>
         </section>
 
-        {/* Main Content Section */}
+        {/* Main Content Section (FAQs & Contact) */}
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Column - FAQs */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <div className="flex items-center gap-3 mb-8">
@@ -235,36 +200,25 @@ export default function HelpPage() {
 
               <div className="space-y-6">
                 {faqs.map((faq, index) => (
-                  <div 
+                  <div
                     key={index}
-                    className={`
-                      ${faq.borderColor} border-l-4 pl-6 py-4
-                      hover:bg-[#F3F4F6] transition-colors duration-200
-                    `}
+                    className={`hover:bg-[#F3F4F6] ${faq.borderColor} border-l-4 pl-6 py-4 transition-colors duration-200`}
                   >
-                    <h3 className="font-semibold text-[#002E2E] mb-2 text-lg">
-                      {faq.question}
-                    </h3>
-                    <p className="text-[#6B7280]">
-                      {faq.answer}
-                    </p>
+                    <h3 className="font-semibold text-[#002E2E] mb-2 text-lg">{faq.question}</h3>
+                    <p className="text-[#6B7280]">{faq.answer}</p>
                   </div>
                 ))}
               </div>
 
               <div className="mt-10 pt-8 border-t border-[#F3F4F6]">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center flex-col sm:flex-row justify-between gap-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-[#002E2E] mb-2">
-                      {`Didn't find your answer?`}
-                    </h3>
-                    <p className="text-[#6B7280]">
-                      Browse our complete FAQ section for more detailed information.
-                    </p>
+                    <h3 className="text-lg font-semibold text-[#002E2E] mb-2">{`Didn't find your answer?`}</h3>
+                    <p className="text-[#6B7280]">Browse our complete FAQ section for more detailed information.</p>
                   </div>
                   <Link href={PUBLIC_ROUTES.FAQ}>
-                    <Button variant="outline" size="lg">
-                      <span className='text-[#004540]'>View All FAQs</span>
+                    <Button variant="secondary" size="md">
+                      <span className="text-[#004540]">View All FAQs</span>
                     </Button>
                   </Link>
                 </div>
@@ -274,48 +228,30 @@ export default function HelpPage() {
 
           {/* Right Column - Contact & Support */}
           <div className="space-y-8">
-            {/* Contact Card */}
             <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-[#002E2E] mb-6">
-                Contact Support
-              </h2>
-              
+              <h2 className="text-2xl font-bold text-[#002E2E] mb-6">Contact Support</h2>
               <div className="space-y-6">
-                <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-[#F6FFF9] transition-colors">
+                <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-[#F6FFF9] transition-colors border border-accent hover:border-[#004540]/30">
                   <div className="w-12 h-12 bg-[#004540] flex items-center justify-center rounded-full shrink-0">
                     <FaEnvelope className="text-white text-xl" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#002E2E] mb-1">
-                      Email Support
-                    </h3>
-                    <p className="text-[#6B7280] text-sm mb-2">
-                      Get help via email
-                    </p>
-                    <a
-                      href="mailto:support@nagarnirman.com"
-                      className="text-[#004540] hover:text-[#2a7d2f] font-medium transition-colors"
-                    >
+                    <h3 className="font-semibold text-[#002E2E] mb-1">Email Support</h3>
+                    <p className="text-[#6B7280] text-sm mb-2">Get help via email</p>
+                    <a href="mailto:support@nagarnirman.com" className="text-[#004540] hover:text-[#2a7d2f] font-medium transition-colors">
                       support@nagarnirman.com
                     </a>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-[#F6FFF9] transition-colors">
+                <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-[#F6FFF9] transition-colors border border-accent hover:border-[#004540]/30">
                   <div className="w-12 h-12 bg-[#f2a921] flex items-center justify-center rounded-full shrink-0">
                     <FaPhone className="text-white text-xl" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[#002E2E] mb-1">
-                      Phone Support
-                    </h3>
-                    <p className="text-[#6B7280] text-sm mb-2">
-                      Call us directly
-                    </p>
-                    <a
-                      href="tel:+8801950719346"
-                      className="text-[#004540] hover:text-[#2a7d2f] font-medium transition-colors"
-                    >
+                    <h3 className="font-semibold text-[#002E2E] mb-1">Phone Support</h3>
+                    <p className="text-[#6B7280] text-sm mb-2">Call us directly</p>
+                    <a href="tel:+8801950719346" className="text-[#004540] hover:text-[#2a7d2f] font-medium transition-colors">
                       +880 1950 719346
                     </a>
                   </div>
@@ -323,9 +259,7 @@ export default function HelpPage() {
               </div>
 
               <div className="mt-8 pt-6 border-t border-[#F3F4F6]">
-                <h4 className="font-semibold text-[#002E2E] mb-3">
-                  Support Hours
-                </h4>
+                <h4 className="font-semibold text-[#002E2E] mb-3">Support Hours</h4>
                 <div className="text-[#6B7280] space-y-1">
                   <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
                   <p>Saturday: 10:00 AM - 4:00 PM</p>
@@ -336,9 +270,7 @@ export default function HelpPage() {
 
             {/* Quick Tips Card */}
             <div className="bg-linear-to-br from-[#004540]/5 to-[#2a7d2f]/5 rounded-2xl shadow-lg p-8">
-              <h3 className="text-xl font-bold text-[#002E2E] mb-4">
-                Quick Tips
-              </h3>
+              <h3 className="text-xl font-bold text-[#002E2E] mb-4">Quick Tips</h3>
               <ul className="space-y-3">
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-[#004540] rounded-full mt-2 shrink-0"></div>

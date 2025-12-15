@@ -16,7 +16,6 @@ import {
   FaFileAlt,
   FaMapMarkedAlt,
   FaInfoCircle,
-  FaImages,
   FaBars,
   FaTimes
 } from "react-icons/fa";
@@ -183,16 +182,16 @@ const Navbar: React.FC = () => {
       <div className={`container mx-auto ${isSmallMobile ? 'px-2' : isMobile ? 'px-3' : isTablet ? 'px-4' : 'px-0'}`}>
 
         <div className={`flex items-center justify-between ${isSmallMobile ? 'h-14' :
-            isMobile ? 'h-16' :
-              isTablet ? 'h-18' :
-                'h-20'
+          isMobile ? 'h-16' :
+            isTablet ? 'h-18' :
+              'h-20'
           }`}>
           {/* Logo */}
           <Link href="/" className="shrink-0 flex-1 md:flex-initial">
             <div className={`relative ${isSmallMobile ? 'w-32 h-10' :
-                isMobile ? 'w-40 h-12' :
-                  isTablet ? 'w-44 h-13' :
-                    'w-50 h-15'
+              isMobile ? 'w-40 h-12' :
+                isTablet ? 'w-44 h-13' :
+                  'w-50 h-15'
               } ${isHomePage && isDesktop && !isScrolled ? 'bg-white/35 backdrop-blur-sm rounded-lg p-2' : ''}`}>
               <Image
                 src="/logo/logo.png"

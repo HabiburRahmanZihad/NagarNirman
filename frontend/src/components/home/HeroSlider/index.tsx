@@ -22,8 +22,8 @@ const slides = [
     secondaryBtn: "How It Works",
     primaryLink: PUBLIC_ROUTES.REPORT,
     secondaryLink: PUBLIC_ROUTES.GUIDELINES,
-    image: "https://images.unsplash.com/photo-1605972643561-8bac9eec3ddc?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    bgImage: "https://images.unsplash.com/photo-1585831781094-c8124c24b26e?q=80&w=1719&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    image: "https://images.unsplash.com/photo-1684689917861-a62ccfeff7e4?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    bgImage: "https://res.cloudinary.com/dc3ul4egd/image/upload/v1765705731/imgi_38_photo-1673051787560-13622b325a9a_qax4ym.png"
   },
   {
     id: 2,
@@ -34,8 +34,8 @@ const slides = [
     secondaryBtn: "View Map",
     primaryLink: USER_ROUTES.DASHBOARD,
     secondaryLink: PUBLIC_ROUTES.REPORT_MAP,
-    image: "https://images.unsplash.com/photo-1615275937978-87a29ea4fd03?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    bgImage: "https://images.unsplash.com/photo-1667069254957-bf6961fd3fb5?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+    image: "https://res.cloudinary.com/dc3ul4egd/image/upload/v1765705423/motiur-rahman-shakil-l2KnpnOrhhA-unsplash_rjltp0.jpg",
+    bgImage: "https://res.cloudinary.com/dc3ul4egd/image/upload/v1765705423/motiur-rahman-shakil-l2KnpnOrhhA-unsplash_rjltp0.jpg"
   },
   {
     id: 3,
@@ -46,7 +46,7 @@ const slides = [
     secondaryBtn: "Learn More",
     primaryLink: AUTH_ROUTES.LOGIN,
     secondaryLink: PUBLIC_ROUTES.GUIDELINES,
-    image: "https://images.unsplash.com/photo-1610560875826-af5b05a96cfa?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://res.cloudinary.com/dc3ul4egd/image/upload/v1765705459/mahfuzul-hasan-qryEvBtaM_M-unsplash_am7fbs.jpg",
     bgImage: "https://images.unsplash.com/photo-1583794018021-c841442da0e3?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
   }
 ];

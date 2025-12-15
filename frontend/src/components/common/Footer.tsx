@@ -125,16 +125,16 @@ const Footer: React.FC = () => {
         </Image>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-16 md:pt-20 pb-26">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-16 md:pt-20 pb-8">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12 mb-8 md:mb-12">
           {/* About Section - Full width on mobile, then 2 cols, then 1 of 4 */}
           <div className="sm:col-span-1 space-y-4 sm:space-y-5 md:space-y-6">
             <Link href={PUBLIC_ROUTES.HOME} className="group inline-block">
               <div className="flex items-center gap-3 transition-transform duration-300 group-hover:scale-105">
-                <div className="bg-accent/60 p-2 rounded-xl shadow-lg transition-colors duration-300">
+                <div className="border border-accent p-2 rounded-xl shadow-lg transition-colors duration-300">
                   <Image
-                    src="https://i.postimg.cc/VNNxsGXy/favicon.webp"
+                    src="/favicon.png"
                     alt="NagarNirman Logo"
                     width={32}
                     height={32}

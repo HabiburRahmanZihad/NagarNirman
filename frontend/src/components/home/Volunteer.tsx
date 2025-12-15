@@ -1,13 +1,12 @@
 "use client";
 
-import React from "react";
 import {
   Sprout,
   Share2,
+  Github,
+  Linkedin,
+  Globe,
   Facebook,
-  Twitter,
-  Instagram,
-  ArrowRight
 } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/common/Button";
@@ -17,127 +16,163 @@ const teamMembers = [
   {
     id: 1,
     name: "Habibur Rahman Zihad",
-    role: "Team Leader",
-    image: "https://avatars.githubusercontent.com/u/158202166?v=4",
+    role: "Founder & Community Director",
+    image: "https://res.cloudinary.com/dvq3pcykn/image/upload/v1758785330/IMG-20241101-WA0192_vyojiv.jpg",
     social: {
-      facebook: "https://www.facebook.com/habibur.rahman.zihad",
-      twitter: "https://twitter.com/HabiburRZ",
-      instagram: "https://www.instagram.com/habibur.rahman.zihad/",
+      github: "https://github.com/HabiburRahmanZihad",
+      linkedin: "https://linkedin.com/in/habiburrahmanzihad",
+      portfolio: "https://habibur-rahman-zihad.vercel.app/",
+      facebook: "https://www.facebook.com/habiburrahmanzihad.zihad",
     },
   },
   {
     id: 2,
     name: "Md. Shahariar Hafiz",
-    role: "CEO-Founder",
+    role: "Co-Founder & Tech Lead",
     image: "https://avatars.githubusercontent.com/u/102473526?v=4",
     social: {
-      facebook: "https://www.facebook.com/shahariar.hafiz",
-      twitter: "https://twitter.com/shahariar_hafiz",
-      instagram: "https://www.instagram.com/shahariar.hafiz/",
+      github: "https://github.com/mdshahariarhafizofficial",
+      linkedin: "https://www.linkedin.com/in/devshahariarhafiz",
+      portfolio: "https://shahariar-hafiz.netlify.app/",
+      facebook: "https://www.facebook.com/mdshahariarhafizofficial",
     },
   },
   {
     id: 3,
-    name: "Mizanur Malita",
-    role: "Volunteer",
+    name: "MD Mizanur Malita",
+    role: "Operations Manager",
     image: "https://avatars.githubusercontent.com/u/193724330?v=4",
     social: {
-      facebook: "https://www.facebook.com/mizanur.malita",
-      twitter: "https://twitter.com/mizanur_malita",
-      instagram: "https://www.instagram.com/mizanur.malita/",
+      github: "https://github.com/mizanur2734",
+      linkedin: "https://www.linkedin.com/in/md-mizanur-malita",
+      portfolio: "https://my-portfolio-4wlb.vercel.app/",
+      facebook: "https://www.facebook.com/md.mizanur.rahman.959549",
     },
   },
   {
     id: 4,
     name: "Mohammad Bin Amin",
-    role: "Volunteer",
-    image: "https://avatars.githubusercontent.com/u/108111892?v=4",
+    role: "Outreach Coordinator",
+    image: "https://res.cloudinary.com/dfm0bhtyb/image/upload/v1765699151/qmbjzklvweuy3brrnt3v.png",
     social: {
-      facebook: "https://www.facebook.com/mohammad.bin.amin",
-      twitter: "https://twitter.com/mohammad_b_amin",
-      instagram: "https://www.instagram.com/mohammad.bin.amin/",
+      github: "https://github.com/Mohammad7558/",
+      linkedin: "www.linkedin.com/in/iammohammad",
+      portfolio: "https://iam-mohammad.vercel.app/",
+      facebook: "https://www.facebook.com/imMOHAMMOD/",
     },
   },
 ];
 
+// Social icon configuration with colors
+const socialIcons = [
+  {
+    key: 'github',
+    Icon: Github,
+    label: 'GitHub',
+    color: 'hover:bg-gray-800 hover:text-white',
+    iconColor: 'text-gray-700 group-hover:text-white'
+  },
+  {
+    key: 'linkedin',
+    Icon: Linkedin,
+    label: 'LinkedIn',
+    color: 'hover:bg-[#0077B5] hover:text-white',
+    iconColor: 'text-[#0077B5] group-hover:text-white'
+  },
+  {
+    key: 'portfolio',
+    Icon: Globe,
+    label: 'Portfolio',
+    color: 'hover:bg-[#10B981] hover:text-white',
+    iconColor: 'text-[#10B981] group-hover:text-white'
+  },
+  {
+    key: 'facebook',
+    Icon: Facebook,
+    label: 'Facebook',
+    color: 'hover:bg-[#1877F2] hover:text-white',
+    iconColor: 'text-[#1877F2] group-hover:text-white'
+  }
+];
+
 export default function TeamSection() {
   return (
-    <section className="">
-      <div className="container mx-auto">
+    <section>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* --- HEADER --- */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 sm:mb-16">
           <div className="flex items-center justify-center gap-2 mb-3">
             <Sprout className="w-5 h-5 text-[#3C6E59]" />
-            <span className="text-[#555555] text-lg font-medium tracking-wide">We Are Volunteer</span>
+            <span className="text-[#555555] text-base sm:text-lg font-medium tracking-wide">We Are Volunteer</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-[#003B31]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#003B31] px-4">
             Together For The Planet
           </h2>
         </div>
 
         {/* --- TEAM GRID --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-12 sm:mb-20">
           {teamMembers.map((member) => (
-            // CARD CONTAINER: Added padding (p-3) and background color to create the frame effect
             <div
               key={member.id}
-              className="group p-3 rounded-[30px] bg-base-200 hover:shadow-xl transition-all duration-300"
+              className="group p-3 sm:p-4 rounded-2xl sm:rounded-[30px] bg-base-200 hover:shadow-xl transition-all duration-300"
             >
               {/* IMAGE WRAPPER */}
-              <div className="relative h-[300px] w-full overflow-hidden rounded-[20px]">
+              <div className="relative h-[250px] sm:h-[280px] md:h-[300px] w-full overflow-hidden rounded-xl sm:rounded-[20px]">
                 {/* Main Image with Zoom Effect */}
                 <img
                   src={member.image}
                   alt={member.name}
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  loading="lazy"
                 />
 
                 {/* Share Button (Top Right) */}
-                <div className="absolute top-4 right-4 z-20">
-                  <div className="w-10 h-10 bg-[#F7CE50] rounded-full flex items-center justify-center cursor-pointer shadow-md transition-transform duration-300 hover:scale-110">
-                    <Share2 className="w-4 h-4 text-[#003B31]" />
+                <div className="absolute top-3 sm:top-4 right-3 sm:right-4 z-20">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[#F7CE50] rounded-full flex items-center justify-center cursor-pointer shadow-md transition-transform duration-300 hover:scale-110 active:scale-95">
+                    <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#003B31]" />
                   </div>
                 </div>
 
-                {/* Social Icons (Vertical Stack below Share button) */}
-                <div className="absolute top-16 right-4 z-10 flex flex-col gap-2 items-center">
-                  {[
-                    { Icon: Facebook, url: member.social.facebook, label: "Facebook" },
-                    { Icon: Twitter, url: member.social.twitter, label: "Twitter" },
-                    { Icon: Instagram, url: member.social.instagram, label: "Instagram" },
-                  ].map((social, i) => (
-                    <a
-                      key={i}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Visit ${member.name} on ${social.label}`}
-                      className={`
-                        w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#555]
-                        shadow-sm hover:bg-[#F7CE50] hover:text-[#003B31] transition-all duration-500 ease-out
-                        opacity-0 -translate-y-4 invisible
-                        group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible
-                      `}
-                      style={{ transitionDelay: `${i * 100}ms` }}
-                    >
-                      <social.Icon className="w-4 h-4" />
-                    </a>
-                  ))}
+                {/* Social Icons (Vertical Stack) */}
+                <div className="absolute top-14 sm:top-16 right-3 sm:right-4 z-10 flex flex-col gap-2 items-center">
+                  {socialIcons.map((social, i) => {
+                    const socialUrl = member.social[social.key as keyof typeof member.social];
+                    return (
+                      <a
+                        key={i}
+                        href={socialUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Visit ${member.name} on ${social.label}`}
+                        className={`
+                          w-8 h-8 sm:w-10 sm:h-10 bg-accent/60 rounded-full flex items-center justify-center
+                          shadow-sm transition-all duration-500 ease-out
+                          ${social.color}
+                          opacity-0 -translate-y-4 invisible
+                          group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible
+                        `}
+                        style={{ transitionDelay: `${i * 100}ms` }}
+                      >
+                        <social.Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${social.iconColor}`} />
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* BOTTOM INFO BOX - Now separate with margin-top */}
+              {/* BOTTOM INFO BOX */}
               <div
-                className="mt-3 py-6 text-center rounded-[20px] transition-colors duration-500 bg-white group-hover:bg-[#003B31]"
+                className="mt-3 py-4 sm:py-6 text-center rounded-xl sm:rounded-[20px] transition-colors duration-500 bg-white group-hover:bg-[#003B31]"
               >
                 <h3
-                  className="text-xl font-bold mb-1 text-[#003B31] transition-colors duration-300 group-hover:text-[#F7CE50]"
+                  className="text-lg sm:text-xl font-bold mb-1 text-[#003B31] transition-colors duration-300 group-hover:text-[#F7CE50]"
                 >
                   {member.name}
                 </h3>
                 <p
-                  className="text-sm font-medium text-[#777777] transition-colors duration-300 group-hover:text-white"
+                  className="text-xs sm:text-sm font-medium text-[#777777] transition-colors duration-300 group-hover:text-white"
                 >
                   {member.role}
                 </p>

@@ -150,16 +150,14 @@ const StepsProgress = () => {
               return (
                 <div
                   key={step.id}
-                  className={`absolute ${positionClass} flex flex-col items-center ${
-                    isTopRow ? "mb-20" : "mt-20"
-                  } ${isLeftColumn ? "items-start" : isRightColumn ? "items-end" : "items-center"}`}
+                  className={`absolute ${positionClass} flex flex-col items-center ${isTopRow ? "mb-20" : "mt-20"
+                    } ${isLeftColumn ? "items-start" : isRightColumn ? "items-end" : "items-center"}`}
                   style={{ width: "220px" }}
                 >
                   {/* Step Content */}
                   <div
-                    className={`text-center mb-4 ${
-                      isTopRow ? "order-2 mt-4" : "order-2 mb-4"
-                    } ${isLeftColumn ? "text-left" : isRightColumn ? "text-right" : "text-center"}`}
+                    className={`text-center mb-4 ${isTopRow ? "order-2 mt-4" : "order-2 mb-4"
+                      } ${isLeftColumn ? "text-left" : isRightColumn ? "text-right" : "text-center"}`}
                   >
                     <h3 className="font-bold text-[#002E2E] text-lg mb-2">
                       {step.title}
@@ -171,9 +169,8 @@ const StepsProgress = () => {
 
                   {/* Step Circle */}
                   <div
-                    className={`relative z-10 w-14 h-14 rounded-full bg-white text-[#004d40] hover:bg-primary hover:text-accent border border-accent shadow-lg flex items-center justify-center ${
-                      isTopRow ? "order-1" : "order-1"
-                    }`}
+                    className={`relative z-10 w-14 h-14 rounded-full bg-white text-[#004d40] hover:bg-primary hover:text-accent border border-accent shadow-lg flex items-center justify-center ${isTopRow ? "order-1" : "order-1"
+                      }`}
                   >
                     <div>
                       {step.icon}

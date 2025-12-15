@@ -13,9 +13,11 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <header className="sticky z-99999 top-0">
         {!isDashboard && <Navbar />}
       </header>
+
       <main>
         {children}
       </main>
+      
       <footer>
         {!isDashboard && <Footer />}
       </footer>

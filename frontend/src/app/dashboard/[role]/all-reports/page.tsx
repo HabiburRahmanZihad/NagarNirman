@@ -175,9 +175,9 @@ export default function AllReportsPage() {
           reportsPerPage: 12,
         });
       }
-    } catch (error: any) {
-      console.error('❌ Error fetching reports:', error);
-      toast.error(error.message || 'Failed to load reports. Please check your connection.');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      toast.error(errorMessage);
       setReports([]);
     } finally {
       setIsLoading(false);

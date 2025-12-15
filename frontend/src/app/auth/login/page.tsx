@@ -158,7 +158,7 @@ export default function LoginPage() {
                   Password
                 </label>
 
-                <div className="">
+                <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
                     id="password"
@@ -176,7 +176,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 z-10 p-1 cursor-pointer transition-colors"
                   >
                     {showPassword ? (
                       <svg

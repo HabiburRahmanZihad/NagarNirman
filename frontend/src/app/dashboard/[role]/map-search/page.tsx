@@ -4,6 +4,7 @@ import { Search, X, MapPin, Activity, CheckCircle, Clock, Info, TrendingUp, BarC
 import divisionsDataJson from '@/data/divisionsData.json';
 import { statisticsAPI } from '@/utils/api';
 import 'leaflet/dist/leaflet.css';
+import type { Map as LeafletMap, Marker, Circle, Control } from 'leaflet';
 
 // Type definitions
 interface District {
@@ -84,8 +85,8 @@ const DIVISIONS_DATA: Division[] = transformDivisionsData();
 
 // Helper function to add markers to map
 const addMarkersToMap = (
-  L: any,
-  mapInstance: any,
+  L: typeof import('leaflet'),
+  mapInstance: LeafletMap,
   divisions: Division[],
   isDark: boolean,
   searchQuery: string,
@@ -93,8 +94,8 @@ const addMarkersToMap = (
   onDivisionClick: (division: Division) => void,
   onDistrictClick: (district: District, division: Division) => void
 ) => {
-  const markers: any[] = [];
-  const circles: any[] = [];
+  const markers: Marker[] = [];
+  const circles: Circle[] = [];
 
   // Always show all divisions and districts when there's a search query
   const shouldShowAllMarkers = searchQuery.length > 0;
@@ -351,10 +352,10 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
   onInvalidSearch
 }) => {
   const [mounted, setMounted] = useState(false);
-  const mapRef = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
-  const circlesRef = useRef<any[]>([]);
-  const legendRef = useRef<any>(null);
+  const mapRef = useRef<LeafletMap | null>(null);
+  const markersRef = useRef<Marker[]>([]);
+  const circlesRef = useRef<Circle[]>([]);
+  const legendRef = useRef<Control | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -395,8 +396,8 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
 
       const L = await import('leaflet');
 
-      // Fix for default markers - using any to bypass TypeScript checks
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      // Fix for default markers - using unknown to bypass TypeScript checks
+      delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
         iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
@@ -407,8 +408,9 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       if (!container) return;
 
       // Check if container already has a map
-      if ((container as any)._leaflet_id) {
-        (container as any)._leaflet_id = null;
+      const containerWithLeaflet = container as HTMLElement & { _leaflet_id?: number | null };
+      if (containerWithLeaflet._leaflet_id) {
+        containerWithLeaflet._leaflet_id = null;
       }
 
       const mapInstance = L.map('map', {
@@ -446,7 +448,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
 
       // Enhanced legend with glassmorphism
       const legend = new L.Control({ position: 'bottomright' });
-      legend.onAdd = function() {
+      legend.onAdd = function () {
         const div = L.DomUtil.create('div', 'info legend');
         div.style.cssText = `
           background: ${isDark ? 'rgba(17, 24, 39, 0.85)' : 'rgba(255, 255, 255, 0.85)'};
@@ -573,7 +575,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       }
       cleanupMap();
     };
-  }, [mounted, isDark]); // Only depend on mounted and isDark
+  }, [mounted, isDark, divisions, onDistrictClick, onDivisionClick, searchQuery, showDistricts]);
 
   // Separate effect to update legend when divisions data changes
   useEffect(() => {
@@ -583,13 +585,13 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       const L = await import('leaflet');
 
       // Remove old legend
-      if (legendRef.current) {
+      if (legendRef.current && mapRef.current) {
         mapRef.current.removeControl(legendRef.current);
       }
 
       // Create new legend with updated data
       const legend = new L.Control({ position: 'bottomright' });
-      legend.onAdd = function() {
+      legend.onAdd = function () {
         const div = L.DomUtil.create('div', 'info legend');
         div.style.cssText = `
           background: ${isDark ? 'rgba(17, 24, 39, 0.85)' : 'rgba(255, 255, 255, 0.85)'};
@@ -703,7 +705,9 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
         `;
         return div;
       };
-      legend.addTo(mapRef.current);
+      if (mapRef.current) {
+        legend.addTo(mapRef.current);
+      }
       legendRef.current = legend;
     };
 
@@ -737,19 +741,21 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
       }
 
       // Add updated markers
-      const { markers, circles } = addMarkersToMap(
-        L,
-        mapRef.current,
-        divisions,
-        isDark,
-        searchQuery,
-        showDistricts,
-        onDivisionClick,
-        onDistrictClick
-      );
+      if (mapRef.current) {
+        const { markers, circles } = addMarkersToMap(
+          L,
+          mapRef.current,
+          divisions,
+          isDark,
+          searchQuery,
+          showDistricts,
+          onDivisionClick,
+          onDistrictClick
+        );
 
-      markersRef.current = markers;
-      circlesRef.current = circles;
+        markersRef.current = markers;
+        circlesRef.current = circles;
+      }
     };
 
     updateMarkers();
@@ -759,7 +765,7 @@ const DynamicMap: React.FC<DynamicMapProps> = ({
   useEffect(() => {
     if (mapRef.current && selectedItem) {
       const zoomLevel = selectedItem.type === 'district' ? 12 : 10;
-      const data = selectedItem.data as any;
+      const data = selectedItem.data as Division | District;
       mapRef.current.flyTo([data.lat, data.lng], zoomLevel, {
         duration: 1.8,
         easeLinearity: 0.25
@@ -821,8 +827,6 @@ export default function MapSearchPage() {
   const [isDark] = useState<boolean>(false);
   const [showDistricts, setShowDistricts] = useState<boolean>(false);
   const [divisionsData, setDivisionsData] = useState<Division[]>(DIVISIONS_DATA);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [divisionStats, setDivisionStats] = useState<any>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>('');
 
@@ -840,7 +844,7 @@ export default function MapSearchPage() {
 
             if (stats) {
               const updatedDistricts = division.districts.map(district => {
-                const districtStats = stats.districts?.find((d: any) =>
+                const districtStats = stats.districts?.find((d: District) =>
                   d.name.toLowerCase() === district.name.toLowerCase()
                 );
 
@@ -872,8 +876,6 @@ export default function MapSearchPage() {
       } catch (error) {
         console.error('❌ Error fetching divisions stats:', error);
         setDivisionsData(DIVISIONS_DATA);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -893,7 +895,6 @@ export default function MapSearchPage() {
     setSearchQuery('');
     setShowDistricts(false);
     setSelectedItem(null);
-    setDivisionStats(null);
     setShowAlert(false);
   };
 
@@ -903,7 +904,6 @@ export default function MapSearchPage() {
     // Clear selected item and close sidebar for invalid search
     setSelectedItem(null);
     setShowDistricts(false);
-    setDivisionStats(null);
     setTimeout(() => setShowAlert(false), 5000);
   }, [searchQuery]);
 
@@ -921,7 +921,7 @@ export default function MapSearchPage() {
         const updatedDivision: Division = {
           ...division,
           districts: division.districts.map(district => {
-            const stats = response.data.find((s: any) =>
+            const stats = response.data.find((s: { district?: string; total?: number; pending?: number; completed?: number; priority?: 'high' | 'medium' | 'low' }) =>
               district.name.toLowerCase() === s.district?.toLowerCase()
             );
             if (stats) {
@@ -942,7 +942,6 @@ export default function MapSearchPage() {
             };
           })
         };
-        setDivisionStats(updatedDivision);
         setSelectedItem({ type: 'division', data: updatedDivision });
 
         setDivisionsData(prev => prev.map(d =>
@@ -991,7 +990,6 @@ export default function MapSearchPage() {
   const handleCloseSidebar = () => {
     setSelectedItem(null);
     setShowDistricts(false);
-    setDivisionStats(null);
   };
 
   const [summaryStats, setSummaryStats] = useState({
@@ -1070,21 +1068,19 @@ export default function MapSearchPage() {
   const displayItem = selectedItem || searchedLocationData;
 
   return (
-    <div className={`container mx-auto min-h-screen transition-all duration-500 ${
-      isDark
-        ? 'bg-linear-to-br from-gray-950 via-gray-900 to-gray-950'
-        : ''
-    }`}>
+    <div className={`container mx-auto min-h-screen transition-all duration-500 px-4 ${isDark
+      ? 'bg-linear-to-br from-gray-950 via-gray-900 to-gray-950'
+      : ''
+      }`}>
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-0" />
       </div>
 
       <header
-        className={`bg-primary relative backdrop-blur-xl ${
-          isDark
-            ? ' border-gray-800/50'
-            : ''
-        } border-t-8 border-accent px-4 md:px-8 py-5 shadow-lg rounded-xl my-5`}
+        className={`bg-primary relative backdrop-blur-xl ${isDark
+          ? ' border-gray-800/50'
+          : ''
+          } border-t-8 border-accent px-4 md:px-8 py-5 shadow-lg rounded-xl my-5`}
       >
         <div>
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
@@ -1133,22 +1129,19 @@ export default function MapSearchPage() {
                   bgDark: 'bg-green-500/10',
                   bgLight: 'bg-green-50'
                 }
-              ].map((stat, i) => (
+              ].map((stat) => (
                 <div
                   key={stat.label}
-                  className={`${
-                    isDark ? stat.bgDark : stat.bgLight
-                  } backdrop-blur-sm rounded-xl p-3 border ${
-                    isDark ? 'border-gray-800/50' : 'border-gray-200/50'
-                  }`}
+                  className={`${isDark ? stat.bgDark : stat.bgLight
+                    } backdrop-blur-sm rounded-xl p-3 border ${isDark ? 'border-gray-800/50' : 'border-gray-200/50'
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <stat.icon className={`w-4 h-4 bg-linear-to-r ${stat.color} bg-clip-text`} strokeWidth={2.5} />
                     <div className={`w-2 h-2 rounded-full bg-linear-to-r ${stat.color}`} />
                   </div>
-                  <p className={`text-xs font-medium mb-1 ${
-                    isDark ? 'text-gray-400' : 'text-gray-600'
-                  }`}>
+                  <p className={`text-xs font-medium mb-1 ${isDark ? 'text-gray-400' : 'text-gray-600'
+                    }`}>
                     {stat.label}
                   </p>
                   <p className={`text-xl font-bold bg-linear-to-r ${stat.color} bg-clip-text text-transparent`}>
@@ -1163,16 +1156,14 @@ export default function MapSearchPage() {
 
       <div className="relative h-[calc(100vh-140px)] mb-10">
         {showAlert && (
-          <div className="absolute top-24 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-[1001] animate-in slide-in-from-top duration-300">
-            <div className={`p-4 rounded-xl backdrop-blur-xl ${
-              isDark
-                ? 'bg-red-500/10 border-red-500/30 text-red-200'
-                : 'bg-red-50 border-red-200 text-red-700'
-            } border shadow-lg`}>
+          <div className="absolute top-24 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-1001 animate-in slide-in-from-top duration-300">
+            <div className={`p-4 rounded-xl backdrop-blur-xl ${isDark
+              ? 'bg-red-500/10 border-red-500/30 text-red-200'
+              : 'bg-red-50 border-red-200 text-red-700'
+              } border shadow-lg`}>
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg ${
-                  isDark ? 'bg-red-500/20' : 'bg-red-100'
-                }`}>
+                <div className={`p-2 rounded-lg ${isDark ? 'bg-red-500/20' : 'bg-red-100'
+                  }`}>
                   <AlertCircle className={`w-4 h-4 ${isDark ? 'text-red-300' : 'text-red-600'}`} />
                 </div>
                 <div className="flex-1">
@@ -1182,10 +1173,11 @@ export default function MapSearchPage() {
                   </p>
                 </div>
                 <button
+                  type="button"
+                  title='cancel'
                   onClick={() => setShowAlert(false)}
-                  className={`p-1 rounded-lg ${
-                    isDark ? 'hover:bg-red-500/20' : 'hover:bg-red-100'
-                  }`}
+                  className={`p-1 rounded-lg ${isDark ? 'hover:bg-red-500/20' : 'hover:bg-red-100'
+                    }`}
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1194,36 +1186,37 @@ export default function MapSearchPage() {
           </div>
         )}
 
-        <div className="absolute top-6 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-[1000] flex gap-3">
-          <div className={`flex-1 relative backdrop-blur-xl ${
-            isDark
-              ? 'bg-gray-900/90 border-gray-700/50'
-              : 'bg-white/90 border-gray-200/50'
-          } rounded-2xl shadow-2xl border`}>
-            <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${
-              isDark ? 'text-gray-400' : 'text-gray-500'
-            }`} strokeWidth={2.5} />
+        <div className="absolute top-6 right-4 md:right-8 left-4 md:left-auto md:w-[420px] z-1000 flex gap-3 pointer-events-auto">
+          <div className={`flex-1 relative backdrop-blur-xl ${isDark
+            ? 'bg-gray-900/90 border-gray-700/50'
+            : 'bg-white/90 border-gray-200/50'
+            } rounded-2xl shadow-2xl border pointer-events-auto`}>
+            <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'
+              }`} strokeWidth={2.5} />
             <input
               type="text"
               placeholder="Search divisions or districts (e.g., Narayanganj, Dhaka)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={`w-full pl-12 pr-12 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all ${
-                isDark
-                  ? 'bg-transparent text-white placeholder-gray-500'
-                  : 'bg-transparent text-gray-900 placeholder-gray-400'
-              } font-medium`}
+              className={`w-full pl-12 pr-12 py-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all ${isDark
+                ? 'bg-transparent text-white placeholder-gray-500'
+                : 'bg-transparent text-gray-900 placeholder-gray-400'
+                } font-medium`}
             />
             {searchQuery && (
               <button
-                onClick={handleClearSearch}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleClearSearch();
+                }}
+                type="button"
                 title="Clear search"
                 aria-label="Clear search"
-                className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 rounded-lg ${
-                  isDark
-                    ? 'text-gray-400 hover:text-white hover:bg-gray-800'
-                    : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
-                } transition-all`}
+                className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-1.5 rounded-lg z-10 ${isDark
+                  ? 'text-gray-400 hover:text-white hover:bg-gray-800'
+                  : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'
+                  } transition-all cursor-pointer pointer-events-auto hover:scale-110 active:scale-95`}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1247,59 +1240,56 @@ export default function MapSearchPage() {
         {displayItem && (
           <>
             <div
-              onClick={handleCloseSidebar}
-              className="absolute inset-0 bg-black/40 backdrop-blur-sm z-[999]"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  handleCloseSidebar();
+                }
+              }}
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm z-999 pointer-events-auto cursor-pointer"
             />
 
             <div
-              className={`absolute top-0 left-0 w-full md:w-[460px] h-full ${
-                isDark
-                  ? 'bg-linear-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
-                  : 'bg-linear-to-b from-white/98 via-white/95 to-gray-50/98'
-              } backdrop-blur-2xl shadow-2xl z-[1000] overflow-hidden flex flex-col border-r ${
-                isDark ? 'border-gray-800/50' : 'border-gray-200/50'
-              }`}
+              className={`absolute top-0 left-0 w-full md:w-[460px] h-full ${isDark
+                ? 'bg-linear-to-b from-gray-900/98 via-gray-900/95 to-gray-950/98'
+                : 'bg-linear-to-b from-white/98 via-white/95 to-gray-50/98'
+                } backdrop-blur-2xl shadow-2xl z-1000 overflow-hidden flex flex-col border-r ${isDark ? 'border-gray-800/50' : 'border-gray-200/50'}`}
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="relative p-6 pb-8">
                 <div
                   className="absolute inset-0 opacity-10"
                   style={{
-                    background: `linear-gradient(135deg, ${
-                      displayItem.type === 'district'
-                        ? (displayItem.division as Division)?.color || '#6B7280'
-                        : (displayItem.data as Division).color
-                    }44 0%, transparent 100%)`
+                    background: `linear-gradient(135deg, ${displayItem.type === 'district'
+                      ? (displayItem.division as Division)?.color || '#6B7280'
+                      : (displayItem.data as Division).color
+                      }44 0%, transparent 100%)`
                   }}
                 />
 
-                <div className="relative flex justify-between items-start mb-6 bg-white px-2 py-3 rounded-xl">
+                <div className="relative flex justify-between items-start mb-6">
                   <div className="flex items-center gap-3">
                     <div
                       className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl"
                       style={{
-                        background: `linear-gradient(135deg, ${
-                          displayItem.type === 'district'
+                        background: `linear-gradient(135deg, ${displayItem.type === 'district'
+                          ? (displayItem.division as Division)?.color || '#6B7280'
+                          : (displayItem.data as Division).color
+                          } 0%, ${displayItem.type === 'district'
                             ? (displayItem.division as Division)?.color || '#6B7280'
                             : (displayItem.data as Division).color
-                        } 0%, ${
-                          displayItem.type === 'district'
-                            ? (displayItem.division as Division)?.color || '#6B7280'
-                            : (displayItem.data as Division).color
-                        }dd 100%)`
+                          }dd 100%)`
                       }}
                     >
                       <MapPin className="w-7 h-7 text-white" strokeWidth={2.5} />
                     </div>
                     <div>
-                      <h2 className={`text-2xl font-bold tracking-tight ${
-                        isDark ? 'text-white' : 'text-gray-900'
-                      }`}>
+                      <h2 className={`text-2xl font-bold tracking-tight ${isDark ? 'text-white' : 'text-gray-900'
+                        }`}>
                         {displayItem.data.name}
                       </h2>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className={`text-sm font-medium ${
-                          isDark ? 'text-gray-400' : 'text-gray-600'
-                        }`}>
+                        <span className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'
+                          }`}>
                           {displayItem.type === 'division'
                             ? `${(displayItem.data as Division).districts.length} Districts`
                             : `District of ${(displayItem.division as Division)?.name || 'Unknown'}`
@@ -1324,14 +1314,18 @@ export default function MapSearchPage() {
                     </div>
                   </div>
                   <button
-                    onClick={handleCloseSidebar}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleCloseSidebar();
+                    }}
                     title="Close sidebar"
                     aria-label="Close sidebar"
-                    className={`p-2.5 rounded-xl ${
-                      isDark
-                        ? 'hover:bg-gray-800/80 text-gray-400 hover:text-white'
-                        : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
-                    } transition-all`}
+                    className={`p-2.5 rounded-xl z-20 cursor-pointer pointer-events-auto transition-all ${isDark
+                      ? 'hover:bg-gray-800/80 text-gray-400 hover:text-white'
+                      : 'hover:bg-gray-100 text-gray-600 hover:text-gray-900'
+                      }`}
                   >
                     <X className="w-5 h-5" strokeWidth={2.5} />
                   </button>
@@ -1369,19 +1363,16 @@ export default function MapSearchPage() {
                       bgDark: 'bg-green-500/10',
                       bgLight: 'bg-green-50'
                     }
-                  ].map((stat, i) => (
+                  ].map((stat) => (
                     <div
                       key={stat.label}
-                      className={`p-3 text-center rounded-xl ${
-                        isDark ? stat.bgDark : stat.bgLight
-                      } border ${
-                        isDark ? 'border-gray-800/50' : 'border-gray-200/30'
-                      } backdrop-blur-sm`}
+                      className={`p-3 text-center rounded-xl ${isDark ? stat.bgDark : stat.bgLight
+                        } border ${isDark ? 'border-gray-800/50' : 'border-gray-200/30'
+                        } backdrop-blur-sm`}
                     >
                       <stat.icon className={`mx-auto w-4 h-4 mb-2 bg-linear-to-r ${stat.gradient} bg-clip-text`} strokeWidth={2.5} />
-                      <p className={`text-xs font-medium mb-1 ${
-                        isDark ? 'text-gray-400' : 'text-gray-600'
-                      }`}>
+                      <p className={`text-xs font-medium mb-1 ${isDark ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
                         {stat.label}
                       </p>
                       <p className={`text-2xl font-bold bg-linear-to-r ${stat.gradient} bg-clip-text text-transparent`}>
@@ -1394,13 +1385,11 @@ export default function MapSearchPage() {
 
               {displayItem.type === 'division' ? (
                 <>
-                  <div className={`px-6 pb-3 border-b ${
-                    isDark ? 'border-gray-800/50' : 'border-gray-200/50'
-                  }`}>
+                  <div className={`px-6 pb-3 border-b ${isDark ? 'border-gray-800/50' : 'border-gray-200/50'
+                    }`}>
                     <div className="flex items-center justify-between">
-                      <h3 className={`text-sm font-semibold uppercase tracking-wider ${
-                        isDark ? 'text-gray-400' : 'text-gray-600'
-                      }`}>
+                      <h3 className={`text-sm font-semibold uppercase tracking-wider ${isDark ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
                         District Overview
                       </h3>
                       <div className="flex items-center gap-2 text-xs">
@@ -1413,7 +1402,7 @@ export default function MapSearchPage() {
                   </div>
 
                   <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3 custom-scrollbar">
-                    {(displayItem.data as Division).districts.map((district, index) => {
+                    {(displayItem.data as Division).districts.map((district) => {
                       const completionPercent = district.total > 0
                         ? Math.round((district.completed / district.total) * 100)
                         : 0;
@@ -1427,11 +1416,10 @@ export default function MapSearchPage() {
                       return (
                         <div
                           key={district.name}
-                          className={`group relative p-5 rounded-2xl border ${
-                            isDark
-                              ? 'bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/80'
-                              : 'bg-white/80 border-gray-200/50 hover:bg-white'
-                          } backdrop-blur-sm transition-all cursor-pointer overflow-hidden`}
+                          className={`group relative p-5 rounded-2xl border ${isDark
+                            ? 'bg-gray-800/50 border-gray-700/50 hover:bg-gray-800/80'
+                            : 'bg-white/80 border-gray-200/50 hover:bg-white'
+                            } backdrop-blur-sm transition-all cursor-pointer overflow-hidden`}
                           onClick={() => handleDistrictClick(district, displayItem.data as Division)}
                         >
                           <div
@@ -1444,9 +1432,8 @@ export default function MapSearchPage() {
                           <div className="relative">
                             <div className="flex justify-between items-start mb-4">
                               <div>
-                                <h3 className={`font-bold text-lg mb-1 ${
-                                  isDark ? 'text-white' : 'text-gray-900'
-                                }`}>
+                                <h3 className={`font-bold text-lg mb-1 ${isDark ? 'text-white' : 'text-gray-900'
+                                  }`}>
                                   {district.name}
                                 </h3>
                                 <div className="flex items-center gap-2">
@@ -1456,9 +1443,8 @@ export default function MapSearchPage() {
                                 </div>
                               </div>
                               <div className="text-right">
-                                <div className={`text-sm font-medium ${
-                                  isDark ? 'text-gray-400' : 'text-gray-600'
-                                }`}>
+                                <div className={`text-sm font-medium ${isDark ? 'text-gray-400' : 'text-gray-600'
+                                  }`}>
                                   Completion
                                 </div>
                                 <div className="text-2xl font-bold" style={{ color: (displayItem.data as Division).color }}>
@@ -1468,62 +1454,49 @@ export default function MapSearchPage() {
                             </div>
 
                             <div className="grid grid-cols-3 gap-3 mb-4">
-                              <div className={`text-center p-2 rounded-lg ${
-                                isDark ? 'bg-gray-900/50' : 'bg-gray-50'
-                              }`}>
-                                <Activity className={`w-4 h-4 mx-auto mb-1 ${
-                                  isDark ? 'text-blue-400' : 'text-blue-600'
-                                }`} strokeWidth={2.5} />
-                                <div className={`text-xs font-medium ${
-                                  isDark ? 'text-gray-500' : 'text-gray-600'
+                              <div className={`text-center p-2 rounded-lg ${isDark ? 'bg-gray-900/50' : 'bg-gray-50'
                                 }`}>
+                                <Activity className={`w-4 h-4 mx-auto mb-1 ${isDark ? 'text-blue-400' : 'text-blue-600'
+                                  }`} strokeWidth={2.5} />
+                                <div className={`text-xs font-medium ${isDark ? 'text-gray-500' : 'text-gray-600'
+                                  }`}>
                                   Total
                                 </div>
-                                <div className={`text-lg font-bold ${
-                                  isDark ? 'text-white' : 'text-gray-900'
-                                }`}>
+                                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'
+                                  }`}>
                                   {district.total}
                                 </div>
                               </div>
-                              <div className={`text-center p-2 rounded-lg ${
-                                isDark ? 'bg-gray-900/50' : 'bg-gray-50'
-                              }`}>
-                                <Clock className={`w-4 h-4 mx-auto mb-1 ${
-                                  isDark ? 'text-orange-400' : 'text-orange-600'
-                                }`} strokeWidth={2.5} />
-                                <div className={`text-xs font-medium ${
-                                  isDark ? 'text-gray-500' : 'text-gray-600'
+                              <div className={`text-center p-2 rounded-lg ${isDark ? 'bg-gray-900/50' : 'bg-gray-50'
                                 }`}>
+                                <Clock className={`w-4 h-4 mx-auto mb-1 ${isDark ? 'text-orange-400' : 'text-orange-600'
+                                  }`} strokeWidth={2.5} />
+                                <div className={`text-xs font-medium ${isDark ? 'text-gray-500' : 'text-gray-600'
+                                  }`}>
                                   Pending
                                 </div>
-                                <div className={`text-lg font-bold ${
-                                  isDark ? 'text-white' : 'text-gray-900'
-                                }`}>
+                                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'
+                                  }`}>
                                   {district.pending}
                                 </div>
                               </div>
-                              <div className={`text-center p-2 rounded-lg ${
-                                isDark ? 'bg-gray-900/50' : 'bg-gray-50'
-                              }`}>
-                                <CheckCircle className={`w-4 h-4 mx-auto mb-1 ${
-                                  isDark ? 'text-green-400' : 'text-green-600'
-                                }`} strokeWidth={2.5} />
-                                <div className={`text-xs font-medium ${
-                                  isDark ? 'text-gray-500' : 'text-gray-600'
+                              <div className={`text-center p-2 rounded-lg ${isDark ? 'bg-gray-900/50' : 'bg-gray-50'
                                 }`}>
+                                <CheckCircle className={`w-4 h-4 mx-auto mb-1 ${isDark ? 'text-green-400' : 'text-green-600'
+                                  }`} strokeWidth={2.5} />
+                                <div className={`text-xs font-medium ${isDark ? 'text-gray-500' : 'text-gray-600'
+                                  }`}>
                                   Done
                                 </div>
-                                <div className={`text-lg font-bold ${
-                                  isDark ? 'text-white' : 'text-gray-900'
-                                }`}>
+                                <div className={`text-lg font-bold ${isDark ? 'text-white' : 'text-gray-900'
+                                  }`}>
                                   {district.completed}
                                 </div>
                               </div>
                             </div>
 
-                            <div className={`relative w-full h-2 rounded-full overflow-hidden ${
-                              isDark ? 'bg-gray-900/50' : 'bg-gray-200'
-                            }`}>
+                            <div className={`relative w-full h-2 rounded-full overflow-hidden ${isDark ? 'bg-gray-900/50' : 'bg-gray-200'
+                              }`}>
                               <div
                                 className="absolute left-0 top-0 h-full rounded-full transition-all duration-1000"
                                 style={{
@@ -1534,17 +1507,15 @@ export default function MapSearchPage() {
                             </div>
 
                             <div className="mt-4 flex items-center justify-between">
-                              <span className={`text-xs ${
-                                isDark ? 'text-gray-500' : 'text-gray-500'
-                              }`}>
+                              <span className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-500'
+                                }`}>
                                 Click to view details
                               </span>
                               <button
-                                className={`text-xs font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all ${
-                                  isDark
-                                    ? 'text-blue-400 hover:bg-blue-500/10'
-                                    : 'text-blue-600 hover:bg-blue-50'
-                                }`}
+                                className={`text-xs font-semibold flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all ${isDark
+                                  ? 'text-blue-400 hover:bg-blue-500/10'
+                                  : 'text-blue-600 hover:bg-blue-50'
+                                  }`}
                                 style={{ color: (displayItem.data as Division).color }}
                               >
                                 View Map
@@ -1561,15 +1532,13 @@ export default function MapSearchPage() {
                 </>
               ) : (
                 <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
-                  <div className={`p-6 rounded-2xl border ${
-                      isDark
-                        ? 'bg-gray-800/50 border-gray-700/50'
-                        : 'bg-white/80 border-gray-200/50'
+                  <div className={`p-6 rounded-2xl border ${isDark
+                    ? 'bg-gray-800/50 border-gray-700/50'
+                    : 'bg-white/80 border-gray-200/50'
                     } backdrop-blur-sm`}
                   >
-                    <h3 className={`text-lg font-bold mb-4 ${
-                      isDark ? 'text-white' : 'text-gray-900'
-                    }`}>
+                    <h3 className={`text-lg font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-900'
+                      }`}>
                       District Performance
                     </h3>
 
@@ -1606,17 +1575,15 @@ export default function MapSearchPage() {
 
                     {(displayItem.data as District).total > 0 && (
                       <div className="mt-6 pt-6 border-t border-gray-700/50">
-                        <h4 className={`text-sm font-semibold mb-3 ${
-                          isDark ? 'text-gray-400' : 'text-gray-600'
-                        }`}>
+                        <h4 className={`text-sm font-semibold mb-3 ${isDark ? 'text-gray-400' : 'text-gray-600'
+                          }`}>
                           Recent Activities
                         </h4>
                         <div className="space-y-2">
                           {['Road repair completed', 'New complaint registered', 'Water supply issue resolved']
                             .map((activity, i) => (
-                              <div key={i} className={`flex items-center gap-3 text-sm ${
-                                isDark ? 'text-gray-400' : 'text-gray-600'
-                              }`}>
+                              <div key={i} className={`flex items-center gap-3 text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'
+                                }`}>
                                 <div
                                   className="w-2 h-2 rounded-full"
                                   style={{ backgroundColor: (displayItem.division as Division)?.color || '#6B7280' }}
@@ -1632,26 +1599,21 @@ export default function MapSearchPage() {
                 </div>
               )}
 
-              <div className={`p-5 border-t ${
-                isDark ? 'border-gray-800/50 bg-gray-900/50' : 'border-gray-200/50 bg-gray-50/50'
-              } backdrop-blur-sm`}>
+              <div className={`p-5 border-t ${isDark ? 'border-gray-800/50 bg-gray-900/50' : 'border-gray-200/50 bg-gray-50/50'
+                } backdrop-blur-sm`}>
                 <div className="flex items-start gap-3">
-                  <div className={`p-2 rounded-lg ${
-                    isDark ? 'bg-blue-500/10' : 'bg-blue-50'
-                  }`}>
-                    <Info className={`w-4 h-4 ${
-                      isDark ? 'text-blue-400' : 'text-blue-600'
-                    }`} strokeWidth={2.5} />
+                  <div className={`p-2 rounded-lg ${isDark ? 'bg-blue-500/10' : 'bg-blue-50'
+                    }`}>
+                    <Info className={`w-4 h-4 ${isDark ? 'text-blue-400' : 'text-blue-600'
+                      }`} strokeWidth={2.5} />
                   </div>
                   <div className="flex-1">
-                    <p className={`text-xs font-medium mb-1 ${
-                      isDark ? 'text-gray-300' : 'text-gray-700'
-                    }`}>
+                    <p className={`text-xs font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'
+                      }`}>
                       {displayItem.type === 'division' ? 'Division Overview' : 'District Insights'}
                     </p>
-                    <p className={`text-xs ${
-                      isDark ? 'text-gray-500' : 'text-gray-600'
-                    }`}>
+                    <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-600'
+                      }`}>
                       {displayItem.type === 'division'
                         ? 'Click on any district to view detailed performance metrics and recent activities.'
                         : 'Real-time data synced with municipal reporting systems. Updated every 15 minutes.'

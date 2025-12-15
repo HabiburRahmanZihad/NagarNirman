@@ -72,102 +72,102 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="w-full bg-linear-to-b from-gray-50 to-white py-20 px-4 md:px-10 lg:px-20">
-      <div className="max-w-7xl mx-auto">
+    <section className="w-full bg-linear-to-b from-gray-50 to-white py-20 px-0 md:px-10 lg:px-20">
+      <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[600px]">
-{/* LEFT SECTION */}
-<div className="space-y-8 order-2 lg:order-1">
-  <div className="space-y-2">
-    <div className="flex items-center gap-3 text-sm">
-      <span className="text-green-700 text-lg">★</span>
-      <span className="text-gray-600 font-medium">Testimonials</span>
-    </div>
+          {/* LEFT SECTION */}
+          <div className="space-y-8 order-2 lg:order-1 px-4 md:px-0">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3 text-sm">
+                <span className="text-green-700 text-lg">★</span>
+                <span className="text-gray-600 font-medium">Testimonials</span>
+              </div>
 
-    <h2 className="text-[#0b4f46] font-extrabold text-5xl md:text-6xl leading-tight">
-      Why They Believe
-    </h2>
+              <h2 className="text-[#0b4f46] font-extrabold text-5xl md:text-6xl leading-tight">
+                Why They Believe
+              </h2>
 
-    <div className="flex items-center gap-4 pt-2">
-      <div className="w-16 h-16 bg-accent text-white rounded-full flex items-center justify-center text-4xl shadow-lg flex-shrink-0">
-        ❝❞
-      </div>
-      <h2 className="text-[#0b4f46] font-extrabold text-5xl md:text-6xl leading-tight">
-        In Us
-      </h2>
-    </div>
-  </div>
+              <div className="flex items-center gap-4 pt-2">
+                <div className="w-16 h-16 bg-accent text-white rounded-full flex items-center justify-center text-4xl shadow-lg flex-shrink-0">
+                  ❝❞
+                </div>
+                <h2 className="text-[#0b4f46] font-extrabold text-5xl md:text-6xl leading-tight">
+                  In Us
+                </h2>
+              </div>
+            </div>
 
-  <p className="text-gray-600 max-w-lg leading-relaxed text-lg">
-    Join thousands of satisfied volunteers and problem solvers who trust NagarNirman to make a real difference in our communities. We focus on practical support, training, and sustainable impact — so every volunteer feels empowered.
-  </p>
+            <p className="text-gray-600 max-w-lg leading-relaxed text-lg">
+              Join thousands of satisfied volunteers and problem solvers who trust NagarNirman to make a real difference in our communities. We focus on practical support, training, and sustainable impact — so every volunteer feels empowered.
+            </p>
 
-  {/* extra info row: stats, rating, short quote */}
-  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-4">
-    <div className="flex items-baseline gap-2">
-      <span className="text-5xl font-extrabold text-[#0b4f46]">99%</span>
-      <span className="text-gray-600 font-medium">Positive Reviews</span>
-    </div>
+            {/* extra info row: stats, rating, short quote */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-4">
+              <div className="flex items-baseline gap-2">
+                <span className="text-5xl font-extrabold text-[#0b4f46]">99%</span>
+                <span className="text-gray-600 font-medium">Positive Reviews</span>
+              </div>
 
-    <div className="h-12 w-px bg-gray-300 hidden sm:block" />
+              <div className="h-12 w-px bg-gray-300 hidden sm:block" />
 
-    <div className="flex items-center gap-3">
-      <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-500 flex items-center justify-center text-white text-xl">
-        ★
-      </div>
-      <div>
-        <div className="text-[#0b4f46] font-semibold">5.0 Rating</div>
-        <div className="text-sm text-gray-500">based on <span className="font-medium text-gray-700">4,821</span> reviews</div>
-      </div>
-    </div>
-  </div>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-500 flex items-center justify-center text-white text-xl">
+                  ★
+                </div>
+                <div>
+                  <div className="text-[#0b4f46] font-semibold">5.0 Rating</div>
+                  <div className="text-sm text-gray-500">based on <span className="font-medium text-gray-700">4,821</span> reviews</div>
+                </div>
+              </div>
+            </div>
 
-  {/* feature bullets */}
-  <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-600">
-    <li className="flex items-start gap-3">
-      <div className="mt-1 text-green-700">✔</div>
-      <div>
-        <div className="font-medium text-gray-800">Verified Volunteers</div>
-        <div className="text-sm text-gray-500">ID checked & trained</div>
-      </div>
-    </li>
+            {/* feature bullets */}
+            <ul className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-600">
+              <li className="flex items-start gap-3">
+                <div className="mt-1 text-green-700">✔</div>
+                <div>
+                  <div className="font-medium text-gray-800">Verified Volunteers</div>
+                  <div className="text-sm text-gray-500">ID checked & trained</div>
+                </div>
+              </li>
 
-    <li className="flex items-start gap-3">
-      <div className="mt-1 text-green-700">✔</div>
-      <div>
-        <div className="font-medium text-gray-800">Impact Driven</div>
-        <div className="text-sm text-gray-500">Measurable community outcomes</div>
-      </div>
-    </li>
+              <li className="flex items-start gap-3">
+                <div className="mt-1 text-green-700">✔</div>
+                <div>
+                  <div className="font-medium text-gray-800">Impact Driven</div>
+                  <div className="text-sm text-gray-500">Measurable community outcomes</div>
+                </div>
+              </li>
 
-    <li className="flex items-start gap-3">
-      <div className="mt-1 text-green-700">✔</div>
-      <div>
-        <div className="font-medium text-gray-800">Local Support</div>
-        <div className="text-sm text-gray-500">Teams active in 12+ districts</div>
-      </div>
-    </li>
+              <li className="flex items-start gap-3">
+                <div className="mt-1 text-green-700">✔</div>
+                <div>
+                  <div className="font-medium text-gray-800">Local Support</div>
+                  <div className="text-sm text-gray-500">Teams active in 12+ districts</div>
+                </div>
+              </li>
 
-    <li className="flex items-start gap-3">
-      <div className="mt-1 text-green-700">✔</div>
-      <div>
-        <div className="font-medium text-gray-800">Flexible Roles</div>
-        <div className="text-sm text-gray-500">Short & long-term opportunities</div>
-      </div>
-    </li>
-  </ul>
+              <li className="flex items-start gap-3">
+                <div className="mt-1 text-green-700">✔</div>
+                <div>
+                  <div className="font-medium text-gray-800">Flexible Roles</div>
+                  <div className="text-sm text-gray-500">Short & long-term opportunities</div>
+                </div>
+              </li>
+            </ul>
 
-  {/* highlighted quote */}
-  <blockquote className="mt-4 border-l-4 border-[#055a4d] pl-4 text-gray-700 italic max-w-lg">
-    “NagarNirman changed how I approach community work — practical training, friendly mentors, and real results.” — <span className="font-semibold">R. Hasan</span>
-  </blockquote>
+            {/* highlighted quote */}
+            <blockquote className="mt-4 border-l-4 border-[#055a4d] pl-4 text-gray-700 italic max-w-lg">
+              “NagarNirman changed how I approach community work — practical training, friendly mentors, and real results.” — <span className="font-semibold">R. Hasan</span>
+            </blockquote>
 
 
 
-</div>
+          </div>
 
 
           {/* RIGHT SECTION - SLIDER */}
-          <div className="relative h-full w-full order-1 lg:order-2 flex items-center justify-center py-10">
+          <div className="relative h-[650px] w-full order-1 lg:order-2 flex items-center justify-center py-10 px-0 md:px-0">
             <Swiper
               modules={[Autoplay, EffectCoverflow, Pagination]}
               effect="coverflow"
@@ -193,7 +193,7 @@ export default function Testimonials() {
               }}
               loop={true}
               speed={1000}
-              className="testimonial-swiper w-full h-full max-w-[520px] mx-auto"
+              className="testimonial-swiper w-full h-full max-w-[520px] mx-auto rounded-3xl"
               style={{
                 "--swiper-pagination-bullet-inactive-color": "#cbd5e1",
                 "--swiper-pagination-bullet-inactive-opacity": "0.4",
@@ -205,8 +205,8 @@ export default function Testimonials() {
                 <SwiperSlide key={t.id} className="!w-[440px] h-auto flex items-center justify-center">
                   {({ isActive }) => (
                     <div className={`w-full h-full rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 ${isActive
-                        ? "bg-linear-to-br from-[#004D40] to-[#00695C] scale-100 shadow-[0_30px_80px_-15px_rgba(0,77,64,0.8)]"
-                        : "bg-linear-to-br from-[#004D40]/70 to-[#00695C]/70 scale-85 shadow-[0_10px_25px_-8px_rgba(0,77,64,0.3)]"
+                      ? "bg-linear-to-br from-[#004D40] to-[#00695C] scale-100 shadow-[0_30px_80px_-15px_rgba(0,77,64,0.8)]"
+                      : "bg-linear-to-br from-[#004D40]/70 to-[#00695C]/70 scale-85 shadow-[0_10px_25px_-8px_rgba(0,77,64,0.3)]"
                       }`}
                     >
                       <div className="flex flex-col h-full">
@@ -223,21 +223,17 @@ export default function Testimonials() {
                           {/* Floating Play Button */}
                           <div className="absolute inset-0 flex items-center justify-center group">
                             <button
+                              title="Play Video"
                               onClick={() => openVideo(t.videoId)}
                               className="relative w-20 h-20 bg-white/25 backdrop-blur-md rounded-full flex items-center justify-center transition-all duration-500 hover:scale-125 hover:bg-white/40 border-2 border-white/40 shadow-2xl group-hover:shadow-[0_0_35px_rgba(255,255,255,0.5)]"
                             >
-                              {/* Animated glow rings */}
-                              <div className="absolute -inset-3 rounded-full bg-white/20 blur-xl animate-pulse opacity-60"></div>
-                              <div className="absolute -inset-2 rounded-full bg-linear-to-r from-white/25 to-accent/25 blur-lg animate-pulse opacity-50" style={{ animationDelay: "0.5s" }}></div>
-                              <div className="absolute inset-0 rounded-full bg-linear-to-br from-white/30 via-white/10 to-transparent border border-white/20"></div>
-
                               <FaPlay className="w-7 h-7 text-white drop-shadow-2xl ml-1.5 relative z-10 group-hover:scale-110 transition-transform duration-300" />
                             </button>
                           </div>
 
                           {/* Rating Badge - Top Right */}
-                          <div className="absolute top-4 right-4 z-10">
-                            <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-lg px-3.5 py-2 rounded-full border border-white/40 shadow-lg hover:bg-white/30 transition-all duration-300">
+                          <div className="absolute top-4 right-8 z-12">
+                            <div className="inline-flex items-center gap-1.5 bg-white/20 px-3.5 py-2 rounded-full border border-white/40 shadow-lg hover:bg-white/30 transition-all duration-300">
                               <span className="text-yellow-300 text-sm font-bold">★</span>
                               <span className="text-white font-bold text-sm">{t.rating.toFixed(1)}</span>
                             </div>
@@ -247,21 +243,21 @@ export default function Testimonials() {
                         {/* Content Section */}
                         <div className="flex-1 p-6 flex flex-col justify-between relative bg-linear-to-b from-[#004D40] to-[#003835]">
                           {/* Quote Icon */}
-                          <div className="absolute -top-5 left-6 z-10">
+                          <div className="absolute -top-5 left-8 z-10">
                             <div className="w-12 h-12 bg-accent shadow-lg rounded-full flex items-center justify-center border-2 border-[#004D40] hover:scale-110 transition-transform duration-300">
                               <FaQuoteLeft className="w-5 h-5 text-white" />
                             </div>
                           </div>
 
                           {/* Testimonial Text */}
-                          <div className="mt-4 flex-1 flex items-center">
+                          <div className="mt-4 flex-1 flex items-center p-4">
                             <p className="text-white/95 leading-relaxed text-sm">
                               {t.text}
                             </p>
                           </div>
 
                           {/* Author Info */}
-                          <div className="mt-4 pt-4 border-t border-white/15">
+                          <div className="mt-4 p-4 border-t border-white/15">
                             <h4 className="text-white text-base font-bold leading-tight">
                               {t.name}{" "}
                               <span className="text-white/60 font-normal text-sm">{t.subName}</span>

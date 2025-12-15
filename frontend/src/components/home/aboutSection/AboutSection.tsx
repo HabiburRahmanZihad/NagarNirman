@@ -62,7 +62,7 @@ export default function AboutSection() {
     { id: "vision", label: "Our Vision" },
   ];
 
-  const youtubeVideoId = "dQw4w9WgXcQ"; // Replace with your actual YouTube video ID
+  const youtubeVideoId = "miO5nPX536o"; // Replace with your actual YouTube video ID
 
   const tabContent = {
     history:
@@ -81,7 +81,7 @@ export default function AboutSection() {
   ];
 
   return (
-    <section className="w-full bg-base-100 py-20 px-4 md:px-10 lg:px-20">
+    <section className="w-full bg-base-100 py-20 px-4 sm:px-6 lg:px-8">
       <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
         {/* LEFT IMAGES */}
@@ -98,7 +98,7 @@ export default function AboutSection() {
             {/* Main large image - Left side */}
             <div className="absolute top-0 left-0 w-[58%] h-[70%] rounded-3xl overflow-hidden shadow-2xl z-10">
               <Image
-                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80"
+                src="https://res.cloudinary.com/dc3ul4egd/image/upload/v1765708812/Gemini_Generated_Image_dyktqldyktqldykt_lnz63m.png"
                 alt="Team working together"
                 fill
                 className="object-cover"
@@ -129,7 +129,7 @@ export default function AboutSection() {
 
                 <div className="relative w-full h-full shadow-2xl" style={{ clipPath: 'url(#organic-shape)' }}>
                   <Image
-                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80"
+                    src="https://images.unsplash.com/photo-1588854621349-d2f1d0ba3ece?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Community volunteer"
                     fill
                     className="object-cover"
@@ -170,7 +170,7 @@ export default function AboutSection() {
                 <FaTrophy />
               </div>
               <div>
-                <p className="text-xs font-medium">2025 - We are the</p>
+                <p className="text-xs font-medium">2026 - We are the</p>
                 <p className="text-sm font-bold">best award winner</p>
               </div>
             </div>
@@ -208,23 +208,25 @@ export default function AboutSection() {
         )}
 
         {/* RIGHT CONTENT */}
-        <div>
-          <p className="text-primary font-semibold mb-3 flex items-center gap-2 text-lg">
-            <Sprout className="w-5 h-5" /> About Us
+        {/* RIGHT CONTENT */}
+        <div className="w-full">
+          <p className="text-primary font-semibold mb-2 sm:mb-3 flex items-center gap-1 sm:gap-2 text-base sm:text-lg">
+            <Sprout className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+            <span>About Us</span>
           </p>
 
-          <h2 className="text-[#003B31] text-4xl md:text-5xl font-bold leading-tight mb-8">
+          <h2 className="text-[#003B31] text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6 sm:mb-8">
             Building Greener Future<br />Together And Protect
           </h2>
 
-          {/* Tabs */}
-          <div className="flex gap-6 mb-6">
+          {/* Tabs - Responsive */}
+          <div className="flex flex-wrap gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 overflow-x-auto pb-2 sm:pb-0">
             {tabs.map((t) => (
               <button
                 key={t.id}
                 onClick={() => setActiveTab(t.id)}
-                className={`pb-2 font-semibold text-base transition-colors duration-200 ${activeTab === t.id
-                  ? "text-[#003B31] border-b-2 border-accent"
+                className={`pb-1 sm:pb-2 font-semibold text-sm sm:text-base transition-colors duration-200 whitespace-nowrap ${activeTab === t.id
+                  ? "text-[#003B31] border-b-2 sm:border-b-2 border-accent"
                   : "text-gray-500 hover:text-[#003B31]"
                   }`}
               >
@@ -233,50 +235,56 @@ export default function AboutSection() {
             ))}
           </div>
 
-          <p className="text-gray-600 leading-relaxed mb-6 text-base">
+          <p className="text-gray-600 leading-relaxed mb-4 sm:mb-6 text-sm sm:text-base">
             {tabContent[activeTab]}
           </p>
 
-          <ul className="space-y-3 text-gray-600 mb-8">
-            <li className="flex items-start gap-3">
-              <span className="text-primary mt-1">•</span>
-              <span>Citizen-driven platform for reporting and resolving civic issues</span>
+          <ul className="space-y-2 sm:space-y-3 text-gray-600 mb-6 sm:mb-8">
+            <li className="flex items-start gap-2 sm:gap-3">
+              <span className="text-primary mt-0.5 sm:mt-1 flex-shrink-0">•</span>
+              <span className="text-sm sm:text-base">Citizen-driven platform for reporting and resolving civic issues</span>
             </li>
-            <li className="flex items-start gap-3">
-              <span className="text-primary mt-1">•</span>
-              <span>Connect with verified problem solvers in your community</span>
+            <li className="flex items-start gap-2 sm:gap-3">
+              <span className="text-primary mt-0.5 sm:mt-1 flex-shrink-0">•</span>
+              <span className="text-sm sm:text-base">Connect with verified problem solvers in your community</span>
             </li>
-            <li className="flex items-start gap-3">
-              <span className="text-primary mt-1">•</span>
-              <span>Real-time tracking and transparent progress updates</span>
+            <li className="flex items-start gap-2 sm:gap-3">
+              <span className="text-primary mt-0.5 sm:mt-1 flex-shrink-0">•</span>
+              <span className="text-sm sm:text-base">Real-time tracking and transparent progress updates</span>
             </li>
           </ul>
 
-          <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <Link href="/about">
+          <div className="mt-6 sm:mt-8 flex flex-col xs:flex-row items-start gap-4 sm:gap-6">
+            <Link href="/about" className="w-full xs:w-auto">
               <Button
                 variant="accent"
-                size="lg"
-                iconPosition="right"
+                size="md"
+                className="w-full xs:w-auto text-sm sm:text-base"
               >
                 Explore More
               </Button>
             </Link>
-            <div className="flex items-center gap-3">
-              <Image
-                src="https://cdn.trustpilot.net/brand-assets/4.1.0/logo-black.svg"
-                alt="Trustpilot"
-                width={100}
-                height={24}
-                className="object-contain"
-              />
-              <div className="text-sm">
-                <div className="flex items-center gap-1 mb-1">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-primary">★</span>
-                  ))}
+
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full xs:w-auto">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="relative w-16 h-4 sm:w-20 sm:h-5 md:w-24 md:h-6">
+                  <Image
+                    src="https://cdn.trustpilot.net/brand-assets/4.1.0/logo-black.svg"
+                    alt="Trustpilot"
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 640px) 64px, (max-width: 768px) 80px, 96px"
+                  />
                 </div>
-                <p className="text-gray-600 text-xs">Excellent 4.9 out of 5</p>
+
+                <div className="text-xs sm:text-sm">
+                  <div className="flex items-center gap-0.5 sm:gap-1 mb-0.5 sm:mb-1">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className="text-primary text-sm sm:text-base">★</span>
+                    ))}
+                  </div>
+                  <p className="text-gray-600 text-xs">Excellent 4.9 out of 5</p>
+                </div>
               </div>
             </div>
           </div>

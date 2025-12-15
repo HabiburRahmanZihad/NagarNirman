@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@/components/common';
 import Image from 'next/image';
 import { useMemo } from 'react';
 import { FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
@@ -60,7 +61,7 @@ export default function GuidelinesPage() {
                 <div className="h-1 w-24 bg-primary rounded-full"></div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid lg:grid-cols-2 gap-6">
                 {/* Do Column */}
                 <div className="bg-base-300 border border-base-200 rounded-xl p-6 shadow-sm h-full">
                   <div className="flex items-start gap-4">
@@ -237,12 +238,12 @@ export default function GuidelinesPage() {
                     <div>
                       <h4 className="font-semibold text-info mb-1">Respect</h4>
                       <p className="text-neutral">
-                        Treat all community members with respect and dignity. Discrimination, 
+                        Treat all community members with respect and dignity. Discrimination,
                         harassment, or bullying will not be tolerated.
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start gap-4">
                     <div className="bg-primary/10 p-2 rounded-lg shrink-0">
                       <span className="text-primary font-bold">I</span>
@@ -250,12 +251,12 @@ export default function GuidelinesPage() {
                     <div>
                       <h4 className="font-semibold text-info mb-1">Integrity</h4>
                       <p className="text-neutral">
-                        Be honest and transparent in all your interactions. Report issues 
+                        Be honest and transparent in all your interactions. Report issues
                         accurately and complete tasks with integrity.
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start gap-4">
                     <div className="bg-primary/10 p-2 rounded-lg shrink-0">
                       <span className="text-primary font-bold">P</span>
@@ -263,12 +264,12 @@ export default function GuidelinesPage() {
                     <div>
                       <h4 className="font-semibold text-info mb-1">Privacy</h4>
                       <p className="text-neutral">
-                        Respect the privacy of others. Do not share personal information 
+                        Respect the privacy of others. Do not share personal information
                         or photos of individuals without their consent.
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start gap-4">
                     <div className="bg-primary/10 p-2 rounded-lg shrink-0">
                       <span className="text-primary font-bold">C</span>
@@ -276,12 +277,12 @@ export default function GuidelinesPage() {
                     <div>
                       <h4 className="font-semibold text-info mb-1">Collaboration</h4>
                       <p className="text-neutral">
-                        Work together to build a better community. Support others and 
+                        Work together to build a better community. Support others and
                         share knowledge constructively.
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-start gap-4">
                     <div className="bg-primary/10 p-2 rounded-lg shrink-0">
                       <span className="text-primary font-bold">A</span>
@@ -289,7 +290,7 @@ export default function GuidelinesPage() {
                     <div>
                       <h4 className="font-semibold text-info mb-1">Accountability</h4>
                       <p className="text-neutral">
-                        Take responsibility for your actions and commitments. Follow 
+                        Take responsibility for your actions and commitments. Follow
                         through on tasks and reports you initiate.
                       </p>
                     </div>
@@ -317,12 +318,12 @@ export default function GuidelinesPage() {
                       Violations of these guidelines may result in:
                     </h3>
                     <p className="text-neutral">
-                      We take guideline violations seriously to maintain a safe and 
+                      We take guideline violations seriously to maintain a safe and
                       productive community environment.
                     </p>
                   </div>
                 </div>
-                
+
                 <ul className="space-y-3 text-neutral">
                   <li className="flex items-center gap-3 p-3 bg-base-100 rounded-lg">
                     <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
@@ -369,18 +370,23 @@ export default function GuidelinesPage() {
                   violation, please contact our support team.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a
-                    href="mailto:support@nagarnirman.com"
-                    className="bg-primary text-white px-8 py-3.5 rounded-full font-medium hover:bg-info transition-all duration-300 inline-flex items-center justify-center gap-2 hover:shadow-lg"
-                  >
-                    Email Support
-                  </a>
-                  <a
-                    href="/contact"
-                    className="bg-base-100 text-primary border-2 border-primary px-8 py-3.5 rounded-full font-medium hover:bg-primary hover:text-white transition-all duration-300 inline-flex items-center justify-center gap-2 hover:shadow-lg"
-                  >
-                    Contact Form
-                  </a>
+                  <Button>
+                    <a
+                      href="mailto:support@nagarnirman.com"
+
+                    >
+                      Email Support
+                    </a>
+                  </Button>
+
+                  <Button>
+                    <a
+                      href="/contact"
+                    >
+                      Contact Form
+                    </a>
+                  </Button>
+
                 </div>
                 <p className="text-sm text-neutral mt-6">
                   We typically respond within 24 hours
