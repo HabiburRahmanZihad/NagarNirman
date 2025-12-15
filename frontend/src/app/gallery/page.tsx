@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import {
   MapPin,
   Calendar,
@@ -25,7 +26,6 @@ import {
   Lightbulb,
   Trees,
   ArrowDown,
-  ArrowLeft,
   FileText,
   Clock
 } from 'lucide-react';
@@ -367,43 +367,53 @@ const GalleryPage = () => {
   }
 
   return (
-    <section className={`bg-white py-16 ${isBodyOverflowHidden ? '' : ''}`}>
+    <section className={`min-h-screen bg-base-100 py-8 sm:py-12 ${isBodyOverflowHidden ? '' : ''}`}>
       <div className="container mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
 
-        {/* Header + filters */}
-        <div className="flex flex-col gap-8">
-          <div className="space-y-3">
-            {/* Subtitle with accent color */}
-            <div className="flex items-center gap-2">
-              <div className="w-12 h-px bg-[#f2a921]"></div>
-              <p className="text-sm font-semibold tracking-wider text-[#004d40]">
-                COMMUNITY GALLERY
+        {/* Header - Earthquake Style */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-linear-to-r from-primary to-secondary text-white rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-12 border-t-4 border-accent"
+        >
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <Camera className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14" />
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold">Community Gallery</h1>
+              </div>
+              <p className="text-white/90 text-base sm:text-lg max-w-2xl">
+                Visual evidence of civic action from {subtitleDistricts}. Each photo represents verified progress in our communities.
               </p>
-              <div className="flex-1 h-px bg-linear-to-r from-transparent via-gray-300 to-transparent"></div>
             </div>
 
-            {/* Main Title with gradient */}
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-              <span className="bg-linear-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                Visual Evidence of Civic Action
-              </span>
-            </h2>
-
-            {/* Subtitle with improved text */}
-            <p className="text-lg text-gray-600 max-w-3xl leading-relaxed">
-              Witness the impact through documented evidence from {subtitleDistricts}.
-              Each photo represents a step towards better urban living and community engagement.
-            </p>
+            {/* Quick Stats */}
+            <div className="flex flex-wrap gap-4 sm:gap-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5 border border-white/20 min-w-[100px] text-center">
+                <p className="text-2xl sm:text-3xl font-extrabold">{galleryItems.length}</p>
+                <p className="text-xs sm:text-sm text-white/80 font-medium">Photos</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5 border border-white/20 min-w-[100px] text-center">
+                <p className="text-2xl sm:text-3xl font-extrabold">{reports.length}</p>
+                <p className="text-xs sm:text-sm text-white/80 font-medium">Reports</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5 border border-white/20 min-w-[100px] text-center">
+                <p className="text-2xl sm:text-3xl font-extrabold">{[...new Set(reports.map(r => r.location.district))].length}</p>
+                <p className="text-xs sm:text-sm text-white/80 font-medium">Districts</p>
+              </div>
+            </div>
           </div>
+        </motion.div>
 
-          {/* Filter Section */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-100">
-            <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-[#004d40]" />
-              <span className="text-sm font-medium text-gray-700">Filter by issue type:</span>
+        {/* Filter Section - Earthquake Style */}
+        <div className="bg-white rounded-2xl shadow-lg border-2 border-accent/20 p-4 sm:p-6">
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
+            <div className="flex items-center gap-2 text-neutral">
+              <Filter className="w-5 h-5 text-primary" />
+              <span className="text-sm font-bold">Filter by issue type:</span>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 flex-1">
               {filters.map((label) => {
                 const active = activeFilter === label;
 
@@ -417,16 +427,13 @@ const GalleryPage = () => {
                       setActiveFilter(label);
                       setVisibleCount(12);
                     }}
-                    className={[
-                      "px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium border transition-all duration-300 flex items-center gap-1.5 sm:gap-2 active:scale-95 touch-manipulation",
-                      active
-                        ? "shadow-lg transform -translate-y-0.5 bg-[#004d40] border-[#004d40] text-white"
-                        : "hover:shadow-md hover:-translate-y-0.5 hover:border-gray-300 bg-white text-[#004d40] border-gray-200",
-                    ].join(" ")}
+                    className={`px-4 py-2.5 rounded-xl font-bold transition-all duration-300 border-2 whitespace-nowrap text-sm ${active
+                      ? 'bg-primary text-white border-primary shadow-lg'
+                      : 'border-base-200 bg-white hover:bg-base-50 text-neutral'
+                      }`}
                   >
-                    {label === 'All' && <Grid3X3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
+                    {label === 'All' && <Grid3X3 className="w-4 h-4 inline mr-1.5" />}
                     {label}
-                    {active && <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
                   </button>
                 );
               })}
@@ -589,71 +596,107 @@ const GalleryPage = () => {
           </div>
         )}
 
-        {/* Stats Card */}
-        <div className="rounded-2xl p-6 sm:p-8 mt-8 sm:mt-12 bg-slate-50 border border-slate-200">
-          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-center">
-            <div className="space-y-3 sm:space-y-4">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-6 rounded-full bg-[#004d40]"></div>
-                <p className="text-xs sm:text-sm font-semibold tracking-wider text-[#004d40]">
-                  TRANSPARENCY IN ACTION
-                </p>
+        {/* Stats Cards - Earthquake Style */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {/* This Month Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white rounded-2xl shadow-lg border-2 border-accent/20 p-6 hover:shadow-xl transition-all duration-300"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-warning flex items-center justify-center">
+                <Clock className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
-                Verified Impact, Documented Progress
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                Every photo is geo-tagged and timestamped by our ward verification teams.
-                This ensures accountability and allows citizens to track real progress in their communities.
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <Clock className="w-5 h-5 text-[#004d40]" />
-                  <div className="text-2xl sm:text-3xl font-bold flex items-baseline gap-1">
-                    <span className="text-[#004d40]">{thisMonthReports.length}</span>
-                    <span className="text-base sm:text-lg text-gray-500">drops</span>
-                  </div>
-                </div>
-                <div className="text-sm font-medium text-gray-900">This Month&apos;s Activity</div>
-                <div className="text-xs sm:text-sm text-gray-600 mt-1">Curated by {[...new Set(thisMonthReports.map(r => r.location.district))].length} district leads</div>
-              </div>
-
-              <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <Camera className="w-5 h-5 text-[#004d40]" />
-                  <div className="text-2xl sm:text-3xl font-bold flex items-baseline gap-1">
-                    <span className="text-[#004d40]">{galleryItems.length}</span>
-                    <span className="text-base sm:text-lg text-gray-500">photos</span>
-                  </div>
-                </div>
-                <div className="text-sm font-medium text-gray-900">Visual Evidence</div>
-                <div className="text-xs sm:text-sm text-gray-600 mt-1">From {reports.length} verified community reports</div>
+              <div>
+                <p className="text-xs font-bold text-neutral/70 uppercase">This Month</p>
+                <p className="text-2xl font-extrabold text-primary">{thisMonthReports.length}</p>
               </div>
             </div>
-          </div>
+            <p className="text-sm text-neutral/70">{[...new Set(thisMonthReports.map(r => r.location.district))].length} districts active</p>
+          </motion.div>
 
-          {/* CTA Section */}
-          <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-200">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-6 text-center lg:text-left">
-              <div className="space-y-1">
-                <h4 className="text-base sm:text-lg font-bold text-gray-900">Have evidence of community work?</h4>
-                <p className="text-sm sm:text-base text-gray-600">Help us build the most comprehensive civic action gallery in Bangladesh.</p>
+          {/* Total Photos Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white rounded-2xl shadow-lg border-2 border-accent/20 p-6 hover:shadow-xl transition-all duration-300"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
+                <Camera className="w-6 h-6 text-white" />
               </div>
-              <button
-                onClick={() => window.location.href = '/reports'}
-                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl font-bold transition-all duration-300 hover:shadow-xl active:scale-95 touch-manipulation whitespace-nowrap bg-[#f2a921] text-black"
-              >
-                <span className="flex items-center justify-center gap-2 sm:gap-3">
-                  Submit Your Evidence
-                  <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                </span>
-              </button>
+              <div>
+                <p className="text-xs font-bold text-neutral/70 uppercase">Total Photos</p>
+                <p className="text-2xl font-extrabold text-secondary">{galleryItems.length}</p>
+              </div>
             </div>
-          </div>
+            <p className="text-sm text-neutral/70">From {reports.length} verified reports</p>
+          </motion.div>
+
+          {/* Resolved Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-white rounded-2xl shadow-lg border-2 border-success/30 p-6 hover:shadow-xl transition-all duration-300"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-success flex items-center justify-center">
+                <Check className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-neutral/70 uppercase">Resolved</p>
+                <p className="text-2xl font-extrabold text-success">{reports.filter(r => r.status === 'Resolved').length}</p>
+              </div>
+            </div>
+            <p className="text-sm text-neutral/70">Issues successfully fixed</p>
+          </motion.div>
+
+          {/* In Progress Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-white rounded-2xl shadow-lg border-2 border-info/30 p-6 hover:shadow-xl transition-all duration-300"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-info flex items-center justify-center">
+                <RefreshCw className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-neutral/70 uppercase">In Progress</p>
+                <p className="text-2xl font-extrabold text-info">{reports.filter(r => r.status === 'In Progress').length}</p>
+              </div>
+            </div>
+            <p className="text-sm text-neutral/70">Being addressed now</p>
+          </motion.div>
         </div>
+
+        {/* CTA Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="bg-white rounded-2xl shadow-lg border-2 border-accent/20 p-6 sm:p-8"
+        >
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 text-center lg:text-left">
+            <div className="space-y-2">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-neutral">Have evidence of community work?</h3>
+              <p className="text-neutral/70">Help us build the most comprehensive civic action gallery in Bangladesh.</p>
+            </div>
+            <button
+              onClick={() => window.location.href = '/reports'}
+              className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold transition-all duration-300 hover:shadow-xl active:scale-95 touch-manipulation whitespace-nowrap bg-accent text-white flex items-center justify-center gap-2 sm:gap-3"
+            >
+              <Plus className="w-5 h-5" />
+              Submit Your Evidence
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </motion.div>
       </div>
 
       {/* Professional Lightbox - Mobile Optimized */}
