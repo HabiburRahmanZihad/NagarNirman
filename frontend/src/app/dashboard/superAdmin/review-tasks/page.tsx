@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { FullPageLoading } from '@/components/common';
 import { useNotifications } from '@/context/NotificationContext';
 import { taskAPI } from '@/utils/api';
@@ -46,7 +45,12 @@ interface TaskReview {
     problemType?: string;
     category?: string;
     subcategory?: string;
-    location: any;
+    location: {
+      address?: string;
+      district?: string;
+      division?: string;
+      coordinates?: [number, number];
+    };
     images: string[];
   };
   solver: {
@@ -61,7 +65,6 @@ interface TaskReview {
 export default function TaskReviewPage() {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
-  const router = useRouter();
   const [tasks, setTasks] = useState<TaskReview[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedTask, setSelectedTask] = useState<TaskReview | null>(null);
@@ -88,9 +91,10 @@ export default function TaskReviewPage() {
       if (response.success) {
         setTasks(response.data);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching pending tasks:', error);
-      toast.error(error.message || 'Failed to load pending tasks');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load pending tasks';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -99,7 +103,7 @@ export default function TaskReviewPage() {
   const openReviewModal = (task: TaskReview, action: 'approve' | 'reject') => {
     setSelectedTask(task);
     setReviewAction(action);
-    const pointsMap: any = { low: 20, medium: 30, high: 50, urgent: 100 };
+    const pointsMap: Record<string, number> = { low: 20, medium: 30, high: 50, urgent: 100 };
     setReviewData({
       points: pointsMap[task.priority] || 30,
       rating: 5,
@@ -144,9 +148,10 @@ export default function TaskReviewPage() {
       setShowReviewModal(false);
       setSelectedTask(null);
       fetchPendingTasks();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error reviewing task:', error);
-      toast.error(error.message || 'Failed to review task');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to review task';
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }
