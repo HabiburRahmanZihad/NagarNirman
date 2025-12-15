@@ -191,19 +191,19 @@ export default function SolverStatisticsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-base-200 p-4 sm:p-6 lg:p-8">
-      <div className="container mx-auto space-y-8">
+    <div className="min-h-screen bg-base-200 p-3 xs:p-4 sm:p-6 lg:p-8">
+      <div className="container mx-auto space-y-4 xs:space-y-6 sm:space-y-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
+          className="bg-primary text-white rounded-xl xs:rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 xs:p-6 sm:p-8 lg:p-12 border-t-4 border-accent flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 xs:gap-4 sm:gap-6"
         >
-          <div>
-            <h1 className="text-4xl sm:text-5xl font-extrabold mb-2">
+          <div className="min-w-0">
+            <h1 className="text-xl xs:text-2xl sm:text-4xl lg:text-5xl font-extrabold mb-1 xs:mb-2">
               Solver Performance
             </h1>
-            <p className="text-white/90 text-base sm:text-lg font-semibold">
+            <p className="text-white/90 text-xs xs:text-sm sm:text-base lg:text-lg font-semibold">
               Track task assignments, completion rates, and availability
             </p>
           </div>
@@ -211,15 +211,15 @@ export default function SolverStatisticsPage() {
             onClick={() => window.print()}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 px-6 py-3 bg-white/20 hover:bg-white/30 rounded-xl font-bold text-white transition-all shrink-0"
+            className="flex items-center gap-1.5 xs:gap-2 px-3 xs:px-4 sm:px-6 py-2 xs:py-2.5 sm:py-3 bg-white/20 hover:bg-white/30 rounded-lg xs:rounded-xl font-bold text-white transition-all shrink-0 text-xs xs:text-sm sm:text-base"
           >
-            <Download className="w-5 h-5" />
+            <Download className="w-4 h-4 xs:w-5 xs:h-5" />
             <span>Export</span>
           </motion.button>
         </motion.div>
 
         {/* Summary Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4">
           {[
             {
               title: 'Total Solvers',
@@ -257,15 +257,15 @@ export default function SolverStatisticsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`${stat.bgColor} rounded-2xl p-6 border-2 border-accent/20 shadow-lg`}
+                className={`${stat.bgColor} rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 border-2 border-accent/20 shadow-lg`}
               >
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs font-bold text-neutral/70 uppercase tracking-wide">{stat.title}</p>
-                    <p className="text-4xl font-extrabold text-info mt-3">{stat.value}</p>
+                  <div className="min-w-0">
+                    <p className="text-[10px] xs:text-xs font-bold text-neutral/70 uppercase tracking-wide truncate">{stat.title}</p>
+                    <p className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-extrabold text-info mt-1 xs:mt-2 sm:mt-3">{stat.value}</p>
                   </div>
-                  <div className={`${stat.color} bg-white/60 p-3 rounded-xl`}>
-                    <Icon className="w-6 h-6" />
+                  <div className={`${stat.color} bg-white/60 p-1.5 xs:p-2 sm:p-3 rounded-lg xs:rounded-xl shrink-0`}>
+                    <Icon className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" />
                   </div>
                 </div>
               </motion.div>
@@ -274,12 +274,12 @@ export default function SolverStatisticsPage() {
         </div>
 
         {/* Task Status Overview */}
-        <Card className="bg-base-100 border-2 border-accent/20 p-8 shadow-xl">
-          <h2 className="text-2xl font-extrabold text-neutral mb-6 flex items-center gap-3">
-            <TrendingUp className="w-7 h-7 text-success" />
+        <Card className="bg-base-100 border-2 border-accent/20 p-4 xs:p-5 sm:p-6 lg:p-8 shadow-lg sm:shadow-xl">
+          <h2 className="text-lg xs:text-xl sm:text-2xl font-extrabold text-neutral mb-4 xs:mb-5 sm:mb-6 flex items-center gap-2 xs:gap-3">
+            <TrendingUp className="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 text-success" />
             Overall Task Status
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 xs:gap-3 sm:gap-4">
             {[
               {
                 title: 'Pending',
@@ -307,11 +307,10 @@ export default function SolverStatisticsPage() {
               },
               {
                 title: 'Success Rate',
-                value: `${
-                  summaryStats.completedTasks > 0
-                    ? Math.round((summaryStats.completedTasks / summaryStats.totalTasks) * 100)
-                    : 0
-                }%`,
+                value: `${summaryStats.completedTasks > 0
+                  ? Math.round((summaryStats.completedTasks / summaryStats.totalTasks) * 100)
+                  : 0
+                  }%`,
                 icon: Award,
                 bgColor: 'bg-secondary/10',
                 borderColor: 'border-secondary/40',
@@ -325,11 +324,11 @@ export default function SolverStatisticsPage() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.05 }}
-                  className={`text-center p-5 ${stat.bgColor} rounded-xl border-2 ${stat.borderColor} shadow-md`}
+                  className={`text-center p-3 xs:p-4 sm:p-5 ${stat.bgColor} rounded-lg xs:rounded-xl border-2 ${stat.borderColor} shadow-md`}
                 >
-                  <Icon className={`w-8 h-8 ${stat.textColor} mx-auto mb-2`} />
-                  <p className="text-3xl font-extrabold text-neutral">{stat.value}</p>
-                  <p className={`text-sm font-bold mt-1 ${stat.textColor}`}>{stat.title}</p>
+                  <Icon className={`w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8 ${stat.textColor} mx-auto mb-1.5 xs:mb-2`} />
+                  <p className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-neutral">{stat.value}</p>
+                  <p className={`text-[10px] xs:text-xs sm:text-sm font-bold mt-0.5 xs:mt-1 ${stat.textColor}`}>{stat.title}</p>
                 </motion.div>
               );
             })}
@@ -337,33 +336,33 @@ export default function SolverStatisticsPage() {
         </Card>
 
         {/* Filters */}
-        <Card className="bg-base-100 border-2 border-accent/20 p-8 shadow-xl">
-          <div className="flex items-center gap-3 mb-6">
-            <Filter className="w-6 h-6 text-primary" />
-            <h2 className="text-xl font-extrabold text-neutral">Filters & Search</h2>
+        <Card className="bg-base-100 border-2 border-accent/20 p-4 xs:p-5 sm:p-6 lg:p-8 shadow-lg sm:shadow-xl">
+          <div className="flex items-center gap-2 xs:gap-3 mb-4 xs:mb-5 sm:mb-6">
+            <Filter className="w-5 h-5 xs:w-6 xs:h-6 text-primary" />
+            <h2 className="text-base xs:text-lg sm:text-xl font-extrabold text-neutral">Filters & Search</h2>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3 xs:space-y-4">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral/40" />
+              <Search className="absolute left-3 xs:left-4 top-1/2 -translate-y-1/2 w-4 h-4 xs:w-5 xs:h-5 text-neutral/40" />
               <input
                 type="text"
                 placeholder="Search by name, email, district, or division..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 border-accent/20 focus:border-accent rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral placeholder-neutral/50 transition-all"
+                className="w-full pl-10 xs:pl-12 pr-3 xs:pr-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral placeholder-neutral/50 transition-all"
               />
             </div>
 
             {/* Filter Controls */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 xs:gap-3 sm:gap-4">
               {/* Role Filter */}
               <select
                 title='all-roles'
                 value={filterRole}
                 onChange={(e) => setFilterRole(e.target.value as any)}
-                className="px-4 py-3 border-2 border-accent/20 focus:border-accent rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all"
+                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all"
               >
                 <option value="all">All Roles</option>
                 <option value="problemSolver">Problem Solvers</option>
@@ -374,7 +373,7 @@ export default function SolverStatisticsPage() {
                 title='status-filter'
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value as any)}
-                className="px-4 py-3 border-2 border-accent/20 focus:border-accent rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all"
+                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all"
               >
                 <option value="all">All Status</option>
                 <option value="active">Active (Busy)</option>
@@ -386,7 +385,7 @@ export default function SolverStatisticsPage() {
                 title='sort-by'
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="px-4 py-3 border-2 border-accent/20 focus:border-accent rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all md:col-span-2"
+                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all col-span-2 sm:col-span-1 lg:col-span-2"
               >
                 <option value="total">Total Tasks</option>
                 <option value="completed">Completed</option>
@@ -402,7 +401,7 @@ export default function SolverStatisticsPage() {
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-4 py-3 bg-linear-to-r from-secondary to-secondary/80 text-white rounded-xl hover:shadow-lg font-bold transition-all flex items-center justify-center gap-2"
+                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base bg-linear-to-r from-secondary to-secondary/80 text-white rounded-lg xs:rounded-xl hover:shadow-lg font-bold transition-all flex items-center justify-center gap-1.5 xs:gap-2"
               >
                 {sortOrder === 'asc' ? '↑' : '↓'} {sortOrder.toUpperCase()}
               </motion.button>
@@ -410,8 +409,8 @@ export default function SolverStatisticsPage() {
           </div>
 
           {/* Results Count */}
-          <div className="mt-6 pt-6 border-t-2 border-accent/10">
-            <p className="text-sm font-bold text-neutral">
+          <div className="mt-4 xs:mt-5 sm:mt-6 pt-4 xs:pt-5 sm:pt-6 border-t-2 border-accent/10">
+            <p className="text-xs xs:text-sm font-bold text-neutral">
               Showing <span className="text-info">{filteredStats.length}</span> of{' '}
               <span className="text-info">{statistics.length}</span> solvers
             </p>
@@ -465,7 +464,7 @@ export default function SolverStatisticsPage() {
                           <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
-                            className="w-12 h-12 rounded-full bg-gradient-to-br from-info to-secondary flex items-center justify-center text-white font-bold text-lg shadow-lg"
+                            className="w-12 h-12 rounded-full bg-linear-to-br from-info to-secondary flex items-center justify-center text-white font-bold text-lg shadow-lg"
                           >
                             {solver.name.charAt(0).toUpperCase()}
                           </motion.div>

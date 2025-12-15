@@ -137,18 +137,18 @@ export default function SuperAdminDashboard() {
   }
 
   return (
-    <div className="space-y-8 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
+    <div className="space-y-4 xs:space-y-6 sm:space-y-8 px-3 xs:px-4 sm:px-6 lg:px-8 py-4 xs:py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
       {/* Welcome Section with Gradient Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent flex items-center justify-between"
+        className="bg-primary text-white rounded-xl xs:rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 xs:p-6 sm:p-8 lg:p-12 border-t-4 border-accent flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 xs:gap-4"
       >
-        <div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
+        <div className="min-w-0">
+          <h1 className="text-xl xs:text-2xl sm:text-4xl lg:text-5xl font-extrabold mb-1 xs:mb-2 sm:mb-3">
             SuperAdmin Dashboard 🛡️
           </h1>
-          <p className="text-white/90 text-lg font-semibold">
+          <p className="text-white/90 text-xs xs:text-sm sm:text-lg font-semibold">
             Complete system overview and management
           </p>
         </div>
@@ -157,15 +157,15 @@ export default function SuperAdminDashboard() {
           whileHover={{ rotate: 180 }}
           whileTap={{ scale: 0.95 }}
           disabled={loading}
-          className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all disabled:opacity-50 shrink-0"
+          className="p-2 xs:p-2.5 sm:p-3 bg-white/20 hover:bg-white/30 rounded-lg xs:rounded-xl sm:rounded-2xl transition-all disabled:opacity-50 shrink-0"
           title="Refresh dashboard"
         >
-          <RefreshCw className={`w-6 h-6 ${loading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 ${loading ? 'animate-spin' : ''}`} />
         </motion.button>
       </motion.div>
 
       {/* Quick Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4 lg:gap-6">
         {[
           { title: 'Total Users', value: stats.totalUsers, icon: Users, color: 'text-blue-600', bgColor: 'bg-blue-50' },
           { title: 'Total Reports', value: stats.totalReports, icon: FileText, color: 'text-green-600', bgColor: 'bg-green-50' },
@@ -179,15 +179,15 @@ export default function SuperAdminDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`${stat.bgColor} rounded-2xl p-6 border-2 border-accent/20 hover:scale-105 transition-transform`}
+              className={`${stat.bgColor} rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 border-2 border-accent/20 hover:scale-105 transition-transform`}
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-bold text-neutral/70 uppercase tracking-wide">{stat.title}</p>
-                  <p className="text-3xl font-extrabold text-info mt-2">{stat.value}</p>
+                <div className="min-w-0">
+                  <p className="text-[10px] xs:text-xs sm:text-sm font-bold text-neutral/70 uppercase tracking-wide truncate">{stat.title}</p>
+                  <p className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-extrabold text-info mt-1 xs:mt-2">{stat.value}</p>
                 </div>
-                <div className={`${stat.color} bg-white/50 p-3 rounded-xl`}>
-                  <Icon className="w-6 h-6" />
+                <div className={`${stat.color} bg-white/50 p-1.5 xs:p-2 sm:p-3 rounded-lg xs:rounded-xl shrink-0`}>
+                  <Icon className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>
             </motion.div>
@@ -196,15 +196,15 @@ export default function SuperAdminDashboard() {
       </div>
 
       {/* Task Workflow Stats - Card Wrapped */}
-      <Card className="rounded-3xl shadow-xl border-t-4 border-secondary">
-        <div className="p-8">
-          <h2 className="text-2xl font-extrabold text-info mb-8 flex items-center gap-3">
-            <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-white">
-              <BarChart3 className="w-6 h-6" />
+      <Card className="rounded-xl xs:rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-xl border-t-4 border-secondary">
+        <div className="p-4 xs:p-5 sm:p-6 lg:p-8">
+          <h2 className="text-lg xs:text-xl sm:text-2xl font-extrabold text-info mb-4 xs:mb-6 sm:mb-8 flex items-center gap-2 xs:gap-3">
+            <div className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 bg-secondary rounded-lg flex items-center justify-center text-white">
+              <BarChart3 className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" />
             </div>
             Task Workflow Overview
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 xs:gap-3 sm:gap-4">
             {[
               { label: 'Assigned', value: stats.assignedTasks, icon: Clock, color: 'from-orange-500 to-amber-500', link: '/dashboard/superAdmin/assign-task' },
               { label: 'In Progress', value: stats.inProgressTasks, icon: TrendingUp, color: 'from-blue-500 to-cyan-500', link: null },
@@ -218,15 +218,15 @@ export default function SuperAdminDashboard() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="p-5 bg-gradient-to-br from-base-100 to-base-200 rounded-2xl border-2 border-accent/20 hover:border-accent/50 hover:shadow-lg transition-all group cursor-pointer"
+                  className="p-3 xs:p-4 sm:p-5 bg-linear-to-br from-base-100 to-base-200 rounded-lg xs:rounded-xl sm:rounded-2xl border-2 border-accent/20 hover:border-accent/50 hover:shadow-lg transition-all group cursor-pointer"
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={`bg-linear-to-br ${item.color} p-3 rounded-xl text-white group-hover:scale-110 transition-transform`}>
-                      <Icon className="w-5 h-5" />
+                  <div className="flex items-center justify-between mb-2 xs:mb-3">
+                    <div className={`bg-linear-to-br ${item.color} p-2 xs:p-2.5 sm:p-3 rounded-lg xs:rounded-xl text-white group-hover:scale-110 transition-transform`}>
+                      <Icon className="w-4 h-4 xs:w-5 xs:h-5" />
                     </div>
                   </div>
-                  <p className="text-3xl font-extrabold text-info">{item.value}</p>
-                  <p className="text-sm font-bold text-neutral/60 uppercase tracking-wide mt-2">{item.label}</p>
+                  <p className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-info">{item.value}</p>
+                  <p className="text-[10px] xs:text-xs sm:text-sm font-bold text-neutral/60 uppercase tracking-wide mt-1 xs:mt-2">{item.label}</p>
                 </motion.div>
               );
 
@@ -245,7 +245,7 @@ export default function SuperAdminDashboard() {
       </Card>
 
       {/* Quick Actions Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2 xs:gap-3 sm:gap-4 lg:gap-6">
         {[
           { title: '📋 All Reports', link: '/dashboard/superAdmin/all-reports', color: 'from-blue-500 to-cyan-500' },
           { title: '✏️ Assign Task', link: '/dashboard/superAdmin/assign-task', color: 'from-indigo-500 to-purple-500' },
@@ -260,12 +260,12 @@ export default function SuperAdminDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.05 }}
               whileHover={{ scale: 1.05, y: -5 }}
-              className={`bg-linear-to-br ${action.color} text-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all cursor-pointer relative overflow-hidden group`}
+              className={`bg-linear-to-br ${action.color} text-white rounded-lg xs:rounded-xl sm:rounded-2xl p-4 xs:p-5 sm:p-6 lg:p-8 shadow-lg sm:shadow-xl hover:shadow-2xl transition-all cursor-pointer relative overflow-hidden group`}
             >
               <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
-              <p className="text-xl font-extrabold relative z-10">{action.title}</p>
+              <p className="text-sm xs:text-base sm:text-lg lg:text-xl font-extrabold relative z-10">{action.title}</p>
               <div className="absolute bottom-0 right-0 opacity-20 group-hover:opacity-30 transition-opacity">
-                <div className="w-20 h-20 bg-white/20 rounded-full -mr-10 -mb-10" />
+                <div className="w-12 h-12 xs:w-16 xs:h-16 sm:w-20 sm:h-20 bg-white/20 rounded-full -mr-6 -mb-6 xs:-mr-8 xs:-mb-8 sm:-mr-10 sm:-mb-10" />
               </div>
             </motion.div>
           </Link>
@@ -273,19 +273,19 @@ export default function SuperAdminDashboard() {
       </div>
 
       {/* User Management Section */}
-      <Card className="rounded-3xl shadow-xl border-t-4 border-secondary">
-        <div className="p-8">
-          <div className="flex items-center justify-between mb-8 pb-6 border-b border-accent/10">
-            <h2 className="text-2xl font-extrabold text-info flex items-center gap-3">
-              <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-white">
-                <Users className="w-6 h-6" />
+      <Card className="rounded-xl xs:rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-xl border-t-4 border-secondary">
+        <div className="p-4 xs:p-5 sm:p-6 lg:p-8">
+          <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between mb-4 xs:mb-6 sm:mb-8 pb-4 xs:pb-5 sm:pb-6 border-b border-accent/10 gap-3 xs:gap-4">
+            <h2 className="text-lg xs:text-xl sm:text-2xl font-extrabold text-info flex items-center gap-2 xs:gap-3">
+              <div className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 bg-secondary rounded-lg flex items-center justify-center text-white">
+                <Users className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" />
               </div>
               User Management
             </h2>
             <select
               value={filterRole}
               onChange={(e) => setFilterRole(e.target.value)}
-              className="px-4 py-2 border-2 border-accent/20 rounded-xl bg-base-200 focus:ring-2 focus:ring-secondary focus:border-secondary text-neutral font-medium transition-all duration-200"
+              className="px-3 xs:px-4 py-2 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl bg-base-200 focus:ring-2 focus:ring-secondary focus:border-secondary text-neutral font-medium transition-all duration-200"
               aria-label="Filter users by role"
             >
               <option value="all">All Roles</option>
@@ -296,15 +296,15 @@ export default function SuperAdminDashboard() {
             </select>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border-2 border-accent/20">
-            <table className="w-full">
+          <div className="overflow-x-auto rounded-lg xs:rounded-xl sm:rounded-2xl border-2 border-accent/20 -mx-4 xs:-mx-5 sm:-mx-6 lg:-mx-8">
+            <table className="w-full min-w-[600px]">
               <thead>
                 <tr className="bg-linear-to-r from-primary/5 to-secondary/5 border-b-2 border-accent/20">
-                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">User</th>
-                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">Role</th>
-                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">Location</th>
-                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-left font-bold text-info text-sm uppercase tracking-wider">Actions</th>
+                  <th className="px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 text-left font-bold text-info text-[10px] xs:text-xs sm:text-sm uppercase tracking-wider">User</th>
+                  <th className="px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 text-left font-bold text-info text-[10px] xs:text-xs sm:text-sm uppercase tracking-wider">Role</th>
+                  <th className="px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 text-left font-bold text-info text-[10px] xs:text-xs sm:text-sm uppercase tracking-wider hidden sm:table-cell">Location</th>
+                  <th className="px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 text-left font-bold text-info text-[10px] xs:text-xs sm:text-sm uppercase tracking-wider">Status</th>
+                  <th className="px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 text-left font-bold text-info text-[10px] xs:text-xs sm:text-sm uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-accent/10">
@@ -316,39 +316,41 @@ export default function SuperAdminDashboard() {
                     transition={{ delay: index * 0.05 }}
                     className="hover:bg-primary/5 transition-colors"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-linear-to-br from-primary to-secondary rounded-2xl flex items-center justify-center text-white font-bold text-lg">
+                    <td className="px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-2 xs:gap-3">
+                        <div className="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 bg-linear-to-br from-primary to-secondary rounded-lg xs:rounded-xl sm:rounded-2xl flex items-center justify-center text-white font-bold text-xs xs:text-sm sm:text-lg">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
-                        <div>
-                          <div className="text-sm font-bold text-neutral">{user.name}</div>
-                          <div className="text-xs text-neutral/60">{user.email}</div>
+                        <div className="min-w-0">
+                          <div className="text-xs xs:text-sm font-bold text-neutral truncate">{user.name}</div>
+                          <div className="text-[10px] xs:text-xs text-neutral/60 truncate max-w-[80px] xs:max-w-[120px] sm:max-w-none">{user.email}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-3 py-1 inline-flex text-xs font-bold rounded-full ${getRoleBadgeColor(user.role)}`}>
-                        {user.role === 'problemSolver' ? 'Problem Solver' : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                    <td className="px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 whitespace-nowrap">
+                      <span className={`px-2 xs:px-3 py-0.5 xs:py-1 inline-flex text-[9px] xs:text-[10px] sm:text-xs font-bold rounded-full ${getRoleBadgeColor(user.role)}`}>
+                        <span className="hidden xs:inline">{user.role === 'problemSolver' ? 'Problem Solver' : user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
+                        <span className="xs:hidden">{user.role === 'problemSolver' ? 'PS' : user.role === 'authority' ? 'Auth' : user.role === 'superAdmin' ? 'SA' : 'User'}</span>
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral/70 font-medium">
+                    <td className="px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 whitespace-nowrap text-xs xs:text-sm text-neutral/70 font-medium hidden sm:table-cell">
                       📍 {user.district || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-3 py-1 inline-flex text-xs font-bold rounded-full ${user.approved ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                    <td className="px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 whitespace-nowrap">
+                      <span className={`px-2 xs:px-3 py-0.5 xs:py-1 inline-flex text-[9px] xs:text-[10px] sm:text-xs font-bold rounded-full ${user.approved ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                         {user.approved ? '✓ Active' : '⏱ Pending'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4 whitespace-nowrap text-xs xs:text-sm font-medium">
                       {user.role !== 'superAdmin' && (
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => openRoleModal(user)}
-                          className="px-4 py-2 bg-linear-to-r from-secondary to-accent text-white rounded-lg hover:shadow-lg transition-all font-bold"
+                          className="px-2 xs:px-3 sm:px-4 py-1 xs:py-1.5 sm:py-2 bg-linear-to-r from-secondary to-accent text-white rounded-lg hover:shadow-lg transition-all font-bold text-[10px] xs:text-xs sm:text-sm"
                         >
-                          Change Role
+                          <span className="hidden xs:inline">Change Role</span>
+                          <span className="xs:hidden">Edit</span>
                         </motion.button>
                       )}
                     </td>
@@ -359,19 +361,19 @@ export default function SuperAdminDashboard() {
           </div>
 
           {filteredUsers.length === 0 && (
-            <div className="text-center py-12">
-              <Users className="w-20 h-20 text-neutral/30 mx-auto mb-4" />
-              <p className="text-neutral/70 font-bold">No users found for this filter</p>
+            <div className="text-center py-8 xs:py-10 sm:py-12">
+              <Users className="w-12 h-12 xs:w-16 xs:h-16 sm:w-20 sm:h-20 text-neutral/30 mx-auto mb-3 xs:mb-4" />
+              <p className="text-neutral/70 font-bold text-sm xs:text-base">No users found for this filter</p>
             </div>
           )}
 
           {filteredUsers.length > 10 && (
-            <div className="mt-8 text-center pt-6 border-t border-accent/10">
+            <div className="mt-4 xs:mt-6 sm:mt-8 text-center pt-4 xs:pt-5 sm:pt-6 border-t border-accent/10">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => router.push('/dashboard/superAdmin/users')}
-                className="px-8 py-3 bg-linear-to-r from-accent to-secondary text-white rounded-xl hover:shadow-xl transition-all font-bold inline-flex items-center gap-2"
+                className="px-4 xs:px-6 sm:px-8 py-2 xs:py-2.5 sm:py-3 bg-linear-to-r from-accent to-secondary text-white rounded-lg xs:rounded-xl hover:shadow-xl transition-all font-bold inline-flex items-center gap-1.5 xs:gap-2 text-xs xs:text-sm sm:text-base"
               >
                 View All {filteredUsers.length} Users
                 <span>→</span>
@@ -382,12 +384,12 @@ export default function SuperAdminDashboard() {
       </Card>
 
       {/* Recent Reports */}
-      <Card className="rounded-3xl shadow-xl border-t-4 border-secondary">
-        <div className="p-8">
-          <div className="flex items-center justify-between mb-8 pb-6 border-b border-accent/10">
-            <h2 className="text-2xl font-extrabold text-info flex items-center gap-3">
-              <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-white">
-                <FileText className="w-6 h-6" />
+      <Card className="rounded-xl xs:rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-xl border-t-4 border-secondary">
+        <div className="p-4 xs:p-5 sm:p-6 lg:p-8">
+          <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between mb-4 xs:mb-6 sm:mb-8 pb-4 xs:pb-5 sm:pb-6 border-b border-accent/10 gap-3 xs:gap-4">
+            <h2 className="text-lg xs:text-xl sm:text-2xl font-extrabold text-info flex items-center gap-2 xs:gap-3">
+              <div className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 bg-secondary rounded-lg flex items-center justify-center text-white">
+                <FileText className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" />
               </div>
               Recent Reports
             </h2>
@@ -395,32 +397,32 @@ export default function SuperAdminDashboard() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => router.push('/dashboard/superAdmin/all-reports')}
-              className="px-4 py-2 bg-linear-to-r from-accent to-secondary text-white rounded-lg hover:shadow-lg transition-all font-bold flex items-center gap-2"
+              className="px-3 xs:px-4 py-1.5 xs:py-2 bg-linear-to-r from-accent to-secondary text-white rounded-lg hover:shadow-lg transition-all font-bold flex items-center gap-1.5 xs:gap-2 text-xs xs:text-sm"
             >
               View All
               <span>→</span>
             </motion.button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2 xs:space-y-3">
             {allReports.slice(0, 5).map((report, index) => (
               <motion.div
                 key={report._id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex items-center justify-between p-6 border-2 border-accent/20 rounded-2xl hover:border-accent/50 hover:shadow-lg cursor-pointer transition-all group bg-gradient-to-r from-base-100 to-base-200"
+                className="flex flex-col xs:flex-row items-start xs:items-center justify-between p-3 xs:p-4 sm:p-6 border-2 border-accent/20 rounded-lg xs:rounded-xl sm:rounded-2xl hover:border-accent/50 hover:shadow-lg cursor-pointer transition-all group bg-linear-to-r from-base-100 to-base-200 gap-2 xs:gap-3"
               >
-                <div className="flex-1">
-                  <h3 className="font-extrabold text-neutral group-hover:text-secondary transition-colors">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-extrabold text-neutral group-hover:text-secondary transition-colors text-sm xs:text-base truncate">
                     {report.title}
                   </h3>
-                  <p className="text-sm text-neutral/60 flex items-center gap-2 mt-2">
+                  <p className="text-[10px] xs:text-xs sm:text-sm text-neutral/60 flex items-center gap-1.5 xs:gap-2 mt-1 xs:mt-2">
                     <span>📍</span>
                     {report.location?.district || 'Unknown'} • {report.category || 'Uncategorized'}
                   </p>
                 </div>
-                <span className={`px-4 py-2 rounded-xl text-xs font-bold ${getStatusBadgeColor(report.status)} whitespace-nowrap`}>
+                <span className={`px-2 xs:px-3 sm:px-4 py-1 xs:py-1.5 sm:py-2 rounded-lg xs:rounded-xl text-[10px] xs:text-xs font-bold ${getStatusBadgeColor(report.status)} whitespace-nowrap shrink-0`}>
                   {formatStatus(report.status)}
                 </span>
               </motion.div>
@@ -428,9 +430,9 @@ export default function SuperAdminDashboard() {
           </div>
 
           {allReports.length === 0 && (
-            <div className="text-center py-12">
-              <FileText className="w-20 h-20 text-neutral/30 mx-auto mb-4" />
-              <p className="text-neutral/70 font-bold">No reports available</p>
+            <div className="text-center py-8 xs:py-10 sm:py-12">
+              <FileText className="w-12 h-12 xs:w-16 xs:h-16 sm:w-20 sm:h-20 text-neutral/30 mx-auto mb-3 xs:mb-4" />
+              <p className="text-neutral/70 font-bold text-sm xs:text-base">No reports available</p>
             </div>
           )}
         </div>
