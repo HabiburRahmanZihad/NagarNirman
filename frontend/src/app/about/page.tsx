@@ -1,10 +1,8 @@
-// just remove the warning class syntex and fix it
 'use client';
 
 import { Button } from '@/components/common';
 import {
   AlertTriangle,
-  ArrowRight,
   Award,
   BarChart,
   Camera,
@@ -54,21 +52,13 @@ export default function AboutPage() {
         <div className="absolute inset-0">
           {/* Background Image */}
           <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage:
-                'url("https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80")',
-            }}
+            className="absolute inset-0 bg-cover bg-center bg-[url('https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')]"
           />
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#004d40]/90 via-[#004d40]/70 to-transparent" />
-          {/* Pattern Overlay - Fixed syntax */}
+          <div className="absolute inset-0 bg-linear-to-b from-[#004d40]/90 via-[#004d40]/70 to-transparent" />
+          {/* Pattern Overlay */}
           <div
-            className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-              backgroundSize: '60px 60px',
-            }}
+            className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.4%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] bg-size-[60px_60px]"
           />
         </div>
 
@@ -96,9 +86,9 @@ export default function AboutPage() {
                   className=""
                 >
                   <Button
-                  variant="primary"
-                  size="lg"
-                  iconPosition="right"                  
+                    variant="primary"
+                    size="lg"
+                    iconPosition="right"
                   >
                     Get Started Reporting
                   </Button>
@@ -108,41 +98,41 @@ export default function AboutPage() {
                   className=""
                 >
                   <Button
-                  variant="outline"
-                  size="md"
-                  iconPosition="right"                  
+                    variant="outline"
+                    size="md"
+                    iconPosition="right"
                   >
                     Explore How It Works
                   </Button>
                 </Link>
               </div>
             </div>
-            <div className="flex justify-center">
-              <div className="relative w-full max-w-lg">
-                <div className="absolute -inset-4 bg-gradient-to-b from-white/20 to-transparent rounded-3xl blur-xl opacity-50" />
-                <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-white/20">
-                  <div className="aspect-square rounded-xl bg-white/5 flex items-center justify-center p-6">
-                    <div className="text-center p-6 bg-white/10 backdrop-blur-sm rounded-2xl shadow-inner border border-white/10">
-                      <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-full mb-6 shadow-lg">
+            <div className="flex justify-center mt-8 lg:mt-0">
+              <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg">
+                <div className="absolute -inset-4 bg-linear-to-b from-white/20 to-transparent rounded-3xl blur-xl opacity-50" />
+                <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border border-white/20">
+                  <div className="aspect-square rounded-xl bg-white/5 flex items-center justify-center p-3 sm:p-4 md:p-6">
+                    <div className="text-center p-4 sm:p-5 md:p-6 bg-white/10 backdrop-blur-sm rounded-2xl shadow-inner border border-white/10">
+                      <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-linear-to-br from-[#f2a921] to-[#e6b82e] rounded-full mb-4 sm:mb-5 md:mb-6 shadow-lg">
                         <CheckCircle2 className="w-10 h-10 text-white" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white mb-3">
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 sm:mb-3">
                         Your Voice Matters
                       </h3>
-                      <p className="text-white/80 mb-4">
+                      <p className="text-white/80 mb-3 sm:mb-4 text-sm sm:text-base">
                         Report civic issues with photo evidence and location
                         tracking
                       </p>
-                      <div className="flex items-center justify-center gap-4">
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 bg-[#f2a921] rounded-full"></div>
-                          <span className="text-sm text-white/80">
+                          <span className="text-xs sm:text-sm text-white/80">
                             Real-time Tracking
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 bg-white rounded-full"></div>
-                          <span className="text-sm text-white/80">
+                          <span className="text-xs sm:text-sm text-white/80">
                             Transparent Process
                           </span>
                         </div>
@@ -161,17 +151,17 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
 
 
-        <div className="text-center mb-8 md:mb-16">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Sprout className="w-5 h-5 text-[#004d40]" />
-            <span className="text-[#555555] text-lg font-medium">
-              Simple Steps to Become an Active Citizen Reporter
-            </span>
+          <div className="text-center mb-8 md:mb-16">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-3">
+              <Sprout className="w-5 h-5 text-[#004d40]" />
+              <span className="text-[#555555] text-sm sm:text-base lg:text-lg font-medium text-center px-4">
+                Simple Steps to Become an Active Citizen Reporter
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary px-4">
+              Join Our <span className="text-[#004d40]">Civic Community</span>
+            </h2>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-primary">
-            Join Our <span className="text-[#004d40]">Civic Community</span>
-          </h2>
-        </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -198,24 +188,24 @@ export default function AboutPage() {
             ].map((card, index) => (
               <div
                 key={index}
-                className="relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-2 border-transparent hover:border-[#f2a921] group cursor-pointer overflow-hidden"
+                className="relative bg-white rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border-2 border-transparent hover:border-[#f2a921] group cursor-pointer overflow-hidden"
               >
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#004d40] to-[#f2a921]"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-[#004d40] to-[#f2a921]"></div>
                 <div className="relative z-10">
-                  <div className="w-20 h-20 bg-gradient-to-br from-[#f2a921]/20 to-[#f2a921]/40 rounded-2xl flex items-center justify-center mb-8 group-hover:from-[#f2a921]/30 group-hover:to-[#f2a921]/50 transition-all duration-300">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-linear-to-br from-[#f2a921]/20 to-[#f2a921]/40 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 md:mb-8 group-hover:from-[#f2a921]/30 group-hover:to-[#f2a921]/50 transition-all duration-300">
                     <div className="text-[#f2a921] group-hover:text-[#004d40] transition-colors duration-300">
                       {card.icon}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 bg-[#004d40] text-white rounded-full flex items-center justify-center font-bold group-hover:bg-[#f2a921] transition-colors duration-300">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#004d40] text-white text-sm sm:text-base rounded-full flex items-center justify-center font-bold group-hover:bg-[#f2a921] transition-colors duration-300 shrink-0">
                       {index + 1}
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#004d40] transition-colors duration-300">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 group-hover:text-[#004d40] transition-colors duration-300">
                       {card.title}
                     </h3>
                   </div>
-                  <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
                     {card.desc}
                   </p>
                 </div>
@@ -230,12 +220,12 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* What is NagarNirman */}
-            <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border border-gray-100">
-              <div className="absolute -top-4 left-10 bg-[#004d40] text-white px-6 py-2 rounded-full font-semibold text-lg">
+            <div className="relative bg-linear-to-br from-white to-gray-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-gray-100">
+              <div className="absolute -top-4 left-6 sm:left-10 bg-[#004d40] text-white px-4 sm:px-6 py-1.5 sm:py-2 rounded-full font-semibold text-sm sm:text-base md:text-lg">
                 What We Are
               </div>
-              <div className="flex items-center gap-6 mb-8 mt-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#004d40] to-[#1e5a22] rounded-2xl flex items-center justify-center shadow-lg">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8 mt-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-linear-to-br from-[#004d40] to-[#1e5a22] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shrink-0">
                   <div className="text-white">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -299,12 +289,12 @@ export default function AboutPage() {
             </div>
 
             {/* Why NagarNirman Matters */}
-            <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border border-gray-100">
-              <div className="absolute -top-4 left-10 bg-[#f2a921] text-gray-900 px-6 py-2 rounded-full font-semibold text-lg">
+            <div className="relative bg-linear-to-br from-white to-gray-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-gray-100">
+              <div className="absolute -top-4 left-6 sm:left-10 bg-[#f2a921] text-gray-900 px-4 sm:px-6 py-1.5 sm:py-2 rounded-full font-semibold text-sm sm:text-base md:text-lg">
                 Why We Matter
               </div>
-              <div className="flex items-center gap-6 mb-8 mt-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-2xl flex items-center justify-center shadow-lg">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8 mt-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-linear-to-br from-[#f2a921] to-[#e6b82e] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shrink-0">
                   <Star className="w-8 h-8 text-gray-900" />
                 </div>
                 <div>
@@ -375,22 +365,22 @@ export default function AboutPage() {
       </section>
 
       {/* 4️⃣ How to Report an Issue - Timeline Design */}
-      <section id='about-us-report-step' className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section id='about-us-report-step' className="py-12 sm:py-16 md:py-20 bg-linear-to-b from-gray-50 to-white">
         <div className="container mx-auto px-4">
 
-        <div className="text-center mb-8 md:mb-16">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Sprout className="w-5 h-5 text-[#004d40]" />
-            <span className="text-[#555555] text-lg font-medium">
-                          Follow this structured timeline to report civic issues effectively
-            and track their resolution progress
-            </span>
+          <div className="text-center mb-8 md:mb-16">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-3">
+              <Sprout className="w-5 h-5 text-[#004d40]" />
+              <span className="text-[#555555] text-sm sm:text-base lg:text-lg font-medium text-center px-4">
+                Follow this structured timeline to report civic issues effectively
+                and track their resolution progress
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary px-4">
+              Step-by-Step{' '}
+              <span className="text-[#004d40]">Reporting Process</span>
+            </h2>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-primary">
-            Step-by-Step{' '}
-            <span className="text-[#004d40]">Reporting Process</span>
-          </h2>
-        </div>          
 
           <div className="relative">
             {/* Main Timeline Line */}
@@ -458,18 +448,16 @@ export default function AboutPage() {
               ].map((step, index) => (
                 <div
                   key={index}
-                  className={`relative flex flex-col lg:flex-row items-center group ${
-                    index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
-                  }`}
+                  className={`relative flex flex-col lg:flex-row items-center group ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
+                    }`}
                 >
                   {/* Year Label */}
                   <div
-                    className={`absolute lg:static left-4 lg:left-auto top-0 lg:top-auto ${
-                      index % 2 === 0 ? 'lg:mr-12' : 'lg:ml-12'
-                    } z-10`}
+                    className={`absolute lg:static left-2 sm:left-4 lg:left-auto top-0 lg:top-auto ${index % 2 === 0 ? 'lg:mr-12' : 'lg:ml-12'
+                      } z-10`}
                   >
-                    <div className="w-16 h-16 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-full flex items-center justify-center shadow-lg border-4 border-white group-hover:from-[#004d40] group-hover:to-[#1e5a22] group-hover:border-[#f2a921] transition-all duration-300">
-                      <span className="text-xl font-bold text-gray-900 group-hover:text-white transition-colors duration-300">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-linear-to-br from-[#f2a921] to-[#e6b82e] rounded-full flex items-center justify-center shadow-lg border-2 sm:border-3 md:border-4 border-white group-hover:from-[#004d40] group-hover:to-[#1e5a22] group-hover:border-[#f2a921] transition-all duration-300">
+                      <span className="text-base sm:text-lg md:text-xl font-bold text-gray-900 group-hover:text-white transition-colors duration-300">
                         {step.year}
                       </span>
                     </div>
@@ -477,26 +465,25 @@ export default function AboutPage() {
 
                   {/* Step Content */}
                   <div
-                    className={`w-full lg:w-5/12 ml-20 lg:ml-0 ${
-                      index % 2 === 0 ? 'lg:pr-12' : 'lg:pl-12'
-                    }`}
+                    className={`w-full lg:w-5/12 ml-14 sm:ml-18 md:ml-20 lg:ml-0 ${index % 2 === 0 ? 'lg:pr-12' : 'lg:pl-12'
+                      }`}
                   >
-                    <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100 hover:border-[#004d40] hover:shadow-2xl transition-all duration-300 group-hover:bg-gradient-to-br group-hover:from-white group-hover:to-gray-50">
-                      <div className="flex items-start gap-6">
-                        <div className="w-14 h-14 bg-[#004d40]/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#f2a921]/20 transition-all duration-300">
+                    <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-xl border border-gray-100 hover:border-[#004d40] hover:shadow-2xl transition-all duration-300 group-hover:bg-linear-to-br group-hover:from-white group-hover:to-gray-50">
+                      <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 md:gap-6">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-[#004d40]/10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#f2a921]/20 transition-all duration-300">
                           <div className="text-[#004d40] group-hover:text-[#f2a921] transition-colors duration-300">
                             {step.icon}
                           </div>
                         </div>
-                        <div>
-                          <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-[#004d40] transition-colors duration-300">
+                        <div className="flex-1">
+                          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-[#004d40] transition-colors duration-300">
                             {step.title}
                           </h3>
-                          <p className="text-gray-700 mb-4 leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
+                          <p className="text-sm sm:text-base text-gray-700 mb-3 sm:mb-4 leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
                             {step.desc}
                           </p>
-                          <div className="bg-[#f8f8f8] rounded-lg p-4 border-l-3 border-[#f2a921] group-hover:bg-[#f2a921]/5 group-hover:border-[#004d40] transition-all duration-300">
-                            <p className="text-gray-600 text-sm group-hover:text-gray-700 transition-colors duration-300">
+                          <div className="bg-[#f8f8f8] rounded-lg p-3 sm:p-4 border-l-3 border-[#f2a921] group-hover:bg-[#f2a921]/5 group-hover:border-[#004d40] transition-all duration-300">
+                            <p className="text-gray-600 text-xs sm:text-sm group-hover:text-gray-700 transition-colors duration-300">
                               {step.details}
                             </p>
                           </div>
@@ -506,8 +493,8 @@ export default function AboutPage() {
                   </div>
 
                   {/* Timeline Dot */}
-                  <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 w-10 h-10 bg-white rounded-full border-4 border-[#f2a921] items-center justify-center z-10 shadow-lg group-hover:border-[#004d40] transition-all duration-300">
-                    <div className="w-4 h-4 bg-[#f2a921] rounded-full group-hover:bg-[#004d40] transition-colors duration-300"></div>
+                  <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 w-8 h-8 md:w-10 md:h-10 bg-white rounded-full border-3 md:border-4 border-[#f2a921] items-center justify-center z-10 shadow-lg group-hover:border-[#004d40] transition-all duration-300">
+                    <div className="w-3 h-3 md:w-4 md:h-4 bg-[#f2a921] rounded-full group-hover:bg-[#004d40] transition-colors duration-300"></div>
                   </div>
                 </div>
               ))}
@@ -517,22 +504,22 @@ export default function AboutPage() {
       </section>
 
       {/* 5️⃣ Common Issues You Can Report */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4">
 
-        <div className="text-center mb-8 md:mb-16">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Sprout className="w-5 h-5 text-[#004d40]" />
-            <span className="text-[#555555] text-lg font-medium">
-              Identify and report these common urban problems to help create
-            cleaner, safer, and better-maintained neighborhoods
-            </span>
+          <div className="text-center mb-8 md:mb-16">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-3">
+              <Sprout className="w-5 h-5 text-[#004d40]" />
+              <span className="text-[#555555] text-sm sm:text-base lg:text-lg font-medium text-center px-4">
+                Identify and report these common urban problems to help create
+                cleaner, safer, and better-maintained neighborhoods
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary px-4">
+              Common <span className="text-[#004d40]">Civic Issues</span> You Can
+              Report
+            </h2>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-primary">
-            Common <span className="text-[#004d40]">Civic Issues</span> You Can
-            Report
-          </h2>
-        </div>          
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
@@ -581,24 +568,23 @@ export default function AboutPage() {
             ].map((issue, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border group border-t-6 border-[#f2a921] hover:border-[#004d40]"
+                className="bg-linear-to-b from-white to-gray-50 rounded-xl sm:rounded-2xl p-5 sm:p-6 md:p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border group border-t-4 sm:border-t-6 border-[#f2a921] hover:border-[#004d40]"
               >
-                <div className="flex items-start justify-between mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-[#f2a921]/20 to-[#004d40]/10 rounded-2xl flex items-center justify-center group-hover:from-[#004d40]/30 group-hover:to-[#004d40]/20 transition-all">
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-linear-to-br from-[#f2a921]/20 to-[#004d40]/10 rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:from-[#004d40]/30 group-hover:to-[#004d40]/20 transition-all">
                     <div className="text-[#004d40] group-hover:text-[#f2a921] transition-colors duration-300">
                       {issue.icon}
                     </div>
                   </div>
                   <span
-                    className={`px-4 py-1 rounded-full text-sm font-semibold ${
-                      issue.severity === 'Emergency'
+                    className={`px-4 py-1 rounded-full text-sm font-semibold ${issue.severity === 'Emergency'
                         ? 'bg-red-100 text-red-700 group-hover:bg-red-200 transition-colors duration-300'
                         : issue.severity === 'High Priority'
-                        ? 'bg-orange-100 text-orange-700 group-hover:bg-orange-200 transition-colors duration-300'
-                        : issue.severity === 'Medium Priority'
-                        ? 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-200 transition-colors duration-300'
-                        : 'bg-blue-100 text-blue-700 group-hover:bg-blue-200 transition-colors duration-300'
-                    }`}
+                          ? 'bg-orange-100 text-orange-700 group-hover:bg-orange-200 transition-colors duration-300'
+                          : issue.severity === 'Medium Priority'
+                            ? 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-200 transition-colors duration-300'
+                            : 'bg-blue-100 text-blue-700 group-hover:bg-blue-200 transition-colors duration-300'
+                      }`}
                   >
                     {issue.severity}
                   </span>
@@ -624,39 +610,39 @@ export default function AboutPage() {
       </section>
 
       {/* 7️⃣ Mission & Vision - Equal Height Cards */}
-      <section className="py-20" ref={missionRef}>
+      <section className="py-12 sm:py-16 md:py-20" ref={missionRef}>
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
             {/* Mission Card */}
             <div className="flex flex-col h-full">
               <div className="relative group flex-1">
-                <div className="absolute -inset-4 bg-gradient-to-r from-[#004d40]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border-t-6 border-[#f2a921] overflow-hidden h-full">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#f2a921]/5 rounded-full -translate-y-16 translate-x-16"></div>
+                <div className="absolute -inset-4 bg-linear-to-r from-[#004d40]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative bg-linear-to-br from-white to-gray-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border-t-4 sm:border-t-6 border-[#f2a921] overflow-hidden h-full">
+                  <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-[#f2a921]/5 rounded-full -translate-y-12 sm:-translate-y-16 translate-x-12 sm:translate-x-16"></div>
                   <div className="relative z-10 h-full flex flex-col">
-                    <div className="flex items-center gap-6 mb-8">
-                      <div className="w-20 h-20 bg-gradient-to-br from-[#004d40] to-[#1e5a22] rounded-2xl flex items-center justify-center shadow-lg">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-linear-to-br from-[#004d40] to-[#1e5a22] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shrink-0">
                         <Target className="w-10 h-10 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-gray-900">
+                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
                           Our Mission
                         </h3>
-                        <p className="text-gray-600">
+                        <p className="text-sm sm:text-base text-gray-600">
                           Driving Civic Transformation
                         </p>
                       </div>
                     </div>
-                    <div className="space-y-6 flex-1">
-                      <p className="text-gray-700 text-lg leading-relaxed">
+                    <div className="space-y-4 sm:space-y-6 flex-1">
+                      <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed">
                         To empower every citizen with intuitive digital tools
                         that enhance transparency in urban governance,
                         accelerate problem-solving through streamlined
                         processes, and foster collaborative participation
                         between communities and municipal authorities.
                       </p>
-                      <div className="bg-[#f8f8f8] rounded-xl p-6 border-l-4 border-[#004d40] flex-1">
-                        <p className="text-gray-700">
+                      <div className="bg-[#f8f8f8] rounded-lg sm:rounded-xl p-4 sm:p-6 border-l-4 border-[#004d40] flex-1">
+                        <p className="text-sm sm:text-base text-gray-700">
                           We aim to democratize civic engagement by making issue
                           reporting accessible, efficient, and impactful for
                           every resident, regardless of technical expertise or
@@ -664,37 +650,37 @@ export default function AboutPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4 pt-6 border-t border-gray-100 mt-6">
+                    <div className="flex items-center gap-2 sm:gap-4 pt-4 sm:pt-6 border-t border-gray-100 mt-4 sm:mt-6">
                       <div className="flex-1 text-center">
-                        <div className="text-2xl font-bold text-[#004d40]">
-                          <CountUp 
-                            end={missionInView ? 100000 : 0} 
-                            duration={2.5} 
+                        <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#004d40]">
+                          <CountUp
+                            end={missionInView ? 100000 : 0}
+                            duration={2.5}
                             separator=","
                           />
                           +
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-xs sm:text-sm text-gray-600">
                           Issues Resolved
                         </div>
                       </div>
                       <div className="flex-1 text-center">
-                        <div className="text-2xl font-bold text-[#004d40]">
-                          <CountUp 
-                            end={missionInView ? 500 : 0} 
-                            duration={2} 
+                        <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#004d40]">
+                          <CountUp
+                            end={missionInView ? 500 : 0}
+                            duration={2}
                           />
                           +
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-xs sm:text-sm text-gray-600">
                           Municipal Partners
                         </div>
                       </div>
                       <div className="flex-1 text-center">
-                        <div className="text-2xl font-bold text-[#004d40]">
+                        <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#004d40]">
                           24/7
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-xs sm:text-sm text-gray-600">
                           Platform Availability
                         </div>
                       </div>
@@ -707,33 +693,33 @@ export default function AboutPage() {
             {/* Vision Card */}
             <div className="flex flex-col h-full">
               <div className="relative group flex-1">
-                <div className="absolute -inset-4 bg-gradient-to-r from-[#f2a921]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative bg-gradient-to-br from-white to-gray-50 rounded-3xl p-10 shadow-2xl border-t-6 border-[#004d40] overflow-hidden h-full">
-                  <div className="absolute top-0 left-0 w-32 h-32 bg-[#004d40]/5 rounded-full -translate-y-16 -translate-x-16"></div>
+                <div className="absolute -inset-4 bg-linear-to-r from-[#f2a921]/10 to-transparent rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative bg-linear-to-br from-white to-gray-50 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border-t-4 sm:border-t-6 border-[#004d40] overflow-hidden h-full">
+                  <div className="absolute top-0 left-0 w-24 h-24 sm:w-32 sm:h-32 bg-[#004d40]/5 rounded-full -translate-y-12 sm:-translate-y-16 -translate-x-12 sm:-translate-x-16"></div>
                   <div className="relative z-10 h-full flex flex-col">
-                    <div className="flex items-center gap-6 mb-8">
-                      <div className="w-20 h-20 bg-gradient-to-br from-[#f2a921] to-[#e6b82e] rounded-2xl flex items-center justify-center shadow-lg">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mb-6 sm:mb-8">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-linear-to-br from-[#f2a921] to-[#e6b82e] rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shrink-0">
                         <Eye className="w-10 h-10 text-gray-900" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-gray-900">
+                        <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
                           Our Vision
                         </h3>
-                        <p className="text-gray-600">
+                        <p className="text-sm sm:text-base text-gray-600">
                           Building Tomorrow&apos;s Cities
                         </p>
                       </div>
                     </div>
-                    <div className="space-y-6 flex-1">
-                      <p className="text-gray-700 text-lg leading-relaxed">
+                    <div className="space-y-4 sm:space-y-6 flex-1">
+                      <p className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed">
                         To create cleaner, safer, and digitally connected cities
                         where every citizen can effortlessly contribute to
                         community improvement, and where urban governance
                         evolves into a participatory, data-driven ecosystem that
                         proactively addresses civic needs.
                       </p>
-                      <div className="bg-[#f8f8f8] rounded-xl p-6 border-l-4 border-[#f2a921] flex-1">
-                        <p className="text-gray-700">
+                      <div className="bg-[#f8f8f8] rounded-lg sm:rounded-xl p-4 sm:p-6 border-l-4 border-[#f2a921] flex-1">
+                        <p className="text-sm sm:text-base text-gray-700">
                           We envision a future where civic reporting becomes as
                           natural as social media sharing, creating a
                           self-sustaining cycle of urban improvement driven by
@@ -741,32 +727,32 @@ export default function AboutPage() {
                         </p>
                       </div>
                     </div>
-                    <div className="pt-6 border-t border-gray-100 mt-6">
-                      <h4 className="font-bold text-gray-900 mb-4">
+                    <div className="pt-4 sm:pt-6 border-t border-gray-100 mt-4 sm:mt-6">
+                      <h4 className="font-bold text-gray-900 mb-3 sm:mb-4 text-sm sm:text-base">
                         Future Goals
                       </h4>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="w-4 h-4 text-[#004d40]" />
-                          <span className="text-sm text-gray-700">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <CheckCircle className="w-4 h-4 text-[#004d40] shrink-0" />
+                          <span className="text-xs sm:text-sm text-gray-700">
                             AI-powered issue prediction
                           </span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="w-4 h-4 text-[#004d40]" />
-                          <span className="text-sm text-gray-700">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <CheckCircle className="w-4 h-4 text-[#004d40] shrink-0" />
+                          <span className="text-xs sm:text-sm text-gray-700">
                             Smart city integrations
                           </span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="w-4 h-4 text-[#004d40]" />
-                          <span className="text-sm text-gray-700">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <CheckCircle className="w-4 h-4 text-[#004d40] shrink-0" />
+                          <span className="text-xs sm:text-sm text-gray-700">
                             Multi-language support
                           </span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="w-4 h-4 text-[#004d40]" />
-                          <span className="text-sm text-gray-700">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <CheckCircle className="w-4 h-4 text-[#004d40] shrink-0" />
+                          <span className="text-xs sm:text-sm text-gray-700">
                             Citizen reward systems
                           </span>
                         </div>
@@ -781,21 +767,21 @@ export default function AboutPage() {
       </section>
 
       {/* 8️⃣ Our Impact in Numbers with CountUp */}
-      <section ref={impactRef} className="py-20 bg-gradient-to-r from-[#004d40]/5 via-[#f2a921]/5 to-[#004d40]/5">
+      <section ref={impactRef} className="py-12 sm:py-16 md:py-20 bg-linear-to-r from-[#004d40]/5 via-[#f2a921]/5 to-[#004d40]/5">
         <div className="container mx-auto px-4">
 
-        <div className="text-center mb-8 md:mb-16">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Sprout className="w-5 h-5 text-[#004d40]" />
-            <span className="text-[#555555] text-lg font-medium">
-              Real numbers that demonstrate our commitment to transforming civic
-            engagement and urban governance
-            </span>
+          <div className="text-center mb-8 md:mb-16">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mb-3">
+              <Sprout className="w-5 h-5 text-[#004d40]" />
+              <span className="text-[#555555] text-sm sm:text-base lg:text-lg font-medium text-center px-4">
+                Real numbers that demonstrate our commitment to transforming civic
+                engagement and urban governance
+              </span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-primary px-4">
+              Our Growing <span className="text-[#004d40]">Impact</span>
+            </h2>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-primary">
-            Our Growing <span className="text-[#004d40]">Impact</span>
-          </h2>
-        </div>          
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
@@ -837,16 +823,16 @@ export default function AboutPage() {
               },
             ].map((stat, index) => (
               <div key={index} className="text-center group">
-                <div className="relative inline-block mb-8">
+                <div className="relative inline-block mb-6 sm:mb-8">
                   <div
-                    className={`w-24 h-24 bg-gradient-to-br ${stat.color} rounded-full flex items-center justify-center mx-auto shadow-xl relative z-10 group-hover:scale-110 transition-transform duration-500`}
+                    className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-linear-to-br ${stat.color} rounded-full flex items-center justify-center mx-auto shadow-xl relative z-10 group-hover:scale-110 transition-transform duration-500`}
                   >
                     <div className="text-white">{stat.icon}</div>
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-br opacity-20 rounded-full blur-lg group-hover:blur-xl transition-all duration-500"></div>
+                  <div className="absolute inset-0 bg-linear-to-br opacity-20 rounded-full blur-lg group-hover:blur-xl transition-all duration-500"></div>
                 </div>
                 <div className="relative">
-                  <div className="text-5xl md:text-6xl font-bold text-[#f2a921] mb-3 group-hover:scale-105 transition-transform duration-300">
+                  <div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#f2a921] mb-2 sm:mb-3 group-hover:scale-105 transition-transform duration-300">
                     <CountUp
                       end={impactInView ? stat.number : 0}
                       duration={stat.duration}
@@ -854,10 +840,10 @@ export default function AboutPage() {
                     />
                     <span className="text-[#004d40]">{stat.suffix}</span>
                   </div>
-                  <div className="text-lg font-semibold text-gray-900 mb-2">
+                  <div className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 mb-1 sm:mb-2">
                     {stat.label}
                   </div>
-                  <div className="text-gray-600 text-sm">
+                  <div className="text-gray-600 text-xs sm:text-sm">
                     {stat.description}
                   </div>
                 </div>
