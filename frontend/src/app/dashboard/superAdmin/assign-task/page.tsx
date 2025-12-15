@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from 'next/link';
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from "next/navigation";
 import toast from 'react-hot-toast';
 import { useAuth } from '@/context/AuthContext';
 import { FullPageLoading } from '@/components/common';
@@ -16,14 +15,10 @@ import {
   Building2,
   Clock,
   MapPin,
-  Zap,
-  ArrowRight,
   ArrowLeft,
   Calendar,
   CheckSquare,
-  Star,
-  Award,
-  X,
+  Star
 } from 'lucide-react';
 import Card from '@/components/common/Card';
 
@@ -65,10 +60,15 @@ interface ProblemSolver {
   successRate?: number;
 }
 
+interface SolverFilters {
+  limit: number;
+  division?: string;
+  district?: string;
+}
+
 export default function SuperAdminAssignTaskPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const { user: authUser, isLoading: authLoading, isAuthenticated } = useAuth();
+  const { user: authUser } = useAuth();
   const [reports, setReports] = useState<Report[]>([]);
   const [solvers, setSolvers] = useState<ProblemSolver[]>([]);
   const [loading, setLoading] = useState(true);
@@ -108,20 +108,7 @@ export default function SuperAdminAssignTaskPage() {
     }
   }, [searchParams]);
 
-  useEffect(() => {
-    if (authUser?.role === 'superAdmin') {
-      fetchReports();
-      fetchSolvers();
-    }
-  }, [authUser, reportFilter]);
-
-  useEffect(() => {
-    if (authUser?.role === 'superAdmin') {
-      fetchSolvers();
-    }
-  }, [solverFilter]);
-
-  const fetchReports = async () => {
+  const fetchReports = useCallback(async () => {
     try {
       setLoading(true);
       const response = await reportAPI.getAll({
@@ -145,17 +132,17 @@ export default function SuperAdminAssignTaskPage() {
         console.error('Invalid reports response:', response);
         toast.error('Failed to load reports');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching reports:', error);
-      toast.error(error.message || 'Failed to load reports');
+      toast.error((error as Error).message || 'Failed to load reports');
     } finally {
       setLoading(false);
     }
-  };
+  }, [reportFilter]);
 
-  const fetchSolvers = async () => {
+  const fetchSolvers = useCallback(async () => {
     try {
-      const filters: any = { limit: 1000 };
+      const filters: SolverFilters = { limit: 1000 };
 
       if (solverFilter.division) filters.division = solverFilter.division;
       if (solverFilter.district) filters.district = solverFilter.district;
@@ -186,11 +173,25 @@ export default function SuperAdminAssignTaskPage() {
         console.error('Invalid solvers response:', response);
         toast.error('Failed to load problem solvers and NGOs');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching solvers:', error);
-      toast.error(error.response?.data?.message || error.message || 'Failed to load problem solvers and NGOs');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load problem solvers and NGOs';
+      toast.error(errorMessage);
     }
-  };
+  }, [solverFilter]);
+
+  useEffect(() => {
+    if (authUser?.role === 'superAdmin') {
+      fetchReports();
+      fetchSolvers();
+    }
+  }, [authUser, fetchReports, fetchSolvers]);
+
+  useEffect(() => {
+    if (authUser?.role === 'superAdmin') {
+      fetchSolvers();
+    }
+  }, [authUser?.role, fetchSolvers]);
 
   const handleAssignTask = async () => {
     if (!selectedReport || !selectedSolver) {
@@ -234,32 +235,13 @@ export default function SuperAdminAssignTaskPage() {
       } else {
         toast.error(response.message || 'Failed to assign task');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error assigning task:', error);
-      toast.error(error.message || 'Failed to assign task');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to assign task';
+      toast.error(errorMessage);
     } finally {
       setAssigning(false);
     }
-  };
-
-  const getSeverityBadge = (severity: string) => {
-    const badges = {
-      low: 'bg-yellow-100 text-yellow-800',
-      medium: 'bg-orange-100 text-orange-800',
-      high: 'bg-red-100 text-red-800'
-    };
-    return badges[severity as keyof typeof badges] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getStatusBadge = (status: string) => {
-    const badges = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      approved: 'bg-blue-100 text-blue-800',
-      'in-progress': 'bg-purple-100 text-purple-800',
-      resolved: 'bg-green-100 text-green-800',
-      closed: 'bg-gray-100 text-gray-800'
-    };
-    return badges[status as keyof typeof badges] || 'bg-gray-100 text-gray-800';
   };
 
   if (loading) {
@@ -524,7 +506,7 @@ export default function SuperAdminAssignTaskPage() {
               <select
                 aria-label="Filter by solver type"
                 value={solverFilter.role}
-                onChange={(e) => setSolverFilter({ ...solverFilter, role: e.target.value as any })}
+                onChange={(e) => setSolverFilter({ ...solverFilter, role: e.target.value as 'all' | 'problemSolver' | 'ngo' })}
                 className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-info focus:border-info bg-base-100 font-medium text-neutral cursor-pointer hover:border-info/50 transition-all shrink-0"
               >
                 <option value="all">👥 All Types</option>
