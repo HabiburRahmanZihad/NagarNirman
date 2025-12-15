@@ -267,158 +267,257 @@ const AboutTeamPage = () => {
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-white text-gray-900 font-sans overflow-hidden">
       <FloatingElements />
 
-      {/* Hero Section with Fixed Typewriter */}
-      <section className="relative min-h-[600px] sm:min-h-[700px] md:min-h-[800px] flex items-center justify-center overflow-hidden py-12 sm:py-16">
-        {/* Animated Background */}
+      {/* Hero Section - BOSS LEVEL UI/UX */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Nature Background Image */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 right-0 h-1/3 bg-linear-to-b from-[#004d40] to-transparent opacity-10" />
-          <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-linear-to-t from-[#f2a921] to-transparent opacity-10" />
-
-          {/* Animated Orbs */}
-          <motion.div
-            className="absolute top-1/4 left-1/4 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-linear-to-r from-[#004d40]/20 to-transparent rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.3, 0.5, 0.3],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-            }}
+          <Image
+            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80"
+            alt="Mountain landscape"
+            fill
+            className="object-cover"
+            priority
+            unoptimized
           />
-          <motion.div
-            className="absolute bottom-1/4 right-1/4 w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 bg-linear-to-r from-transparent to-[#f2a921]/20 rounded-full blur-3xl"
-            animate={{
-              scale: [1.2, 1, 1.2],
-              opacity: [0.5, 0.3, 0.5],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-            }}
-          />
+          {/* Multi-layer Overlay for depth */}
+          <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/40 to-black/70" />
+          <div className="absolute inset-0 bg-linear-to-r from-[#004d40]/40 via-transparent to-[#f2a921]/30" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]" />
         </div>
 
+        {/* Animated Particles/Orbs */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 bg-white/30 rounded-full"
+              style={{
+                left: `${15 + i * 15}%`,
+                top: `${20 + (i % 3) * 25}%`,
+              }}
+              animate={{
+                y: [-20, 20, -20],
+                opacity: [0.3, 0.8, 0.3],
+                scale: [1, 1.5, 1],
+              }}
+              transition={{
+                duration: 4 + i,
+                repeat: Infinity,
+                delay: i * 0.5,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Floating Geometric Shapes */}
+        <motion.div
+          className="absolute top-20 left-10 w-20 h-20 sm:w-32 sm:h-32 border border-white/20 rounded-full"
+          animate={{ rotate: 360, scale: [1, 1.1, 1] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute bottom-32 right-10 w-16 h-16 sm:w-24 sm:h-24 border border-[#f2a921]/30 rotate-45"
+          animate={{ rotate: [45, 135, 45], y: [-10, 10, -10] }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
+        <motion.div
+          className="absolute top-1/3 right-1/4 w-3 h-3 bg-[#f2a921] rounded-full"
+          animate={{ scale: [1, 2, 1], opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 3, repeat: Infinity }}
+        />
+
+        {/* Main Content */}
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-6xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 1, ease: "easeOut" }}
               className="text-center"
             >
-              {/* Badge */}
+              {/* Glassmorphism Badge */}
               <motion.div
-                className="inline-flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white/80 backdrop-blur-sm border border-[#004d40]/20 mb-6 sm:mb-8 shadow-lg"
-                whileHover={{ scale: 1.05, rotate: 1 }}
-                transition={{ type: "spring", stiffness: 300 }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 mb-8 sm:mb-10 shadow-2xl"
               >
-                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#f2a921]" />
-                <span className="text-xs sm:text-sm font-semibold text-[#004d40] tracking-wider">
-                  BUILDING THE FUTURE OF URBAN GOVERNANCE
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                >
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#f2a921]" />
+                </motion.div>
+                <span className="text-xs sm:text-sm font-bold text-white tracking-[0.2em] uppercase">
+                  Building Tomorrow&apos;s Cities Today
                 </span>
+                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               </motion.div>
 
-              {/* Main Title with Fixed Typewriter */}
-              <div className="mb-8 sm:mb-10 md:mb-12">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4">
-                  <span className="block text-gray-800 mb-4 sm:mb-6">Meet The Team</span>
-                  <div className="relative">
-                    <div className="relative inline-block">
-                      <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] via-[#00695c] to-[#f2a921]">
-                        <Typewriter
-                          words={[
-                            "Behind NagarNirman",
-                            "Building Better Cities",
-                            "Pioneering Civic Tech",
-                            "Empowering Citizens"
-                          ]}
-                          loop={true}
-                          cursor
-                          cursorStyle="|"
-                          cursorColor="#f2a921"
-                          typeSpeed={70}
-                          deleteSpeed={50}
-                          delaySpeed={1500}
+              {/* Main Headline with Staggered Animation */}
+              <div className="mb-8 sm:mb-12">
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="overflow-hidden"
+                >
+                  <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black leading-[0.9] tracking-tight">
+                    <span className="block text-white drop-shadow-2xl">Meet The</span>
+                    <span className="block mt-2 sm:mt-4">
+                      <span className="relative inline-block">
+                        <span className="text-transparent bg-clip-text bg-linear-to-r from-[#f2a921] via-[#ffb74d] to-[#f2a921] drop-shadow-lg">
+                          Dreamers
+                        </span>
+                        <motion.span
+                          className="absolute -bottom-2 left-0 right-0 h-1 sm:h-2 bg-linear-to-r from-[#f2a921] via-white to-[#f2a921] rounded-full"
+                          initial={{ scaleX: 0, opacity: 0 }}
+                          animate={{ scaleX: 1, opacity: 1 }}
+                          transition={{ delay: 1, duration: 0.8 }}
                         />
                       </span>
-                    </div>
-                    {/* Animated Bar - Now placed correctly under typewriter text */}
-                    <motion.div
-                      className="absolute -bottom-6 sm:-bottom-8 left-1/2 transform -translate-x-1/2 w-48 sm:w-64 h-1.5 sm:h-2 bg-linear-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
-                      initial={{ width: 0 }}
-                      animate={{ width: '356px' }}
-                      transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
-                    />
+                    </span>
+                  </h1>
+                </motion.div>
+
+                {/* Typewriter with Enhanced Styling */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8, duration: 0.6 }}
+                  className="mt-6 sm:mt-8"
+                >
+                  <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+                    <div className="w-3 h-3 rounded-full bg-[#f2a921] animate-pulse" />
+                    <span className="text-xl sm:text-2xl md:text-3xl font-light text-white/90">
+                      <Typewriter
+                        words={[
+                          "Behind NagarNirman",
+                          "Revolutionizing Civic Tech",
+                          "Empowering 64 Districts",
+                          "Building Smart Cities"
+                        ]}
+                        loop={true}
+                        cursor
+                        cursorStyle="_"
+                        cursorColor="#f2a921"
+                        typeSpeed={60}
+                        deleteSpeed={40}
+                        delaySpeed={2000}
+                      />
+                    </span>
                   </div>
-                </h1>
+                </motion.div>
               </div>
 
-              {/* Subtitle */}
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto mb-8 sm:mb-10 md:mb-12 leading-relaxed px-2">
-                Four passionate students revolutionizing how Bangladesh addresses urban challenges.
-                We combine cutting-edge technology with deep civic engagement to build
-                <span className="font-semibold text-[#004d40]"> smarter, more responsive cities.</span>
-              </p>
-
-              {/* CTA Buttons */}
+              {/* Description with Glassmorphism Card */}
               <motion.div
-                className="flex flex-col sm:flex-row gap-6 justify-center items-center"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 1, duration: 0.6 }}
+                className="max-w-3xl mx-auto mb-10 sm:mb-14"
+              >
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/80 leading-relaxed font-light px-4">
+                  Four passionate students on a mission to transform how Bangladesh
+                  tackles urban challenges. We&apos;re not just writing code — we&apos;re
+                  <span className="text-[#f2a921] font-semibold"> rewriting the future</span> of civic engagement.
+                </p>
+              </motion.div>
+
+              {/* CTA Buttons with Premium Styling */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.2, duration: 0.6 }}
+                className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center"
               >
                 <motion.a
                   href="#team"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-[#004d40] to-[#00695c] text-white rounded-full font-semibold shadow-2xl overflow-hidden text-sm sm:text-base"
+                  whileHover={{ scale: 1.05, y: -3 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group relative px-8 sm:px-10 py-4 sm:py-5 bg-linear-to-r from-[#f2a921] to-[#ffb74d] text-gray-900 rounded-2xl font-bold text-base sm:text-lg shadow-[0_20px_50px_-15px_rgba(242,169,33,0.5)] overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center gap-3">
-                    <Users className="w-5 h-5" />
-                    Meet Our Team
+                    <Users className="w-5 h-5 sm:w-6 sm:h-6" />
+                    Explore The Team
+                    <motion.span
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      →
+                    </motion.span>
                   </span>
                   <motion.div
-                    className="absolute inset-0 bg-linear-to-r from-[#f2a921] to-[#ffb74d]"
-                    initial={{ x: '-100%' }}
-                    whileHover={{ x: 0 }}
-                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 bg-white"
+                    initial={{ x: '-100%', opacity: 0 }}
+                    whileHover={{ x: 0, opacity: 0.2 }}
+                    transition={{ duration: 0.4 }}
                   />
                 </motion.a>
 
                 <motion.a
                   href="#tech"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="group px-6 sm:px-8 py-3 sm:py-4 border-2 border-[#004d40] text-[#004d40] rounded-full font-semibold hover:bg-accent hover:text-white transition-all duration-300 shadow-lg text-sm sm:text-base"
+                  whileHover={{ scale: 1.05, y: -3 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group px-8 sm:px-10 py-4 sm:py-5 bg-white/10 backdrop-blur-xl border-2 border-white/30 text-white rounded-2xl font-bold text-base sm:text-lg hover:bg-white/20 transition-all duration-300 shadow-xl"
                 >
-                  <span className="flex items-center gap-2 sm:gap-3">
-                    <Code2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                    Our Tech Stack
+                  <span className="flex items-center gap-3">
+                    <Code2 className="w-5 h-5 sm:w-6 sm:h-6 group-hover:text-[#f2a921] transition-colors" />
+                    View Tech Stack
                   </span>
                 </motion.a>
+              </motion.div>
+
+              {/* Stats Row */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.4, duration: 0.6 }}
+                className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 max-w-4xl mx-auto"
+              >
+                {[
+                  { value: '4', label: 'Team Members', icon: '👨‍💻' },
+                  { value: '64', label: 'Districts', icon: '🗺️' },
+                  { value: '235K+', label: 'Reports', icon: '📊' },
+                  { value: '99.9%', label: 'Uptime', icon: '⚡' },
+                ].map((stat, i) => (
+                  <motion.div
+                    key={i}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    className="relative group"
+                  >
+                    <div className="p-4 sm:p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 hover:border-[#f2a921]/30 transition-all duration-300">
+                      <span className="text-2xl sm:text-3xl mb-2 block">{stat.icon}</span>
+                      <div className="text-2xl sm:text-3xl md:text-4xl font-black text-white">{stat.value}</div>
+                      <div className="text-xs sm:text-sm text-white/60 font-medium uppercase tracking-wider">{stat.label}</div>
+                    </div>
+                  </motion.div>
+                ))}
               </motion.div>
             </motion.div>
           </div>
         </div>
 
-        {/* Scroll Indicator */}
+        {/* Scroll Indicator - Enhanced */}
         <motion.div
-          className="absolute bottom-6 sm:bottom-10 left-1/2 transform -translate-x-1/2 hidden sm:block"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+          className="absolute bottom-8 sm:bottom-12 left-1/2 transform -translate-x-1/2"
+          animate={{ y: [0, 12, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          <div className="flex flex-col items-center gap-2">
-            <span className="text-sm text-gray-500 font-medium">Scroll</span>
-            <div className="w-6 h-10 border-2 border-[#004d40]/30 rounded-full flex justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <span className="text-xs sm:text-sm text-white/60 font-medium tracking-widest uppercase">Scroll to explore</span>
+            <div className="w-7 h-12 sm:w-8 sm:h-14 border-2 border-white/30 rounded-full flex justify-center p-2">
               <motion.div
-                className="w-1 h-3 bg-linear-to-b from-[#004d40] to-[#f2a921] rounded-full mt-2"
-                animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
+                className="w-1.5 h-3 bg-[#f2a921] rounded-full"
+                animate={{ y: [0, 16, 0], opacity: [1, 0.3, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               />
             </div>
           </div>
         </motion.div>
+
+        {/* Bottom Gradient Fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-gray-50 to-transparent" />
       </section>
 
       {/* Team Section - Hexagon Grid */}
