@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState, useCallback } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { FullPageLoading } from '@/components/common';
@@ -16,12 +15,12 @@ import {
   Phone,
   MapPin,
   Calendar,
-  Award,
   Link2,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { problemSolverAPI } from '@/utils/api';
 import Card from '@/components/common/Card';
+import Image from 'next/image';
 
 interface Application {
   _id: string;
@@ -59,9 +58,14 @@ interface Application {
   appliedAt: string;
 }
 
+interface ApplicationFilters {
+  page: number;
+  limit: number;
+  status?: string;
+}
+
 export default function SuperAdminApplications() {
-  const router = useRouter();
-  const { user, isLoading: authLoading, isAuthenticated } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<string>('all');
@@ -75,16 +79,10 @@ export default function SuperAdminApplications() {
     total: 0,
   });
 
-  useEffect(() => {
-    if (user?.role === 'superAdmin') {
-      fetchApplications();
-    }
-  }, [filterStatus, pagination.page, user]);
-
-  const fetchApplications = async () => {
+  const fetchApplications = useCallback(async () => {
     try {
       setLoading(true);
-      const filters: any = {
+      const filters: ApplicationFilters = {
         page: pagination.page,
         limit: 10,
       };
@@ -96,13 +94,19 @@ export default function SuperAdminApplications() {
       const response = await problemSolverAPI.getAllApplications(filters);
       setApplications(response.data);
       setPagination(response.pagination);
-    } catch (error: any) {
+    } catch (error) {
       toast.error('Failed to load applications');
       console.error(error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterStatus, pagination.page]);
+
+  useEffect(() => {
+    if (user?.role === 'superAdmin') {
+      fetchApplications();
+    }
+  }, [fetchApplications, user]);
 
   const handleReview = async (appId: string, status: 'approved' | 'rejected') => {
     setIsReviewing(true);
@@ -114,8 +118,9 @@ export default function SuperAdminApplications() {
       setSelectedApp(null);
       setReviewNote('');
       fetchApplications();
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to review application');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to review application';
+      toast.error(errorMessage);
     } finally {
       setIsReviewing(false);
     }
@@ -562,8 +567,8 @@ export default function SuperAdminApplications() {
               {selectedApp.nidOrIdDoc && (
                 <div className="mb-4 xs:mb-5 sm:mb-6">
                   <label className="text-[10px] xs:text-xs font-bold text-neutral/70 uppercase block mb-1 xs:mb-2">NID & Documents</label>
-                  <a href={selectedApp.nidOrIdDoc} target="_blank" rel="noopener noreferrer" className="block">
-                    <img
+                  <a href={selectedApp.nidOrIdDoc} title='NID Document' target="_blank" rel="noopener noreferrer" className="block">
+                    <Image
                       src={selectedApp.nidOrIdDoc}
                       alt="NID Document"
                       className="max-w-full h-auto max-h-64 xs:max-h-80 sm:max-h-96 rounded-lg xs:rounded-xl object-contain border-2 border-accent/20 hover:border-accent/50 transition-colors cursor-pointer"
