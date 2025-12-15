@@ -331,7 +331,7 @@ const AboutTeamPage = () => {
 
         {/* Main Content */}
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-6xl mx-auto">
+          <div className="container mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
@@ -418,7 +418,7 @@ const AboutTeamPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1, duration: 0.6 }}
-                className="max-w-3xl mx-auto mb-10 sm:mb-14"
+                className="max-w-5xl mx-auto mb-10 sm:mb-14"
               >
                 <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/80 leading-relaxed font-light px-4">
                   Four passionate students on a mission to transform how Bangladesh
@@ -476,7 +476,7 @@ const AboutTeamPage = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.4, duration: 0.6 }}
-                className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 max-w-4xl mx-auto"
+                className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-12 container mx-auto"
               >
                 {[
                   { value: '4', label: 'Team Members', icon: <Users className="w-6 h-6 sm:w-8 sm:h-8 text-[#f2a921]" /> },
@@ -501,23 +501,6 @@ const AboutTeamPage = () => {
           </div>
         </div>
 
-        {/* Scroll Indicator - Enhanced */}
-        <motion.div
-          className="absolute bottom-8 sm:bottom-12 left-1/2 transform -translate-x-1/2"
-          animate={{ y: [0, 12, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <div className="flex flex-col items-center gap-3">
-            <span className="text-xs sm:text-sm text-white/60 font-medium tracking-widest uppercase">Scroll to explore</span>
-            <div className="w-7 h-12 sm:w-8 sm:h-14 border-2 border-white/30 rounded-full flex justify-center p-2">
-              <motion.div
-                className="w-1.5 h-3 bg-[#f2a921] rounded-full"
-                animate={{ y: [0, 16, 0], opacity: [1, 0.3, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              />
-            </div>
-          </div>
-        </motion.div>
 
         {/* Bottom Gradient Fade */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-gray-50 to-transparent" />
@@ -558,7 +541,7 @@ const AboutTeamPage = () => {
                 />
               </span>
             </h2>
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto px-4 font-light">
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-500 max-w-5xl mx-auto px-4 font-light">
               Four passionate innovators building Bangladesh&apos;s most ambitious civic tech platform
             </p>
           </motion.div>
@@ -745,179 +728,459 @@ const AboutTeamPage = () => {
         </div>
       </section>
 
-      {/* Tech Stack Section */}
-      <section id="tech" className="py-12 sm:py-16 md:py-20 bg-linear-to-b from-gray-50 to-white">
-        <div className="container mx-auto px-4">
+      {/* Tech Stack Section - BOSS LEVEL */}
+      <section id="tech" className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
+        {/* Epic Background */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-linear-to-br from-gray-900 via-[#004d40]/90 to-gray-900" />
+          {/* Animated Grid */}
+          <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(242,169,33,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(242,169,33,0.1)_1px,transparent_1px)] bg-size-[60px_60px]" />
+          {/* Floating Orbs */}
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            className="absolute top-20 left-20 w-72 h-72 bg-[#f2a921]/20 rounded-full filter blur-[100px]"
+            animate={{ scale: [1, 1.2, 1], x: [-20, 20, -20] }}
+            transition={{ duration: 8, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute bottom-20 right-20 w-96 h-96 bg-[#004d40]/30 rounded-full filter blur-[120px]"
+            animate={{ scale: [1.2, 1, 1.2], y: [-30, 30, -30] }}
+            transition={{ duration: 10, repeat: Infinity }}
+          />
+        </div>
+
+        {/* Floating Code Particles */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(8)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute text-[#f2a921]/20 font-mono text-xs sm:text-sm"
+              style={{
+                left: `${10 + i * 12}%`,
+                top: `${5 + (i % 4) * 25}%`,
+              }}
+              animate={{
+                y: [-20, 20, -20],
+                opacity: [0.1, 0.4, 0.1],
+                rotate: [-5, 5, -5],
+              }}
+              transition={{
+                duration: 6 + i,
+                repeat: Infinity,
+                delay: i * 0.5,
+              }}
+            >
+              {['</', 'const', '{}', '=>', 'async', '[]', 'npm', 'git'][i]}
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-10 sm:mb-12 md:mb-16"
+            className="text-center mb-16 sm:mb-20 md:mb-28"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
-              <span className="text-gray-800">Our </span>
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] to-[#f2a921]">
-                Tech Arsenal
+            {/* Glowing Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 mb-8 shadow-[0_0_30px_rgba(242,169,33,0.2)]"
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              >
+                <Code2 className="w-5 h-5 text-[#f2a921]" />
+              </motion.div>
+              <span className="text-sm font-bold text-white tracking-[0.2em] uppercase">Powered By Excellence</span>
+              <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_10px_rgba(74,222,128,0.8)]" />
+            </motion.div>
+
+            {/* Massive Title */}
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-6 sm:mb-8">
+              <span className="text-white drop-shadow-2xl">Our </span>
+              <span className="relative inline-block">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-[#f2a921] via-[#ffb74d] to-[#f2a921]">
+                  Tech Arsenal
+                </span>
+                <motion.span
+                  className="absolute -bottom-2 left-0 right-0 h-1.5 bg-linear-to-r from-[#f2a921] via-white to-[#f2a921] rounded-full"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  transition={{ delay: 0.5, duration: 0.8 }}
+                />
               </span>
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              The cutting-edge technologies powering NagarNirman&apos;s civic reporting platform
+
+            <p className="text-lg sm:text-xl md:text-2xl text-white/60 max-w-5xl mx-auto px-4 font-light leading-relaxed">
+              The cutting-edge technologies powering
+              <span className="text-[#f2a921] font-semibold"> NagarNirman&apos;s</span> civic reporting platform
             </p>
           </motion.div>
 
-          <div className="space-y-12">
+          {/* Tech Categories - Horizontal Scroll on Mobile, Grid on Desktop */}
+          <div className="space-y-10 sm:space-y-16">
             {TECH_STACK.map((category, catIndex) => (
               <motion.div
                 key={catIndex}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: catIndex * 0.1 }}
-                className="bg-white rounded-xl sm:rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 shadow-xl border border-gray-100"
+                transition={{ duration: 0.6, delay: catIndex * 0.1 }}
+                className="relative"
               >
-                <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6 md:mb-8">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-[#004d40] to-[#f2a921] rounded-lg sm:rounded-xl flex items-center justify-center">
-                    <Code2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">{category.category}</h3>
-                    <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">Modern, scalable, and battle-tested technologies</p>
-                  </div>
-                </div>
+                {/* Category Card */}
+                <div className="relative bg-white/5 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 md:p-10 border border-white/10 overflow-hidden group hover:border-[#f2a921]/30 transition-all duration-500">
+                  {/* Animated Background Gradient */}
+                  <div className="absolute inset-0 bg-linear-to-br from-[#f2a921]/5 via-transparent to-[#004d40]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-                  {category.technologies.map((tech, techIndex) => (
+                  {/* Glowing Corner */}
+                  <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#f2a921]/20 rounded-full filter blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                  {/* Category Header */}
+                  <div className="relative flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 mb-8 sm:mb-10">
                     <motion.div
-                      key={techIndex}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3, delay: techIndex * 0.05 }}
-                      whileHover={{ y: -5 }}
-                      className="group"
+                      className="w-16 h-16 sm:w-20 sm:h-20 bg-linear-to-br from-[#f2a921] to-[#ffb74d] rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(242,169,33,0.4)]"
+                      whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
                     >
-                      <div className={`absolute inset-0 bg-linear-to-br ${tech.color} rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition duration-500`} />
-
-                      <div className="relative bg-linear-to-br from-gray-50 to-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 border border-gray-100 group-hover:border-transparent transition-all duration-300 h-full flex flex-col items-center justify-center text-center shadow-sm group-hover:shadow-xl">
-                        <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 bg-linear-to-br ${tech.color} rounded-xl sm:rounded-2xl flex items-center justify-center mb-2 sm:mb-3 md:mb-4 shadow-lg`}>
-                          <div className="text-white">
-                            {tech.icon}
-                          </div>
-                        </div>
-                        <h4 className="font-bold text-gray-900 text-lg mb-2">{tech.name}</h4>
-
-                        {/* Usage Description */}
-                        <div className="text-xs text-gray-500 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          {category.category === 'Frontend' && 'Responsive UI Components'}
-                          {category.category === 'Backend & Database' && 'Data Storage & APIs'}
-                          {category.category === 'Authentication & Security' && 'Secure User Auth'}
-                          {category.category === 'Services & APIs' && 'External Service Integration'}
-                          {category.category === 'State & Deployment' && 'State Management & Hosting'}
-                        </div>
-                      </div>
+                      <Code2 className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                     </motion.div>
-                  ))}
+                    <div>
+                      <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-1">{category.category}</h3>
+                      <p className="text-sm sm:text-base text-white/50">Modern, scalable, and battle-tested</p>
+                    </div>
+                    <div className="sm:ml-auto flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10">
+                      <span className="text-sm font-bold text-[#f2a921]">{category.technologies.length}</span>
+                      <span className="text-xs text-white/50 uppercase tracking-wider">Technologies</span>
+                    </div>
+                  </div>
+
+                  {/* Technologies Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                    {category.technologies.map((tech, techIndex) => (
+                      <motion.div
+                        key={techIndex}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.4, delay: techIndex * 0.08 }}
+                        whileHover={{ y: -8, scale: 1.02 }}
+                        className="group/card relative"
+                      >
+                        {/* Card Glow */}
+                        <div className={`absolute -inset-1 bg-linear-to-br ${tech.color} rounded-2xl opacity-0 group-hover/card:opacity-50 blur-xl transition-all duration-500`} />
+
+                        <div className="relative bg-white/5 backdrop-blur-xl rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-white/10 group-hover/card:border-white/30 transition-all duration-300 h-full">
+                          {/* Icon Container */}
+                          <div className="relative mb-4">
+                            <motion.div
+                              className={`w-14 h-14 sm:w-16 sm:h-16 bg-linear-to-br ${tech.color} rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg mx-auto`}
+                              whileHover={{ rotate: 360 }}
+                              transition={{ duration: 0.6 }}
+                            >
+                              <div className="text-white scale-110">
+                                {tech.icon}
+                              </div>
+                            </motion.div>
+                            {/* Floating Ring */}
+                            <motion.div
+                              className="absolute inset-0 border-2 border-[#f2a921]/30 rounded-xl sm:rounded-2xl"
+                              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+                              transition={{ duration: 2, repeat: Infinity, delay: techIndex * 0.2 }}
+                            />
+                          </div>
+
+                          {/* Tech Name */}
+                          <h4 className="font-bold text-white text-center text-sm sm:text-lg mb-2">{tech.name}</h4>
+
+                          {/* Hover Badge */}
+                          <motion.div
+                            className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#f2a921] rounded-full opacity-0 group-hover/card:opacity-100 group-hover/card:bottom-3 transition-all duration-300"
+                          >
+                            <span className="text-[10px] sm:text-xs font-bold text-gray-900 uppercase tracking-wider">Active</span>
+                          </motion.div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
               </motion.div>
             ))}
           </div>
 
-          {/* Architecture Note */}
+          {/* Architecture Note - Enhanced */}
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-8 sm:mt-12 md:mt-16 text-center"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="mt-16 sm:mt-24"
           >
-            <div className="bg-linear-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-[#004d40]/10">
-              <Building2 className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-[#004d40] mx-auto mb-3 sm:mb-4" />
-              <h3 className="text-base sm:text-lg md:text-xl font-bold text-gray-900 mb-2 sm:mb-3">Modern Architecture</h3>
-              <p className="text-sm sm:text-base text-gray-600">
-                Our tech stack follows a modern, scalable architecture with clear separation of concerns, <br></br>
-                ensuring maintainability, performance, and the ability to handle thousands of concurrent civic reports.
-              </p>
+            <div className="relative bg-linear-to-r from-white/5 via-white/10 to-white/5 backdrop-blur-2xl rounded-3xl p-8 sm:p-12 border border-white/10 overflow-hidden">
+              {/* Decorative Elements */}
+              <div className="absolute top-0 left-1/4 w-32 h-32 bg-[#f2a921]/10 rounded-full filter blur-3xl" />
+              <div className="absolute bottom-0 right-1/4 w-40 h-40 bg-[#004d40]/20 rounded-full filter blur-3xl" />
+
+              <div className="relative flex flex-col md:flex-row items-center gap-8 text-center md:text-left">
+                <motion.div
+                  className="w-24 h-24 sm:w-28 sm:h-28 bg-linear-to-br from-[#004d40] to-[#00695c] rounded-3xl flex items-center justify-center shadow-2xl shrink-0"
+                  animate={{ rotate: [0, 5, -5, 0] }}
+                  transition={{ duration: 6, repeat: Infinity }}
+                >
+                  <Building2 className="w-12 h-12 sm:w-14 sm:h-14 text-white" />
+                </motion.div>
+                <div>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white mb-3">Modern Architecture</h3>
+                  <p className="text-base sm:text-lg text-white/60 leading-relaxed max-w-5xl">
+                    Our tech stack follows a modern, scalable architecture with clear separation of concerns,
+                    ensuring maintainability, performance, and the ability to handle
+                    <span className="text-[#f2a921] font-semibold"> thousands of concurrent civic reports</span>.
+                  </p>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Impact Stats - Circular Progress */}
-      <section id="impact" className="py-12 sm:py-16 md:py-24 relative">
-        <div className="absolute inset-0 bg-linear-to-br from-[#004d40]/5 via-transparent to-[#f2a921]/5" />
+      {/* Impact Stats - BOSS LEVEL */}
+      <section id="impact" className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
+        {/* Epic Background */}
+        <div className="absolute inset-0 bg-linear-to-br from-gray-50 via-white to-gray-100" />
+
+        {/* Decorative Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute -top-40 -left-40 w-80 h-80 bg-[#004d40]/10 rounded-full filter blur-3xl"
+            animate={{ scale: [1, 1.3, 1], rotate: [0, 90, 0] }}
+            transition={{ duration: 15, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute -bottom-40 -right-40 w-96 h-96 bg-[#f2a921]/10 rounded-full filter blur-3xl"
+            animate={{ scale: [1.3, 1, 1.3], rotate: [0, -90, 0] }}
+            transition={{ duration: 18, repeat: Infinity }}
+          />
+          {/* Floating Geometric Shapes */}
+          <motion.div
+            className="absolute top-1/4 right-1/4 w-20 h-20 border-2 border-[#004d40]/20 rounded-full"
+            animate={{ rotate: 360, y: [-20, 20, -20] }}
+            transition={{ duration: 12, repeat: Infinity }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 left-1/4 w-16 h-16 border-2 border-[#f2a921]/20 rotate-45"
+            animate={{ rotate: [45, 135, 45], scale: [1, 1.2, 1] }}
+            transition={{ duration: 8, repeat: Infinity }}
+          />
+        </div>
 
         <div className="container mx-auto px-4 relative z-10">
+          {/* Section Header */}
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-10 sm:mb-12 md:mb-16"
+            className="text-center mb-16 sm:mb-20 md:mb-28"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
-              <span className="text-gray-900">Numbers That </span>
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] to-[#f2a921]">
-                Matter
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-linear-to-r from-[#004d40]/10 to-[#f2a921]/10 border border-[#004d40]/20 mb-8"
+            >
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <TrendingUp className="w-5 h-5 text-[#004d40]" />
+              </motion.div>
+              <span className="text-sm font-bold text-[#004d40] tracking-[0.2em] uppercase">Real Impact, Real Numbers</span>
+            </motion.div>
+
+            {/* Massive Title */}
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-6 sm:mb-8">
+              <span className="text-gray-900 drop-shadow-sm">Numbers That </span>
+              <span className="relative inline-block">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] via-[#00897b] to-[#f2a921]">
+                  Matter
+                </span>
+                <motion.span
+                  className="absolute -bottom-2 left-0 right-0 h-1.5 bg-linear-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  transition={{ delay: 0.5, duration: 0.8 }}
+                />
               </span>
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              Quantifying our impact on urban governance across Bangladesh
+
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto px-4 font-light leading-relaxed">
+              Quantifying our impact on
+              <span className="text-[#004d40] font-semibold"> urban governance</span> across Bangladesh
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+          {/* Stats Grid - Premium Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {PROJECT_STATS.map((stat, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                className="relative"
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.6, delay: index * 0.15 }}
+                className="group"
               >
-                <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border border-gray-100 text-center">
-                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 mx-auto mb-3 sm:mb-4 md:mb-6">
-                    <svg className="w-full h-full transform -rotate-90">
-                      <circle
-                        cx="40"
-                        cy="40"
-                        r="35"
-                        stroke="#e5e7eb"
-                        strokeWidth="6"
-                        fill="none"
+                <motion.div
+                  whileHover={{ y: -12, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="relative h-full"
+                >
+                  {/* Card Glow */}
+                  <div className="absolute -inset-1 bg-linear-to-br from-[#004d40] via-[#f2a921] to-[#004d40] rounded-3xl opacity-0 group-hover:opacity-30 blur-xl transition-all duration-500" />
+
+                  {/* Main Card */}
+                  <div className="relative bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-100 group-hover:border-[#f2a921]/30 transition-all duration-500 h-full overflow-hidden">
+                    {/* Background Decoration */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-[#004d40]/5 to-transparent rounded-bl-full" />
+
+                    {/* Animated Ring Progress */}
+                    <div className="relative w-28 h-28 sm:w-32 sm:h-32 mx-auto mb-6">
+                      {/* Outer Glow Ring */}
+                      <motion.div
+                        className="absolute inset-0 rounded-full bg-[#f2a921]/10"
+                        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.6, 0.3] }}
+                        transition={{ duration: 3, repeat: Infinity, delay: index * 0.3 }}
                       />
-                      <motion.circle
-                        cx="40"
-                        cy="40"
-                        r="35"
-                        stroke="#004d40"
-                        strokeWidth="6"
-                        fill="none"
-                        strokeLinecap="round"
-                        initial={{ pathLength: 0 }}
-                        whileInView={{ pathLength: 0.7 + (index * 0.1) }}
-                        transition={{ duration: 2, delay: 0.5 }}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-[#004d40]">
-                        {stat.icon}
+
+                      {/* SVG Circle Progress */}
+                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                        {/* Background Circle */}
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="42"
+                          stroke="#e5e7eb"
+                          strokeWidth="8"
+                          fill="none"
+                        />
+                        {/* Gradient Definition */}
+                        <defs>
+                          <linearGradient id={`gradient-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#004d40" />
+                            <stop offset="50%" stopColor="#f2a921" />
+                            <stop offset="100%" stopColor="#004d40" />
+                          </linearGradient>
+                        </defs>
+                        {/* Progress Circle */}
+                        <motion.circle
+                          cx="50"
+                          cy="50"
+                          r="42"
+                          stroke={`url(#gradient-${index})`}
+                          strokeWidth="8"
+                          fill="none"
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0, opacity: 0 }}
+                          whileInView={{ pathLength: 0.75 + (index * 0.06), opacity: 1 }}
+                          transition={{ duration: 2.5, delay: 0.3 + index * 0.2, ease: "easeOut" }}
+                        />
+                      </svg>
+
+                      {/* Center Icon */}
+                      <motion.div
+                        className="absolute inset-0 flex items-center justify-center"
+                        whileHover={{ scale: 1.2, rotate: 10 }}
+                        transition={{ type: "spring", stiffness: 400 }}
+                      >
+                        <div className="w-14 h-14 sm:w-16 sm:h-16 bg-linear-to-br from-[#004d40] to-[#00695c] rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-[0_0_25px_rgba(0,77,64,0.4)] transition-shadow duration-300">
+                          <div className="text-white scale-110">
+                            {stat.icon}
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    {/* Stat Value */}
+                    <div className="text-center">
+                      <motion.div
+                        className="text-4xl sm:text-5xl md:text-6xl font-black mb-2"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                      >
+                        <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] to-[#00897b]">
+                          <CountUp
+                            end={stat.value}
+                            duration={2.5}
+                            separator=","
+                            decimals={stat.value === 99.9 ? 1 : 0}
+                          />
+                          {stat.suffix}
+                        </span>
+                      </motion.div>
+
+                      {/* Label with animated underline */}
+                      <div className="relative inline-block">
+                        <span className="text-sm sm:text-base font-bold text-gray-600 uppercase tracking-wider">
+                          {stat.label}
+                        </span>
+                        <motion.div
+                          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-linear-to-r from-[#f2a921] to-[#ffb74d] rounded-full"
+                          initial={{ scaleX: 0 }}
+                          whileInView={{ scaleX: 1 }}
+                          transition={{ delay: 1 + index * 0.2, duration: 0.5 }}
+                        />
                       </div>
                     </div>
-                  </div>
 
-                  <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-1 sm:mb-2">
-                    <CountUp
-                      end={stat.value}
-                      duration={2.5}
-                      separator=","
-                      decimals={stat.value === 99.9 ? 1 : 0}
-                    />
-                    {stat.suffix}
+                    {/* Hover Badge */}
+                    <motion.div
+                      className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                    >
+                      <div className="w-8 h-8 bg-[#f2a921] rounded-full flex items-center justify-center shadow-lg">
+                        <TrendingUp className="w-4 h-4 text-white" />
+                      </div>
+                    </motion.div>
                   </div>
-                  <div className="text-xs sm:text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    {stat.label}
-                  </div>
-                </div>
+                </motion.div>
               </motion.div>
             ))}
           </div>
+
+          {/* Bottom CTA Banner */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="mt-16 sm:mt-24"
+          >
+            <div className="relative bg-linear-to-r from-[#004d40] via-[#00695c] to-[#004d40] rounded-3xl p-8 sm:p-12 overflow-hidden">
+              {/* Background Decorations */}
+              <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-size-[40px_40px]" />
+              <motion.div
+                className="absolute top-0 right-0 w-64 h-64 bg-[#f2a921]/20 rounded-full filter blur-3xl"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 5, repeat: Infinity }}
+              />
+
+              <div className="relative flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+                <div>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white mb-2">Growing Every Day</h3>
+                  <p className="text-white/70 text-base sm:text-lg">Join thousands of citizens making their cities better</p>
+                </div>
+                <motion.a
+                  href="#team"
+                  whileHover={{ scale: 1.05, y: -3 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-8 py-4 bg-[#f2a921] text-gray-900 rounded-2xl font-bold text-lg shadow-[0_10px_30px_rgba(242,169,33,0.4)] flex items-center gap-3"
+                >
+                  <Rocket className="w-5 h-5" />
+                  Get Started
+                  <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
+                </motion.a>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -1013,7 +1276,7 @@ const AboutTeamPage = () => {
               </span>
             </h2>
 
-            <p className="text-lg sm:text-xl md:text-2xl text-white/70 max-w-3xl mx-auto px-4 font-light leading-relaxed">
+            <p className="text-lg sm:text-xl md:text-2xl text-white/70 max-w-5xl mx-auto px-4 font-light leading-relaxed">
               From report to resolution — watch how we transform
               <span className="text-[#f2a921] font-semibold"> civic complaints</span> into
               <span className="text-white font-semibold"> real action</span>
@@ -1195,117 +1458,6 @@ const AboutTeamPage = () => {
               </motion.div>
             ))}
           </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section - Interactive */}
-      <section className="py-12 sm:py-16 md:py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-br from-[#004d40] via-[#00695c] to-[#004d40]" />
-
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 30% 50%, rgba(242, 169, 33, 0.1) 0%, transparent 50%),
-                             radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 50%)`,
-          }}
-          animate={{
-            backgroundPosition: ['0% 0%', '100% 100%'],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            repeatType: 'reverse',
-          }}
-        />
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              className="inline-block p-1 rounded-xl sm:rounded-2xl bg-linear-to-r from-[#f2a921] to-[#ffb74d] mb-6 sm:mb-8"
-            >
-              <div className="bg-white rounded-lg sm:rounded-xl px-4 sm:px-6 md:px-8 py-2 sm:py-3">
-                <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] to-[#f2a921] font-bold text-sm sm:text-base md:text-lg tracking-wider flex items-center gap-2 sm:gap-3">
-                  <Rocket className="w-4 h-4 sm:w-5 sm:h-5 text-[#f2a921]" />
-                  JOIN THE REVOLUTION
-                </span>
-              </div>
-            </motion.div>
-
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-6 sm:mb-8"
-            >
-              Help Us Build The
-              <span className="block text-transparent bg-clip-text bg-linear-to-r from-[#f2a921] to-white">
-                Future of Cities
-              </span>
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-8 sm:mb-10 md:mb-12 leading-relaxed px-4"
-            >
-              We&apos;re looking for passionate students, developers, and civic enthusiasts
-              to join our mission. Together, we can build smarter, cleaner, and more
-              transparent cities across Bangladesh.
-            </motion.p>
-
-            <motion.div
-              className="flex flex-col sm:flex-row gap-6 justify-center items-center"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <motion.a
-                href="mailto:e241024@ugrad.iiuc.ac.bd"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="group relative px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 bg-linear-to-r from-[#f2a921] to-[#ffb74d] text-[#004d40] rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base md:text-lg shadow-2xl overflow-hidden"
-              >
-                <span className="relative z-10 flex items-center gap-2 sm:gap-3">
-                  <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
-                  Apply to Join Our Team
-                </span>
-                <motion.div
-                  className="absolute inset-0 bg-white"
-                  initial={{ x: '-100%' }}
-                  whileHover={{ x: 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </motion.a>
-
-              <motion.a
-                href="/about"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="group px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 border-2 border-white/30 text-white rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base md:text-lg hover:bg-white/10 transition-all duration-300"
-              >
-                <span className="flex items-center gap-2 sm:gap-3">
-                  <Heart className="w-5 h-5 sm:w-6 sm:h-6" />
-                  Support Our Mission
-                </span>
-              </motion.a>
-            </motion.div>
-
-            <motion.div
-              className="mt-10 sm:mt-12 md:mt-16 pt-6 sm:pt-8 border-t border-white/20"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
-              <p className="text-white/60 text-xs sm:text-sm font-mono px-2">
-                <span className="hidden sm:inline">Open Roles: Frontend Intern • Backend Developer • UI/UX Designer • Community Manager • AI Engineer</span>
-                <span className="sm:hidden">Open Roles: Frontend • Backend • UI/UX • AI</span>
-              </p>
-            </motion.div>
-          </div>
         </div>
       </section>
 
