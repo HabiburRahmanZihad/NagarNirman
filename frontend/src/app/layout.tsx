@@ -35,6 +35,8 @@ export default function RootLayout({
         className={`${urbanist.variable} font-sans antialiased min-h-screen flex flex-col`}
         suppressHydrationWarning
       >
+
+        
         <AuthProvider>
           <NotificationProvider>
             <Toaster position="top-right" />
@@ -44,6 +46,12 @@ export default function RootLayout({
             </ClientLayout>
           </NotificationProvider>
         </AuthProvider>
+
+
+
+
+
+
         <Script id="chatbase-init">
           {`
             (function(){

@@ -24,57 +24,57 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-8  lg:py-20">
         <AboutSection />
       </section>
 
       {/* What We Do Section */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-base-200 overflow-hidden">
+      <section className="py-8  lg:py-20 bg-base-200 overflow-hidden">
         <WhatWeDo />
       </section>
 
       {/* Partners Marquee */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section className="py-8  lg:py-20 overflow-hidden">
         <PartnersMarquee />
       </section>
 
       {/* National Anthem Section */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-base-100 overflow-hidden">
+      <section className="py-8  lg:py-20 bg-base-100 overflow-hidden">
         <NationalAnthemSection />
       </section>
 
       {/* How To Report */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-base-100 overflow-hidden">
+      <section className="py-8  lg:py-20 bg-base-100 overflow-hidden">
         <HowToReport />
       </section>
 
       {/* Testimonials */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-8  lg:py-20">
         <Testimonials />
       </section>
 
       {/* Volunteer */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-base-300 overflow-hidden">
+      <section className="py-8  lg:py-20 bg-base-300 overflow-hidden">
         <Volunteer />
       </section>
 
       {/* Events Section */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-base-100 overflow-hidden">
+      <section className="py-8  lg:py-20 bg-base-100 overflow-hidden">
         <EventsSection />
       </section>
 
       {/* Emergency Hotline Marquee */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section className="py-8  lg:py-20 overflow-hidden">
         <EmergencyHotlineMarquee />
       </section>
 
       {/* Our Impact */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-base-300">
+      <section className="py-8  lg:py-20 bg-base-300 overflow-hidden">
         <OurImpact />
       </section>
 
       {/* FAQ Section */}
-      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-base-100 overflow-hidden">
+      <section className="py-8  lg:py-20 bg-base-100 overflow-hidden">
         <FaqSection />
       </section>
     </>

@@ -81,7 +81,7 @@ const itemVariants: Variants = {
 
 export default function WhatWeDo() {
   return (
-    <div className="container mx-auto px-4 xs:px-5 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
       {/* Header */}
       <div className="text-center mb-12 sm:mb-16 relative z-10">
         <motion.div
@@ -108,7 +108,7 @@ export default function WhatWeDo() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-50px" }}
-        className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6"
+        className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6"
       >
         {works.map((item, index) => (
           <motion.div
