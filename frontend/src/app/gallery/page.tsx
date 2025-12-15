@@ -307,6 +307,7 @@ const GalleryPage = () => {
   return (
     <section className={`bg-white py-16 ${isBodyOverflowHidden ? '' : ''}`}>
       <div className="container mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
+
         {/* Header + filters */}
         <div className="flex flex-col gap-8">
           <div className="space-y-3">
@@ -407,12 +408,15 @@ const GalleryPage = () => {
 
         {/* Gallery Grid */}
         {!error && visibleItems.length === 0 ? (
+
           <div className="rounded-2xl border border-gray-200 bg-gray-50 p-10 text-center">
+
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 bg-gray-100">
               <svg className="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
+
             <h3 className="text-2xl font-bold mb-3 text-gray-900">No Photos Available</h3>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
               No images found for this category. Try selecting a different filter or check back later for new submissions.
@@ -423,9 +427,13 @@ const GalleryPage = () => {
             >
               Show All Photos
             </button>
+
           </div>
+
         ) : (
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+
             {visibleItems.map((item) => {
               const severityColors = getSeverityColor(item.severity || 'Medium');
 
@@ -437,6 +445,7 @@ const GalleryPage = () => {
                 >
                   {/* Image Container */}
                   <div className="relative aspect-4/3 sm:aspect-5/4 overflow-hidden">
+
                     {/* Larger Image Display */}
                     <Image
                       src={item.src}
@@ -604,7 +613,7 @@ const GalleryPage = () => {
         <div className="fixed inset-0 z-50">
           {/* Backdrop with blur */}
           <div
-            className="absolute inset-0 bg-black/95 backdrop-blur-md"
+            className="absolute inset-0 bg-black/50 backdrop-blur-md"
             onClick={closeLightbox}
           />
 
@@ -804,6 +813,8 @@ const GalleryPage = () => {
               </div>
             </div>
           </div>
+
+
         </div>
       )}
     </section>
