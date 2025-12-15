@@ -462,8 +462,8 @@ export default function TaskReviewPage() {
                             >
                               <Star
                                 className={`w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 ${star <= reviewData.rating
-                                    ? 'fill-accent text-accent'
-                                    : 'text-neutral/30'
+                                  ? 'fill-accent text-accent'
+                                  : 'text-neutral/30'
                                   } transition-colors`}
                               />
                             </button>

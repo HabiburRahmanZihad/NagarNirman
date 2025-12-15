@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
 import UsersTable from "@/components/manage-users/UsersTable";
 import UserFilterBar from "@/components/manage-users/UserFilterBar";
 import toast from "react-hot-toast";
@@ -11,7 +10,7 @@ import {
   RefreshCw,
   UserCheck,
   UserX,
-  Trash2,
+  Star,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { userAPI } from "@/utils/api";
@@ -31,8 +30,14 @@ interface User {
   createdAt: string;
 }
 
+interface FilterState {
+  role: string;
+  district: string;
+  status: string;
+}
+
 export default function ManageUsersPage() {
-  const { user: authUser, isLoading: authLoading, isAuthenticated } = useAuth();
+  const { user: authUser } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,7 +67,7 @@ export default function ManageUsersPage() {
         setFilteredUsers(response.data);
         toast.success(`Loaded ${response.data.length} users from ${authUser.division}`);
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error loading users:', error);
       toast.error('Failed to load users. Please try again.');
     } finally {
@@ -105,7 +110,7 @@ export default function ManageUsersPage() {
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   const handleSearch = (term: string) => setSearchTerm(term);
-  const handleFilterChange = (newFilters: any) => setFilters(newFilters);
+  const handleFilterChange = (newFilters: FilterState) => setFilters(newFilters);
   const handlePageChange = (page: number) => setCurrentPage(page);
 
   const updateUserRole = async (userId: string, newRole: string) => {
@@ -114,7 +119,7 @@ export default function ManageUsersPage() {
 
       if (response.success) {
         setUsers(users.map(user =>
-          user._id === userId ? { ...user, role: newRole as any } : user
+          user._id === userId ? { ...user, role: newRole as User['role'] } : user
         ));
 
         toast.success(`Role updated to ${newRole} successfully!`, {
@@ -130,9 +135,10 @@ export default function ManageUsersPage() {
       } else {
         throw new Error(response.message || 'Failed to update role');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating role:', error);
-      toast.error(error.message || 'Failed to update role. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update role. Please try again.';
+      toast.error(errorMessage);
     }
   };
 
@@ -158,9 +164,10 @@ export default function ManageUsersPage() {
       } else {
         throw new Error(response.message || 'Failed to update status');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating status:', error);
-      toast.error(error.message || 'Failed to update status. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update status. Please try again.';
+      toast.error(errorMessage);
     }
   };
 
@@ -186,9 +193,10 @@ export default function ManageUsersPage() {
       } else {
         throw new Error(response.message || 'Failed to delete user');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting user:', error);
-      toast.error(error.message || 'Failed to delete user. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete user. Please try again.';
+      toast.error(errorMessage);
     }
   };
 
@@ -227,7 +235,7 @@ export default function ManageUsersPage() {
           { title: 'Total Users', value: users.length, icon: Users, color: 'text-blue-600', bgColor: 'bg-blue-50' },
           { title: 'Active Users', value: users.filter(u => u.isActive).length, icon: UserCheck, color: 'text-green-600', bgColor: 'bg-green-50' },
           { title: 'Inactive Users', value: users.filter(u => !u.isActive).length, icon: UserX, color: 'text-red-600', bgColor: 'bg-red-50' },
-          { title: 'Problem Solvers', value: users.filter(u => u.role === 'problemSolver').length, icon: Trash2, color: 'text-purple-600', bgColor: 'bg-purple-50' }
+          { title: 'Problem Solvers', value: users.filter(u => u.role === 'problemSolver').length, icon: Star, color: 'text-purple-600', bgColor: 'bg-purple-50' }
         ].map((stat, index) => {
           const Icon = stat.icon;
           return (
