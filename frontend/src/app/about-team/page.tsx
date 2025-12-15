@@ -32,6 +32,7 @@ import {
   TrendingUp,
   Users
 } from 'lucide-react';
+import Image from 'next/image';
 import React from 'react';
 import CountUp from 'react-countup';
 import { Typewriter } from 'react-simple-typewriter';
@@ -139,52 +140,60 @@ const AboutTeamPage = () => {
       role: 'Lead Architect',
       subRole: 'DevOps & System Design',
       bio: 'Orchestrating the entire NagarNirman ecosystem with precision. Specializes in scalable architecture that handles thousands of concurrent civic reports across all 64 districts.',
-      avatar: '👨‍💻',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
       color: 'from-[#004d40] to-[#00695c]',
+      accentColor: '#004d40',
       skills: ['Cloud Architecture', 'API Design', 'System Scaling', 'DevOps'],
       contributions: ['System Infrastructure', 'API Development', 'Deployment Strategy'],
-      social: { github: '#', linkedin: '#', email: '#' },
+      social: { github: '#', linkedin: '#', twitter: '#' },
       funFact: 'Can troubleshoot server issues in his sleep',
-      stats: { commits: 980, projects: 12 }
+      stats: { commits: 980, projects: 12, coffees: 2340 },
+      quote: '"Code is poetry, architecture is the symphony."'
     },
     {
       name: 'Fatima Khan',
       role: 'Data Guardian',
       subRole: 'Backend & Security Lead',
       bio: 'Protects every byte of civic data with military-grade security. Designs robust MongoDB schemas that ensure data integrity while maintaining lightning-fast query performance.',
-      avatar: '🛡️',
+      image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face',
       color: 'from-[#f2a921] to-[#ffb74d]',
+      accentColor: '#f2a921',
       skills: ['MongoDB', 'Data Security', 'Node.js', 'GDPR Compliance'],
       contributions: ['Database Design', 'Security Protocols', 'Data Analytics'],
-      social: { github: '#', linkedin: '#', email: '#' },
+      social: { github: '#', linkedin: '#', twitter: '#' },
       funFact: 'Perfectionist who notices 1px alignment issues',
-      stats: { commits: 980, projects: 12 }
+      stats: { commits: 856, projects: 10, coffees: 1890 },
+      quote: '"Security is not a feature, it\'s a mindset."'
     },
     {
       name: 'Rafi Hassan',
       role: 'Pixel Alchemist',
       subRole: 'UI/UX & Frontend Lead',
       bio: 'Transforms complex civic problems into beautiful, intuitive interfaces. Believes great design should be accessible to everyone, from tech experts to smartphone beginners.',
-      avatar: '🎨',
+      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
       color: 'from-[#004d40] to-[#f2a921]',
+      accentColor: '#00695c',
       skills: ['React/Next.js', 'UI/UX Design', 'Accessibility', 'Performance'],
       contributions: ['User Interface', 'Mobile Design', 'Frontend Architecture'],
-      social: { github: '#', linkedin: '#', email: '#' },
+      social: { github: '#', linkedin: '#', twitter: '#' },
       funFact: 'Has interviewed over 100 citizens about civic issues',
-      stats: { commits: 980, projects: 12 }
+      stats: { commits: 1120, projects: 15, coffees: 3200 },
+      quote: '"Design is not just what it looks like, it\'s how it works."'
     },
     {
       name: 'Sabrina Akter',
       role: 'AI Specialist',
       subRole: 'Machine Learning & NLP Engineer',
       bio: 'Builds intelligent systems that understand and categorize civic reports automatically. Specializes in natural language processing for Bengali text and image recognition for issue classification.',
-      avatar: '🤖',
+      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
       color: 'from-[#9c27b0] to-[#673ab7]',
+      accentColor: '#9c27b0',
       skills: ['Python', 'TensorFlow', 'NLP', 'Computer Vision'],
       contributions: ['AI Classification', 'Report Analysis', 'Predictive Models'],
-      social: { github: '#', linkedin: '#', email: '#' },
+      social: { github: '#', linkedin: '#', twitter: '#' },
       funFact: 'Can train ML models while binge-watching documentaries',
-      stats: { commits: 720, projects: 8 }
+      stats: { commits: 720, projects: 8, coffees: 1560 },
+      quote: '"AI should amplify human potential, not replace it."'
     },
   ];
 
@@ -421,130 +430,214 @@ const AboutTeamPage = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-10 sm:mb-12 md:mb-16"
+            className="text-center mb-12 sm:mb-16 md:mb-20"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-linear-to-r from-[#004d40]/10 to-[#f2a921]/10 border border-[#004d40]/20 mb-6"
+            >
+              <Sparkles className="w-4 h-4 text-[#f2a921]" />
+              <span className="text-sm font-semibold text-[#004d40] tracking-wider uppercase">Meet The Visionaries</span>
+            </motion.div>
+
+            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6">
               <span className="text-gray-900">The </span>
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] to-[#f2a921]">
-                Dream Team
+              <span className="relative">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-[#004d40] via-[#00897b] to-[#f2a921]">
+                  Dream Team
+                </span>
+                <motion.div
+                  className="absolute -bottom-2 left-0 right-0 h-1 bg-linear-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-full"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  transition={{ delay: 0.3, duration: 0.8 }}
+                />
               </span>
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              Meet the passionate students behind Bangladesh&apos;s most innovative civic tech platform
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto px-4 font-light">
+              Four passionate innovators building Bangladesh&apos;s most ambitious civic tech platform
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+          {/* Team Grid - Stunning Card Design */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
             {TEAM_MEMBERS.map((member, index) => (
-              <TiltCard key={index} className="relative group">
-                {/* Glow Effect */}
-                <div className="absolute -inset-1 bg-linear-to-r from-[#004d40] via-[#f2a921] to-[#004d40] rounded-3xl opacity-0 group-hover:opacity-30 blur-xl transition duration-500" />
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.15 }}
+                className="group"
+              >
+                <TiltCard className="relative h-full">
+                  {/* Animated Glow Effect */}
+                  <motion.div
+                    className={`absolute -inset-0.5 bg-linear-to-r ${member.color} rounded-3xl opacity-0 group-hover:opacity-100 blur-xl transition-all duration-700`}
+                    animate={{
+                      backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                    }}
+                    transition={{ duration: 5, repeat: Infinity }}
+                  />
 
-                <div className="relative bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl border border-gray-100 group-hover:shadow-3xl transition-all duration-300 h-full overflow-hidden">
-                  {/* Background Pattern */}
-                  <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-linear-to-br from-[#004d40]/5 to-transparent rounded-full -translate-y-12 sm:-translate-y-16 translate-x-12 sm:translate-x-16" />
+                  <div className="relative bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl group-hover:shadow-2xl transition-all duration-500 h-full border border-gray-100">
+                    {/* Top Colored Bar */}
+                    <div className={`h-2 bg-linear-to-r ${member.color}`} />
 
-                  {/* Member Header */}
-                  <div className="relative z-10 flex items-start gap-3 sm:gap-4 md:gap-6 mb-4 sm:mb-6 md:mb-8">
-                    <div className="relative">
-                      <div className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-linear-to-br ${member.color} rounded-xl sm:rounded-2xl p-1 sm:p-1.5 shadow-2xl`}>
-                        <div className="w-full h-full bg-white rounded-lg sm:rounded-xl flex items-center justify-center text-2xl sm:text-3xl md:text-5xl">
-                          {member.avatar}
+                    {/* Card Content */}
+                    <div className="p-5 sm:p-6 md:p-8">
+                      {/* Header: Image + Info */}
+                      <div className="flex gap-4 sm:gap-5 md:gap-6 mb-6">
+                        {/* Profile Image Container */}
+                        <div className="relative shrink-0">
+                          {/* Rotating Border */}
+                          <motion.div
+                            className={`absolute -inset-1 bg-linear-to-r ${member.color} rounded-2xl opacity-80`}
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                            style={{ borderRadius: '1rem' }}
+                          />
+                          {/* Image */}
+                          <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-xl sm:rounded-2xl overflow-hidden ring-4 ring-white">
+                            <Image
+                              src={member.image}
+                              alt={member.name}
+                              fill
+                              sizes="(max-width: 640px) 80px, (max-width: 768px) 96px, 112px"
+                              className="object-cover group-hover:scale-110 transition-transform duration-700"
+                              unoptimized
+                            />
+                            {/* Overlay on hover */}
+                            <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          </div>
+                          {/* Status Badge */}
+                          <motion.div
+                            className="absolute -bottom-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 bg-green-500 rounded-full border-3 border-white flex items-center justify-center"
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          >
+                            <div className="w-2 h-2 bg-white rounded-full" />
+                          </motion.div>
+                        </div>
+
+                        {/* Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <h3 className="text-xl sm:text-2xl md:text-2xl font-bold text-gray-900 mb-1 leading-tight">
+                                {member.name}
+                              </h3>
+                              <p className={`text-sm sm:text-base font-bold bg-linear-to-r ${member.color} bg-clip-text text-transparent`}>
+                                {member.role}
+                              </p>
+                              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{member.subRole}</p>
+                            </div>
+                            {/* Rank Badge */}
+                            <motion.div
+                              className={`shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br ${member.color} rounded-xl flex items-center justify-center shadow-lg`}
+                              whileHover={{ rotate: 12, scale: 1.1 }}
+                            >
+                              <span className="text-white font-black text-sm sm:text-base">#{index + 1}</span>
+                            </motion.div>
+                          </div>
+
+                          {/* Mini Stats */}
+                          <div className="flex gap-4 mt-3">
+                            <div className="text-center">
+                              <div className="text-lg sm:text-xl font-black text-gray-900">{member.stats.commits}</div>
+                              <div className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider">Commits</div>
+                            </div>
+                            <div className="text-center">
+                              <div className={`text-lg sm:text-xl font-black ${index === 0 ? 'text-[#004d40]' : index === 1 ? 'text-[#f2a921]' : index === 2 ? 'text-[#00695c]' : 'text-[#9c27b0]'}`}>{member.stats.projects}</div>
+                              <div className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider">Projects</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-lg sm:text-xl font-black text-[#f2a921]">{member.stats.coffees}</div>
+                              <div className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider">☕ Coffees</div>
+                            </div>
+                          </div>
                         </div>
                       </div>
+
+                      {/* Quote */}
                       <motion.div
-                        className="absolute -bottom-2 -right-2 sm:-bottom-3 sm:-right-3 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-linear-to-br from-[#f2a921] to-[#ffb74d] rounded-full flex items-center justify-center shadow-lg"
-                        whileHover={{ rotate: 360 }}
-                        transition={{ duration: 0.5 }}
+                        className="mb-5 p-3 sm:p-4 rounded-xl bg-gray-50 border-l-4 group-hover:bg-linear-to-r group-hover:from-gray-50 group-hover:to-white transition-all duration-300"
+                        style={{ borderLeftColor: member.accentColor }}
                       >
-                        <span className="text-sm font-bold text-white">#{index + 1}</span>
+                        <p className="text-sm sm:text-base text-gray-600 italic font-medium">{member.quote}</p>
                       </motion.div>
-                    </div>
 
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-1 truncate">{member.name}</h3>
-                      <p className="text-sm font-semibold text-[#004d40] mb-2">{member.role}</p>
-                      <p className="text-xs text-gray-500 font-medium">{member.subRole}</p>
-                    </div>
-                  </div>
+                      {/* Bio */}
+                      <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-5 line-clamp-3">
+                        {member.bio}
+                      </p>
 
-                  {/* Stats */}
-                  <div className="relative z-10 mb-4 sm:mb-6">
-                    <div className="flex justify-start gap-4 sm:gap-6">
-                      <div className="text-center">
-                        <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#004d40]">{member.stats.commits}+</div>
-                        <div className="text-xs text-gray-500">Commits</div>
+                      {/* Skills */}
+                      <div className="mb-5">
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                          {member.skills.map((skill, i) => (
+                            <motion.span
+                              key={i}
+                              className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium rounded-lg bg-gray-100 text-gray-700 group-hover:bg-linear-to-r group-hover:from-gray-100 group-hover:to-gray-50 transition-all duration-300"
+                              whileHover={{
+                                scale: 1.05,
+                                backgroundColor: member.accentColor,
+                                color: 'white'
+                              }}
+                            >
+                              {skill}
+                            </motion.span>
+                          ))}
+                        </div>
                       </div>
-                      <div className="text-center">
-                        <div className="text-lg sm:text-xl md:text-2xl font-bold text-[#f2a921]">{member.stats.projects}</div>
-                        <div className="text-xs text-gray-500">Projects</div>
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Bio */}
-                  <div className="relative z-10 mb-4 sm:mb-6 md:mb-8">
-                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4 sm:mb-6">{member.bio}</p>
+                      {/* Fun Fact Card */}
+                      <motion.div
+                        className={`p-3 sm:p-4 rounded-xl bg-linear-to-r from-gray-50 to-white border border-gray-100 mb-5`}
+                        whileHover={{ scale: 1.02 }}
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-linear-to-br ${member.color} flex items-center justify-center`}>
+                            <Lightbulb className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+                          </div>
+                          <span className="text-xs sm:text-sm font-bold text-gray-900">Fun Fact</span>
+                        </div>
+                        <p className="text-xs sm:text-sm text-gray-600 pl-8 sm:pl-9">{member.funFact}</p>
+                      </motion.div>
 
-                    {/* Fun Fact */}
-                    <div className="bg-linear-to-r from-[#004d40]/5 to-[#f2a921]/5 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-[#004d40]/10">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Lightbulb className="w-4 h-4 text-[#f2a921]" />
-                        <span className="text-sm font-semibold text-[#004d40]">Developer Trivia</span>
-                      </div>
-                      <p className="text-sm text-gray-600">{member.funFact}</p>
-                    </div>
-                  </div>
+                      {/* Footer: Social Links */}
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <div className="flex gap-2">
+                          {Object.entries(member.social).map(([platform, url], i) => (
+                            <motion.a
+                              key={i}
+                              href={url}
+                              className={`p-2 sm:p-2.5 rounded-xl bg-gray-50 text-gray-500 hover:text-white transition-all duration-300`}
+                              whileHover={{
+                                y: -3,
+                                backgroundColor: member.accentColor,
+                              }}
+                              whileTap={{ scale: 0.95 }}
+                            >
+                              {platform === 'github' && <Github className="w-4 h-4 sm:w-5 sm:h-5" />}
+                              {platform === 'linkedin' && <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />}
+                              {platform === 'twitter' && <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />}
+                            </motion.a>
+                          ))}
+                        </div>
 
-                  {/* Skills */}
-                  <div className="relative z-10 mb-4 sm:mb-6 md:mb-8">
-                    <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-3 uppercase tracking-wider">Specializations</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {member.skills.map((skill, i) => (
-                        <motion.span
-                          key={i}
-                          className="px-2 sm:px-3 py-1 sm:py-1.5 bg-linear-to-r from-gray-50 to-white text-gray-700 text-xs font-semibold rounded-full border border-gray-200 shadow-sm"
-                          whileHover={{ scale: 1.05, backgroundColor: '#004d40', color: 'white' }}
-                          transition={{ duration: 0.2 }}
+                        <motion.div
+                          className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-linear-to-r ${member.color} text-white text-xs sm:text-sm font-bold shadow-lg`}
+                          whileHover={{ scale: 1.05 }}
                         >
-                          {skill}
-                        </motion.span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Social Links */}
-                  <div className="relative z-10 pt-6 border-t border-gray-100">
-                    <div className="flex items-center justify-between">
-                      <div className="flex gap-3">
-                        {['github', 'linkedin', 'email'].map((platform, i) => (
-                          <motion.a
-                            key={i}
-                            href={member.social[platform as keyof typeof member.social]}
-                            className="p-2.5 rounded-xl bg-gray-50 text-gray-600 hover:shadow-lg transition-all duration-300"
-                            whileHover={{ y: -3 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            {platform === 'github' && <Github className="w-5 h-5" />}
-                            {platform === 'linkedin' && <Linkedin className="w-5 h-5" />}
-                            {platform === 'email' && <Mail className="w-5 h-5" />}
-                          </motion.a>
-                        ))}
+                          Core Team
+                        </motion.div>
                       </div>
-
-                      <motion.div
-                        className="text-xs text-gray-400 font-medium px-3 py-1.5 rounded-full bg-gray-50"
-                        whileHover={{ scale: 1.05 }}
-                      >
-                        <span className="text-[#004d40] font-bold">Core </span>
-                        <span className='text-accent'>
-                          Contributor
-                        </span>
-                      </motion.div>
                     </div>
                   </div>
-                </div>
-              </TiltCard>
+                </TiltCard>
+              </motion.div>
             ))}
           </div>
         </div>
