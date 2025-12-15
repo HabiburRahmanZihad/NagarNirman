@@ -103,7 +103,7 @@ const NationalAnthemSection: React.FC = () => {
   return (
     <section
       id="national-anthem"
-      className="relative w-full min-h-[420px] md:min-h-[480px] lg:min-h-[520px] overflow-hidden"
+      className="relative w-full min-h-[480px] xs:min-h-[500px] sm:min-h-[520px] md:min-h-[540px] lg:min-h-[600px] overflow-hidden"
     >
       {/* Background image */}
       <div
@@ -117,35 +117,35 @@ const NationalAnthemSection: React.FC = () => {
       <div className="absolute inset-0 bg-black/50" />
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-6 lg:px-0 py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+      <div className="relative z-10 container mx-auto px-3 xs:px-4 sm:px-6 md:px-8 py-8 xs:py-10 sm:py-12 md:py-16 lg:py-20 flex flex-col lg:flex-row items-center gap-6 xs:gap-8 sm:gap-10 md:gap-12 lg:gap-16">
 
         {/* Left: text + audio card */}
-        <div className="w-full lg:w-[60%] text-white">
-          <p className="text-sm tracking-[0.25em] uppercase text-[#f2a921] mb-3">
+        <div className="w-full text-center lg:w-[60%] text-white">
+          <p className="text-xs xs:text-sm sm:text-base tracking-[0.25em] uppercase text-[#f2a921] mb-2 xs:mb-3 sm:mb-4">
             Civic Inspiration
           </p>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight mb-4">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight mb-3 xs:mb-4 sm:mb-5 md:mb-6">
             Fuel Your Spirit with the
             <br />
             <span className="text-accent">Anthem of Bangladesh</span>
           </h2>
 
-          <p className="text-sm md:text-base text-white/80 max-w-xl mb-8">
+          <p className="text-xs xs:text-sm sm:text-base md:text-base text-white/80 max-w-xl mb-6 xs:mb-7 sm:mb-8">
             Ignite your patriotism. As we build smarter cities, let &quot;Amar Shonar Bangla&quot;
             remind us of our duty to protect our environment, resolve issues, and
             rebuild our nation together.
           </p>
 
           {/* Audio player card */}
-          <div className="w-full max-w-xl bg-[#fff8df] border border-accent rounded-2xl shadow-xl px-6 py-4 md:py-5 flex flex-col gap-3">
+          <div className="w-full max-w-xl mx-auto bg-[#fff8df] border border-accent rounded-xl xs:rounded-2xl shadow-xl px-4 xs:px-5 sm:px-6 py-3 xs:py-4 sm:py-5 flex flex-col gap-2 xs:gap-3">
             {/* Track info + play button */}
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-2 xs:gap-3 sm:gap-4">
               <div>
-                <p className="text-sm font-semibold text-primary">
+                <p className="text-xs xs:text-sm font-semibold text-primary">
                   National Anthem of Bangladesh
                 </p>
-                <p className="text-xs text-neutral mt-1">
+                <p className="text-[10px] xs:text-xs text-neutral mt-0.5 xs:mt-1">
                   Amar Shonar Bangla
                 </p>
               </div>
@@ -153,27 +153,27 @@ const NationalAnthemSection: React.FC = () => {
               <button
                 type="button"
                 onClick={handleTogglePlay}
-                className="inline-flex items-center justify-center w-11 h-11 rounded-full bg-accent text-primary shadow-md hover:bg-[#f5b739] transition-colors"
+                className="inline-flex items-center justify-center w-9 xs:w-10 sm:w-11 h-9 xs:h-10 sm:h-11 rounded-full bg-accent text-primary shadow-md hover:bg-[#f5b739] transition-colors flex-shrink-0"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? (
-                  <Pause className="w-5 h-5" />
+                  <Pause className="w-4 xs:w-5 h-4 xs:h-5" />
                 ) : (
-                  <Play className="w-5 h-5 translate-x-px" />
+                  <Play className="w-4 xs:w-5 h-4 xs:h-5 translate-x-px" />
                 )}
               </button>
             </div>
 
             {/* Progress bar */}
-            <div className="mt-2">
-              <div className="w-full h-2 rounded-full bg-[#ffeebe] overflow-hidden">
+            <div className="mt-1 xs:mt-2">
+              <div className="w-full h-1.5 xs:h-2 rounded-full bg-[#ffeebe] overflow-hidden">
                 <div
-                  className="h-2 bg-[#f2a921] transition-[width] duration-200"
+                  className="h-1.5 xs:h-2 bg-[#f2a921] transition-[width] duration-200"
                   style={{ width: `${progress || 0}%` }}
                 />
               </div>
 
-              <div className="mt-1 flex items-center justify-between text-[11px] text-[#6B7280]">
+              <div className="mt-1 flex items-center justify-between text-[10px] xs:text-[11px] text-[#6B7280]">
                 <span>{formatTime(currentTime)}</span>
                 <span>{formatTime(duration)}</span>
               </div>
@@ -193,21 +193,21 @@ const NationalAnthemSection: React.FC = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="w-full lg:w-[40%] flex justify-center lg:justify-end"
         >
-          <div className="relative w-full max-w-sm lg:max-w-[320px] bg-primary rounded-[40px] lg:rounded-l-[40px] lg:rounded-r-[40px] px-8 py-10 text-white shadow-2xl">
+          <div className="relative w-full max-w-sm xs:max-w-md sm:max-w-lg md:max-w-[380px] lg:max-w-[400px] bg-primary rounded-2xl xs:rounded-3xl sm:rounded-4xl lg:rounded-l-[40px] lg:rounded-r-[40px] px-5 xs:px-6 sm:px-8 md:px-10 py-8 xs:py-9 sm:py-10 md:py-12 text-white shadow-2xl">
             {/* Subtle pattern overlay */}
             <div className="pointer-events-none absolute inset-0 opacity-[0.08] bg-[radial-gradient(circle_at_center,#ffffff_1px,transparent_1px)] bg-[length:24px_24px]" />
 
-            <div className="relative z-10 flex flex-col items-center gap-6">
-              <h3 className="text-2xl md:text-3xl font-semibold text-center leading-snug">
+            <div className="relative z-10 flex flex-col items-center gap-5 xs:gap-6 sm:gap-7 md:gap-8">
+              <h3 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-semibold text-center leading-snug">
                 Building a cleaner,
                 <br />
                 safer future.
               </h3>
 
               {/* Progress circle + amount */}
-              <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col items-center gap-3 xs:gap-4 sm:gap-5">
                 <div className="flex items-center justify-center">
-                  <div className="bg-black/10 rounded-full p-3">
+                  <div className="bg-black/10 rounded-full p-2 xs:p-3 sm:p-4">
                     {/* Animated Radial Progress */}
                     <div
                       className="radial-progress text-accent"
@@ -215,7 +215,7 @@ const NationalAnthemSection: React.FC = () => {
                       role="progressbar"
                     >
                       {/* Using CountUp for the percentage text as well to be smooth */}
-                      <span className="font-bold">
+                      <span className="font-bold text-xs xs:text-sm sm:text-base">
                         {isInView ? <CountUp start={0} end={85} duration={2.5} /> : 0}%
                       </span>
                     </div>
@@ -223,7 +223,7 @@ const NationalAnthemSection: React.FC = () => {
                 </div>
 
                 <div className="text-center">
-                  <p className="text-3xl md:text-4xl font-bold">
+                  <p className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold">
                     {/* Number Counter Animation */}
                     {isInView ? (
                       <CountUp
@@ -235,7 +235,7 @@ const NationalAnthemSection: React.FC = () => {
                       />
                     ) : "0+"}
                   </p>
-                  <p className="text-sm tracking-wide uppercase text-white/80 mt-1">
+                  <p className="text-[10px] xs:text-xs sm:text-sm tracking-wide uppercase text-white/80 mt-1 xs:mt-2">
                     Issues Resolved
                   </p>
                 </div>
@@ -243,9 +243,8 @@ const NationalAnthemSection: React.FC = () => {
 
               {/* CTA button */}
               <Link
-                type='button'
                 href="/dashboard/user/reports/new"
-                className="mt-2 inline-flex items-center justify-center rounded-full bg-accent text-primary px-8 py-3 text-md font-semibold shadow-md hover:bg-[#f5b739] transition-colors"
+                className="mt-2 xs:mt-3 sm:mt-4 inline-flex items-center justify-center rounded-full bg-accent text-primary px-6 xs:px-7 sm:px-8 md:px-10 py-2 xs:py-2.5 sm:py-3 text-xs xs:text-sm sm:text-base md:text-lg font-semibold shadow-md hover:bg-[#f5b739] transition-colors"
               >
                 Report an Issue
               </Link>
