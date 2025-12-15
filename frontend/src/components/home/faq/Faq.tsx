@@ -93,7 +93,7 @@ export default function FaqSection() {
               <div className="space-y-6 mb-8">
                 <div>
                   <p className="text-white/90 max-w-sm leading-relaxed text-base font-medium">
-                    Get quick answers to common questions about our services, pricing, and security. Can't find what you're looking for?
+                    {`Get quick answers to common questions about our services, pricing, and security. Can't find what you're looking for?`}
                   </p>
                 </div>
 
