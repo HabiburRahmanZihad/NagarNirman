@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, RefreshCw, AlertCircle, Filter } from 'lucide-react';
+import { RefreshCw, AlertCircle, Filter } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { statisticsAPI } from '@/utils/api';
@@ -14,6 +14,7 @@ import StatusBarChart from '@/components/admin/analytics/StatusBarChart';
 import TrendLineChart from '@/components/admin/analytics/TrendLineChart';
 import DivisionDistrictChart from '@/components/admin/analytics/DivisionDistrictChart';
 import ReportExportPanel from '@/components/admin/analytics/ReportExportPanel';
+import { ExportFilters } from '@/components/admin/analytics/types';
 
 interface AnalyticsData {
   totalReports: number;
@@ -39,6 +40,53 @@ interface AnalyticsData {
   lastUpdated: string;
 }
 
+interface CategoryStatRaw {
+  category?: string;
+  count?: number;
+}
+
+interface StatusStatRaw {
+  status?: string;
+  count?: number;
+  color?: string;
+}
+
+interface MonthlyStatRaw {
+  month?: string;
+  reports?: number;
+  resolved?: number;
+  completed?: number;
+  pending?: number;
+}
+
+interface DistrictStatRaw {
+  district?: string;
+  division?: string;
+  total?: number;
+  reports?: number;
+  pending?: number;
+  resolved?: number;
+  completed?: number;
+  ongoing?: number;
+}
+
+interface SolverPerformanceRaw {
+  solverId?: string;
+  name?: string;
+  completedTasks?: number;
+  totalTasks?: number;
+  successRate?: number;
+  avgResolutionTime?: number;
+  rating?: number;
+  organization?: string;
+}
+
+interface AnalyticsFilters {
+  startDate: string;
+  endDate: string;
+  division?: string;
+}
+
 const SkeletonLoader = () => (
   <motion.div className="bg-white/80 rounded-2xl p-6 shadow-lg border border-white/20 mb-6">
     <div className="animate-pulse space-y-4">
@@ -53,39 +101,39 @@ const SkeletonLoader = () => (
 );
 
 const LoadingSkeleton = () => (
-  <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/20 to-gray-50 p-4 md:p-6">
+  <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/20 to-gray-50 p-3 xs:p-4 md:p-6">
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 0.5 }}
-        className="mb-8 animate-pulse"
+        className="mb-6 xs:mb-8 animate-pulse"
       >
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-gray-200 rounded-lg"></div>
-          <div className="h-10 bg-gray-200 rounded-lg w-64"></div>
+          <div className="w-8 h-8 xs:w-10 xs:h-10 bg-gray-200 rounded-lg"></div>
+          <div className="h-8 xs:h-10 bg-gray-200 rounded-lg w-48 xs:w-64"></div>
         </div>
-        <div className="h-4 bg-gray-200 rounded w-96"></div>
+        <div className="h-4 bg-gray-200 rounded w-72 xs:w-96"></div>
       </motion.div>
 
       {/* Filter Bar */}
-      <motion.div className="bg-white/80 rounded-2xl p-6 mb-8 animate-pulse border border-gray-100">
-        <div className="flex gap-4 flex-wrap">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-10 bg-gray-200 rounded-lg w-24"></div>
+      <motion.div className="bg-white/80 rounded-xl xs:rounded-2xl p-4 xs:p-6 mb-6 xs:mb-8 animate-pulse border border-gray-100">
+        <div className="flex gap-2 xs:gap-4 flex-wrap">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-8 xs:h-10 bg-gray-200 rounded-lg w-16 xs:w-24"></div>
           ))}
         </div>
       </motion.div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 sm:gap-6 mb-6 xs:mb-8">
         {[...Array(4)].map((_, i) => (
           <SkeletonLoader key={i} />
         ))}
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 xs:gap-6 mb-6 xs:mb-8">
         {[...Array(2)].map((_, i) => (
           <SkeletonLoader key={i} />
         ))}
@@ -116,7 +164,7 @@ const AnalyticsPage = () => {
   }, [user, router]);
 
   // Calculate date range based on timeRange
-  const getDateRange = () => {
+  const getDateRange = useCallback(() => {
     const endDate = new Date();
     const startDate = new Date();
 
@@ -141,9 +189,9 @@ const AnalyticsPage = () => {
       startDate: startDate.toISOString().split('T')[0],
       endDate: endDate.toISOString().split('T')[0]
     };
-  };
+  }, [timeRange]);
 
-  const loadAnalytics = async (showRefresh = false) => {
+  const loadAnalytics = useCallback(async (showRefresh = false) => {
     if (showRefresh) {
       setRefreshing(true);
     } else {
@@ -153,7 +201,7 @@ const AnalyticsPage = () => {
     try {
       // Build filters
       const { startDate, endDate } = getDateRange();
-      const filters: any = { startDate, endDate };
+      const filters: AnalyticsFilters = { startDate, endDate };
 
       // Add division filter - use user's division if not 'all'
       if (divisionFilter !== 'all') {
@@ -182,27 +230,27 @@ const AnalyticsPage = () => {
         completionRate: data.completionRate || 0,
         lastUpdated: data.lastUpdated || new Date().toISOString(),
         // Add percentages to category stats
-        categoryStats: (data.categoryStats || []).map((cat: any) => ({
+        categoryStats: (data.categoryStats || []).map((cat: CategoryStatRaw) => ({
           category: cat.category || 'Unknown',
           count: cat.count || 0,
-          percentage: data.totalReports > 0 ? (cat.count / data.totalReports) * 100 : 0
+          percentage: data.totalReports > 0 ? ((cat.count || 0) / data.totalReports) * 100 : 0
         })),
         // Add percentages to status stats
-        statusStats: (data.statusStats || []).map((stat: any) => ({
+        statusStats: (data.statusStats || []).map((stat: StatusStatRaw) => ({
           status: stat.status || 'Unknown',
           count: stat.count || 0,
           color: stat.color || '#808080',
-          percentage: data.totalReports > 0 ? (stat.count / data.totalReports) * 100 : 0
+          percentage: data.totalReports > 0 ? ((stat.count || 0) / data.totalReports) * 100 : 0
         })),
         // Rename fields for monthly stats to match component
-        monthlyStats: (data.monthlyStats || []).map((stat: any) => ({
+        monthlyStats: (data.monthlyStats || []).map((stat: MonthlyStatRaw) => ({
           month: stat.month || 'N/A',
           reports: stat.reports || 0,
           completed: stat.resolved || stat.completed || 0,
           pending: stat.pending || 0
         })),
         // Transform district stats to match component
-        districtStats: (data.districtStats || []).map((stat: any) => ({
+        districtStats: (data.districtStats || []).map((stat: DistrictStatRaw) => ({
           district: stat.district || 'Unknown',
           division: stat.division || 'Unknown',
           reports: stat.total || stat.reports || 0,
@@ -211,7 +259,7 @@ const AnalyticsPage = () => {
           ongoing: stat.ongoing || 0
         })),
         // Ensure solver performance exists
-        solverPerformance: (data.solverPerformance || []).map((solver: any) => ({
+        solverPerformance: (data.solverPerformance || []).map((solver: SolverPerformanceRaw) => ({
           solverId: solver.solverId || '',
           name: solver.name || 'Unknown',
           completedTasks: solver.completedTasks || 0,
@@ -233,8 +281,11 @@ const AnalyticsPage = () => {
           duration: 2000
         });
       }
-    } catch (error: any) {
-      console.error('❌ Failed to load analytics:', error);
+    } catch (err: unknown) {
+      console.error('❌ Failed to load analytics:', err);
+
+      // Type-safe error handling
+      const error = err as { message?: string; status?: number; data?: { message?: string }; stack?: string };
 
       // Detailed error logging for debugging
       console.error('Error details:', {
@@ -260,19 +311,19 @@ const AnalyticsPage = () => {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, [getDateRange, divisionFilter, user?.division, router]);
 
   useEffect(() => {
     if (user) {
       loadAnalytics();
     }
-  }, [user, timeRange, divisionFilter]);
+  }, [user, timeRange, divisionFilter, loadAnalytics]);
 
   const handleRefresh = () => {
     loadAnalytics(true);
   };
 
-  const handleExport = (filters: any) => {
+  const handleExport = (filters: ExportFilters) => {
     console.log('Exporting with filters:', filters);
     toast.success('Export functionality coming soon!');
   };
@@ -283,23 +334,23 @@ const AnalyticsPage = () => {
 
   if (!analyticsData) {
     return (
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/20 to-gray-50 p-4 md:p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/20 to-gray-50 p-3 xs:p-4 md:p-6 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           className="w-full max-w-md"
         >
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-8 text-center">
-            <div className="flex justify-center mb-4">
-              <AlertCircle className="w-12 h-12 text-amber-500" />
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl xs:rounded-2xl shadow-lg border border-white/20 p-4 xs:p-6 sm:p-8 text-center">
+            <div className="flex justify-center mb-3 xs:mb-4">
+              <AlertCircle className="w-10 h-10 xs:w-12 xs:h-12 text-amber-500" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">No Data Available</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-xl xs:text-2xl font-bold text-gray-900 mb-2">No Data Available</h2>
+            <p className="text-sm xs:text-base text-gray-600 mb-4 xs:mb-6">
               Unable to load analytics data. This could mean:
             </p>
-            <ul className="text-left text-gray-600 mb-6 space-y-2">
+            <ul className="text-left text-xs xs:text-sm text-gray-600 mb-4 xs:mb-6 space-y-1.5 xs:space-y-2">
               <li>• No reports have been created yet</li>
-              <li>• You don't have permission to view this data</li>
+              <li>• You don&apos;t have permission to view this data</li>
               <li>• The backend service is experiencing issues</li>
             </ul>
             <motion.button
@@ -318,23 +369,23 @@ const AnalyticsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/10 to-gray-50 p-4 md:p-6">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-green-50/10 to-gray-50 p-3 xs:p-4 md:p-6">
       <div className="container mx-auto">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-8 border-b pb-4 bg-white rounded-lg shadow-sm px-6 py-4 border-accent/80"
+          className="mb-6 xs:mb-8 border-b pb-4 bg-white rounded-lg shadow-sm px-3 xs:px-4 sm:px-6 py-3 xs:py-4 border-accent/80"
         >
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 xs:gap-4">
             <div className="flex-1">
-              <div className="flex items-center gap-3 mb-3">
-                <h1 className="text-5xl font-extrabold text-[#002E2E] mb-2">
+              <div className="flex items-center gap-2 xs:gap-3 mb-2 xs:mb-3">
+                <h1 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#002E2E] mb-1 xs:mb-2">
                   Performance Analytics
                 </h1>
               </div>
-              <p className="text-[#6B7280] text-lg">
+              <p className="text-[#6B7280] text-sm xs:text-base sm:text-lg">
                 <span>Comprehensive insights and real-time performance metrics</span>
               </p>
             </div>
@@ -342,10 +393,10 @@ const AnalyticsPage = () => {
             {/* Live Status Badge */}
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20 self-end md:self-start"
+              className="bg-white/80 backdrop-blur-sm rounded-lg xs:rounded-xl p-2 xs:p-3 sm:p-4 shadow-lg border border-white/20 self-end md:self-start"
             >
               <div className="text-right">
-                <div className="text-lg md:text-xl font-bold  text-accent">
+                <div className="text-sm xs:text-base sm:text-lg md:text-xl font-bold text-accent">
                   Live Dashboard
                 </div>
                 <div className="flex items-center gap-2 justify-end mt-1">
@@ -368,17 +419,17 @@ const AnalyticsPage = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-5 md:p-6 mb-8"
+          className="bg-white/80 backdrop-blur-sm rounded-xl xs:rounded-2xl shadow-lg border border-white/20 p-3 xs:p-4 sm:p-5 md:p-6 mb-6 xs:mb-8"
         >
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2 md:gap-3">
-              <Filter className="w-5 h-5 text-[#2a7d2f]" />
-              <h3 className="text-base md:text-lg font-semibold text-gray-900">Filters</h3>
+          <div className="flex flex-col gap-3 xs:gap-4">
+            <div className="flex items-center gap-2 xs:gap-3">
+              <Filter className="w-4 h-4 xs:w-5 xs:h-5 text-[#2a7d2f]" />
+              <h3 className="text-sm xs:text-base md:text-lg font-semibold text-gray-900">Filters</h3>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-4 flex-wrap">
+            <div className="flex flex-col sm:flex-row gap-3 xs:gap-4 flex-wrap">
               {/* Time Range Buttons */}
-              <div className="flex bg-gray-100 rounded-xl p-1">
+              <div className="flex bg-gray-100 rounded-lg xs:rounded-xl p-0.5 xs:p-1 overflow-x-auto">
                 {[
                   { value: '1month', label: '1M', fullLabel: '1 Month' },
                   { value: '3months', label: '3M', fullLabel: '3 Months' },
@@ -390,14 +441,14 @@ const AnalyticsPage = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setTimeRange(range.value)}
-                    className={`px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm font-medium transition-all ${timeRange === range.value
+                    className={`px-2 xs:px-3 md:px-4 py-1.5 xs:py-2 rounded-md xs:rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${timeRange === range.value
                       ? 'bg-linear-to-r from-[#2a7d2f] to-[#3a9d40] text-white shadow-md'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                       }`}
                     title={range.fullLabel}
                   >
-                    <span className="hidden md:inline">{range.fullLabel}</span>
-                    <span className="md:hidden">{range.label}</span>
+                    <span className="hidden sm:inline">{range.fullLabel}</span>
+                    <span className="sm:hidden">{range.label}</span>
                   </motion.button>
                 ))}
               </div>
@@ -408,13 +459,13 @@ const AnalyticsPage = () => {
                 value={divisionFilter}
                 onChange={(e) => setDivisionFilter(e.target.value)}
                 whileHover={{ scale: 1.02 }}
-                className="bg-white border-2 border-gray-200 rounded-xl px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent transition-all hover:border-[#2a7d2f]"
+                className="bg-white border-2 border-gray-200 rounded-lg xs:rounded-xl px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 text-xs xs:text-sm font-medium focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent transition-all hover:border-[#2a7d2f]"
               >
                 <option value="all">
                   {user?.division ? `My Division (${user.division})` : 'All Divisions'}
                 </option>
                 {(Array.isArray(divisionsData)
-                  ? divisionsData.map((d: any) => d.division)
+                  ? divisionsData.map((d: { division: string }) => d.division)
                   : Object.keys(divisionsData)
                 )
                   .filter((division: string) => division && division !== user?.division)
@@ -426,17 +477,17 @@ const AnalyticsPage = () => {
               </motion.select>
 
               {/* Refresh Button */}
-              <div className="ml-auto flex gap-2">
+              <div className="sm:ml-auto flex gap-2">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleRefresh}
                   disabled={refreshing}
-                  className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-[#2a7d2f] to-[#3a9d40] text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
+                  className="w-full sm:w-auto flex items-center justify-center gap-1.5 xs:gap-2 px-3 xs:px-4 py-1.5 xs:py-2 bg-linear-to-r from-[#2a7d2f] to-[#3a9d40] text-white rounded-lg xs:rounded-xl font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs xs:text-sm md:text-base"
                 >
-                  <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                  <span className="hidden md:inline">{refreshing ? 'Refreshing...' : 'Refresh'}</span>
-                  <span className="md:hidden">{refreshing ? 'Loading...' : 'Refresh'}</span>
+                  <RefreshCw className={`w-3.5 h-3.5 xs:w-4 xs:h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                  <span className="hidden xs:inline">{refreshing ? 'Refreshing...' : 'Refresh'}</span>
+                  <span className="xs:hidden">{refreshing ? '...' : 'Refresh'}</span>
                 </motion.button>
               </div>
             </div>
@@ -459,7 +510,7 @@ const AnalyticsPage = () => {
         </motion.div>
 
         {/* Charts Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 xs:gap-5 sm:gap-6 mb-6 xs:mb-8">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -476,7 +527,7 @@ const AnalyticsPage = () => {
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 xs:gap-5 sm:gap-6 mb-6 xs:mb-8">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -507,27 +558,27 @@ const AnalyticsPage = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.45 }}
-          className="mt-8"
+          className="mt-6 xs:mt-8"
         >
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-3">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 xs:mb-6 sm:mb-8 gap-2 xs:gap-3">
             <div>
-              <h2 className="text-3xl font-bold text-[#002E2E] mb-2 flex items-center gap-2">
+              <h2 className="text-xl xs:text-2xl sm:text-3xl font-bold text-[#002E2E] mb-1 xs:mb-2 flex items-center gap-2 flex-wrap">
                 Problem Solver <span className="text-primary">Performance</span>
               </h2>
-              <p className="text-[#6B7280] text-lg">
+              <p className="text-[#6B7280] text-sm xs:text-base sm:text-lg">
                 Top performers ranked by completion rate and success metrics
               </p>
             </div>
             <motion.span
               whileHover={{ scale: 1.05 }}
-              className="text-xs md:text-sm text-gray-600 bg-linear-to-r from-[#f2a921]/10 to-[#2a7d2f]/10 px-4 py-2 rounded-full border border-[#2a7d2f]/20 font-medium"
+              className="text-[10px] xs:text-xs md:text-sm text-gray-600 bg-linear-to-r from-[#f2a921]/10 to-[#2a7d2f]/10 px-2 xs:px-3 sm:px-4 py-1 xs:py-2 rounded-full border border-[#2a7d2f]/20 font-medium"
             >
               🏆 Top Performers
             </motion.span>
           </div>
 
           {analyticsData.solverPerformance && analyticsData.solverPerformance.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 xs:gap-5 sm:gap-6">
               {analyticsData.solverPerformance.map((solver, index) => (
                 <motion.div
                   key={solver.solverId}
@@ -627,10 +678,10 @@ const AnalyticsPage = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
-              <div className="text-8xl mb-6 opacity-50">📊</div>
-              <h3 className="text-3xl font-bold text-[#002E2E] mb-4">No Performance Data</h3>
-              <p className="text-[#6B7280] text-lg">
+            <div className="text-center py-8 xs:py-12 sm:py-16 bg-white rounded-xl xs:rounded-2xl border border-gray-100">
+              <div className="text-5xl xs:text-6xl sm:text-8xl mb-4 xs:mb-6 opacity-50">📊</div>
+              <h3 className="text-xl xs:text-2xl sm:text-3xl font-bold text-[#002E2E] mb-2 xs:mb-4">No Performance Data</h3>
+              <p className="text-[#6B7280] text-sm xs:text-base sm:text-lg px-4">
                 Performance metrics will appear once problem solvers complete their first tasks.
               </p>
             </div>
