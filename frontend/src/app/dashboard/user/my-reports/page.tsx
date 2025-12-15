@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, FullPageLoading, ReportCard, RefreshButton } from '@/components/common';
-import { useRouter } from 'next/navigation';
+import { Button, FullPageLoading, ReportCard, RefreshButton } from '@/components/common';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { FaPlus, FaChartLine, FaFilter, FaFire, FaCheckCircle, FaClock, FaSync, FaArrowUp } from 'react-icons/fa';
@@ -25,7 +24,6 @@ interface Report {
 }
 
 export default function MyReportsPage() {
-  const router = useRouter();
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
   const [reports, setReports] = useState<Report[]>([]);
   const [filteredReports, setFilteredReports] = useState<Report[]>([]);

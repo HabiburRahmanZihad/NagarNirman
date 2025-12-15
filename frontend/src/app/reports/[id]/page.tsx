@@ -322,7 +322,7 @@ export default function ReportDetailsPage() {
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Back Button */}
         <button
-          onClick={() => router.push('/reports')}
+          onClick={() => router.back()}
           className="flex items-center gap-2 text-[#6B7280] hover:text-[#2a7d2f] mb-6 transition"
         >
           <FaArrowLeft />

@@ -24,7 +24,6 @@ import {
   FaComments,
   FaCamera,
   FaLightbulb,
-  FaArrowUp,
   FaFlag,
   FaComment,
 } from 'react-icons/fa';
