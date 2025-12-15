@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 
 interface Report {
   _id?: string;
@@ -51,7 +52,7 @@ const GalleryPage = () => {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const [activeFilter, setActiveFilter] = useState('All');
   const [visibleCount, setVisibleCount] = useState(12);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
@@ -65,24 +66,24 @@ const GalleryPage = () => {
   const fetchReports = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/reports');
-      
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports`);
+
       if (!response.ok) {
         throw new Error(`Failed to load reports (${response.status})`);
       }
-      
+
       const data = await response.json();
-      const reportsData = Array.isArray(data) ? data : 
-                         data?.data ? data.data : 
-                         data?.reports ? data.reports : [];
-      
+      const reportsData = Array.isArray(data) ? data :
+        data?.data ? data.data :
+          data?.reports ? data.reports : [];
+
       setReports(reportsData);
-      
+
       // Convert reports to gallery items
       const items: GalleryItem[] = [];
-      reportsData.forEach((report, reportIndex) => {
+      reportsData.forEach((report: Report, reportIndex: number) => {
         if (report.images && report.images.length > 0) {
-          report.images.forEach((img, imgIndex) => {
+          report.images.forEach((img: string, imgIndex: number) => {
             const date = new Date(report.createdAt);
             items.push({
               id: `${report._id || reportIndex}-${imgIndex}`,
@@ -108,13 +109,15 @@ const GalleryPage = () => {
           });
         }
       });
-      
+
       setGalleryItems(items);
-      
+
       // Extract unique problem types for filters
-      const uniqueTypes = ['All', ...new Set(reportsData.map(r => r.problemType))];
+      const problemTypes = reportsData.map((r: Report) => String(r.problemType));
+      const uniqueSet = new Set<string>(problemTypes);
+      const uniqueTypes: string[] = ['All', ...Array.from(uniqueSet)];
       setFilters(uniqueTypes);
-      
+
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load gallery');
@@ -136,8 +139,8 @@ const GalleryPage = () => {
   }, []);
 
   // Filter gallery items
-  const filteredItems = activeFilter === 'All' 
-    ? galleryItems 
+  const filteredItems = activeFilter === 'All'
+    ? galleryItems
     : galleryItems.filter(item => item.problemType === activeFilter);
 
   const visibleItems = filteredItems.slice(0, visibleCount);
@@ -162,23 +165,23 @@ const GalleryPage = () => {
   };
 
   // Navigate lightbox
-  const navigateLightbox = (direction: 'prev' | 'next') => {
+  const navigateLightbox = useCallback((direction: 'prev' | 'next') => {
     let newIndex;
     if (direction === 'prev') {
       newIndex = currentIndex === 0 ? filteredItems.length - 1 : currentIndex - 1;
     } else {
       newIndex = currentIndex === filteredItems.length - 1 ? 0 : currentIndex + 1;
     }
-    
+
     setCurrentIndex(newIndex);
     setSelectedItem(filteredItems[newIndex]);
-  };
+  }, [currentIndex, filteredItems]);
 
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!lightboxOpen) return;
-      
+
       if (e.key === 'Escape') {
         closeLightbox();
       } else if (e.key === 'ArrowLeft') {
@@ -190,7 +193,7 @@ const GalleryPage = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxOpen, currentIndex]);
+  }, [lightboxOpen, navigateLightbox]);
 
   // Get severity color with proper bg classes
   const getSeverityColor = (severity: string) => {
@@ -228,6 +231,32 @@ const GalleryPage = () => {
     }
   };
 
+  // Get status color with proper Tailwind classes
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Resolved': return {
+        bg: 'bg-emerald-500',
+        text: 'text-white',
+        border: 'border-emerald-600'
+      };
+      case 'In Progress': return {
+        bg: 'bg-blue-500',
+        text: 'text-white',
+        border: 'border-blue-600'
+      };
+      case 'Pending': return {
+        bg: 'bg-amber-500',
+        text: 'text-white',
+        border: 'border-amber-600'
+      };
+      default: return {
+        bg: 'bg-gray-500',
+        text: 'text-white',
+        border: 'border-gray-600'
+      };
+    }
+  };
+
   // Get icon for problem type
   const getProblemTypeIcon = (problemType: string) => {
     return problemTypeIcons[problemType] || 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z';
@@ -243,7 +272,7 @@ const GalleryPage = () => {
 
   // Get districts for subtitle
   const uniqueDistricts = [...new Set(reports.map(r => r.location.district))].slice(0, 3);
-  const subtitleDistricts = uniqueDistricts.length > 0 
+  const subtitleDistricts = uniqueDistricts.length > 0
     ? uniqueDistricts.join(', ')
     : 'various districts';
 
@@ -257,7 +286,7 @@ const GalleryPage = () => {
               <div className="h-8 bg-gray-200 rounded w-64 mb-2 animate-pulse"></div>
               <div className="h-6 bg-gray-200 rounded w-96 animate-pulse"></div>
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
               {[1, 2, 3, 4, 5].map(i => (
                 <div key={i} className="h-8 bg-gray-200 rounded-full w-20 animate-pulse"></div>
@@ -265,9 +294,9 @@ const GalleryPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-              <div key={i} className="aspect-[5/4] bg-gray-200 rounded-2xl animate-pulse"></div>
+              <div key={i} className="aspect-4/3 sm:aspect-5/4 bg-gray-200 rounded-2xl animate-pulse"></div>
             ))}
           </div>
         </div>
@@ -283,23 +312,23 @@ const GalleryPage = () => {
           <div className="space-y-3">
             {/* Subtitle with accent color */}
             <div className="flex items-center gap-2">
-              <div className="w-12 h-px" style={{ backgroundColor: '#f2a921' }}></div>
-              <p className="text-sm font-semibold tracking-wider" style={{ color: '#004d40' }}>
+              <div className="w-12 h-px bg-[#f2a921]"></div>
+              <p className="text-sm font-semibold tracking-wider text-[#004d40]">
                 COMMUNITY GALLERY
               </p>
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+              <div className="flex-1 h-px bg-linear-to-r from-transparent via-gray-300 to-transparent"></div>
             </div>
-            
+
             {/* Main Title with gradient */}
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-              <span className="bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 Visual Evidence of Civic Action
               </span>
             </h2>
-            
+
             {/* Subtitle with improved text */}
             <p className="text-lg text-gray-600 max-w-3xl leading-relaxed">
-              Witness the impact through documented evidence from {subtitleDistricts}. 
+              Witness the impact through documented evidence from {subtitleDistricts}.
               Each photo represents a step towards better urban living and community engagement.
             </p>
           </div>
@@ -307,21 +336,21 @@ const GalleryPage = () => {
           {/* Filter Section */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-100">
             <div className="flex items-center gap-2">
-              <svg className="w-5 h-5" style={{ color: '#004d40' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5 text-[#004d40]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
               </svg>
               <span className="text-sm font-medium text-gray-700">Filter by issue type:</span>
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
               {filters.map((label) => {
                 const active = activeFilter === label;
-                
+
                 return (
                   <button
+                    title={`Filter by ${label}`}
                     type="button"
-                    aria-label={`Filter by ${label}`}
-                    aria-pressed={active ? "true" : "false"}
+                    aria-label={`Filter by ${label}${active ? ' (selected)' : ''}`}
                     key={label}
                     onClick={() => {
                       setActiveFilter(label);
@@ -330,18 +359,9 @@ const GalleryPage = () => {
                     className={[
                       "px-4 py-2.5 rounded-lg text-sm font-medium border transition-all duration-300 flex items-center gap-2",
                       active
-                        ? "shadow-lg transform -translate-y-0.5"
-                        : "hover:shadow-md hover:-translate-y-0.5 hover:border-gray-300",
+                        ? "shadow-lg transform -translate-y-0.5 bg-[#004d40] border-[#004d40] text-white"
+                        : "hover:shadow-md hover:-translate-y-0.5 hover:border-gray-300 bg-white text-[#004d40] border-gray-200",
                     ].join(" ")}
-                    style={active ? { 
-                      backgroundColor: '#004d40',
-                      borderColor: '#004d40',
-                      color: 'white'
-                    } : {
-                      backgroundColor: 'white',
-                      color: '#004d40',
-                      borderColor: '#e5e7eb'
-                    }}
                   >
                     {label === 'All' && (
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -363,21 +383,17 @@ const GalleryPage = () => {
 
         {/* Error State */}
         {error && (
-          <div className="rounded-2xl border p-8 text-center" style={{ 
-            borderColor: '#fee2e2',
-            backgroundColor: '#fef2f2' 
-          }}>
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ backgroundColor: '#fee2e2' }}>
-              <svg className="w-8 h-8" style={{ color: '#dc2626' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-red-100">
+              <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold mb-2" style={{ color: '#dc2626' }}>Unable to Load Gallery</h3>
+            <h3 className="text-xl font-bold mb-2 text-red-600">Unable to Load Gallery</h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">{error}</p>
             <button
               onClick={fetchReports}
-              className="px-6 py-3 rounded-lg font-medium text-white transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
-              style={{ backgroundColor: '#004d40' }}
+              className="px-6 py-3 rounded-lg font-medium text-white transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5 bg-[#004d40]"
             >
               <span className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -391,36 +407,28 @@ const GalleryPage = () => {
 
         {/* Gallery Grid */}
         {!error && visibleItems.length === 0 ? (
-          <div className="rounded-2xl border p-10 text-center" style={{ 
-            borderColor: '#e5e7eb',
-            backgroundColor: '#f9fafb' 
-          }}>
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6" style={{ backgroundColor: '#f3f4f6' }}>
-              <svg className="w-10 h-10" style={{ color: '#9ca3af' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="rounded-2xl border border-gray-200 bg-gray-50 p-10 text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 bg-gray-100">
+              <svg className="w-10 h-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <h3 className="text-2xl font-bold mb-3" style={{ color: '#111827' }}>No Photos Available</h3>
+            <h3 className="text-2xl font-bold mb-3 text-gray-900">No Photos Available</h3>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
               No images found for this category. Try selecting a different filter or check back later for new submissions.
             </p>
             <button
               onClick={() => setActiveFilter('All')}
-              className="px-6 py-3 rounded-lg font-medium border transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
-              style={{
-                borderColor: '#004d40',
-                color: '#004d40',
-                backgroundColor: 'white'
-              }}
+              className="px-6 py-3 rounded-lg font-medium border transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5 border-[#004d40] text-[#004d40] bg-white"
             >
               Show All Photos
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {visibleItems.map((item) => {
               const severityColors = getSeverityColor(item.severity || 'Medium');
-              
+
               return (
                 <div
                   key={item.id}
@@ -428,29 +436,27 @@ const GalleryPage = () => {
                   className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer border border-gray-100"
                 >
                   {/* Image Container */}
-                  <div className="relative aspect-[5/4] overflow-hidden">
+                  <div className="relative aspect-4/3 sm:aspect-5/4 overflow-hidden">
                     {/* Larger Image Display */}
-                    <img
+                    <Image
                       src={item.src}
                       alt={item.title}
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover transform group-hover:scale-110 transition-transform duration-700"
+                      unoptimized
                     />
-                    
+
                     {/* FIXED: Always visible gradient overlay for text readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
-                    
+                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/10" />
+
                     {/* Additional overlay that shows on hover */}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/70 transition-all duration-500" />
-                    
+
                     {/* Top Left - Problem Type (Category) with Icon - HIDES ON HOVER */}
                     <div className="absolute top-4 left-4 transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:-translate-y-2 z-10">
-                      <div 
-                        className="px-3 py-1.5 rounded-full backdrop-blur-sm border shadow-sm flex items-center gap-2"
-                        style={{ 
-                          backgroundColor: '#004d40',
-                          borderColor: '#004d40',
-                          color: 'white'
-                        }}
+                      <div
+                        className="px-3 py-1.5 rounded-full backdrop-blur-sm border shadow-sm flex items-center gap-2 bg-[#004d40] border-[#004d40] text-white"
                       >
                         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={getProblemTypeIcon(item.problemType)} />
@@ -477,12 +483,12 @@ const GalleryPage = () => {
                       <h3 className="text-lg font-bold text-white mb-3 leading-tight line-clamp-2 drop-shadow-lg">
                         {item.title}
                       </h3>
-                      
+
                       {/* Location & Date */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <svg className="w-4 h-4 text-white/90 drop-shadow" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                           </svg>
                           <span className="text-sm font-medium text-white/95 drop-shadow">{item.location}</span>
                         </div>
@@ -497,12 +503,7 @@ const GalleryPage = () => {
 
                     {/* View Details Button - Shows only on hover */}
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 z-20">
-                      <div className="inline-flex items-center justify-center px-8 py-4 rounded-xl text-base font-bold transition-all duration-300 hover:scale-105 gap-3"
-                        style={{ 
-                          backgroundColor: '#f2a921',
-                          color: '#000',
-                          boxShadow: '0 20px 40px rgba(242, 169, 33, 0.3)'
-                        }}
+                      <div className="inline-flex items-center justify-center px-8 py-4 rounded-xl text-base font-bold transition-all duration-300 hover:scale-105 gap-3 bg-[#f2a921] text-black shadow-[0_20px_40px_rgba(242,169,33,0.3)]"
                       >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -523,11 +524,7 @@ const GalleryPage = () => {
           <div className="flex justify-center pt-8">
             <button
               onClick={() => setVisibleCount((c) => c + 12)}
-              className="px-8 py-3.5 rounded-xl font-medium transition-all duration-300 hover:shadow-xl transform hover:-translate-y-0.5 group"
-              style={{
-                backgroundColor: '#004d40',
-                color: 'white'
-              }}
+              className="px-8 py-3.5 rounded-xl font-medium transition-all duration-300 hover:shadow-xl transform hover:-translate-y-0.5 group bg-[#004d40] text-white"
             >
               <span className="flex items-center gap-3">
                 Load More Photos
@@ -540,15 +537,12 @@ const GalleryPage = () => {
         )}
 
         {/* Stats Card */}
-        <div className="rounded-2xl p-8 mt-12" style={{ 
-          backgroundColor: '#f8fafc',
-          border: '1px solid #e2e8f0'
-        }}>
+        <div className="rounded-2xl p-8 mt-12 bg-slate-50 border border-slate-200">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-6 rounded-full" style={{ backgroundColor: '#004d40' }}></div>
-                <p className="text-sm font-semibold tracking-wider" style={{ color: '#004d40' }}>
+                <div className="w-2 h-6 rounded-full bg-[#004d40]"></div>
+                <p className="text-sm font-semibold tracking-wider text-[#004d40]">
                   TRANSPARENCY IN ACTION
                 </p>
               </div>
@@ -556,24 +550,24 @@ const GalleryPage = () => {
                 Verified Impact, Documented Progress
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                Every photo is geo-tagged and timestamped by our ward verification teams. 
+                Every photo is geo-tagged and timestamped by our ward verification teams.
                 This ensures accountability and allows citizens to track real progress in their communities.
               </p>
             </div>
-            
+
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="text-3xl font-bold mb-2 flex items-baseline gap-1">
-                  <span style={{ color: '#004d40' }}>{thisMonthReports.length}</span>
+                  <span className="text-[#004d40]">{thisMonthReports.length}</span>
                   <span className="text-lg text-gray-500">drops</span>
                 </div>
-                <div className="text-sm font-medium text-gray-900">This Month's Activity</div>
-                <div className="text-sm text-gray-600 mt-1">Curated by {new Set(thisMonthReports.map(r => r.location.district)).length} district leads</div>
+                <div className="text-sm font-medium text-gray-900">This Month&apos;s Activity</div>
+                <div className="text-sm text-gray-600 mt-1">Curated by {[...new Set(thisMonthReports.map(r => r.location.district))].length} district leads</div>
               </div>
-              
+
               <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div className="text-3xl font-bold mb-2 flex items-baseline gap-1">
-                  <span style={{ color: '#004d40' }}>{galleryItems.length}</span>
+                  <span className="text-[#004d40]">{galleryItems.length}</span>
                   <span className="text-lg text-gray-500">photos</span>
                 </div>
                 <div className="text-sm font-medium text-gray-900">Visual Evidence</div>
@@ -581,7 +575,7 @@ const GalleryPage = () => {
               </div>
             </div>
           </div>
-          
+
           {/* CTA Section */}
           <div className="mt-8 pt-8 border-t border-gray-200">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
@@ -590,12 +584,8 @@ const GalleryPage = () => {
                 <p className="text-gray-600">Help us build the most comprehensive civic action gallery in Bangladesh.</p>
               </div>
               <button
-                onClick={() => window.location.href = '/report'}
-                className="px-8 py-3.5 rounded-xl font-bold transition-all duration-300 hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap"
-                style={{
-                  backgroundColor: '#f2a921',
-                  color: '#000'
-                }}
+                onClick={() => window.location.href = '/reports'}
+                className="px-8 py-3.5 rounded-xl font-bold transition-all duration-300 hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap bg-[#f2a921] text-black"
               >
                 <span className="flex items-center gap-3">
                   Submit Your Evidence
@@ -613,15 +603,15 @@ const GalleryPage = () => {
       {lightboxOpen && selectedItem && (
         <div className="fixed inset-0 z-50">
           {/* Backdrop with blur */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/95 backdrop-blur-md"
             onClick={closeLightbox}
           />
-          
+
           {/* Lightbox Container */}
           <div className="relative z-10 h-full flex flex-col">
             {/* Top Bar - FIXED: Simple working close button */}
-            <div className="flex items-center justify-between px-6 py-4 bg-black/90 border-b border-white/10">
+            <div className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 bg-black/90 border-b border-white/10">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-white font-medium">
@@ -633,35 +623,35 @@ const GalleryPage = () => {
                   </span>
                 </div>
               </div>
-              
-              <div className="flex items-center gap-2">
+
+              <div className="flex items-center gap-1 sm:gap-2">
                 <button
                   onClick={() => navigateLightbox('prev')}
-                  className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300"
+                  className="p-2 sm:p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300"
                   aria-label="Previous photo"
                 >
-                  <svg className="w-6 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
-                
+
                 <button
                   onClick={() => navigateLightbox('next')}
-                  className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300"
+                  className="p-2 sm:p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300"
                   aria-label="Next photo"
                 >
-                  <svg className="w-6 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
-                
+
                 {/* FIXED: Simple X close button that definitely works */}
                 <button
                   onClick={closeLightbox}
-                  className="ml-2 p-3 rounded-lg bg-red-600 hover:bg-red-700 transition-all duration-300"
+                  className="ml-1 sm:ml-2 p-2 sm:p-3 rounded-lg bg-red-600 hover:bg-red-700 transition-all duration-300"
                   aria-label="Close lightbox"
                 >
-                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
@@ -671,14 +661,15 @@ const GalleryPage = () => {
             {/* Main Content */}
             <div className="flex-1 flex flex-col lg:flex-row gap-6 p-4 md:p-6">
               {/* Image Section */}
-              <div className="flex-1 flex items-center justify-center overflow-hidden">
-                <div className="relative w-full h-full max-h-[70vh] flex items-center justify-center">
+              <div className="flex-1 flex items-center justify-center overflow-hidden min-h-[40vh] sm:min-h-[50vh]">
+                <div className="relative w-full h-full max-h-[50vh] sm:max-h-[60vh] lg:max-h-[70vh] flex items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={selectedItem.src}
                     alt={selectedItem.title}
                     className="max-h-full max-w-full object-contain rounded-lg shadow-2xl"
                   />
-                  
+
                   {/* Navigation Hint */}
                   <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-sm px-4 py-2 rounded-full backdrop-blur-sm">
                     ← Use arrow keys to navigate →
@@ -687,46 +678,37 @@ const GalleryPage = () => {
               </div>
 
               {/* Details Panel - FIXED: Increased width */}
-              <div className="lg:w-[450px] xl:w-[500px] flex flex-col bg-black/50 rounded-xl p-5 border border-white/10">
+              <div className="w-full lg:w-[380px] xl:w-[450px] flex flex-col bg-black/50 rounded-xl p-4 sm:p-5 border border-white/10 max-h-[40vh] lg:max-h-none overflow-y-auto">
                 {/* Badges - FIXED: Using inline styles for status badge */}
                 <div className="flex flex-wrap gap-3 mb-6">
                   <div className={`px-4 py-2 rounded-lg font-bold ${getSeverityColor(selectedItem.severity || 'Medium').bg} ${getSeverityColor(selectedItem.severity || 'Medium').text} ${getSeverityColor(selectedItem.severity || 'Medium').glow}`}>
                     {selectedItem.severity || 'Medium'}
                   </div>
-                  <div className="px-4 py-2 rounded-lg font-bold text-white border border-teal-700" style={{ backgroundColor: '#004d40' }}>
+                  <div className="px-4 py-2 rounded-lg font-bold text-white border border-teal-700 bg-[#004d40]">
                     {selectedItem.problemType}
                   </div>
-                  
-                  {/* FIXED: Status badge with guaranteed colors using style attribute */}
-                  <div 
-                    className="px-4 py-2 rounded-lg font-bold"
-                    style={{
-                      backgroundColor: selectedItem.status === 'Resolved' ? '#10b981' : 
-                                      selectedItem.status === 'In Progress' ? '#3b82f6' : 
-                                      selectedItem.status === 'Pending' ? '#f59e0b' : '#6b7280',
-                      color: 'white',
-                      border: selectedItem.status === 'Resolved' ? '1px solid #059669' : 
-                              selectedItem.status === 'In Progress' ? '1px solid #2563eb' : 
-                              selectedItem.status === 'Pending' ? '1px solid #d97706' : '1px solid #4b5563'
-                    }}
+
+                  {/* Status badge using Tailwind classes */}
+                  <div
+                    className={`px-4 py-2 rounded-lg font-bold border ${getStatusColor(selectedItem.status).bg} ${getStatusColor(selectedItem.status).text} ${getStatusColor(selectedItem.status).border}`}
                   >
                     {selectedItem.status}
                   </div>
                 </div>
 
                 {/* Title */}
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 sm:mb-4 leading-tight">
                   {selectedItem.title}
                 </h2>
 
                 {/* Info Grid */}
-                <div className="space-y-5">
-                  <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-3 sm:space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     <div className="bg-white/5 p-4 rounded-lg border border-white/10">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg" style={{ backgroundColor: '#004d40' }}>
+                        <div className="p-2 rounded-lg bg-[#004d40]">
                           <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                           </svg>
                         </div>
                         <div>
@@ -735,10 +717,10 @@ const GalleryPage = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="bg-white/5 p-4 rounded-lg border border-white/10">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 rounded-lg" style={{ backgroundColor: '#f2a921' }}>
+                        <div className="p-2 rounded-lg bg-[#f2a921]">
                           <svg className="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
@@ -756,7 +738,7 @@ const GalleryPage = () => {
                     <div className="bg-white/5 rounded-lg border border-white/10 overflow-hidden">
                       <div className="p-4">
                         <h3 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
-                          <div className="w-1.5 h-3.5 rounded-full" style={{ backgroundColor: '#f2a921' }}></div>
+                          <div className="w-1.5 h-3.5 rounded-full bg-[#f2a921]"></div>
                           Issue Description
                         </h3>
                         <div className="max-h-40 overflow-y-auto pr-2">
@@ -772,11 +754,7 @@ const GalleryPage = () => {
                   <div className="flex flex-col sm:flex-row gap-2 pt-3">
                     <button
                       onClick={() => window.open(selectedItem.src, '_blank')}
-                      className="flex-1 px-4 py-3 rounded-lg font-bold transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 text-sm"
-                      style={{
-                        backgroundColor: '#004d40',
-                        color: 'white'
-                      }}
+                      className="flex-1 px-4 py-3 rounded-lg font-bold transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 text-sm bg-[#004d40] text-white"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
@@ -784,13 +762,8 @@ const GalleryPage = () => {
                       Open Full Size
                     </button>
                     <button
-                      onClick={() => window.location.href = '/report'}
-                      className="flex-1 px-4 py-3 rounded-lg font-bold border transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 text-sm"
-                      style={{
-                        borderColor: '#f2a921',
-                        color: '#f2a921',
-                        backgroundColor: 'transparent'
-                      }}
+                      onClick={() => window.location.href = '/reports'}
+                      className="flex-1 px-4 py-3 rounded-lg font-bold border transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 text-sm border-[#f2a921] text-[#f2a921] bg-transparent"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -803,25 +776,28 @@ const GalleryPage = () => {
             </div>
 
             {/* Thumbnail Strip */}
-            <div className="px-4 py-3 border-t border-white/10 bg-black/80">
-              <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="px-2 sm:px-4 py-2 sm:py-3 border-t border-white/10 bg-black/80">
+              <div className="flex gap-1.5 sm:gap-2 overflow-x-auto pb-1">
                 {filteredItems.map((item, index) => (
                   <button
                     key={item.id}
+                    aria-label={`View photo ${index + 1}: ${item.title}`}
                     onClick={() => {
                       setCurrentIndex(index);
                       setSelectedItem(item);
                     }}
-                    className={`flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded overflow-hidden border-2 transition-all ${
-                      index === currentIndex 
-                        ? 'border-yellow-500 ring-1 ring-yellow-500 scale-105' 
-                        : 'border-transparent hover:border-white/50 hover:scale-105'
-                    }`}
+                    className={`shrink-0 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded overflow-hidden border-2 transition-all relative ${index === currentIndex
+                      ? 'border-yellow-500 ring-1 ring-yellow-500 scale-105'
+                      : 'border-transparent hover:border-white/50 hover:scale-105'
+                      }`}
                   >
-                    <img
+                    <Image
                       src={item.src}
                       alt={`Thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="56px"
+                      className="object-cover"
+                      unoptimized
                     />
                   </button>
                 ))}
