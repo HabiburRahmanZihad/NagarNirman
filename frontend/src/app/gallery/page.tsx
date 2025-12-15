@@ -39,7 +39,7 @@ const GalleryPage = () => {
   const [error, setError] = useState<string | null>(null);
   
   const [activeFilter, setActiveFilter] = useState('All');
-  const [visibleCount, setVisibleCount] = useState(8);
+  const [visibleCount, setVisibleCount] = useState(12);
   const [selectedItem, setSelectedItem] = useState<GalleryItem | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -168,44 +168,69 @@ const GalleryPage = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightboxOpen, currentIndex]);
 
-  // Get status color with enhanced styling
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Resolved': return {
-        bg: 'bg-green-50',
-        text: 'text-green-700',
+  // Get severity color
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'Critical': return {
+        bg: 'bg-red-100',
+        text: 'text-red-800',
+        border: 'border-red-200',
+        accent: '#dc2626'
+      };
+      case 'High': return {
+        bg: 'bg-orange-100',
+        text: 'text-orange-800',
+        border: 'border-orange-200',
+        accent: '#ea580c'
+      };
+      case 'Medium': return {
+        bg: 'bg-yellow-100',
+        text: 'text-yellow-800',
+        border: 'border-yellow-200',
+        accent: '#ca8a04'
+      };
+      case 'Low': return {
+        bg: 'bg-green-100',
+        text: 'text-green-800',
         border: 'border-green-200',
-        accent: '#059669'
-      };
-      case 'In Progress': return {
-        bg: 'bg-blue-50',
-        text: 'text-blue-700',
-        border: 'border-blue-200',
-        accent: '#2563eb'
-      };
-      case 'Pending': return {
-        bg: 'bg-amber-50',
-        text: 'text-amber-700',
-        border: 'border-amber-200',
-        accent: '#d97706'
+        accent: '#16a34a'
       };
       default: return {
-        bg: 'bg-gray-50',
-        text: 'text-gray-700',
+        bg: 'bg-gray-100',
+        text: 'text-gray-800',
         border: 'border-gray-200',
         accent: '#6b7280'
       };
     }
   };
 
-  // Get severity color
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'Critical': return 'bg-red-100 text-red-800 border-red-200';
-      case 'High': return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+  // Get status color
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Resolved': return {
+        bg: 'bg-green-100',
+        text: 'text-green-800',
+        border: 'border-green-200',
+        accent: '#059669'
+      };
+      case 'In Progress': return {
+        bg: 'bg-blue-100',
+        text: 'text-blue-800',
+        border: 'border-blue-200',
+        accent: '#2563eb'
+      };
+      case 'Pending': return {
+        bg: 'bg-amber-100',
+        text: 'text-amber-800',
+        border: 'border-amber-200',
+        accent: '#d97706'
+      };
+      default: return {
+        bg: 'bg-gray-100',
+        text: 'text-gray-800',
+        border: 'border-gray-200',
+        accent: '#6b7280'
+      };
     }
   };
 
@@ -254,7 +279,7 @@ const GalleryPage = () => {
   return (
     <section className="bg-white py-16">
       <div className="container mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
-        {/* Header + filters - Improved with better typography */}
+        {/* Header + filters */}
         <div className="flex flex-col gap-8">
           <div className="space-y-3">
             {/* Subtitle with accent color */}
@@ -292,7 +317,6 @@ const GalleryPage = () => {
             <div className="flex flex-wrap gap-2">
               {filters.map((label) => {
                 const active = activeFilter === label;
-                const statusColors = getStatusColor(label === 'All' ? 'Resolved' : 'Pending');
                 
                 return (
                   <button
@@ -302,7 +326,7 @@ const GalleryPage = () => {
                     key={label}
                     onClick={() => {
                       setActiveFilter(label);
-                      setVisibleCount(8);
+                      setVisibleCount(12);
                     }}
                     className={[
                       "px-4 py-2.5 rounded-lg text-sm font-medium border transition-all duration-300 flex items-center gap-2",
@@ -338,7 +362,7 @@ const GalleryPage = () => {
           </div>
         </div>
 
-        {/* Error State - Improved */}
+        {/* Error State */}
         {error && (
           <div className="rounded-2xl border p-8 text-center" style={{ 
             borderColor: '#fee2e2',
@@ -366,7 +390,7 @@ const GalleryPage = () => {
           </div>
         )}
 
-        {/* Gallery Grid - Enhanced Card Design */}
+        {/* Gallery Grid */}
         {!error && visibleItems.length === 0 ? (
           <div className="rounded-2xl border p-10 text-center" style={{ 
             borderColor: '#e5e7eb',
@@ -396,6 +420,7 @@ const GalleryPage = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {visibleItems.map((item) => {
+              const severityColors = getSeverityColor(item.severity || 'Medium');
               const statusColors = getStatusColor(item.status);
               
               return (
@@ -404,9 +429,9 @@ const GalleryPage = () => {
                   onClick={() => openLightbox(item)}
                   className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer border border-gray-100"
                 >
-                  {/* Image Container */}
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    {/* Image */}
+                  {/* Image Container - Bigger image display */}
+                  <div className="relative aspect-[5/4] overflow-hidden">
+                    {/* Larger Image Display */}
                     <img
                       src={item.src}
                       alt={item.title}
@@ -414,90 +439,80 @@ const GalleryPage = () => {
                     />
                     
                     {/* Enhanced Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 group-hover:opacity-95 transition-opacity duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
                     
-                    {/* Top Info Bar */}
-                    <div className="absolute top-0 left-0 right-0 p-4">
-                      <div className="flex items-center justify-between">
-                        {/* Status Badge - Improved */}
-                        <div 
-                          className="px-3 py-1.5 rounded-full backdrop-blur-sm border"
-                          style={{ 
-                            backgroundColor: `${statusColors.accent}15`,
-                            borderColor: `${statusColors.accent}30`,
-                            color: statusColors.accent
-                          }}
-                        >
-                          <span className="text-xs font-semibold tracking-wide flex items-center gap-1">
-                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors.accent }}></div>
-                            {item.status}
-                          </span>
-                        </div>
-                        
-                        {/* Severity Badge - Improved */}
-                        <div className="px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm border border-white/10">
-                          <span className="text-xs font-semibold text-white">
-                            {item.severity || 'Medium'}
-                          </span>
-                        </div>
+                    {/* Top Info Bar - Problem Type (Category) */}
+                    <div className="absolute top-4 left-4">
+                      <div 
+                        className="px-3 py-1.5 rounded-full backdrop-blur-sm border shadow-sm"
+                        style={{ 
+                          backgroundColor: '#004d40',
+                          borderColor: '#004d40',
+                          color: 'white'
+                        }}
+                      >
+                        <span className="text-xs font-semibold tracking-wide">
+                          {item.problemType}
+                        </span>
                       </div>
                     </div>
 
-                    {/* Bottom Content - Enhanced */}
-                    <div className="absolute bottom-0 left-0 right-0 p-5 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                      {/* Issue Type */}
-                      <div className="mb-3">
-                        <span className="inline-block px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider mb-2" 
+                    {/* Top Right - Severity Badge (High/Low/Medium/Critical) */}
+                    <div className="absolute top-4 right-4">
+                      <div className={`px-3 py-1.5 rounded-full backdrop-blur-sm border shadow-sm ${severityColors.bg} ${severityColors.text} ${severityColors.border}`}>
+                        <span className="text-xs font-semibold tracking-wide flex items-center gap-1">
+                          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: severityColors.accent }}></div>
+                          {item.severity || 'Medium'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Bottom Content */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
+                      {/* Title - Bigger Font */}
+                      <h3 className="text-lg font-bold text-white mb-3 leading-tight line-clamp-2">
+                        {item.title}
+                      </h3>
+                      
+                      {/* Location & Date - Better Icons */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 rounded-md bg-white/10 backdrop-blur-sm">
+                            <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                          </div>
+                          <span className="text-sm font-medium text-white/90">{item.location}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="p-1.5 rounded-md bg-white/10 backdrop-blur-sm">
+                            <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                          </div>
+                          <span className="text-sm font-medium text-white/90">{item.date}</span>
+                        </div>
+                      </div>
+                      
+                      {/* View Details Button - Improved with Eye Icon */}
+                      <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
+                        <div className="inline-flex items-center justify-center w-full py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105 gap-2"
                           style={{ 
                             backgroundColor: '#f2a921',
                             color: '#000'
                           }}
                         >
-                          {item.problemType}
-                        </span>
-                      </div>
-                      
-                      {/* Title - Improved Typography */}
-                      <h3 className="text-xl font-bold text-white mb-3 leading-tight line-clamp-2 group-hover:line-clamp-3 transition-all">
-                        {item.title}
-                      </h3>
-                      
-                      {/* Location & Date - Enhanced */}
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          <svg className="w-4 h-4" style={{ color: '#f2a921' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
-                          <span className="text-sm font-medium text-white/90">{item.location}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <svg className="w-4 h-4" style={{ color: '#f2a921' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          <span className="text-sm font-medium text-white/90">{item.date}</span>
-                        </div>
-                      </div>
-                      
-                      {/* View Button - Enhanced */}
-                      <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
-                        <div className="inline-flex items-center justify-center w-full py-3 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105"
-                          style={{ 
-                            backgroundColor: '#004d40',
-                            color: 'white'
-                          }}
-                        >
-                          <span className="flex items-center gap-2">
-                            View Full Details
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                          </span>
+                          View Details
                         </div>
                       </div>
                     </div>
 
                     {/* Glow Effect on Hover */}
-                    <div className="absolute inset-0 border-2 border-transparent group-hover:border-white/20 rounded-2xl transition-all duration-500"></div>
+                    <div className="absolute inset-0 border-2 border-transparent group-hover:border-white/30 rounded-2xl transition-all duration-500"></div>
                   </div>
                 </div>
               );
@@ -505,11 +520,11 @@ const GalleryPage = () => {
           </div>
         )}
 
-        {/* Load More - Enhanced */}
+        {/* Load More */}
         {hasMore && !error && (
           <div className="flex justify-center pt-8">
             <button
-              onClick={() => setVisibleCount((c) => c + 8)}
+              onClick={() => setVisibleCount((c) => c + 12)}
               className="px-8 py-3.5 rounded-xl font-medium transition-all duration-300 hover:shadow-xl transform hover:-translate-y-0.5 group"
               style={{
                 backgroundColor: '#004d40',
@@ -526,7 +541,7 @@ const GalleryPage = () => {
           </div>
         )}
 
-        {/* Stats Card - Enhanced */}
+        {/* Stats Card */}
         <div className="rounded-2xl p-8 mt-12" style={{ 
           backgroundColor: '#f8fafc',
           border: '1px solid #e2e8f0'
@@ -596,185 +611,101 @@ const GalleryPage = () => {
         </div>
       </div>
 
-      {/* Enhanced Lightbox Modal */}
+      {/* Original Lightbox Design */}
       {lightboxOpen && selectedItem && (
-        <div className="fixed inset-0 z-50">
-          {/* Backdrop */}
-          <div 
-            className="absolute inset-0 bg-black/95 backdrop-blur-sm"
-            onClick={closeLightbox}
-          />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95">
+          {/* Navigation Buttons */}
+          <button
+            onClick={() => navigateLightbox('prev')}
+            className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
           
-          {/* Lightbox Container */}
-          <div className="relative z-10 h-full flex flex-col p-4">
-            {/* Top Bar */}
-            <div className="flex items-center justify-between px-4 py-3 mb-4">
-              <div className="flex items-center gap-4">
-                <span className="text-white font-medium bg-white/10 px-3 py-1.5 rounded-lg">
-                  {currentIndex + 1} / {filteredItems.length}
-                </span>
-                <span className="text-sm text-gray-300">
+          <button
+            onClick={() => navigateLightbox('next')}
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {/* Close Button */}
+          <button
+            onClick={closeLightbox}
+            className="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          {/* Image Counter */}
+          <div className="absolute top-4 left-4 text-white">
+            <span className="font-medium bg-black/50 px-3 py-1.5 rounded-lg">
+              {currentIndex + 1} / {filteredItems.length}
+            </span>
+          </div>
+
+          {/* Main Image */}
+          <div className="h-full flex items-center justify-center p-4">
+            <img
+              src={selectedItem.src}
+              alt="Full size"
+              className="max-h-full max-w-full object-contain"
+            />
+          </div>
+
+          {/* Image Info Panel */}
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-6">
+            <div className="max-w-3xl mx-auto">
+              <div className="flex flex-wrap gap-3 mb-4">
+                {/* Problem Type Badge */}
+                <span className="px-4 py-2 rounded-full text-sm font-medium text-white" style={{ backgroundColor: '#004d40' }}>
                   {selectedItem.problemType}
+                </span>
+                
+                {/* Severity Badge */}
+                <span className={`px-4 py-2 rounded-full text-sm font-medium ${getSeverityColor(selectedItem.severity || 'Medium').bg} ${getSeverityColor(selectedItem.severity || 'Medium').text}`}>
+                  {selectedItem.severity || 'Medium'}
+                </span>
+                
+                {/* Status Badge */}
+                <span className={`px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(selectedItem.status).bg} ${getStatusColor(selectedItem.status).text}`}>
+                  {selectedItem.status}
                 </span>
               </div>
               
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => navigateLightbox('prev')}
-                  className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-colors group"
-                  style={{ color: '#f2a921' }}
-                  aria-label="Previous photo"
-                >
-                  <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <h3 className="text-xl font-bold text-white mb-2">
+                {selectedItem.title}
+              </h3>
+              
+              <div className="flex items-center gap-6 text-gray-300">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                   </svg>
-                </button>
-                
-                <button
-                  onClick={() => navigateLightbox('next')}
-                  className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-colors group"
-                  style={{ color: '#f2a921' }}
-                  aria-label="Next photo"
-                >
-                  <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  <span>{selectedItem.location}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                </button>
-                
-                <button
-                  onClick={closeLightbox}
-                  className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-white group ml-2"
-                  aria-label="Close lightbox"
-                >
-                  <svg className="w-6 h-6 group-hover:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col lg:flex-row gap-6 overflow-hidden">
-              {/* Image Section */}
-              <div className="flex-1 flex items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/50 to-black/50 p-4">
-                <img
-                  src={selectedItem.src}
-                  alt={selectedItem.title}
-                  className="max-h-full max-w-full object-contain rounded-lg shadow-2xl"
-                />
-              </div>
-
-              {/* Details Panel - Enhanced */}
-              <div className="lg:w-96 flex flex-col bg-gradient-to-b from-gray-900/80 to-black/80 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50">
-                <div className="space-y-6">
-                  {/* Badges */}
-                  <div className="flex flex-wrap gap-2">
-                    <span className={`px-4 py-2 rounded-lg font-medium ${getStatusColor(selectedItem.status).bg} ${getStatusColor(selectedItem.status).text}`}>
-                      {selectedItem.status}
-                    </span>
-                    <span className="px-4 py-2 rounded-lg font-medium bg-gray-800 text-white">
-                      {selectedItem.problemType}
-                    </span>
-                    <span className={`px-4 py-2 rounded-lg font-medium ${getSeverityColor(selectedItem.severity || 'Medium')}`}>
-                      {selectedItem.severity || 'Medium'}
-                    </span>
-                  </div>
-
-                  {/* Title and Info */}
-                  <div>
-                    <h2 className="text-2xl font-bold text-white mb-3 leading-tight">{selectedItem.title}</h2>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-gray-300">
-                        <svg className="w-5 h-5 flex-shrink-0" style={{ color: '#f2a921' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        </svg>
-                        <span>{selectedItem.location}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-300">
-                        <svg className="w-5 h-5 flex-shrink-0" style={{ color: '#f2a921' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <span>{selectedItem.fullDate || selectedItem.date}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Description */}
-                  {selectedItem.description && (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: '#f2a921' }}></div>
-                        <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Issue Description</h4>
-                      </div>
-                      <p className="text-gray-300 leading-relaxed">{selectedItem.description}</p>
-                    </div>
-                  )}
-
-                  {/* Address */}
-                  {selectedItem.address && (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-1 h-4 rounded-full" style={{ backgroundColor: '#f2a921' }}></div>
-                        <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-400">Exact Location</h4>
-                      </div>
-                      <p className="text-gray-300">{selectedItem.address}</p>
-                    </div>
-                  )}
-
-                  {/* Actions */}
-                  <div className="pt-6 border-t border-gray-700/50">
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <button
-                        onClick={() => window.open(selectedItem.src, '_blank')}
-                        className="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg"
-                        style={{
-                          backgroundColor: '#004d40',
-                          color: 'white'
-                        }}
-                      >
-                        Open Full Size
-                      </button>
-                      <button
-                        onClick={() => window.location.href = '/report'}
-                        className="flex-1 px-6 py-3 rounded-lg font-medium border transition-all duration-300 hover:shadow-lg"
-                        style={{
-                          borderColor: '#f2a921',
-                          color: '#f2a921',
-                          backgroundColor: 'transparent'
-                        }}
-                      >
-                        Report Similar
-                      </button>
-                    </div>
-                  </div>
+                  <span>{selectedItem.fullDate || selectedItem.date}</span>
                 </div>
               </div>
-            </div>
 
-            {/* Thumbnail Strip */}
-            <div className="mt-6">
-              <div className="flex gap-3 overflow-x-auto pb-2 px-2">
-                {filteredItems.map((item, index) => (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setCurrentIndex(index);
-                      setSelectedItem(item);
-                    }}
-                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                      index === currentIndex 
-                        ? 'border-teal-500 ring-2 ring-teal-500/30 scale-110' 
-                        : 'border-transparent hover:border-white/30 hover:scale-105'
-                    }`}
-                  >
-                    <img
-                      src={item.src}
-                      alt={`Thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
+              {/* Description */}
+              {selectedItem.description && (
+                <div className="mt-4">
+                  <p className="text-gray-300 text-sm leading-relaxed line-clamp-2">
+                    {selectedItem.description}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
