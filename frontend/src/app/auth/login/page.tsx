@@ -139,6 +139,7 @@ export default function LoginPage() {
                   onChange={handleChange}
                   placeholder="your.email@example.com"
                   required
+                  suppressHydrationWarning
                   className={`w-full px-4 py-2 border border-gray-300 rounded-lg
       ${errors.email ? "border-red-500" : ""}
       focus:outline-none focus:ring-0 focus:border-[#002E2E]`}
@@ -167,6 +168,7 @@ export default function LoginPage() {
                     onChange={handleChange}
                     placeholder="Enter your password"
                     required
+                    suppressHydrationWarning
                     className={`w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg
                   ${errors.password ? "border-red-500" : ""}
                   focus:outline-none focus:ring-0 focus:border-[#002E2E]`}

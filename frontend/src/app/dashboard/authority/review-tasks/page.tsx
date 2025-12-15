@@ -183,23 +183,23 @@ export default function TaskReviewPage() {
 
   return (
     <>
-      <div className="space-y-8 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
+      <div className="space-y-4 xs:space-y-6 sm:space-y-8 px-3 xs:px-4 sm:px-6 lg:px-8 py-4 xs:py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
         {/* Welcome Section with Gradient Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent"
+          className="bg-primary text-white rounded-xl xs:rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 xs:p-6 sm:p-8 lg:p-12 border-t-4 border-accent"
         >
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
+          <h1 className="text-xl xs:text-2xl sm:text-4xl lg:text-5xl font-extrabold mb-1 xs:mb-2 sm:mb-3">
             Task Review Center
           </h1>
-          <p className="text-white/90 text-lg font-semibold">
+          <p className="text-white/90 text-xs xs:text-sm sm:text-lg font-semibold">
             Review submitted work and provide feedback to problem solvers
           </p>
         </motion.div>
 
         {/* Quick Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4 lg:gap-6">
           {[
             { title: 'Pending Reviews', value: tasks.length, icon: Clock, color: 'text-blue-600', bgColor: 'bg-blue-50' },
             { title: 'Approved Today', value: 0, icon: CheckCircle, color: 'text-green-600', bgColor: 'bg-green-50' },
@@ -213,15 +213,15 @@ export default function TaskReviewPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`${stat.bgColor} rounded-2xl p-6 border-2 border-accent/20 hover:scale-105 transition-transform`}
+                className={`${stat.bgColor} rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 border-2 border-accent/20 hover:scale-105 transition-transform`}
               >
                 <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-bold text-neutral/70 uppercase tracking-wide">{stat.title}</p>
-                    <p className="text-3xl font-extrabold text-info mt-2">{stat.value}</p>
+                  <div className="min-w-0">
+                    <p className="text-[10px] xs:text-xs sm:text-sm font-bold text-neutral/70 uppercase tracking-wide truncate">{stat.title}</p>
+                    <p className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-extrabold text-info mt-1 xs:mt-2">{stat.value}</p>
                   </div>
-                  <div className={`${stat.color} bg-white/50 p-3 rounded-xl`}>
-                    <Icon className="w-6 h-6" />
+                  <div className={`${stat.color} bg-white/50 p-1.5 xs:p-2 sm:p-3 rounded-lg xs:rounded-xl shrink-0`}>
+                    <Icon className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" />
                   </div>
                 </div>
               </motion.div>
@@ -235,14 +235,14 @@ export default function TaskReviewPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="bg-base-100 rounded-3xl shadow-xl p-12 text-center border-2 border-accent/20"
+            className="bg-base-100 rounded-xl xs:rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-xl p-6 xs:p-8 sm:p-12 text-center border-2 border-accent/20"
           >
-            <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-info mb-2">All Caught Up! 🎉</h2>
-            <p className="text-neutral/70">No tasks pending review at the moment.</p>
+            <CheckCircle className="w-12 h-12 xs:w-16 xs:h-16 sm:w-20 sm:h-20 text-green-500 mx-auto mb-3 xs:mb-4" />
+            <h2 className="text-lg xs:text-xl sm:text-2xl font-bold text-info mb-1.5 xs:mb-2">All Caught Up! 🎉</h2>
+            <p className="text-neutral/70 text-xs xs:text-sm sm:text-base">No tasks pending review at the moment.</p>
           </motion.div>
         ) : (
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-3 xs:gap-4 sm:gap-6">
             {tasks.map((task, index) => (
               <motion.div
                 key={task._id}
@@ -250,57 +250,57 @@ export default function TaskReviewPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 whileHover={{ y: -8 }}
-                className="bg-base-100 rounded-3xl shadow-xl border-2 border-accent/20 overflow-hidden hover:shadow-2xl transition-all"
+                className="bg-base-100 rounded-xl xs:rounded-2xl sm:rounded-3xl shadow-lg sm:shadow-xl border-2 border-accent/20 overflow-hidden hover:shadow-2xl transition-all"
               >
-                <div className="p-6 sm:p-8">
+                <div className="p-4 xs:p-5 sm:p-6 lg:p-8">
                   {/* Header */}
-                  <div className="flex items-start justify-between mb-6">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3 flex-wrap">
-                        <h3 className="text-2xl font-bold text-info">{task.title}</h3>
-                        <span className={`px-3 py-1 rounded-full text-xs font-extrabold border ${getPriorityColor(task.priority)}`}>
+                  <div className="flex flex-col xs:flex-row xs:items-start justify-between mb-4 xs:mb-5 sm:mb-6 gap-3 xs:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 xs:gap-3 mb-2 xs:mb-3 flex-wrap">
+                        <h3 className="text-lg xs:text-xl sm:text-2xl font-bold text-info truncate">{task.title}</h3>
+                        <span className={`px-2 xs:px-3 py-0.5 xs:py-1 rounded-full text-[10px] xs:text-xs font-extrabold border shrink-0 ${getPriorityColor(task.priority)}`}>
                           {task.priority.toUpperCase()}
                         </span>
                         {task.resubmissionCount > 1 && (
-                          <span className="px-3 py-1 rounded-full text-xs font-extrabold bg-secondary/20 text-secondary border border-secondary/40">
+                          <span className="px-2 xs:px-3 py-0.5 xs:py-1 rounded-full text-[10px] xs:text-xs font-extrabold bg-secondary/20 text-secondary border border-secondary/40 shrink-0">
                             Resubmission #{task.resubmissionCount}
                           </span>
                         )}
                       </div>
-                      <p className="text-neutral/70 mb-4">{task.description}</p>
+                      <p className="text-neutral/70 text-xs xs:text-sm sm:text-base mb-3 xs:mb-4">{task.description}</p>
 
                       {/* Solver Info */}
-                      <div className="flex items-center gap-4 p-4 bg-linear-to-br from-primary/5 to-secondary/5 rounded-2xl border border-primary/10">
-                        <div className="w-12 h-12 bg-linear-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white font-bold text-lg shrink-0">
+                      <div className="flex items-center gap-2 xs:gap-3 sm:gap-4 p-3 xs:p-4 bg-linear-to-br from-primary/5 to-secondary/5 rounded-lg xs:rounded-xl sm:rounded-2xl border border-primary/10">
+                        <div className="w-8 h-8 xs:w-10 xs:h-10 sm:w-12 sm:h-12 bg-linear-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white font-bold text-sm xs:text-base sm:text-lg shrink-0">
                           {task.solver.name.charAt(0).toUpperCase()}
                         </div>
-                        <div>
-                          <p className="font-bold text-info">{task.solver.name}</p>
-                          <p className="text-sm text-neutral/60">{task.solver.email}</p>
+                        <div className="min-w-0">
+                          <p className="font-bold text-info text-xs xs:text-sm sm:text-base truncate">{task.solver.name}</p>
+                          <p className="text-[10px] xs:text-xs sm:text-sm text-neutral/60 truncate">{task.solver.email}</p>
                         </div>
                       </div>
                     </div>
                   </div>
 
                   {/* Proof Section */}
-                  <div className="mb-6">
-                    <h4 className="font-bold text-info mb-4 flex items-center gap-2 text-lg">
-                      <div className="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center text-white">
-                        <FileText className="w-5 h-5" />
+                  <div className="mb-4 xs:mb-5 sm:mb-6">
+                    <h4 className="font-bold text-info mb-3 xs:mb-4 flex items-center gap-2 text-sm xs:text-base sm:text-lg">
+                      <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-secondary rounded-lg flex items-center justify-center text-white">
+                        <FileText className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
                       </div>
                       Submitted Proof
                     </h4>
 
                     {/* Proof Description */}
                     {task.proof.description && (
-                      <div className="mb-4 p-4 bg-linear-to-br from-primary/5 to-accent/5 rounded-xl border border-primary/10">
-                        <p className="text-neutral/80 leading-relaxed">{task.proof.description}</p>
+                      <div className="mb-3 xs:mb-4 p-3 xs:p-4 bg-linear-to-br from-primary/5 to-accent/5 rounded-lg xs:rounded-xl border border-primary/10">
+                        <p className="text-neutral/80 leading-relaxed text-xs xs:text-sm sm:text-base">{task.proof.description}</p>
                       </div>
                     )}
 
                     {/* Proof Images */}
                     {task.proof.images && task.proof.images.length > 0 && (
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 xs:gap-3">
                         {task.proof.images.map((image, idx) => (
                           <a
                             key={idx}
@@ -308,7 +308,7 @@ export default function TaskReviewPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             title={`View proof image ${idx + 1}`}
-                            className="relative aspect-square rounded-xl overflow-hidden group cursor-pointer border-2 border-accent/20 hover:border-secondary transition-all"
+                            className="relative aspect-square rounded-lg xs:rounded-xl overflow-hidden group cursor-pointer border-2 border-accent/20 hover:border-secondary transition-all"
                           >
                             <Image
                               src={image}
@@ -317,7 +317,7 @@ export default function TaskReviewPage() {
                               className="object-cover group-hover:scale-110 transition-transform"
                             />
                             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                              <Eye className="w-8 h-8 text-white" />
+                              <Eye className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8 text-white" />
                             </div>
                           </a>
                         ))}
@@ -325,34 +325,34 @@ export default function TaskReviewPage() {
                     )}
 
                     {(!task.proof.images || task.proof.images.length === 0) && !task.proof.description && (
-                      <div className="p-4 bg-yellow-50/50 border border-yellow-200/50 rounded-xl flex items-center gap-3 text-yellow-700">
-                        <AlertCircle className="w-5 h-5 shrink-0" />
-                        <span className="text-sm font-medium">No proof description or images provided</span>
+                      <div className="p-3 xs:p-4 bg-yellow-50/50 border border-yellow-200/50 rounded-lg xs:rounded-xl flex items-center gap-2 xs:gap-3 text-yellow-700">
+                        <AlertCircle className="w-4 h-4 xs:w-5 xs:h-5 shrink-0" />
+                        <span className="text-xs xs:text-sm font-medium">No proof description or images provided</span>
                       </div>
                     )}
                   </div>
 
                   {/* Report Reference */}
-                  <div className="mb-6 p-5 bg-linear-to-br from-secondary/5 to-accent/5 rounded-2xl border-2 border-secondary/20">
-                    <p className="text-sm font-bold text-neutral/60 uppercase tracking-wide mb-2">📋 Original Report</p>
-                    <p className="font-bold text-info text-lg mb-1">{task.report.title}</p>
-                    <p className="text-sm text-neutral/70 mb-3">
+                  <div className="mb-4 xs:mb-5 sm:mb-6 p-3 xs:p-4 sm:p-5 bg-linear-to-br from-secondary/5 to-accent/5 rounded-lg xs:rounded-xl sm:rounded-2xl border-2 border-secondary/20">
+                    <p className="text-[10px] xs:text-xs sm:text-sm font-bold text-neutral/60 uppercase tracking-wide mb-1.5 xs:mb-2">📋 Original Report</p>
+                    <p className="font-bold text-info text-sm xs:text-base sm:text-lg mb-0.5 xs:mb-1 truncate">{task.report.title}</p>
+                    <p className="text-[10px] xs:text-xs sm:text-sm text-neutral/70 mb-2 xs:mb-3">
                       {task.report.location?.district}, {task.report.location?.division}
                     </p>
                     {/* Problem Classification */}
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5 xs:gap-2">
                       {task.report.problemType && (
-                        <span className="inline-block px-3 py-1 bg-primary/20 text-primary rounded-full text-xs font-bold uppercase tracking-wide">
+                        <span className="inline-block px-2 xs:px-3 py-0.5 xs:py-1 bg-primary/20 text-primary rounded-full text-[10px] xs:text-xs font-bold uppercase tracking-wide">
                           {task.report.problemType}
                         </span>
                       )}
                       {task.report.category && (
-                        <span className="inline-block px-3 py-1 bg-secondary/20 text-secondary rounded-full text-xs font-bold uppercase tracking-wide">
+                        <span className="inline-block px-2 xs:px-3 py-0.5 xs:py-1 bg-secondary/20 text-secondary rounded-full text-[10px] xs:text-xs font-bold uppercase tracking-wide">
                           {task.report.category}
                         </span>
                       )}
                       {task.report.subcategory && (
-                        <span className="inline-block px-3 py-1 bg-accent/20 text-accent rounded-full text-xs font-bold uppercase tracking-wide">
+                        <span className="inline-block px-2 xs:px-3 py-0.5 xs:py-1 bg-accent/20 text-accent rounded-full text-[10px] xs:text-xs font-bold uppercase tracking-wide">
                           {task.report.subcategory}
                         </span>
                       )}
@@ -360,28 +360,28 @@ export default function TaskReviewPage() {
                   </div>
 
                   {/* Submission Info */}
-                  <div className="flex items-center justify-between mb-6 text-sm text-neutral/70 font-semibold">
+                  <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between mb-4 xs:mb-5 sm:mb-6 text-[10px] xs:text-xs sm:text-sm text-neutral/70 font-semibold gap-2 xs:gap-0">
                     <span>📅 {new Date(task.submittedAt).toLocaleString()}</span>
-                    <span className="flex items-center gap-2 bg-accent/10 px-3 py-1 rounded-full">
-                      <Clock className="w-4 h-4" />
+                    <span className="flex items-center gap-1.5 xs:gap-2 bg-accent/10 px-2 xs:px-3 py-0.5 xs:py-1 rounded-full">
+                      <Clock className="w-3 h-3 xs:w-4 xs:h-4" />
                       {Math.floor((Date.now() - new Date(task.submittedAt).getTime()) / (1000 * 60 * 60))} hrs ago
                     </span>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-3">
+                  <div className="flex flex-col xs:flex-row gap-2 xs:gap-3">
                     <button
                       onClick={() => openReviewModal(task, 'approve')}
-                      className="flex-1 px-6 py-3 bg-secondary text-white font-bold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2"
+                      className="flex-1 px-3 xs:px-4 sm:px-6 py-2 xs:py-2.5 sm:py-3 bg-secondary text-white font-bold text-xs xs:text-sm sm:text-base rounded-lg xs:rounded-xl hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-1.5 xs:gap-2"
                     >
-                      <CheckCircle className="w-5 h-5" />
+                      <CheckCircle className="w-4 h-4 xs:w-5 xs:h-5" />
                       Approve & Reward
                     </button>
                     <button
                       onClick={() => openReviewModal(task, 'reject')}
-                      className="flex-1 px-6 py-3 bg-red-500 text-white font-bold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-2"
+                      className="flex-1 px-3 xs:px-4 sm:px-6 py-2 xs:py-2.5 sm:py-3 bg-red-500 text-white font-bold text-xs xs:text-sm sm:text-base rounded-lg xs:rounded-xl hover:shadow-lg transform hover:scale-105 transition-all flex items-center justify-center gap-1.5 xs:gap-2"
                     >
-                      <XCircle className="w-5 h-5" />
+                      <XCircle className="w-4 h-4 xs:w-5 xs:h-5" />
                       Request Changes
                     </button>
                   </div>
@@ -394,43 +394,43 @@ export default function TaskReviewPage() {
         {/* Review Modal */}
         <AnimatePresence>
           {showReviewModal && selectedTask && (
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 xs:p-3 sm:p-4">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-base-100 rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-accent/20"
+                className="bg-base-100 rounded-xl xs:rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-accent/20"
               >
-                <div className="p-8">
-                  <h2 className="text-3xl font-extrabold text-info mb-6 flex items-center gap-3">
+                <div className="p-4 xs:p-5 sm:p-6 lg:p-8">
+                  <h2 className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-info mb-4 xs:mb-5 sm:mb-6 flex items-center gap-2 xs:gap-3">
                     {reviewAction === 'approve' ? (
                       <>
-                        <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center text-white">
-                          <CheckCircle className="w-6 h-6" />
+                        <div className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 bg-secondary rounded-lg xs:rounded-xl flex items-center justify-center text-white">
+                          <CheckCircle className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" />
                         </div>
-                        Approve Task
+                        <span className="truncate">Approve Task</span>
                       </>
                     ) : (
                       <>
-                        <div className="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-white">
-                          <XCircle className="w-6 h-6" />
+                        <div className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 bg-red-500 rounded-lg xs:rounded-xl flex items-center justify-center text-white">
+                          <XCircle className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" />
                         </div>
-                        Request Changes
+                        <span className="truncate">Request Changes</span>
                       </>
                     )}
                   </h2>
 
-                  <div className="mb-6 p-5 bg-linear-to-br from-primary/5 to-secondary/5 rounded-2xl border border-primary/10">
-                    <p className="font-bold text-info text-lg mb-1">{selectedTask.title}</p>
-                    <p className="text-neutral/70">by {selectedTask.solver.name}</p>
+                  <div className="mb-4 xs:mb-5 sm:mb-6 p-3 xs:p-4 sm:p-5 bg-linear-to-br from-primary/5 to-secondary/5 rounded-lg xs:rounded-xl sm:rounded-2xl border border-primary/10">
+                    <p className="font-bold text-info text-sm xs:text-base sm:text-lg mb-0.5 xs:mb-1 truncate">{selectedTask.title}</p>
+                    <p className="text-neutral/70 text-xs xs:text-sm truncate">by {selectedTask.solver.name}</p>
                   </div>
 
                   {reviewAction === 'approve' ? (
-                    <div className="space-y-5">
+                    <div className="space-y-4 xs:space-y-5">
                       {/* Points */}
                       <div>
-                        <label className="flex text-sm font-bold text-info mb-3 items-center gap-2 uppercase tracking-wide">
-                          <Award className="w-5 h-5 text-accent" />
+                        <label className="flex text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 items-center gap-1.5 xs:gap-2 uppercase tracking-wide">
+                          <Award className="w-4 h-4 xs:w-5 xs:h-5 text-accent" />
                           Reward Points
                         </label>
                         <input
@@ -438,20 +438,20 @@ export default function TaskReviewPage() {
                           type="number"
                           value={reviewData.points}
                           onChange={(e) => setReviewData({ ...reviewData, points: parseInt(e.target.value) || 0 })}
-                          className="w-full px-4 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-info font-semibold"
+                          className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-info font-semibold"
                           min="0"
                           max="1000"
                         />
-                        <p className="text-xs text-neutral/60 mt-2 font-medium">💡 Suggested: Low=20, Medium=30, High=50, Urgent=100</p>
+                        <p className="text-[10px] xs:text-xs text-neutral/60 mt-1.5 xs:mt-2 font-medium">💡 Suggested: Low=20, Medium=30, High=50, Urgent=100</p>
                       </div>
 
                       {/* Rating */}
                       <div>
-                        <label className="flex text-sm font-bold text-info mb-3 items-center gap-2 uppercase tracking-wide">
-                          <Star className="w-5 h-5 text-accent" />
+                        <label className="flex text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 items-center gap-1.5 xs:gap-2 uppercase tracking-wide">
+                          <Star className="w-4 h-4 xs:w-5 xs:h-5 text-accent" />
                           Rating
                         </label>
-                        <div className="flex gap-3">
+                        <div className="flex gap-2 xs:gap-3">
                           {[1, 2, 3, 4, 5].map((star) => (
                             <button
                               aria-label={`Set rating to ${star} star${star > 1 ? 's' : ''}`}
@@ -461,9 +461,9 @@ export default function TaskReviewPage() {
                               className="focus:outline-none transition-transform hover:scale-110"
                             >
                               <Star
-                                className={`w-9 h-9 ${star <= reviewData.rating
-                                    ? 'fill-accent text-accent'
-                                    : 'text-neutral/30'
+                                className={`w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 ${star <= reviewData.rating
+                                  ? 'fill-accent text-accent'
+                                  : 'text-neutral/30'
                                   } transition-colors`}
                               />
                             </button>
@@ -473,13 +473,13 @@ export default function TaskReviewPage() {
 
                       {/* Feedback */}
                       <div>
-                        <label className="block text-sm font-bold text-info mb-3 uppercase tracking-wide">
+                        <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">
                           Feedback (Optional)
                         </label>
                         <textarea
                           value={reviewData.feedback}
                           onChange={(e) => setReviewData({ ...reviewData, feedback: e.target.value })}
-                          className="w-full px-4 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral resize-none font-medium"
+                          className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral resize-none font-medium"
                           rows={4}
                           placeholder="Great work! Keep it up..."
                         />
@@ -487,13 +487,13 @@ export default function TaskReviewPage() {
                     </div>
                   ) : (
                     <div>
-                      <label className="block text-sm font-bold text-info mb-3 uppercase tracking-wide">
-                        Reason for Rejection <span className="text-red-500 text-lg">*</span>
+                      <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">
+                        Reason for Rejection <span className="text-red-500 text-base xs:text-lg">*</span>
                       </label>
                       <textarea
                         value={reviewData.rejectionReason}
                         onChange={(e) => setReviewData({ ...reviewData, rejectionReason: e.target.value })}
-                        className="w-full px-4 py-3 border-2 border-accent/20 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-base-200 text-neutral resize-none font-medium"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 bg-base-200 text-neutral resize-none font-medium"
                         rows={5}
                         placeholder="Please explain what needs to be improved or corrected..."
                         required
@@ -501,36 +501,38 @@ export default function TaskReviewPage() {
                     </div>
                   )}
 
-                  <div className="flex gap-3 mt-8 pt-6 border-t border-accent/20">
+                  <div className="flex flex-col xs:flex-row gap-2 xs:gap-3 mt-6 xs:mt-8 pt-4 xs:pt-6 border-t border-accent/20">
                     <button
                       onClick={() => setShowReviewModal(false)}
                       disabled={submitting}
-                      className="flex-1 px-6 py-3 text-info font-bold rounded-xl hover:bg-base-200 transition-all disabled:opacity-50"
+                      className="flex-1 px-4 xs:px-6 py-2 xs:py-3 text-info font-bold text-sm xs:text-base rounded-lg xs:rounded-xl hover:bg-base-200 transition-all disabled:opacity-50"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={handleReview}
                       disabled={submitting || (reviewAction === 'reject' && !reviewData.rejectionReason.trim())}
-                      className={`flex-1 px-6 py-3 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 transform hover:scale-105 disabled:opacity-50 disabled:scale-100 ${reviewAction === 'approve' ? 'bg-secondary hover:shadow-lg' : 'bg-red-500 hover:shadow-lg'
+                      className={`flex-1 px-4 xs:px-6 py-2 xs:py-3 text-white font-bold text-sm xs:text-base rounded-lg xs:rounded-xl transition-all flex items-center justify-center gap-1.5 xs:gap-2 transform hover:scale-105 disabled:opacity-50 disabled:scale-100 ${reviewAction === 'approve' ? 'bg-secondary hover:shadow-lg' : 'bg-red-500 hover:shadow-lg'
                         }`}
                     >
                       {submitting ? (
                         <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          <div className="animate-spin rounded-full h-4 w-4 xs:h-5 xs:w-5 border-b-2 border-white"></div>
                           <span>{reviewAction === 'approve' ? 'Approving...' : 'Sending...'}</span>
                         </>
                       ) : (
                         <>
                           {reviewAction === 'approve' ? (
                             <>
-                              <CheckCircle className="w-5 h-5" />
-                              <span>Approve & Award Points</span>
+                              <CheckCircle className="w-4 h-4 xs:w-5 xs:h-5" />
+                              <span className="hidden xs:inline">Approve & Award Points</span>
+                              <span className="xs:hidden">Approve</span>
                             </>
                           ) : (
                             <>
-                              <XCircle className="w-5 h-5" />
-                              <span>Send for Revision</span>
+                              <XCircle className="w-4 h-4 xs:w-5 xs:h-5" />
+                              <span className="hidden xs:inline">Send for Revision</span>
+                              <span className="xs:hidden">Send</span>
                             </>
                           )}
                         </>

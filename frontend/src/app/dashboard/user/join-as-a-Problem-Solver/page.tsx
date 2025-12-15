@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import toast, { Toaster } from 'react-hot-toast';
 import Button from '@/components/common/Button';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -410,7 +411,7 @@ export default function ApplyProblemSolver() {
     try {
       localStorage.setItem('problem-solver-draft', JSON.stringify(data));
       toast.success('Draft saved successfully!');
-    } catch (error) {
+    } catch {
       toast.error('Failed to save draft');
     } finally {
       setIsSavingDraft(false);
@@ -555,7 +556,7 @@ export default function ApplyProblemSolver() {
       let nidDocBase64 = null;
       try {
         nidDocBase64 = await fileToBase64(data.nidOrIdDoc[0]);
-      } catch (error) {
+      } catch {
         toast.error('Failed to process document. Please try again.');
         setIsSubmitting(false);
         return;
@@ -596,11 +597,6 @@ export default function ApplyProblemSolver() {
       console.log('Skills:', submissionData.skills);
       console.log('Languages:', submissionData.languagesSpoken);
 
-      // Import the API function
-      const { problemSolverAPI } = await import('@/utils/api');
-
-      const result = await problemSolverAPI.applyAsProblemSolver(submissionData);
-
       // Clear draft
       localStorage.removeItem('problem-solver-draft');
 
@@ -614,22 +610,24 @@ export default function ApplyProblemSolver() {
         router.push('/dashboard/user');
       }, 2500);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Submission error:', error);
 
       // Better error messages
-      if (error.message?.includes('required fields')) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      if (errorMessage.includes('required fields')) {
         toast.error('Please fill in all required fields correctly');
-      } else if (error.message?.includes('already have an application')) {
-        toast.error(error.message);
-      } else if (error.message?.includes('language')) {
+      } else if (errorMessage.includes('already have an application')) {
+        toast.error(errorMessage);
+      } else if (errorMessage.includes('language')) {
         toast.error('Please select at least one language');
-      } else if (error.message?.includes('skill')) {
+      } else if (errorMessage.includes('skill')) {
         toast.error('Please select at least one skill');
-      } else if (error.message?.includes('LinkedIn')) {
+      } else if (errorMessage.includes('LinkedIn')) {
         toast.error('Please provide a valid LinkedIn profile URL');
       } else {
-        toast.error(error.message || 'Failed to submit application. Please try again.');
+        toast.error(errorMessage || 'Failed to submit application. Please try again.');
       }
     } finally {
       setIsSubmitting(false);
@@ -703,7 +701,7 @@ export default function ApplyProblemSolver() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-4 xs:py-6 sm:py-8 px-3 xs:px-4 sm:px-6 lg:px-8">
       <Toaster
         position="top-right"
         toastOptions={{
@@ -728,35 +726,35 @@ export default function ApplyProblemSolver() {
         className="max-w-4xl mx-auto"
       >
         {/* Header Card with Gradient */}
-        <motion.div variants={itemVariants} className="text-center mb-8 relative">
+        <motion.div variants={itemVariants} className="text-center mb-4 xs:mb-6 sm:mb-8 relative">
           {/* Gradient Background */}
-          <div className="h-40 bg-linear-to-r from-primary to-[#1e5d22] rounded-2xl shadow-lg mb-6 relative overflow-hidden">
+          <div className="h-28 xs:h-32 sm:h-36 md:h-40 bg-linear-to-r from-primary to-[#1e5d22] rounded-xl xs:rounded-2xl shadow-lg mb-4 xs:mb-5 sm:mb-6 relative overflow-hidden">
             <div className="absolute inset-0 opacity-10 bg-pattern"></div>
-            <div className="relative h-full flex flex-col items-center justify-center px-6">
-              <h1 className="text-4xl font-extrabold text-white mb-2 drop-shadow-lg">
+            <div className="relative h-full flex flex-col items-center justify-center px-3 xs:px-4 sm:px-6">
+              <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-1 xs:mb-2 drop-shadow-lg">
                 🔧 Become a Problem Solver
               </h1>
-              <p className="text-green-100 font-semibold drop-shadow-md max-w-lg">
+              <p className="text-green-100 font-semibold drop-shadow-md max-w-lg text-xs xs:text-sm sm:text-base">
                 Help your community by verifying and resolving public infrastructure issues
               </p>
             </div>
           </div>
 
           {/* Enhanced Progress Indicator */}
-          <div className="flex justify-center mb-8">
-            <div className="flex items-center space-x-6 bg-white rounded-2xl shadow-md px-8 py-4 border-2 border-primary/10">
+          <div className="flex justify-center mb-4 xs:mb-6 sm:mb-8">
+            <div className="flex items-center space-x-2 xs:space-x-3 sm:space-x-4 md:space-x-6 bg-white rounded-xl xs:rounded-2xl shadow-md px-3 xs:px-4 sm:px-6 md:px-8 py-2 xs:py-3 sm:py-4 border-2 border-primary/10">
               <div className={`flex items-center transition-all duration-300 ${currentStep >= 1 ? 'text-primary' : 'text-gray-400'}`}>
-                <div className={`w-10 h-10 rounded-full border-3 font-bold flex items-center justify-center text-sm transition-all duration-300 ${currentStep >= 1 ? 'border-primary bg-primary text-white shadow-lg' : 'border-gray-300 text-gray-400'}`}>
+                <div className={`w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full border-2 xs:border-3 font-bold flex items-center justify-center text-xs xs:text-sm transition-all duration-300 ${currentStep >= 1 ? 'border-primary bg-primary text-white shadow-lg' : 'border-gray-300 text-gray-400'}`}>
                   {currentStep >= 1 ? '✓' : '1'}
                 </div>
-                <span className={`ml-3 font-bold text-sm ${currentStep >= 1 ? 'text-primary' : 'text-gray-500'}`}>Personal Info</span>
+                <span className={`ml-1.5 xs:ml-2 sm:ml-3 font-bold text-[10px] xs:text-xs sm:text-sm hidden xs:inline ${currentStep >= 1 ? 'text-primary' : 'text-gray-500'}`}>Personal Info</span>
               </div>
-              <div className={`w-16 h-1 rounded-full transition-all duration-300 ${currentStep >= 2 ? 'bg-primary' : 'bg-gray-300'}`}></div>
+              <div className={`w-6 xs:w-8 sm:w-12 md:w-16 h-0.5 xs:h-1 rounded-full transition-all duration-300 ${currentStep >= 2 ? 'bg-primary' : 'bg-gray-300'}`}></div>
               <div className={`flex items-center transition-all duration-300 ${currentStep >= 2 ? 'text-primary' : 'text-gray-400'}`}>
-                <div className={`w-10 h-10 rounded-full border-3 font-bold flex items-center justify-center text-sm transition-all duration-300 ${currentStep >= 2 ? 'border-primary bg-primary text-white shadow-lg' : 'border-gray-300 text-gray-400'}`}>
+                <div className={`w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full border-2 xs:border-3 font-bold flex items-center justify-center text-xs xs:text-sm transition-all duration-300 ${currentStep >= 2 ? 'border-primary bg-primary text-white shadow-lg' : 'border-gray-300 text-gray-400'}`}>
                   2
                 </div>
-                <span className={`ml-3 font-bold text-sm ${currentStep >= 2 ? 'text-primary' : 'text-gray-500'}`}>Skills & Background</span>
+                <span className={`ml-1.5 xs:ml-2 sm:ml-3 font-bold text-[10px] xs:text-xs sm:text-sm hidden xs:inline ${currentStep >= 2 ? 'text-primary' : 'text-gray-500'}`}>Skills & Background</span>
               </div>
             </div>
           </div>
@@ -764,9 +762,9 @@ export default function ApplyProblemSolver() {
 
         <motion.div
           variants={itemVariants}
-          className="bg-white rounded-2xl shadow-xl p-8 sm:p-10 border-t-4 border-primary"
+          className="bg-white rounded-xl xs:rounded-2xl shadow-xl p-4 xs:p-5 sm:p-6 md:p-8 lg:p-10 border-t-4 border-primary"
         >
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 xs:space-y-5 sm:space-y-6">
             <AnimatePresence mode="wait">
               {currentStep === 1 && (
                 <motion.div
@@ -775,20 +773,20 @@ export default function ApplyProblemSolver() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="space-y-8"
+                  className="space-y-4 xs:space-y-5 sm:space-y-6 md:space-y-8"
                 >
-                  <div className="flex items-center gap-3 pb-6 border-b-2 border-primary/20">
-                    <div className="w-12 h-12 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-xl">
+                  <div className="flex items-center gap-2 xs:gap-3 pb-3 xs:pb-4 sm:pb-5 md:pb-6 border-b-2 border-primary/20">
+                    <div className="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-base xs:text-lg sm:text-xl">
                       👤
                     </div>
-                    <h2 className="text-2xl font-extrabold text-[#002E2E]">Personal Information</h2>
+                    <h2 className="text-lg xs:text-xl sm:text-2xl font-extrabold text-[#002E2E]">Personal Information</h2>
                   </div>
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 xs:gap-5 sm:gap-6">
                     {/* Full Name */}
-                    <div className="space-y-2">
-                      <label htmlFor="fullName" className="flex items-center text-sm font-bold text-[#002E2E] mb-3">
-                        <FaUser className="w-5 h-5 mr-2 text-blue-500" />
+                    <div className="space-y-1.5 xs:space-y-2">
+                      <label htmlFor="fullName" className="flex items-center text-xs xs:text-sm font-bold text-[#002E2E] mb-2 xs:mb-3">
+                        <FaUser className="w-4 h-4 xs:w-5 xs:h-5 mr-1.5 xs:mr-2 text-blue-500" />
                         Full Name (as per NID/Birth Certificate)
                       </label>
                       <input
@@ -801,12 +799,12 @@ export default function ApplyProblemSolver() {
                             message: 'Full name must be at least 2 characters',
                           },
                         })}
-                        className="outline-none w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all font-medium"
+                        className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all font-medium text-sm xs:text-base"
                         placeholder="Enter your full name exactly as it appears on your NID"
                       />
-                      <div className="flex items-start gap-2 p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
-                        <span className="text-blue-600 font-bold text-lg">ℹ️</span>
-                        <p className="text-xs text-blue-700 font-semibold">Your name must match your NID document exactly for verification</p>
+                      <div className="flex items-start gap-1.5 xs:gap-2 p-2 xs:p-3 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                        <span className="text-blue-600 font-bold text-sm xs:text-base sm:text-lg">ℹ️</span>
+                        <p className="text-[10px] xs:text-xs text-blue-700 font-semibold">Your name must match your NID document exactly for verification</p>
                       </div>
                       {errors.fullName && (
                         <p className="text-red-500 text-sm font-bold flex items-center gap-1">⚠️ {errors.fullName.message}</p>
@@ -814,9 +812,9 @@ export default function ApplyProblemSolver() {
                     </div>
 
                     {/* Email */}
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="flex items-center text-sm font-bold text-[#002E2E] mb-3">
-                        <FaEnvelope className="w-5 h-5 mr-2 text-amber-500" />
+                    <div className="space-y-1.5 xs:space-y-2">
+                      <label htmlFor="email" className="flex items-center text-xs xs:text-sm font-bold text-[#002E2E] mb-2 xs:mb-3">
+                        <FaEnvelope className="w-4 h-4 xs:w-5 xs:h-5 mr-1.5 xs:mr-2 text-amber-500" />
                         Email Address
                       </label>
                       <input
@@ -825,15 +823,15 @@ export default function ApplyProblemSolver() {
                         value={userInfo.email}
                         readOnly
                         {...register('email', { required: true })}
-                        className="outline-none w-full px-4 py-3 border-2 border-gray-200 rounded-lg bg-gray-50 cursor-not-allowed font-medium text-gray-700"
+                        className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg bg-gray-50 cursor-not-allowed font-medium text-gray-700 text-sm xs:text-base"
                       />
-                      <p className="text-xs text-gray-600 font-semibold">🔒 Email is locked to your account for security</p>
+                      <p className="text-[10px] xs:text-xs text-gray-600 font-semibold">🔒 Email is locked to your account for security</p>
                     </div>
 
                     {/* Phone */}
-                    <div className="space-y-2">
-                      <label htmlFor="phone" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaPhone className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                    <div className="space-y-1.5 xs:space-y-2">
+                      <label htmlFor="phone" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                        <FaPhone className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                         Phone Number <span className="text-red-500 ml-1">*</span>
                       </label>
                       <input
@@ -847,19 +845,19 @@ export default function ApplyProblemSolver() {
                             message: 'Phone number must be 11 digits starting with 01',
                           },
                         })}
-                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
+                        className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed text-sm xs:text-base"
                         placeholder="01XXXXXXXXX"
                       />
-                      <p className="text-xs text-gray-500">Phone number cannot be changed</p>
+                      <p className="text-[10px] xs:text-xs text-gray-500">Phone number cannot be changed</p>
                       {errors.phone && (
                         <p className="text-red-500 text-sm">{errors.phone.message}</p>
                       )}
                     </div>
 
                     {/* Date of Birth */}
-                    <div className="space-y-2">
-                      <label htmlFor="dateOfBirth" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaCalendar className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                    <div className="space-y-1.5 xs:space-y-2">
+                      <label htmlFor="dateOfBirth" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                        <FaCalendar className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                         Date of Birth <span className="text-red-500 ml-1">*</span>
                       </label>
                       <input
@@ -868,7 +866,7 @@ export default function ApplyProblemSolver() {
                         {...register('dateOfBirth', {
                           required: 'Date of birth is required',
                         })}
-                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                       />
                       {errors.dateOfBirth && (
                         <p className="text-red-500 text-sm">{errors.dateOfBirth.message}</p>
@@ -876,15 +874,15 @@ export default function ApplyProblemSolver() {
                     </div>
 
                     {/* Gender */}
-                    <div className="space-y-2">
-                      <label htmlFor="gender" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaTransgender className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                    <div className="space-y-1.5 xs:space-y-2">
+                      <label htmlFor="gender" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                        <FaTransgender className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                         Gender <span className="text-red-500 ml-1">*</span>
                       </label>
                       <select
                         id="gender"
                         {...register('gender', { required: 'Gender is required' })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                       >
                         <option value="">Select Gender</option>
                         {genderOptions.map((gender) => (
@@ -899,9 +897,9 @@ export default function ApplyProblemSolver() {
                     </div>
 
                     {/* Profession */}
-                    <div className="space-y-2">
-                      <label htmlFor="profession" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaUserTie className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                    <div className="space-y-1.5 xs:space-y-2">
+                      <label htmlFor="profession" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                        <FaUserTie className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                         Profession <span className="text-red-500 ml-1">*</span>
                       </label>
                       <select
@@ -971,28 +969,28 @@ export default function ApplyProblemSolver() {
                             message: 'NID must be 10, 13, or 17 digits',
                           },
                         })}
-                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                         placeholder="Enter your 10/13/17 digit NID number"
                         maxLength={17}
                       />
-                      <p className="text-xs text-gray-500">Enter your National ID number (10, 13, or 17 digits)</p>
+                      <p className="text-[10px] xs:text-xs text-gray-500">Enter your National ID number (10, 13, or 17 digits)</p>
                       {errors.nidNumber && (
                         <p className="text-red-500 text-sm">{errors.nidNumber.message}</p>
                       )}
                     </div>
 
                     {/* Division & District in one row */}
-                    <div className="lg:col-span-2 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 xs:gap-5 sm:gap-6">
                       {/* Division */}
-                      <div className="space-y-2">
-                        <label htmlFor="division" className="flex items-center text-sm font-medium text-gray-700">
-                          <FaMapMarkerAlt className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                      <div className="space-y-1.5 xs:space-y-2">
+                        <label htmlFor="division" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                          <FaMapMarkerAlt className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                           Division <span className="text-red-500 ml-1">*</span>
                         </label>
                         <select
                           id="division"
                           {...register('division', { required: 'Division is required' })}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                         >
                           <option value="">Select Division</option>
                           {divisionsData.map((division) => (
@@ -1007,16 +1005,16 @@ export default function ApplyProblemSolver() {
                       </div>
 
                       {/* District */}
-                      <div className="space-y-2">
-                        <label htmlFor="district" className="flex items-center text-sm font-medium text-gray-700">
-                          <FaMapMarkerAlt className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                      <div className="space-y-1.5 xs:space-y-2">
+                        <label htmlFor="district" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                          <FaMapMarkerAlt className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                           District <span className="text-red-500 ml-1">*</span>
                         </label>
                         <select
                           id="district"
                           {...register('district', { required: 'District is required' })}
                           disabled={!selectedDivision}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+                          className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed text-sm xs:text-base"
                         >
                           <option value="">{selectedDivision ? 'Select District' : 'First select division'}</option>
                           {districts.map((district) => (
@@ -1032,9 +1030,9 @@ export default function ApplyProblemSolver() {
                     </div>
 
                     {/* Address */}
-                    <div className="lg:col-span-2 space-y-2">
-                      <label htmlFor="address" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaHome className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                    <div className="md:col-span-2 space-y-1.5 xs:space-y-2">
+                      <label htmlFor="address" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                        <FaHome className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                         Full Address <span className="text-red-500 ml-1">*</span>
                       </label>
                       <input
@@ -1043,7 +1041,7 @@ export default function ApplyProblemSolver() {
                         {...register('address', {
                           required: 'Address is required',
                         })}
-                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                         placeholder="Enter your complete address with area, road, and house details"
                       />
                       {errors.address && (
@@ -1052,12 +1050,12 @@ export default function ApplyProblemSolver() {
                     </div>
 
                     {/* Emergency Contact Section */}
-                    <div className="lg:col-span-2">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3 mt-4">Emergency Contact Information</h3>
-                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <label htmlFor="emergencyContactName" className="flex items-center text-sm font-medium text-gray-700">
-                            <FaUser className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                    <div className="md:col-span-2">
+                      <h3 className="text-base xs:text-lg font-semibold text-gray-900 mb-2 xs:mb-3 mt-2 xs:mt-3 sm:mt-4">Emergency Contact Information</h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4">
+                        <div className="space-y-1.5 xs:space-y-2">
+                          <label htmlFor="emergencyContactName" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                            <FaUser className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                             Contact Name <span className="text-red-500 ml-1">*</span>
                           </label>
                           <input
@@ -1066,7 +1064,7 @@ export default function ApplyProblemSolver() {
                             {...register('emergencyContactName', {
                               required: 'Emergency contact name is required',
                             })}
-                            className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                            className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                             placeholder="Full name"
                           />
                           {errors.emergencyContactName && (
@@ -1074,9 +1072,9 @@ export default function ApplyProblemSolver() {
                           )}
                         </div>
 
-                        <div className="space-y-2">
-                          <label htmlFor="emergencyContact" className="flex items-center text-sm font-medium text-gray-700">
-                            <FaPhone className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                        <div className="space-y-1.5 xs:space-y-2">
+                          <label htmlFor="emergencyContact" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                            <FaPhone className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                             Contact Number <span className="text-red-500 ml-1">*</span>
                           </label>
                           <input
@@ -1089,7 +1087,7 @@ export default function ApplyProblemSolver() {
                                 message: 'Must be 11 digits starting with 01',
                               },
                             })}
-                            className=" outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                            className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                             placeholder="01XXXXXXXXX"
                             maxLength={11}
                           />
@@ -1098,9 +1096,9 @@ export default function ApplyProblemSolver() {
                           )}
                         </div>
 
-                        <div className="space-y-2">
-                          <label htmlFor="emergencyContactRelation" className="flex items-center text-sm font-medium text-gray-700">
-                            <FaUserTie className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                        <div className="space-y-1.5 xs:space-y-2">
+                          <label htmlFor="emergencyContactRelation" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                            <FaUserTie className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                             Relation <span className="text-red-500 ml-1">*</span>
                           </label>
                           <select
@@ -1108,7 +1106,7 @@ export default function ApplyProblemSolver() {
                             {...register('emergencyContactRelation', {
                               required: 'Relation is required',
                             })}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                            className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                           >
                             {relationOptions.map((option) => (
                               <option key={option.value} value={option.value}>
@@ -1125,7 +1123,7 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Step Navigation */}
-                  <div className="flex justify-end pt-8 mt-8 border-t-2 border-gray-200">
+                  <div className="flex justify-end pt-4 xs:pt-5 sm:pt-6 md:pt-8 mt-4 xs:mt-5 sm:mt-6 md:mt-8 border-t-2 border-gray-200">
                     <motion.button
                       type="button"
                       onClick={nextStep}
@@ -1134,10 +1132,10 @@ export default function ApplyProblemSolver() {
                       initial="initial"
                       whileHover="hover"
                       whileTap="tap"
-                      className="bg-linear-to-r from-primary to-[#1e5d22] text-white font-bold py-3 px-8 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 transition-all hover:shadow-lg transform hover:scale-105"
+                      className="bg-linear-to-r from-primary to-[#1e5d22] text-white font-bold py-2 xs:py-2.5 sm:py-3 px-4 xs:px-6 sm:px-8 rounded-lg xs:rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-1.5 xs:space-x-2 transition-all hover:shadow-lg transform hover:scale-105 text-sm xs:text-base w-full xs:w-auto justify-center"
                     >
                       <span>Continue to Skills</span>
-                      <FaArrowRight className="w-5 h-5" />
+                      <FaArrowRight className="w-4 h-4 xs:w-5 xs:h-5" />
                     </motion.button>
                   </div>
                 </motion.div>
@@ -1150,36 +1148,36 @@ export default function ApplyProblemSolver() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="space-y-8"
+                  className="space-y-4 xs:space-y-5 sm:space-y-6 md:space-y-8"
                 >
-                  <div className="flex items-center gap-3 pb-6 border-b-2 border-primary/20">
-                    <div className="w-12 h-12 bg-linear-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white text-xl">
+                  <div className="flex items-center gap-2 xs:gap-3 pb-3 xs:pb-4 sm:pb-5 md:pb-6 border-b-2 border-primary/20">
+                    <div className="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 bg-linear-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white text-base xs:text-lg sm:text-xl">
                       🎯
                     </div>
-                    <h2 className="text-2xl font-extrabold text-[#002E2E]">Skills & Background</h2>
+                    <h2 className="text-lg xs:text-xl sm:text-2xl font-extrabold text-[#002E2E]">Skills & Background</h2>
                   </div>
 
                   {/* Additional Information Grid */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 xs:gap-5 sm:gap-6">
                     {/* Organization */}
-                    <div className="space-y-2">
-                      <label htmlFor="organization" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaBuilding className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                    <div className="space-y-1.5 xs:space-y-2">
+                      <label htmlFor="organization" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                        <FaBuilding className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                         Organization (Optional)
                       </label>
                       <input
                         id="organization"
                         type="text"
                         {...register('organization')}
-                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                         placeholder="e.g., NGO, Company, Institution"
                       />
                     </div>
 
                     {/* Education Level */}
-                    <div className="space-y-2">
-                      <label htmlFor="educationLevel" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaFileAlt className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                    <div className="space-y-1.5 xs:space-y-2">
+                      <label htmlFor="educationLevel" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                        <FaFileAlt className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                         Education Level
                       </label>
                       <select
@@ -1196,7 +1194,7 @@ export default function ApplyProblemSolver() {
                             setValue('educationLevel', customEducationLevel, { shouldValidate: true });
                           }
                         }}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                       >
                         {educationLevelOptions.map((option) => (
                           <option key={option.value} value={option.value}>
@@ -1214,7 +1212,7 @@ export default function ApplyProblemSolver() {
                             setCustomEducationLevel(e.target.value);
                             setValue('educationLevel', e.target.value, { shouldValidate: true });
                           }}
-                          className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors mt-2"
+                          className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors mt-2 text-sm xs:text-base"
                           placeholder="Enter your education level"
                         />
                       )}
@@ -1227,15 +1225,15 @@ export default function ApplyProblemSolver() {
                     </div>
 
                     {/* Availability */}
-                    <div className="space-y-2">
-                      <label htmlFor="availability" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaCalendar className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                    <div className="space-y-1.5 xs:space-y-2">
+                      <label htmlFor="availability" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                        <FaCalendar className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                         Availability
                       </label>
                       <select
                         id="availability"
                         {...register('availability')}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                       >
                         {availabilityOptions.map((option) => (
                           <option key={option.value} value={option.value}>
@@ -1246,9 +1244,9 @@ export default function ApplyProblemSolver() {
                     </div>
 
                     {/* Languages Spoken */}
-                    <div className="lg:col-span-2 space-y-2">
-                      <label htmlFor="languagesSpoken" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaCode className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                    <div className="md:col-span-2 space-y-1.5 xs:space-y-2">
+                      <label htmlFor="languagesSpoken" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                        <FaCode className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                         Languages Spoken <span className="text-red-500 ml-1">*</span>
                       </label>
                       <Controller
@@ -1284,9 +1282,9 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Skills */}
-                  <div className="space-y-3 bg-linear-to-r from-purple-50 to-indigo-50 p-6 rounded-xl border-2 border-purple-200">
-                    <label htmlFor="skills" className="flex items-center text-sm font-bold text-[#002E2E] mb-3">
-                      <FaCode className="w-5 h-5 mr-2 text-purple-600" />
+                  <div className="space-y-2 xs:space-y-3 bg-linear-to-r from-purple-50 to-indigo-50 p-3 xs:p-4 sm:p-5 md:p-6 rounded-lg xs:rounded-xl border-2 border-purple-200">
+                    <label htmlFor="skills" className="flex items-center text-xs xs:text-sm font-bold text-[#002E2E] mb-2 xs:mb-3">
+                      <FaCode className="w-4 h-4 xs:w-5 xs:h-5 mr-1.5 xs:mr-2 text-purple-600" />
                       Skills & Expertise <span className="text-red-500 ml-1">*</span>
                     </label>
                     <Controller
@@ -1325,9 +1323,9 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Motivation */}
-                  <div className="space-y-3 bg-linear-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border-2 border-blue-200">
-                    <label htmlFor="motivation" className="flex items-center text-sm font-bold text-[#002E2E] mb-3">
-                      <FaPaperPlane className="w-5 h-5 mr-2 text-blue-600" />
+                  <div className="space-y-2 xs:space-y-3 bg-linear-to-r from-blue-50 to-cyan-50 p-3 xs:p-4 sm:p-5 md:p-6 rounded-lg xs:rounded-xl border-2 border-blue-200">
+                    <label htmlFor="motivation" className="flex items-center text-xs xs:text-sm font-bold text-[#002E2E] mb-2 xs:mb-3">
+                      <FaPaperPlane className="w-4 h-4 xs:w-5 xs:h-5 mr-1.5 xs:mr-2 text-blue-600" />
                       Why Do You Want to Join? <span className="text-red-500 ml-1">*</span>
                     </label>
                     <textarea
@@ -1340,7 +1338,7 @@ export default function ApplyProblemSolver() {
                           message: 'Motivation must be at least 50 characters',
                         },
                       })}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none font-medium"
+                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none font-medium text-sm xs:text-base"
                       placeholder="Share your motivation and passion for community development..."
                     />
                     {errors.motivation && (
@@ -1349,46 +1347,46 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Experience */}
-                  <div className="space-y-2">
-                    <label htmlFor="experience" className="flex items-center text-sm font-medium text-gray-700">
-                      <FaFileAlt className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                  <div className="space-y-1.5 xs:space-y-2">
+                    <label htmlFor="experience" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                      <FaFileAlt className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                       Relevant Work Experience (Optional)
                     </label>
                     <textarea
                       id="experience"
                       rows={3}
                       {...register('experience')}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none"
+                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none text-sm xs:text-base"
                       placeholder="Describe any relevant work experience..."
                     />
                   </div>
 
                   {/* Previous Volunteer Work */}
-                  <div className="space-y-2">
-                    <label htmlFor="previousVolunteerWork" className="flex items-center text-sm font-medium text-gray-700">
-                      <FaCheck className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                  <div className="space-y-1.5 xs:space-y-2">
+                    <label htmlFor="previousVolunteerWork" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                      <FaCheck className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                       Previous Volunteer Work (Optional)
                     </label>
                     <textarea
                       id="previousVolunteerWork"
                       rows={3}
                       {...register('previousVolunteerWork')}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none"
+                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none text-sm xs:text-base"
                       placeholder="Describe any previous volunteer work or community service..."
                     />
                   </div>
 
                   {/* Social Media Links */}
-                  <div className="space-y-4 bg-linear-to-r from-indigo-50 to-purple-50 p-6 rounded-xl border-2 border-indigo-200">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-indigo-200 rounded-full flex items-center justify-center text-lg">🔗</div>
-                      <h3 className="text-lg font-bold text-[#002E2E]">Social & Professional Links</h3>
+                  <div className="space-y-3 xs:space-y-4 bg-linear-to-r from-indigo-50 to-purple-50 p-3 xs:p-4 sm:p-5 md:p-6 rounded-lg xs:rounded-xl border-2 border-indigo-200">
+                    <div className="flex items-center gap-2 xs:gap-3">
+                      <div className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 bg-indigo-200 rounded-full flex items-center justify-center text-sm xs:text-base sm:text-lg">🔗</div>
+                      <h3 className="text-base xs:text-lg font-bold text-[#002E2E]">Social & Professional Links</h3>
                     </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                       {/* LinkedIn - Required */}
-                      <div className="space-y-2">
-                        <label htmlFor="linkedinProfile" className="flex items-center text-sm font-medium text-gray-700">
-                          <FaCode className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                      <div className="space-y-1.5 xs:space-y-2">
+                        <label htmlFor="linkedinProfile" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                          <FaCode className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                           LinkedIn Profile <span className="text-red-500 ml-1">*</span>
                         </label>
                         <input
@@ -1401,7 +1399,7 @@ export default function ApplyProblemSolver() {
                               message: 'Please enter a valid LinkedIn URL',
                             },
                           })}
-                          className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                           placeholder="https://linkedin.com/in/your-profile"
                         />
                         {errors.linkedinProfile && (
@@ -1410,46 +1408,46 @@ export default function ApplyProblemSolver() {
                       </div>
 
                       {/* Facebook - Optional */}
-                      <div className="space-y-2">
-                        <label htmlFor="facebookProfile" className="flex items-center text-sm font-medium text-gray-700">
-                          <FaCode className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                      <div className="space-y-1.5 xs:space-y-2">
+                        <label htmlFor="facebookProfile" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                          <FaCode className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                           Facebook Profile (Optional)
                         </label>
                         <input
                           id="facebookProfile"
                           type="url"
                           {...register('facebookProfile')}
-                          className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                           placeholder="https://facebook.com/your-profile"
                         />
                       </div>
 
                       {/* Twitter - Optional */}
-                      <div className="space-y-2">
-                        <label htmlFor="twitterProfile" className="flex items-center text-sm font-medium text-gray-700">
-                          <FaCode className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                      <div className="space-y-1.5 xs:space-y-2">
+                        <label htmlFor="twitterProfile" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                          <FaCode className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                           Twitter/X Profile (Optional)
                         </label>
                         <input
                           id="twitterProfile"
                           type="url"
                           {...register('twitterProfile')}
-                          className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                           placeholder="https://twitter.com/your-profile"
                         />
                       </div>
 
                       {/* Website - Optional */}
-                      <div className="space-y-2">
-                        <label htmlFor="websiteProfile" className="flex items-center text-sm font-medium text-gray-700">
-                          <FaCode className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                      <div className="space-y-1.5 xs:space-y-2">
+                        <label htmlFor="websiteProfile" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                          <FaCode className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                           Personal Website (Optional)
                         </label>
                         <input
                           id="websiteProfile"
                           type="url"
                           {...register('websiteProfile')}
-                          className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                          className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
                           placeholder="https://your-website.com"
                         />
                       </div>
@@ -1457,18 +1455,18 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Document Upload */}
-                  <div className="space-y-4 bg-linear-to-r from-amber-50 to-orange-50 p-6 rounded-xl border-2 border-amber-200">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-amber-200 rounded-full flex items-center justify-center text-lg">📄</div>
-                      <h3 className="text-lg font-bold text-[#002E2E]">Required Documents</h3>
+                  <div className="space-y-3 xs:space-y-4 bg-linear-to-r from-amber-50 to-orange-50 p-3 xs:p-4 sm:p-5 md:p-6 rounded-lg xs:rounded-xl border-2 border-amber-200">
+                    <div className="flex items-center gap-2 xs:gap-3">
+                      <div className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 bg-amber-200 rounded-full flex items-center justify-center text-sm xs:text-base sm:text-lg">📄</div>
+                      <h3 className="text-base xs:text-lg font-bold text-[#002E2E]">Required Documents</h3>
                     </div>
-                    <div className="space-y-2">
-                      <label htmlFor="nidOrIdDoc" className="flex items-center text-sm font-medium text-gray-700">
-                        <FaIdCard className="w-4 h-4 mr-2 text-[#2a7d2f]" />
+                    <div className="space-y-1.5 xs:space-y-2">
+                      <label htmlFor="nidOrIdDoc" className="flex items-center text-xs xs:text-sm font-medium text-gray-700">
+                        <FaIdCard className="w-3.5 h-3.5 xs:w-4 xs:h-4 mr-1.5 xs:mr-2 text-[#2a7d2f]" />
                         NID & Important Documents <span className="text-red-500 ml-1">*</span>
                       </label>
-                      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg mb-2">
-                        <p className="text-sm text-blue-800">
+                      <div className="p-2 xs:p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg mb-2">
+                        <p className="text-[10px] xs:text-xs sm:text-sm text-blue-800">
                           <strong>Required:</strong> Please upload a clear copy of your National ID Card and any other relevant identification documents (e.g., Birth Certificate, Passport). You can upload multiple pages as a single PDF file or multiple image files.
                         </p>
                       </div>
@@ -1479,7 +1477,7 @@ export default function ApplyProblemSolver() {
                         {...register('nidOrIdDoc', {
                           required: 'NID and identification documents are required',
                         })}
-                        className="outline-none w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#2a7d2f] file:text-white hover:file:bg-[#236b27]"
+                        className="outline-none w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors file:mr-2 xs:file:mr-4 file:py-1 xs:file:py-2 file:px-2 xs:file:px-4 file:rounded-full file:border-0 file:text-[10px] xs:file:text-xs sm:file:text-sm file:font-semibold file:bg-[#2a7d2f] file:text-white hover:file:bg-[#236b27] text-xs xs:text-sm sm:text-base"
                       />
                       {errors.nidOrIdDoc && (
                         <p className="text-red-500 text-sm">{errors.nidOrIdDoc.message}</p>
@@ -1487,19 +1485,24 @@ export default function ApplyProblemSolver() {
 
                       {/* Document Preview */}
                       {nidDocumentPreview && (
-                        <div className="mt-4 p-4 border border-gray-300 rounded-lg bg-gray-50">
-                          <p className="text-sm font-medium text-gray-700 mb-2">Document Preview:</p>
+                        <div className="mt-3 xs:mt-4 p-2 xs:p-3 sm:p-4 border border-gray-300 rounded-lg bg-gray-50">
+                          <p className="text-xs xs:text-sm font-medium text-gray-700 mb-1.5 xs:mb-2">Document Preview:</p>
                           {nidOrIdDoc?.[0]?.type === 'application/pdf' ? (
-                            <div className="flex items-center space-x-2 text-gray-600">
-                              <FaFileAlt className="w-6 h-6 text-red-500" />
-                              <span className="text-sm">{nidOrIdDoc[0].name}</span>
+                            <div className="flex items-center space-x-1.5 xs:space-x-2 text-gray-600">
+                              <FaFileAlt className="w-5 h-5 xs:w-6 xs:h-6 text-red-500" />
+                              <span className="text-xs xs:text-sm truncate">{nidOrIdDoc[0].name}</span>
                             </div>
                           ) : (
-                            <img
-                              src={nidDocumentPreview}
-                              alt="Document preview"
-                              className="max-w-full h-auto max-h-64 object-contain border-2 border-[#2a7d2f] rounded-lg"
-                            />
+                            <div className="relative w-full max-h-48 xs:max-h-56 sm:max-h-64">
+                              <Image
+                                src={nidDocumentPreview}
+                                alt="Document preview"
+                                width={400}
+                                height={300}
+                                className="max-w-full h-auto max-h-48 xs:max-h-56 sm:max-h-64 object-contain border-2 border-[#2a7d2f] rounded-lg"
+                                unoptimized
+                              />
+                            </div>
                           )}
                         </div>
                       )}
@@ -1507,17 +1510,17 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Agreement */}
-                  <div className="bg-linear-to-r from-green-50 to-emerald-50 p-6 rounded-xl border-2 border-green-200 space-y-4">
-                    <div className="flex items-start space-x-3">
+                  <div className="bg-linear-to-r from-green-50 to-emerald-50 p-3 xs:p-4 sm:p-5 md:p-6 rounded-lg xs:rounded-xl border-2 border-green-200 space-y-3 xs:space-y-4">
+                    <div className="flex items-start space-x-2 xs:space-x-3">
                       <input
                         id="agree"
                         type="checkbox"
                         {...register('agree', {
                           required: 'You must agree to the terms and conditions',
                         })}
-                        className="outline-none mt-1 w-5 h-5 text-primary bg-white border-2 border-gray-300 rounded focus:ring-primary focus:ring-2 cursor-pointer"
+                        className="outline-none mt-0.5 xs:mt-1 w-4 h-4 xs:w-5 xs:h-5 text-primary bg-white border-2 border-gray-300 rounded focus:ring-primary focus:ring-2 cursor-pointer"
                       />
-                      <label htmlFor="agree" className="text-sm font-semibold text-[#002E2E] cursor-pointer leading-relaxed">
+                      <label htmlFor="agree" className="text-[10px] xs:text-xs sm:text-sm font-semibold text-[#002E2E] cursor-pointer leading-relaxed">
                         ✅ I confirm that all information provided is accurate and truthful. I understand that my application will be reviewed by authorities and I may be contacted for verification. I agree to the terms and conditions.
                       </label>
                     </div>
@@ -1527,7 +1530,7 @@ export default function ApplyProblemSolver() {
                   </div>
 
                   {/* Step Navigation */}
-                  <div className="flex justify-between pt-8 mt-8 border-t-2 border-gray-200 gap-4">
+                  <div className="flex flex-col xs:flex-row justify-between pt-4 xs:pt-5 sm:pt-6 md:pt-8 mt-4 xs:mt-5 sm:mt-6 md:mt-8 border-t-2 border-gray-200 gap-3 xs:gap-4">
                     <motion.button
                       type="button"
                       onClick={prevStep}
@@ -1535,12 +1538,12 @@ export default function ApplyProblemSolver() {
                       initial="initial"
                       whileHover="hover"
                       whileTap="tap"
-                      className="bg-linear-to-r from-gray-400 to-gray-500 text-white font-bold py-3 px-8 rounded-xl flex items-center space-x-2 transition-all hover:shadow-lg transform hover:scale-105"
+                      className="bg-linear-to-r from-gray-400 to-gray-500 text-white font-bold py-2 xs:py-2.5 sm:py-3 px-4 xs:px-6 sm:px-8 rounded-lg xs:rounded-xl flex items-center justify-center space-x-1.5 xs:space-x-2 transition-all hover:shadow-lg transform hover:scale-105 text-sm xs:text-base order-2 xs:order-1"
                     >
                       <span>← Back to Info</span>
                     </motion.button>
 
-                    <div className="flex space-x-4">
+                    <div className="flex flex-col xs:flex-row space-y-2 xs:space-y-0 xs:space-x-3 sm:space-x-4 order-1 xs:order-2">
                       <Button
                         type="button"
                         onClick={onSaveDraft}

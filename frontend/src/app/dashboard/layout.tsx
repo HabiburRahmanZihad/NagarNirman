@@ -30,7 +30,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col min-h-screen min-w-0 lg:ml-0">
         {/* Top Bar */}
         <header className="bg-linear-to-r from-base-100 to-base-100 border-b-2 border-base-200 px-3 sm:px-4 md:px-6 py-3 sm:py-4 lg:pl-6 sticky top-0 z-40 shadow-lg">
 

@@ -336,7 +336,7 @@ export default function NewReportPage() {
                 </div>
                 {successLimitInfo && successLimitInfo.remaining === 0 && (
                   <div className="text-xs text-gray-600 pt-2 border-t border-green-200">
-                    💡 You've used all your reports for this week. Complete your current reports to submit more!
+                    💡 {`You've used all your reports for this week. Complete your current reports to submit more!`}
                   </div>
                 )}
               </div>
@@ -389,34 +389,34 @@ export default function NewReportPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-8 px-4">
+    <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white py-4 xs:py-6 sm:py-8 md:py-10 px-3 xs:px-4 sm:px-5 md:px-6">
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-start justify-between  mb-8 border-b pb-4 bg-white rounded-lg shadow-sm px-6 py-4 border-accent/80">
+        <div className="mb-4 xs:mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-start justify-between mb-4 xs:mb-6 sm:mb-8 border-b pb-3 xs:pb-4 bg-white rounded-lg shadow-sm px-3 xs:px-4 sm:px-6 py-3 xs:py-4 border-accent/80">
             <div>
-              <h1 className="text-4xl font-extrabold text-[#002E2E] mb-2 flex items-center gap-3">
-                <FaUpload className="text-primary" />
+              <h1 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#002E2E] mb-1 xs:mb-2 flex items-center gap-2 xs:gap-3">
+                <FaUpload className="text-primary text-lg xs:text-xl sm:text-2xl md:text-3xl" />
                 Report Infrastructure Issue
               </h1>
-              <p className="text-[#6B7280]">Help improve your community by reporting problems you encounter</p>
+              <p className="text-[#6B7280] text-xs xs:text-sm sm:text-base">Help improve your community by reporting problems you encounter</p>
             </div>
           </div>
 
           {/* User Info Card */}
-          <div className="bg-linear-to-r from-primary to-[#1e5d22] text-white rounded-xl p-4 flex items-center justify-between shadow-lg">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
-                <span className="text-xl font-bold">{user?.name?.charAt(0).toUpperCase()}</span>
+          <div className="bg-linear-to-r from-primary to-[#1e5d22]  rounded-lg xs:rounded-xl p-3 xs:p-4 flex items-center justify-between shadow-lg">
+            <div className="flex items-center gap-2 xs:gap-3">
+              <div className="w-9 h-9 xs:w-10 xs:h-10 sm:w-12 sm:h-12 rounded-full bg-white bg-opacity-20 flex items-center justify-center text-primary">
+                <span className="text-accent text-base xs:text-lg sm:text-xl font-bold">{user?.name?.charAt(0).toUpperCase()}</span>
               </div>
-              <div>
-                <p className="text-sm opacity-90">Verified User</p>
-                <p className="font-bold text-lg">{user?.name}</p>
+              <div className="text-white">
+                <p className="text-xs xs:text-sm opacity-90">Verified User</p>
+                <p className="font-bold text-sm xs:text-base sm:text-lg ">{user?.name}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <FaCheckCircle className="text-white" />
-              <span className="font-semibold">Verified</span>
+            <div className="flex items-center gap-1.5 xs:gap-2">
+              <FaCheckCircle className="text-white text-sm xs:text-base" />
+              <span className="font-semibold text-xs xs:text-sm sm:text-base text-accent">Verified</span>
             </div>
           </div>
         </div>
@@ -424,26 +424,26 @@ export default function NewReportPage() {
         {/* Main Form Container */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Tabs/Steps Indicator */}
-          <div className="bg-linear-to-r from-slate-50 to-slate-100 border-b-2 border-gray-200 px-6 py-4">
+          <div className="bg-linear-to-r from-slate-50 to-slate-100 border-b-2 border-gray-200 px-3 xs:px-4 sm:px-6 py-3 xs:py-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white font-bold text-sm">1</div>
-                <span className="font-semibold text-gray-700">Report Details</span>
+              <div className="flex items-center gap-1 xs:gap-2">
+                <div className="flex items-center justify-center w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-white font-bold text-xs xs:text-sm">1</div>
+                <span className="font-semibold text-gray-700 text-xs xs:text-sm sm:text-base xs:inline hidden md:block">Report Details</span>
               </div>
-              <FaArrowRight className="text-gray-400" />
-              <div className="flex items-center gap-2">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary bg-opacity-30 text-primary font-bold text-sm">2</div>
-                <span className="font-semibold text-gray-500">Location</span>
+              <FaArrowRight className="text-gray-400 text-xs xs:text-sm" />
+              <div className="flex items-center gap-1 xs:gap-2">
+                <div className="flex items-center justify-center w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-full bg-primary bg-opacity-30 font-bold text-xs xs:text-sm text-white">2</div>
+                <span className="font-semibold text-gray-500 text-xs xs:text-sm sm:text-base xs:inline hidden md:block">Location</span>
               </div>
-              <FaArrowRight className="text-gray-400" />
-              <div className="flex items-center gap-2">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary bg-opacity-30 text-primary font-bold text-sm">3</div>
-                <span className="font-semibold text-gray-500">Images & Submit</span>
+              <FaArrowRight className="text-gray-400 text-xs xs:text-sm" />
+              <div className="flex items-center gap-1 xs:gap-2">
+                <div className="flex items-center justify-center w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-full bg-primary bg-opacity-30 font-bold text-xs xs:text-sm text-white">3</div>
+                <span className="font-semibold text-gray-500 text-xs xs:text-sm sm:text-base xs:inline hidden md:block">Images</span>
               </div>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="p-4 xs:p-5 sm:p-6 md:p-8 space-y-4 xs:space-y-5 sm:space-y-6 md:space-y-8">
             {/* Weekly Report Limit Display */}
             {isLoadingLimit ? (
               <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg animate-pulse">
@@ -469,18 +469,18 @@ export default function NewReportPage() {
                       }`}>
                       📊 Weekly Report Status
                     </h3>
-                    <div className="grid grid-cols-3 gap-4 mb-3">
-                      <div className={`p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
-                        <p className="text-xs font-medium opacity-75">Submitted</p>
-                        <p className="text-2xl font-bold">{weeklyLimit.submittedThisWeek}/{weeklyLimit.weeklyLimit}</p>
+                    <div className="grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 mb-2 xs:mb-3">
+                      <div className={`p-2 xs:p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
+                        <p className="text-[10px] xs:text-xs font-medium opacity-75">Submitted</p>
+                        <p className="text-lg xs:text-xl sm:text-2xl font-bold">{weeklyLimit.submittedThisWeek}/{weeklyLimit.weeklyLimit}</p>
                       </div>
-                      <div className={`p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
-                        <p className="text-xs font-medium opacity-75">Remaining</p>
-                        <p className="text-2xl font-bold">{weeklyLimit.remaining}</p>
+                      <div className={`p-2 xs:p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
+                        <p className="text-[10px] xs:text-xs font-medium opacity-75">Remaining</p>
+                        <p className="text-lg xs:text-xl sm:text-2xl font-bold">{weeklyLimit.remaining}</p>
                       </div>
-                      <div className={`p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
-                        <p className="text-xs font-medium opacity-75">Completed</p>
-                        <p className="text-2xl font-bold">{weeklyLimit.completedThisWeek}</p>
+                      <div className={`p-2 xs:p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
+                        <p className="text-[10px] xs:text-xs font-medium opacity-75">Completed</p>
+                        <p className="text-lg xs:text-xl sm:text-2xl font-bold">{weeklyLimit.completedThisWeek}</p>
                       </div>
                     </div>
                     {/* Progress bar */}
@@ -505,32 +505,32 @@ export default function NewReportPage() {
             )}
 
             {/* Important Notice Banner */}
-            <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 flex gap-3">
-              <FaExclamationTriangle className="text-yellow-600 text-xl mt-1 shrink-0" />
+            <div className="bg-yellow-50 border-2 border-yellow-200 rounded-lg xs:rounded-xl p-3 xs:p-4 flex gap-2 xs:gap-3">
+              <FaExclamationTriangle className="text-yellow-600 text-base xs:text-lg sm:text-xl mt-0.5 xs:mt-1 shrink-0" />
               <div>
-                <h3 className="font-bold text-yellow-900 mb-1">Required Information</h3>
-                <p className="text-yellow-800 text-sm">
+                <h3 className="font-bold text-yellow-900 mb-0.5 xs:mb-1 text-sm xs:text-base">Required Information</h3>
+                <p className="text-yellow-800 text-xs xs:text-sm">
                   All fields marked with <span className="text-red-500 font-bold">*</span> are mandatory. Location coordinates are required for proper mapping.
                 </p>
               </div>
             </div>
 
             {/* Section 1: Report Details */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b-2 border-gray-200">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white font-bold">1</div>
-                <h2 className="text-2xl font-bold text-[#002E2E]">Report Details</h2>
+            <div className="space-y-4 xs:space-y-5 sm:space-y-6">
+              <div className="flex items-center gap-2 xs:gap-3 pb-3 xs:pb-4 border-b-2 border-gray-200">
+                <div className="flex items-center justify-center w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-white font-bold text-xs xs:text-sm">1</div>
+                <h2 className="text-lg xs:text-xl sm:text-2xl font-bold text-[#002E2E]">Report Details</h2>
               </div>
 
               {/* Category & Subcategory */}
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4 sm:gap-5 md:gap-6">
                 <div>
-                  <label className="block font-bold text-gray-800 mb-2 text-sm">
+                  <label className="block font-bold text-gray-800 mb-1.5 xs:mb-2 text-xs xs:text-sm">
                     Category <span className="text-red-500">*</span>
                   </label>
                   <select
                     {...register("category", { required: "Category is required" })}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium ${errors.category ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base ${errors.category ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
                       }`}
                   >
                     <option value="">📋 Select category</option>
@@ -548,13 +548,13 @@ export default function NewReportPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-gray-800 mb-2 text-sm">
+                  <label className="block font-bold text-gray-800 mb-1.5 xs:mb-2 text-xs xs:text-sm">
                     Subcategory <span className="text-red-500">*</span>
                   </label>
                   <select
                     {...register("subcategory", { required: "Subcategory is required" })}
                     disabled={!selectedCategory}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.subcategory ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.subcategory ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
                       }`}
                   >
                     <option value="">
@@ -578,9 +578,9 @@ export default function NewReportPage() {
               </div>
 
               {/* Title & Severity */}
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4 sm:gap-5 md:gap-6">
                 <div>
-                  <label className="block font-bold text-gray-800 mb-2 text-sm">
+                  <label className="block font-bold text-gray-800 mb-1.5 xs:mb-2 text-xs xs:text-sm">
                     Report Title <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -590,7 +590,7 @@ export default function NewReportPage() {
                       maxLength: { value: 100, message: "Title must not exceed 100 characters" }
                     })}
                     placeholder="e.g. Street light not working on Main Road"
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition ${errors.title ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition text-sm xs:text-base ${errors.title ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
                       }`}
                   />
                   {errors.title && (
@@ -602,12 +602,12 @@ export default function NewReportPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-gray-800 mb-2 text-sm">
+                  <label className="block font-bold text-gray-800 mb-1.5 xs:mb-2 text-xs xs:text-sm">
                     Severity <span className="text-red-500">*</span>
                   </label>
                   <select
                     {...register("severity", { required: "Severity is required" })}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium ${errors.severity ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base ${errors.severity ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
                       }`}
                   >
                     <option value="">⚠️ Select severity</option>
@@ -626,7 +626,7 @@ export default function NewReportPage() {
 
               {/* Description */}
               <div>
-                <label className="block font-bold text-gray-800 mb-2 text-sm">
+                <label className="block font-bold text-gray-800 mb-1.5 xs:mb-2 text-xs xs:text-sm">
                   Description <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -636,8 +636,8 @@ export default function NewReportPage() {
                     maxLength: { value: 500, message: "Description must not exceed 500 characters" }
                   })}
                   placeholder="Describe the issue clearly... (minimum 20 characters)"
-                  rows={5}
-                  className={`w-full px-4 py-3 border-2 rounded-lg resize-none focus:ring-2 focus:ring-primary focus:border-primary transition ${errors.description ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                  rows={4}
+                  className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg resize-none focus:ring-2 focus:ring-primary focus:border-primary transition text-sm xs:text-base ${errors.description ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
                     }`}
                 ></textarea>
                 {errors.description && (
@@ -659,30 +659,30 @@ export default function NewReportPage() {
             </div>
 
             {/* Section 2: Location Information */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b-2 border-gray-200">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white font-bold">2</div>
-                <h2 className="text-2xl font-bold text-[#002E2E] flex items-center gap-2">
-                  <FaMapMarkerAlt /> Location Details
+            <div className="space-y-4 xs:space-y-5 sm:space-y-6">
+              <div className="flex items-center gap-2 xs:gap-3 pb-3 xs:pb-4 border-b-2 border-gray-200">
+                <div className="flex items-center justify-center w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-white font-bold text-xs xs:text-sm">2</div>
+                <h2 className="text-lg xs:text-xl sm:text-2xl font-bold text-[#002E2E] flex items-center gap-1.5 xs:gap-2">
+                  <FaMapMarkerAlt className="text-base xs:text-lg sm:text-xl" /> Location Details
                 </h2>
               </div>
 
-              <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg">
-                <p className="text-blue-900 text-sm font-semibold">
+              <div className="bg-blue-50 border-l-4 border-blue-500 p-3 xs:p-4 rounded-lg">
+                <p className="text-blue-900 text-xs xs:text-sm font-semibold">
                   📍 Accurate location information helps authorities respond quickly to your report.
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4 sm:gap-5 md:gap-6">
                 <div>
-                  <label className="block font-bold text-gray-800 mb-2 text-sm">
+                  <label className="block font-bold text-gray-800 mb-1.5 xs:mb-2 text-xs xs:text-sm">
                     Division <span className="text-red-500">*</span>
                   </label>
                   <select
                     {...register("division", { required: "Division is required" })}
                     value={selectedDivision}
                     onChange={handleDivisionChange}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium ${errors.division ? "border-red-500 bg-red-50" : selectedDivision ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base ${errors.division ? "border-red-500 bg-red-50" : selectedDivision ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-gray-400"
                       }`}
                   >
                     <option value="">Select division</option>
@@ -705,14 +705,14 @@ export default function NewReportPage() {
                 </div>
 
                 <div>
-                  <label className="block font-bold text-gray-800 mb-2 text-sm">
+                  <label className="block font-bold text-gray-800 mb-1.5 xs:mb-2 text-xs xs:text-sm">
                     District <span className="text-red-500">*</span>
                   </label>
                   <select
                     {...register("district", { required: "District is required" })}
                     onChange={handleDistrictChange}
                     disabled={!selectedDivision}
-                    className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.district ? "border-red-500 bg-red-50" : watch("district") ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.district ? "border-red-500 bg-red-50" : watch("district") ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-gray-400"
                       }`}
                   >
                     <option value="">
@@ -738,7 +738,7 @@ export default function NewReportPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-gray-800 mb-2 text-sm">
+                <label className="block font-bold text-gray-800 mb-1.5 xs:mb-2 text-xs xs:text-sm">
                   Address <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -747,7 +747,7 @@ export default function NewReportPage() {
                     minLength: { value: 10, message: "Address must be at least 10 characters" }
                   })}
                   placeholder="e.g. House 27, Road 5, Dhanmondi, Dhaka"
-                  className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition ${errors.address ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                  className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition text-sm xs:text-base ${errors.address ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
                     }`}
                 />
                 {errors.address && (
@@ -758,30 +758,30 @@ export default function NewReportPage() {
               </div>
 
               {/* Coordinates */}
-              <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6 border-2 border-blue-200">
-                <div className="flex items-center gap-2 mb-4">
-                  <FaMapMarkerAlt className="text-blue-600" />
-                  <h3 className="font-bold text-blue-900">GPS Coordinates <span className="text-red-500">*</span></h3>
+              <div className="bg-linear-to-r from-blue-50 to-cyan-50 rounded-lg xs:rounded-xl p-3 xs:p-4 sm:p-5 md:p-6 border-2 border-blue-200">
+                <div className="flex items-center gap-1.5 xs:gap-2 mb-3 xs:mb-4">
+                  <FaMapMarkerAlt className="text-blue-600 text-sm xs:text-base" />
+                  <h3 className="font-bold text-blue-900 text-sm xs:text-base">GPS Coordinates <span className="text-red-500">*</span></h3>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4 mb-3 xs:mb-4">
                   <div>
-                    <label className="block font-semibold text-gray-800 mb-2 text-sm">Latitude</label>
+                    <label className="block font-semibold text-gray-800 mb-1.5 xs:mb-2 text-xs xs:text-sm">Latitude</label>
                     <input
                       {...register("latitude", { required: "Please fetch your location" })}
                       placeholder="Will be filled automatically"
                       readOnly
-                      className={`w-full px-4 py-3 border-2 rounded-lg bg-white font-mono text-sm ${errors.latitude ? "border-red-500 bg-red-50" : "border-blue-300"
+                      className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg bg-white font-mono text-xs xs:text-sm ${errors.latitude ? "border-red-500 bg-red-50" : "border-blue-300"
                         }`}
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold text-gray-800 mb-2 text-sm">Longitude</label>
+                    <label className="block font-semibold text-gray-800 mb-1.5 xs:mb-2 text-xs xs:text-sm">Longitude</label>
                     <input
                       {...register("longitude", { required: "Please fetch your location" })}
                       placeholder="Will be filled automatically"
                       readOnly
-                      className={`w-full px-4 py-3 border-2 rounded-lg bg-white font-mono text-sm ${errors.longitude ? "border-red-500 bg-red-50" : "border-blue-300"
+                      className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg bg-white font-mono text-xs xs:text-sm ${errors.longitude ? "border-red-500 bg-red-50" : "border-blue-300"
                         }`}
                     />
                   </div>
@@ -791,16 +791,16 @@ export default function NewReportPage() {
                   type="button"
                   onClick={handleLocationFetch}
                   disabled={isLoadingLocation}
-                  className="w-full bg-linear-to-r from-primary to-[#1e5d22] hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition font-bold text-white px-6 py-3 rounded-lg shadow-md flex items-center justify-center gap-2"
+                  className="w-full bg-linear-to-r from-primary to-[#1e5d22] hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed transition font-bold text-white px-4 xs:px-5 sm:px-6 py-2 xs:py-2.5 sm:py-3 rounded-lg shadow-md flex items-center justify-center gap-1.5 xs:gap-2 text-sm xs:text-base"
                 >
                   <FaMapMarkerAlt />
                   {isLoadingLocation ? "Fetching location..." : "📍 Get Current Location"}
                 </button>
 
                 {(watch("latitude") || watch("longitude")) && !errors.latitude && !errors.longitude && (
-                  <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200 flex items-center gap-2">
-                    <FaCheckCircle className="text-green-600" />
-                    <span className="text-green-700 font-semibold text-sm">Location coordinates captured successfully!</span>
+                  <div className="mt-2 xs:mt-3 p-2 xs:p-3 bg-green-50 rounded-lg border border-green-200 flex items-center gap-1.5 xs:gap-2">
+                    <FaCheckCircle className="text-green-600 text-sm xs:text-base" />
+                    <span className="text-green-700 font-semibold text-xs xs:text-sm">Location coordinates captured successfully!</span>
                   </div>
                 )}
 
@@ -813,27 +813,27 @@ export default function NewReportPage() {
             </div>
 
             {/* Section 3: Images */}
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 pb-4 border-b-2 border-gray-200">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white font-bold">3</div>
-                <h2 className="text-2xl font-bold text-[#002E2E] flex items-center gap-2">
-                  <FaCamera /> Upload Evidence
+            <div className="space-y-4 xs:space-y-5 sm:space-y-6">
+              <div className="flex items-center gap-2 xs:gap-3 pb-3 xs:pb-4 border-b-2 border-gray-200">
+                <div className="flex items-center justify-center w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-white font-bold text-xs xs:text-sm">3</div>
+                <h2 className="text-lg xs:text-xl sm:text-2xl font-bold text-[#002E2E] flex items-center gap-1.5 xs:gap-2">
+                  <FaCamera className="text-base xs:text-lg sm:text-xl" /> Upload Evidence
                 </h2>
               </div>
 
-              <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-lg">
-                <p className="text-purple-900 text-sm font-semibold">
+              <div className="bg-purple-50 border-l-4 border-purple-500 p-3 xs:p-4 rounded-lg">
+                <p className="text-purple-900 text-xs xs:text-sm font-semibold">
                   📸 Clear photos help authorities understand and respond to the issue better. Upload up to 5 images.
                 </p>
               </div>
 
               <div>
-                <label className={`flex flex-col items-center justify-center w-full h-40 border-3 border-dashed rounded-xl cursor-pointer transition ${errors.image ? "border-red-500 bg-red-50 hover:bg-red-100" : "border-gray-300 bg-gray-50 hover:bg-gray-100"
+                <label className={`flex flex-col items-center justify-center w-full h-28 xs:h-32 sm:h-36 md:h-40 border-3 border-dashed rounded-lg xs:rounded-xl cursor-pointer transition ${errors.image ? "border-red-500 bg-red-50 hover:bg-red-100" : "border-gray-300 bg-gray-50 hover:bg-gray-100"
                   }`}>
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <FaUpload className={`text-4xl mb-2 ${errors.image ? 'text-red-500' : 'text-primary'}`} />
-                    <p className="text-sm font-bold text-gray-700">Click to upload or drag & drop</p>
-                    <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF, WebP up to 5MB each (Maximum 5 images)</p>
+                  <div className="flex flex-col items-center justify-center pt-3 xs:pt-4 sm:pt-5 pb-4 xs:pb-5 sm:pb-6">
+                    <FaUpload className={`text-2xl xs:text-3xl sm:text-4xl mb-1.5 xs:mb-2 ${errors.image ? 'text-red-500' : 'text-primary'}`} />
+                    <p className="text-xs xs:text-sm font-bold text-gray-700">Click to upload or drag & drop</p>
+                    <p className="text-[10px] xs:text-xs text-gray-500 mt-0.5 xs:mt-1 text-center px-2">PNG, JPG, GIF, WebP up to 5MB each (Maximum 5 images)</p>
                   </div>
                   <input
                     type="file"
@@ -868,15 +868,15 @@ export default function NewReportPage() {
 
               {previews.length > 0 && (
                 <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <FaCheckCircle className="text-green-600" />
-                    <p className="text-sm font-bold text-green-600">
+                  <div className="flex items-center gap-1.5 xs:gap-2 mb-3 xs:mb-4">
+                    <FaCheckCircle className="text-green-600 text-sm xs:text-base" />
+                    <p className="text-xs xs:text-sm font-bold text-green-600">
                       {previews.length} image{previews.length !== 1 ? 's' : ''} selected
                     </p>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2 xs:gap-3 sm:gap-4">
                     {previews.map((preview, index) => (
-                      <div key={index} className="relative w-full h-32 rounded-xl overflow-hidden border-3 border-green-300 shadow-lg hover:shadow-xl transition group">
+                      <div key={index} className="relative w-full h-24 xs:h-28 sm:h-32 rounded-lg xs:rounded-xl overflow-hidden border-2 xs:border-3 border-green-300 shadow-md xs:shadow-lg hover:shadow-xl transition group">
                         <Image src={preview} alt={`Preview ${index + 1}`} fill className="object-cover" />
                         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition rounded-xl flex items-center justify-center">
                           <button
@@ -886,7 +886,7 @@ export default function NewReportPage() {
                               setPreviews(newPreviews);
 
                               if (newPreviews.length === 0) {
-                                setValue("image", undefined as any);
+                                setValue("image", undefined as unknown as FileList);
                                 const input = document.querySelector('input[type="file"][accept="image/*"]') as HTMLInputElement;
                                 if (input) {
                                   input.value = '';
@@ -900,7 +900,7 @@ export default function NewReportPage() {
                             <FaTimes size={14} />
                           </button>
                         </div>
-                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs text-center py-2 font-semibold">
+                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-[10px] xs:text-xs text-center py-1 xs:py-2 font-semibold">
                           Image {index + 1}
                         </div>
                       </div>
@@ -911,12 +911,12 @@ export default function NewReportPage() {
             </div>
 
             {/* Submit Section */}
-            <div className="space-y-4 pt-6 border-t-2 border-gray-200">
-              <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4 flex items-start gap-3">
-                <FaCheckCircle className="text-green-600 mt-1 text-lg shrink-0" />
+            <div className="space-y-3 xs:space-y-4 pt-4 xs:pt-5 sm:pt-6 border-t-2 border-gray-200">
+              <div className="bg-green-50 border-2 border-green-200 rounded-lg xs:rounded-xl p-3 xs:p-4 flex items-start gap-2 xs:gap-3">
+                <FaCheckCircle className="text-green-600 mt-0.5 xs:mt-1 text-base xs:text-lg shrink-0" />
                 <div>
-                  <p className="text-green-900 font-bold mb-1">Ready to submit?</p>
-                  <p className="text-green-800 text-sm">
+                  <p className="text-green-900 font-bold mb-0.5 xs:mb-1 text-sm xs:text-base">Ready to submit?</p>
+                  <p className="text-green-800 text-xs xs:text-sm">
                     Make sure all fields are filled correctly. Your report will be reviewed by authorities within 24 hours.
                   </p>
                 </div>
@@ -936,13 +936,13 @@ export default function NewReportPage() {
         </div>
 
         {/* Help Section */}
-        <div className="mt-8 grid md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-blue-500">
-            <div className="flex items-center gap-3 mb-3">
-              <FaGraduationCap className="text-2xl text-blue-600" />
-              <h3 className="font-bold text-gray-900">Tips for Better Reports</h3>
+        <div className="mt-4 xs:mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 xs:gap-4 sm:gap-5 md:gap-6">
+          <div className="bg-white rounded-lg xs:rounded-xl p-4 xs:p-5 sm:p-6 shadow-md border-l-4 border-blue-500">
+            <div className="flex items-center gap-2 xs:gap-3 mb-2 xs:mb-3">
+              <FaGraduationCap className="text-lg xs:text-xl sm:text-2xl text-blue-600" />
+              <h3 className="font-bold text-gray-900 text-sm xs:text-base">Tips for Better Reports</h3>
             </div>
-            <ul className="text-sm text-gray-700 space-y-2">
+            <ul className="text-xs xs:text-sm text-gray-700 space-y-1.5 xs:space-y-2">
               <li>✓ Be specific in your title</li>
               <li>✓ Include clear details</li>
               <li>✓ Take photos from multiple angles</li>
@@ -950,12 +950,12 @@ export default function NewReportPage() {
             </ul>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-green-500">
-            <div className="flex items-center gap-3 mb-3">
-              <FaCheckCircle className="text-2xl text-green-600" />
-              <h3 className="font-bold text-gray-900">What Happens Next</h3>
+          <div className="bg-white rounded-lg xs:rounded-xl p-4 xs:p-5 sm:p-6 shadow-md border-l-4 border-green-500">
+            <div className="flex items-center gap-2 xs:gap-3 mb-2 xs:mb-3">
+              <FaCheckCircle className="text-lg xs:text-xl sm:text-2xl text-green-600" />
+              <h3 className="font-bold text-gray-900 text-sm xs:text-base">What Happens Next</h3>
             </div>
-            <ul className="text-sm text-gray-700 space-y-2">
+            <ul className="text-xs xs:text-sm text-gray-700 space-y-1.5 xs:space-y-2">
               <li>✓ Report gets verified</li>
               <li>✓ Assigned to authorities</li>
               <li>✓ Status updates on map</li>
@@ -963,12 +963,12 @@ export default function NewReportPage() {
             </ul>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-md border-l-4 border-purple-500">
-            <div className="flex items-center gap-3 mb-3">
-              <FaMapMarkerAlt className="text-2xl text-purple-600" />
-              <h3 className="font-bold text-gray-900">Location Tips</h3>
+          <div className="bg-white rounded-lg xs:rounded-xl p-4 xs:p-5 sm:p-6 shadow-md border-l-4 border-purple-500 sm:col-span-2 md:col-span-1">
+            <div className="flex items-center gap-2 xs:gap-3 mb-2 xs:mb-3">
+              <FaMapMarkerAlt className="text-lg xs:text-xl sm:text-2xl text-purple-600" />
+              <h3 className="font-bold text-gray-900 text-sm xs:text-base">Location Tips</h3>
             </div>
-            <ul className="text-sm text-gray-700 space-y-2">
+            <ul className="text-xs xs:text-sm text-gray-700 space-y-1.5 xs:space-y-2">
               <li>✓ Enable GPS for accuracy</li>
               <li>✓ Stand at issue location</li>
               <li>✓ Provide street address</li>

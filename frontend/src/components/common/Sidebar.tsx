@@ -119,8 +119,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-screen w-64 bg-base-100 border-r-2 border-base-200 z-50 overflow-y-auto transition-all duration-300 flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 lg:sticky lg:top-0 shadow-2xl`}
+        className={`fixed top-0 left-0 h-screen w-64 min-w-64 bg-base-100 border-r-2 border-base-200 z-50 overflow-y-auto transition-all duration-300 flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          } lg:translate-x-0 lg:sticky lg:top-0 lg:shrink-0 shadow-2xl`}
       >
         <div className="flex flex-col min-h-screen">
           {/* Header */}
@@ -165,7 +165,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   href={link.href}
                   onClick={() => onClose()}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-xl
-                    font-semibold transition-all duration-300 group ${active
+                    font-semibold transition-all duration-300 group whitespace-nowrap ${active
                       ? 'bg-primary text-white shadow-lg scale-105 origin-left'
                       : 'text-info hover:bg-base-200/60 hover:text-primary'
                     }`}
