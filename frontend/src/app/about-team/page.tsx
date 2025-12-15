@@ -8,6 +8,7 @@ import {
   ClipboardList,
   Code,
   Code2,
+  Coffee,
   CpuIcon,
   Database,
   GitBranch,
@@ -19,7 +20,8 @@ import {
   Lightbulb,
   Linkedin,
   Lock,
-  Mail, MapPin,
+  Mail,
+  MapPin,
   MessageSquare,
   Palette,
   PieChart,
@@ -30,7 +32,8 @@ import {
   Sparkles,
   Target,
   TrendingUp,
-  Users
+  Users,
+  Zap
 } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
@@ -340,7 +343,7 @@ const AboutTeamPage = () => {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
-                className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-8 py-2.5 sm:py-3.5 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 mb-8 sm:mb-10 shadow-2xl"
+                className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-8 lg:my-4 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 mb-8 sm:mb-10 shadow-2xl"
               >
                 <motion.div
                   animate={{ rotate: 360 }}
@@ -476,10 +479,10 @@ const AboutTeamPage = () => {
                 className="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 max-w-4xl mx-auto"
               >
                 {[
-                  { value: '4', label: 'Team Members', icon: '👨‍💻' },
-                  { value: '64', label: 'Districts', icon: '🗺️' },
-                  { value: '235K+', label: 'Reports', icon: '📊' },
-                  { value: '99.9%', label: 'Uptime', icon: '⚡' },
+                  { value: '4', label: 'Team Members', icon: <Users className="w-6 h-6 sm:w-8 sm:h-8 text-[#f2a921]" /> },
+                  { value: '64', label: 'Districts', icon: <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-[#f2a921]" /> },
+                  { value: '235K+', label: 'Reports', icon: <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 text-[#f2a921]" /> },
+                  { value: '99.9%', label: 'Uptime', icon: <Zap className="w-6 h-6 sm:w-8 sm:h-8 text-[#f2a921]" /> },
                 ].map((stat, i) => (
                   <motion.div
                     key={i}
@@ -487,7 +490,7 @@ const AboutTeamPage = () => {
                     className="relative group"
                   >
                     <div className="p-4 sm:p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 hover:border-[#f2a921]/30 transition-all duration-300">
-                      <span className="text-2xl sm:text-3xl mb-2 block">{stat.icon}</span>
+                      <div className="mb-2 flex justify-center">{stat.icon}</div>
                       <div className="text-2xl sm:text-3xl md:text-4xl font-black text-white">{stat.value}</div>
                       <div className="text-xs sm:text-sm text-white/60 font-medium uppercase tracking-wider">{stat.label}</div>
                     </div>
@@ -653,7 +656,7 @@ const AboutTeamPage = () => {
                             </div>
                             <div className="text-center">
                               <div className="text-lg sm:text-xl font-black text-[#f2a921]">{member.stats.coffees}</div>
-                              <div className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider">☕ Coffees</div>
+                              <div className="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wider flex items-center gap-1"><Coffee className="w-3 h-3" /> Coffees</div>
                             </div>
                           </div>
                         </div>
