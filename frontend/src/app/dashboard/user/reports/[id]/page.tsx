@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, Loading, NotFoundDisplay } from '@/components/common';
+import { Button, Loading, NotFoundDisplay } from '@/components/common';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
