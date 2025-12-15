@@ -55,7 +55,7 @@ export default function FaqSection() {
           </h2>
         </div>
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 xs:gap-8 sm:gap-10 md:gap-12 items-start py-3 xs:py-4 sm:py-6 md:py-12">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 xs:gap-8 sm:gap-10 md:gap-12 items-start py-3 xs:py-4 sm:py-6 md:py-12">
           {/* LEFT FAQ */}
           <div className="space-y-3 xs:space-y-3.5 sm:space-y-4">
             {faqs.map((item, index) => (
