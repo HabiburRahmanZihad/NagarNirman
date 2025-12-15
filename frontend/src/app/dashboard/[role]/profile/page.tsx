@@ -452,7 +452,17 @@ const ProfilePage = () => {
                 )}
                 <div>
                   <p className="text-xs xs:text-sm font-medium text-[#6B7280]">Account Status</p>
-                  <p className="text-base xs:text-lg font-bold text-primary">{user?.approved ? '✅ Approved' : '⏳ Pending'}</p>
+                  <p className="text-base xs:text-lg font-bold text-primary flex items-center gap-1.5">
+                    {user?.approved ? (
+                      <>
+                        <FaCheck className="text-green-600 text-sm" /> Approved
+                      </>
+                    ) : (
+                      <>
+                        <FaClock className="text-yellow-600 text-sm" /> Pending
+                      </>
+                    )}
+                  </p>
                 </div>
               </div>
             </div>
@@ -472,7 +482,7 @@ const ProfilePage = () => {
             <div className="p-3 xs:p-4 sm:p-5 md:p-6 bg-white rounded-lg border-2 border-gray-100 hover:shadow-lg transition">
               <div className="flex items-center gap-2 xs:gap-3">
                 <div className="w-8 xs:w-10 h-8 xs:h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-                  <span className="text-purple-600 text-base xs:text-lg font-bold">👤</span>
+                  <FaUser className="text-purple-600 text-base xs:text-lg" />
                 </div>
                 <div>
                   <p className="text-xs xs:text-sm font-medium text-[#6B7280]">User Role</p>
