@@ -228,56 +228,6 @@ const GalleryPage = () => {
     }
   };
 
-  // Get status color - UPDATED: Added distinct colors for each status
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Resolved': return {
-        bg: 'bg-green-100',
-        text: 'text-green-800',
-        border: 'border-green-200',
-        accent: '#059669',
-        // Lightbox specific colors
-        lightboxBg: 'bg-green-600',
-        lightboxText: 'text-white',
-        lightboxBorder: 'border-green-700',
-        lightboxGlow: 'shadow-lg shadow-green-600/30'
-      };
-      case 'In Progress': return {
-        bg: 'bg-blue-100',
-        text: 'text-blue-800',
-        border: 'border-blue-200',
-        accent: '#2563eb',
-        // Lightbox specific colors
-        lightboxBg: 'bg-blue-600',
-        lightboxText: 'text-white',
-        lightboxBorder: 'border-blue-700',
-        lightboxGlow: 'shadow-lg shadow-blue-600/30'
-      };
-      case 'Pending': return {
-        bg: 'bg-amber-100',
-        text: 'text-amber-800',
-        border: 'border-amber-200',
-        accent: '#d97706',
-        // Lightbox specific colors
-        lightboxBg: 'bg-amber-600',
-        lightboxText: 'text-white',
-        lightboxBorder: 'border-amber-700',
-        lightboxGlow: 'shadow-lg shadow-amber-600/30'
-      };
-      default: return {
-        bg: 'bg-gray-100',
-        text: 'text-gray-800',
-        border: 'border-gray-200',
-        accent: '#6b7280',
-        // Lightbox specific colors
-        lightboxBg: 'bg-gray-600',
-        lightboxText: 'text-white',
-        lightboxBorder: 'border-gray-700',
-        lightboxGlow: 'shadow-lg shadow-gray-600/30'
-      };
-    }
-  };
-
   // Get icon for problem type
   const getProblemTypeIcon = (problemType: string) => {
     return problemTypeIcons[problemType] || 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z';
@@ -659,7 +609,7 @@ const GalleryPage = () => {
         </div>
       </div>
 
-      {/* Professional Lightbox */}
+      {/* Professional Lightbox - FIXED VERSION */}
       {lightboxOpen && selectedItem && (
         <div className="fixed inset-0 z-50">
           {/* Backdrop with blur */}
@@ -670,8 +620,8 @@ const GalleryPage = () => {
           
           {/* Lightbox Container */}
           <div className="relative z-10 h-full flex flex-col">
-            {/* Top Bar */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-gradient-to-r from-black/80 to-transparent">
+            {/* Top Bar - FIXED: Simple working close button */}
+            <div className="flex items-center justify-between px-6 py-4 bg-black/90 border-b border-white/10">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-white font-medium">
@@ -684,111 +634,118 @@ const GalleryPage = () => {
                 </div>
               </div>
               
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => navigateLightbox('prev')}
-                  className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300 group"
-                  style={{ color: '#f2a921' }}
+                  className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300"
                   aria-label="Previous photo"
                 >
-                  <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-6 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
                 
                 <button
                   onClick={() => navigateLightbox('next')}
-                  className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300 group"
-                  style={{ color: '#f2a921' }}
+                  className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300"
                   aria-label="Next photo"
                 >
-                  <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-6 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
                 
-                {/* FIXED: Added separate close X button */}
-                <div className="h-6 w-px bg-white/20 mx-1"></div>
-                
+                {/* FIXED: Simple X close button that definitely works */}
                 <button
                   onClick={closeLightbox}
-                  className="px-4 py-2 rounded-lg bg-red-500/90 hover:bg-red-500 transition-all duration-300 text-white font-medium flex items-center gap-2 group"
+                  className="ml-2 p-3 rounded-lg bg-red-600 hover:bg-red-700 transition-all duration-300"
                   aria-label="Close lightbox"
                 >
-                  <svg className="w-5 h-5 group-hover:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
-                  <span>Close</span>
                 </button>
               </div>
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col lg:flex-row gap-8 p-6">
+            <div className="flex-1 flex flex-col lg:flex-row gap-6 p-4 md:p-6">
               {/* Image Section */}
               <div className="flex-1 flex items-center justify-center overflow-hidden">
                 <div className="relative w-full h-full max-h-[70vh] flex items-center justify-center">
                   <img
                     src={selectedItem.src}
                     alt={selectedItem.title}
-                    className="max-h-full max-w-full object-contain rounded-xl shadow-2xl"
+                    className="max-h-full max-w-full object-contain rounded-lg shadow-2xl"
                   />
                   
                   {/* Navigation Hint */}
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/60 text-white text-sm px-4 py-2 rounded-full backdrop-blur-sm">
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-sm px-4 py-2 rounded-full backdrop-blur-sm">
                     ← Use arrow keys to navigate →
                   </div>
                 </div>
               </div>
 
               {/* Details Panel - FIXED: Increased width */}
-              <div className="lg:w-[450px] xl:w-[500px] flex flex-col">
-                {/* Badges */}
+              <div className="lg:w-[450px] xl:w-[500px] flex flex-col bg-black/50 rounded-xl p-5 border border-white/10">
+                {/* Badges - FIXED: Using inline styles for status badge */}
                 <div className="flex flex-wrap gap-3 mb-6">
                   <div className={`px-4 py-2 rounded-lg font-bold ${getSeverityColor(selectedItem.severity || 'Medium').bg} ${getSeverityColor(selectedItem.severity || 'Medium').text} ${getSeverityColor(selectedItem.severity || 'Medium').glow}`}>
                     {selectedItem.severity || 'Medium'}
                   </div>
-                  <div className="px-4 py-2 rounded-lg font-bold text-white border border-teal-700 shadow-lg shadow-teal-600/30" style={{ backgroundColor: '#004d40' }}>
+                  <div className="px-4 py-2 rounded-lg font-bold text-white border border-teal-700" style={{ backgroundColor: '#004d40' }}>
                     {selectedItem.problemType}
                   </div>
-                  {/* FIXED: Status badge with distinct colors for each status */}
-                  <div className={`px-4 py-2 rounded-lg font-bold border ${getStatusColor(selectedItem.status).lightboxBg} ${getStatusColor(selectedItem.status).lightboxText} ${getStatusColor(selectedItem.status).lightboxBorder} ${getStatusColor(selectedItem.status).lightboxGlow}`}>
+                  
+                  {/* FIXED: Status badge with guaranteed colors using style attribute */}
+                  <div 
+                    className="px-4 py-2 rounded-lg font-bold"
+                    style={{
+                      backgroundColor: selectedItem.status === 'Resolved' ? '#10b981' : 
+                                      selectedItem.status === 'In Progress' ? '#3b82f6' : 
+                                      selectedItem.status === 'Pending' ? '#f59e0b' : '#6b7280',
+                      color: 'white',
+                      border: selectedItem.status === 'Resolved' ? '1px solid #059669' : 
+                              selectedItem.status === 'In Progress' ? '1px solid #2563eb' : 
+                              selectedItem.status === 'Pending' ? '1px solid #d97706' : '1px solid #4b5563'
+                    }}
+                  >
                     {selectedItem.status}
                   </div>
                 </div>
 
                 {/* Title */}
-                <h2 className="text-3xl font-bold text-white mb-6 leading-tight">
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
                   {selectedItem.title}
                 </h2>
 
                 {/* Info Grid */}
-                <div className="space-y-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                <div className="space-y-5">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-white/5 p-4 rounded-lg border border-white/10">
                       <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 rounded-lg" style={{ backgroundColor: '#004d40' }}>
-                          <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                           </svg>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-400">Location</p>
-                          <p className="text-white font-medium">{selectedItem.location}</p>
+                          <p className="text-xs text-gray-400">Location</p>
+                          <p className="text-white font-medium text-sm">{selectedItem.location}</p>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="bg-white/5 p-4 rounded-xl border border-white/10">
+                    <div className="bg-white/5 p-4 rounded-lg border border-white/10">
                       <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 rounded-lg" style={{ backgroundColor: '#f2a921' }}>
-                          <svg className="w-5 h-5 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-4 h-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-400">Reported On</p>
-                          <p className="text-white font-medium">{selectedItem.fullDate || selectedItem.date}</p>
+                          <p className="text-xs text-gray-400">Reported On</p>
+                          <p className="text-white font-medium text-sm">{selectedItem.fullDate || selectedItem.date}</p>
                         </div>
                       </div>
                     </div>
@@ -796,14 +753,14 @@ const GalleryPage = () => {
 
                   {/* Description */}
                   {selectedItem.description && (
-                    <div className="bg-white/5 rounded-xl border border-white/10 overflow-hidden">
-                      <div className="p-5">
-                        <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                          <div className="w-2 h-4 rounded-full" style={{ backgroundColor: '#f2a921' }}></div>
+                    <div className="bg-white/5 rounded-lg border border-white/10 overflow-hidden">
+                      <div className="p-4">
+                        <h3 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
+                          <div className="w-1.5 h-3.5 rounded-full" style={{ backgroundColor: '#f2a921' }}></div>
                           Issue Description
                         </h3>
-                        <div className="max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-                          <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                        <div className="max-h-40 overflow-y-auto pr-2">
+                          <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
                             {selectedItem.description}
                           </p>
                         </div>
@@ -812,30 +769,30 @@ const GalleryPage = () => {
                   )}
 
                   {/* Actions */}
-                  <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <div className="flex flex-col sm:flex-row gap-2 pt-3">
                     <button
                       onClick={() => window.open(selectedItem.src, '_blank')}
-                      className="flex-1 px-6 py-4 rounded-xl font-bold transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-3"
+                      className="flex-1 px-4 py-3 rounded-lg font-bold transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 text-sm"
                       style={{
                         backgroundColor: '#004d40',
                         color: 'white'
                       }}
                     >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
                       </svg>
                       Open Full Size
                     </button>
                     <button
                       onClick={() => window.location.href = '/report'}
-                      className="flex-1 px-6 py-4 rounded-xl font-bold border transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-3"
+                      className="flex-1 px-4 py-3 rounded-lg font-bold border transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 text-sm"
                       style={{
                         borderColor: '#f2a921',
                         color: '#f2a921',
                         backgroundColor: 'transparent'
                       }}
                     >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
                       Report Similar
@@ -846,8 +803,8 @@ const GalleryPage = () => {
             </div>
 
             {/* Thumbnail Strip */}
-            <div className="px-6 py-4 border-t border-white/10 bg-gradient-to-t from-black/80 to-transparent">
-              <div className="flex gap-3 overflow-x-auto pb-2">
+            <div className="px-4 py-3 border-t border-white/10 bg-black/80">
+              <div className="flex gap-2 overflow-x-auto pb-1">
                 {filteredItems.map((item, index) => (
                   <button
                     key={item.id}
@@ -855,9 +812,9 @@ const GalleryPage = () => {
                       setCurrentIndex(index);
                       setSelectedItem(item);
                     }}
-                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                    className={`flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded overflow-hidden border-2 transition-all ${
                       index === currentIndex 
-                        ? 'border-teal-500 ring-2 ring-teal-500/50 scale-110' 
+                        ? 'border-yellow-500 ring-1 ring-yellow-500 scale-105' 
                         : 'border-transparent hover:border-white/50 hover:scale-105'
                     }`}
                   >
@@ -873,24 +830,6 @@ const GalleryPage = () => {
           </div>
         </div>
       )}
-
-      {/* Add custom scrollbar styles */}
-      <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(242, 169, 33, 0.5);
-          border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(242, 169, 33, 0.8);
-        }
-      `}</style>
     </section>
   );
 };
