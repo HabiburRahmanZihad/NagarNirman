@@ -387,7 +387,7 @@ export default function AboutPage() {
             <div className="hidden lg:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-linear-to-b from-[#004d40] via-[#f2a921] to-[#004d40] top-0"></div>
 
             {/* Timeline Steps */}
-            <div className="space-y-24">
+            <div className="space-y-6 sm:space-y-10 md:space-y-16 lg:space-y-24">
               {[
                 {
                   year: '01',
@@ -448,16 +448,16 @@ export default function AboutPage() {
               ].map((step, index) => (
                 <div
                   key={index}
-                  className={`relative flex flex-col lg:flex-row items-center group ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
+                  className={`relative flex flex-col lg:flex-row items-start lg:items-center group ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
                     }`}
                 >
-                  {/* Year Label */}
+                  {/* Year Label - Hidden on mobile, shown on desktop */}
                   <div
-                    className={`absolute lg:static left-2 sm:left-4 lg:left-auto top-0 lg:top-auto ${index % 2 === 0 ? 'lg:mr-12' : 'lg:ml-12'
+                    className={`hidden lg:block lg:static ${index % 2 === 0 ? 'lg:mr-12' : 'lg:ml-12'
                       } z-10`}
                   >
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-linear-to-br from-[#f2a921] to-[#e6b82e] rounded-full flex items-center justify-center shadow-lg border-2 sm:border-3 md:border-4 border-white group-hover:from-[#004d40] group-hover:to-[#1e5a22] group-hover:border-[#f2a921] transition-all duration-300">
-                      <span className="text-base sm:text-lg md:text-xl font-bold text-gray-900 group-hover:text-white transition-colors duration-300">
+                    <div className="w-16 h-16 bg-linear-to-br from-[#f2a921] to-[#e6b82e] rounded-full flex items-center justify-center shadow-lg border-4 border-white group-hover:from-[#004d40] group-hover:to-[#1e5a22] group-hover:border-[#f2a921] transition-all duration-300">
+                      <span className="text-xl font-bold text-gray-900 group-hover:text-white transition-colors duration-300">
                         {step.year}
                       </span>
                     </div>
@@ -465,18 +465,31 @@ export default function AboutPage() {
 
                   {/* Step Content */}
                   <div
-                    className={`w-full lg:w-5/12 ml-14 sm:ml-18 md:ml-20 lg:ml-0 ${index % 2 === 0 ? 'lg:pr-12' : 'lg:pl-12'
+                    className={`w-full lg:w-5/12 ${index % 2 === 0 ? 'lg:pr-12' : 'lg:pl-12'
                       }`}
                   >
-                    <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 shadow-xl border border-gray-100 hover:border-[#004d40] hover:shadow-2xl transition-all duration-300 group-hover:bg-linear-to-br group-hover:from-white group-hover:to-gray-50">
+                    <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 shadow-xl border border-gray-100 hover:border-[#004d40] hover:shadow-2xl transition-all duration-300 group-hover:bg-linear-to-br group-hover:from-white group-hover:to-gray-50">
+                      {/* Mobile: Step number inline with title */}
+                      <div className="flex items-center gap-3 mb-3 lg:hidden">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 bg-linear-to-br from-[#f2a921] to-[#e6b82e] rounded-full flex items-center justify-center shadow-md border-2 border-white shrink-0">
+                          <span className="text-sm sm:text-base font-bold text-gray-900">
+                            {step.year}
+                          </span>
+                        </div>
+                        <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-[#004d40] transition-colors duration-300">
+                          {step.title}
+                        </h3>
+                      </div>
+
                       <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 md:gap-6">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-[#004d40]/10 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 group-hover:bg-[#f2a921]/20 transition-all duration-300">
                           <div className="text-[#004d40] group-hover:text-[#f2a921] transition-colors duration-300">
                             {step.icon}
                           </div>
                         </div>
-                        <div className="flex-1">
-                          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-[#004d40] transition-colors duration-300">
+                        <div className="flex-1 min-w-0">
+                          {/* Desktop title - hidden on mobile */}
+                          <h3 className="hidden lg:block text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 group-hover:text-[#004d40] transition-colors duration-300">
                             {step.title}
                           </h3>
                           <p className="text-sm sm:text-base text-gray-700 mb-3 sm:mb-4 leading-relaxed group-hover:text-gray-800 transition-colors duration-300">
@@ -578,12 +591,12 @@ export default function AboutPage() {
                   </div>
                   <span
                     className={`px-4 py-1 rounded-full text-sm font-semibold ${issue.severity === 'Emergency'
-                        ? 'bg-red-100 text-red-700 group-hover:bg-red-200 transition-colors duration-300'
-                        : issue.severity === 'High Priority'
-                          ? 'bg-orange-100 text-orange-700 group-hover:bg-orange-200 transition-colors duration-300'
-                          : issue.severity === 'Medium Priority'
-                            ? 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-200 transition-colors duration-300'
-                            : 'bg-blue-100 text-blue-700 group-hover:bg-blue-200 transition-colors duration-300'
+                      ? 'bg-red-100 text-red-700 group-hover:bg-red-200 transition-colors duration-300'
+                      : issue.severity === 'High Priority'
+                        ? 'bg-orange-100 text-orange-700 group-hover:bg-orange-200 transition-colors duration-300'
+                        : issue.severity === 'Medium Priority'
+                          ? 'bg-yellow-100 text-yellow-700 group-hover:bg-yellow-200 transition-colors duration-300'
+                          : 'bg-blue-100 text-blue-700 group-hover:bg-blue-200 transition-colors duration-300'
                       }`}
                   >
                     {issue.severity}
