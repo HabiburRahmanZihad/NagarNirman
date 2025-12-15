@@ -192,7 +192,7 @@ const GalleryPage = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [lightboxOpen, currentIndex]);
 
-  // Get severity color with proper bg classes - FIXED
+  // Get severity color with proper bg classes
   const getSeverityColor = (severity: string) => {
     switch (severity?.toLowerCase()) {
       case 'critical': return {
@@ -228,7 +228,7 @@ const GalleryPage = () => {
     }
   };
 
-  // Get status color - FIXED: Added colors for lightbox
+  // Get status color - UPDATED: Added distinct colors for each status
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Resolved': return {
@@ -236,36 +236,44 @@ const GalleryPage = () => {
         text: 'text-green-800',
         border: 'border-green-200',
         accent: '#059669',
+        // Lightbox specific colors
         lightboxBg: 'bg-green-600',
         lightboxText: 'text-white',
-        lightboxBorder: 'border-green-700'
+        lightboxBorder: 'border-green-700',
+        lightboxGlow: 'shadow-lg shadow-green-600/30'
       };
       case 'In Progress': return {
         bg: 'bg-blue-100',
         text: 'text-blue-800',
         border: 'border-blue-200',
         accent: '#2563eb',
+        // Lightbox specific colors
         lightboxBg: 'bg-blue-600',
         lightboxText: 'text-white',
-        lightboxBorder: 'border-blue-700'
+        lightboxBorder: 'border-blue-700',
+        lightboxGlow: 'shadow-lg shadow-blue-600/30'
       };
       case 'Pending': return {
         bg: 'bg-amber-100',
         text: 'text-amber-800',
         border: 'border-amber-200',
         accent: '#d97706',
+        // Lightbox specific colors
         lightboxBg: 'bg-amber-600',
         lightboxText: 'text-white',
-        lightboxBorder: 'border-amber-700'
+        lightboxBorder: 'border-amber-700',
+        lightboxGlow: 'shadow-lg shadow-amber-600/30'
       };
       default: return {
         bg: 'bg-gray-100',
         text: 'text-gray-800',
         border: 'border-gray-200',
         accent: '#6b7280',
+        // Lightbox specific colors
         lightboxBg: 'bg-gray-600',
         lightboxText: 'text-white',
-        lightboxBorder: 'border-gray-700'
+        lightboxBorder: 'border-gray-700',
+        lightboxGlow: 'shadow-lg shadow-gray-600/30'
       };
     }
   };
@@ -478,11 +486,14 @@ const GalleryPage = () => {
                       className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                     />
                     
-                    {/* Dark Overlay - Shows on hover */}
+                    {/* FIXED: Always visible gradient overlay for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
+                    
+                    {/* Additional overlay that shows on hover */}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/70 transition-all duration-500" />
                     
                     {/* Top Left - Problem Type (Category) with Icon - HIDES ON HOVER */}
-                    <div className="absolute top-4 left-4 transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:-translate-y-2">
+                    <div className="absolute top-4 left-4 transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:-translate-y-2 z-10">
                       <div 
                         className="px-3 py-1.5 rounded-full backdrop-blur-sm border shadow-sm flex items-center gap-2"
                         style={{ 
@@ -501,7 +512,7 @@ const GalleryPage = () => {
                     </div>
 
                     {/* Top Right - Severity Badge - HIDES ON HOVER */}
-                    <div className="absolute top-4 right-4 transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:-translate-y-2">
+                    <div className="absolute top-4 right-4 transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:-translate-y-2 z-10">
                       <div className={`px-3 py-1.5 rounded-full border ${severityColors.bg} ${severityColors.text} ${severityColors.border} ${severityColors.glow}`}>
                         <span className="text-xs font-bold tracking-wide flex items-center gap-1">
                           <div className="w-2 h-2 rounded-full bg-white/90"></div>
@@ -510,32 +521,32 @@ const GalleryPage = () => {
                       </div>
                     </div>
 
-                    {/* Bottom Content - Visible by default, hides on hover */}
-                    <div className="absolute bottom-0 left-0 right-0 p-5 transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:translate-y-4">
+                    {/* Bottom Content - Always visible with gradient overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5 transition-all duration-500 opacity-100 group-hover:opacity-0 group-hover:translate-y-4 z-10">
                       {/* Title */}
-                      <h3 className="text-lg font-bold text-white mb-3 leading-tight line-clamp-2">
+                      <h3 className="text-lg font-bold text-white mb-3 leading-tight line-clamp-2 drop-shadow-lg">
                         {item.title}
                       </h3>
                       
                       {/* Location & Date */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <svg className="w-4 h-4 text-white/80" fill="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 text-white/90 drop-shadow" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                           </svg>
-                          <span className="text-sm font-medium text-white/90">{item.location}</span>
+                          <span className="text-sm font-medium text-white/95 drop-shadow">{item.location}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <svg className="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-4 h-4 text-white/90 drop-shadow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
-                          <span className="text-sm font-medium text-white/90">{item.date}</span>
+                          <span className="text-sm font-medium text-white/95 drop-shadow">{item.date}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* View Details Button - Shows only on hover */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 z-20">
                       <div className="inline-flex items-center justify-center px-8 py-4 rounded-xl text-base font-bold transition-all duration-300 hover:scale-105 gap-3"
                         style={{ 
                           backgroundColor: '#f2a921',
@@ -673,7 +684,7 @@ const GalleryPage = () => {
                 </div>
               </div>
               
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={() => navigateLightbox('prev')}
                   className="p-3 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300 group"
@@ -697,20 +708,23 @@ const GalleryPage = () => {
                 </button>
                 
                 {/* FIXED: Added separate close X button */}
+                <div className="h-6 w-px bg-white/20 mx-1"></div>
+                
                 <button
                   onClick={closeLightbox}
-                  className="p-3 rounded-lg bg-red-500/20 hover:bg-red-500/30 transition-all duration-300 text-white group ml-2"
+                  className="px-4 py-2 rounded-lg bg-red-500/90 hover:bg-red-500 transition-all duration-300 text-white font-medium flex items-center gap-2 group"
                   aria-label="Close lightbox"
                 >
-                  <svg className="w-6 h-6 group-hover:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-5 h-5 group-hover:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
+                  <span>Close</span>
                 </button>
               </div>
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col lg:flex-row gap-8 p-8">
+            <div className="flex-1 flex flex-col lg:flex-row gap-8 p-6">
               {/* Image Section */}
               <div className="flex-1 flex items-center justify-center overflow-hidden">
                 <div className="relative w-full h-full max-h-[70vh] flex items-center justify-center">
@@ -727,18 +741,18 @@ const GalleryPage = () => {
                 </div>
               </div>
 
-              {/* Details Panel */}
-              <div className="lg:w-96 flex flex-col">
+              {/* Details Panel - FIXED: Increased width */}
+              <div className="lg:w-[450px] xl:w-[500px] flex flex-col">
                 {/* Badges */}
                 <div className="flex flex-wrap gap-3 mb-6">
                   <div className={`px-4 py-2 rounded-lg font-bold ${getSeverityColor(selectedItem.severity || 'Medium').bg} ${getSeverityColor(selectedItem.severity || 'Medium').text} ${getSeverityColor(selectedItem.severity || 'Medium').glow}`}>
                     {selectedItem.severity || 'Medium'}
                   </div>
-                  <div className="px-4 py-2 rounded-lg font-bold text-white" style={{ backgroundColor: '#004d40' }}>
+                  <div className="px-4 py-2 rounded-lg font-bold text-white border border-teal-700 shadow-lg shadow-teal-600/30" style={{ backgroundColor: '#004d40' }}>
                     {selectedItem.problemType}
                   </div>
-                  {/* FIXED: Status badge with proper colors */}
-                  <div className={`px-4 py-2 rounded-lg font-bold ${getStatusColor(selectedItem.status).lightboxBg} ${getStatusColor(selectedItem.status).lightboxText}`}>
+                  {/* FIXED: Status badge with distinct colors for each status */}
+                  <div className={`px-4 py-2 rounded-lg font-bold border ${getStatusColor(selectedItem.status).lightboxBg} ${getStatusColor(selectedItem.status).lightboxText} ${getStatusColor(selectedItem.status).lightboxBorder} ${getStatusColor(selectedItem.status).lightboxGlow}`}>
                     {selectedItem.status}
                   </div>
                 </div>
@@ -780,9 +794,9 @@ const GalleryPage = () => {
                     </div>
                   </div>
 
-                  {/* Description - FIXED: Added scrollable container */}
+                  {/* Description */}
                   {selectedItem.description && (
-                    <div className="bg-white/5 rounded-xl border border-white/10">
+                    <div className="bg-white/5 rounded-xl border border-white/10 overflow-hidden">
                       <div className="p-5">
                         <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
                           <div className="w-2 h-4 rounded-full" style={{ backgroundColor: '#f2a921' }}></div>
