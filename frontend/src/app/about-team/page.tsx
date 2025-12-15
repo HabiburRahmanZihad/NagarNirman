@@ -5,14 +5,13 @@ import {
   BarChart3,
   Building2,
   CheckCircle,
-  Cloud,
+  ClipboardList,
   Code,
   Code2,
   CpuIcon,
   Database,
   GitBranch,
   Github,
-  Globe,
   Globe2,
   Heart,
   Key,
@@ -24,13 +23,13 @@ import {
   MessageSquare,
   Palette,
   PieChart,
+  Play,
   Rocket,
   Server,
   Shield,
   Sparkles,
   Target,
   TrendingUp,
-  Upload,
   Users
 } from 'lucide-react';
 import React from 'react';
@@ -197,15 +196,24 @@ const AboutTeamPage = () => {
     { value: 99.9, suffix: '%', label: 'System Uptime', icon: <Server className="w-6 h-6" /> },
   ];
 
-  // Tech Stack Data
+  // Tech Stack Data - Based on actual package.json
   const TECH_STACK = [
     {
-      category: 'Frontend',
+      category: 'Frontend Framework',
       technologies: [
-        { name: 'Next.js', icon: <Globe2 className="w-6 h-6" />, color: 'from-black to-gray-800' },
+        { name: 'Next.js 16', icon: <Globe2 className="w-6 h-6" />, color: 'from-black to-gray-800' },
+        { name: 'React 19', icon: <Code className="w-6 h-6" />, color: 'from-cyan-400 to-blue-600' },
         { name: 'TypeScript', icon: <Code className="w-6 h-6" />, color: 'from-blue-600 to-blue-800' },
-        { name: 'Tailwind CSS', icon: <Palette className="w-6 h-6" />, color: 'from-cyan-500 to-teal-500' },
-        { name: 'ShadCN/UI', icon: <Layers className="w-6 h-6" />, color: 'from-gray-700 to-gray-900' },
+        { name: 'Tailwind CSS 4', icon: <Palette className="w-6 h-6" />, color: 'from-cyan-500 to-teal-500' },
+      ]
+    },
+    {
+      category: 'UI & Animation',
+      technologies: [
+        { name: 'Framer Motion', icon: <Sparkles className="w-6 h-6" />, color: 'from-pink-500 to-purple-600' },
+        { name: 'DaisyUI', icon: <Layers className="w-6 h-6" />, color: 'from-emerald-500 to-teal-600' },
+        { name: 'Lucide React', icon: <Lightbulb className="w-6 h-6" />, color: 'from-orange-400 to-red-500' },
+        { name: 'Lottie React', icon: <Play className="w-6 h-6" />, color: 'from-green-400 to-emerald-600' },
       ]
     },
     {
@@ -214,33 +222,25 @@ const AboutTeamPage = () => {
         { name: 'Node.js', icon: <CpuIcon className="w-6 h-6" />, color: 'from-green-600 to-emerald-700' },
         { name: 'Express.js', icon: <Server className="w-6 h-6" />, color: 'from-gray-600 to-gray-800' },
         { name: 'MongoDB', icon: <Database className="w-6 h-6" />, color: 'from-green-500 to-emerald-600' },
-        { name: 'Mongoose', icon: <Database className="w-6 h-6" />, color: 'from-red-500 to-red-700' },
+        { name: 'Nodemailer', icon: <Mail className="w-6 h-6" />, color: 'from-red-400 to-red-600' },
       ]
     },
     {
       category: 'Authentication & Security',
       technologies: [
-        { name: 'NextAuth.js', icon: <Key className="w-6 h-6" />, color: 'from-blue-500 to-indigo-600' },
         { name: 'JWT', icon: <Shield className="w-6 h-6" />, color: 'from-purple-500 to-purple-700' },
-        { name: 'Firebase Auth', icon: <Lock className="w-6 h-6" />, color: 'from-yellow-500 to-orange-600' },
+        { name: 'Bcrypt.js', icon: <Lock className="w-6 h-6" />, color: 'from-yellow-500 to-orange-600' },
+        { name: 'Express Validator', icon: <CheckCircle className="w-6 h-6" />, color: 'from-blue-500 to-indigo-600' },
+        { name: 'CORS', icon: <Key className="w-6 h-6" />, color: 'from-gray-500 to-gray-700' },
       ]
     },
     {
-      category: 'Services & APIs',
+      category: 'Maps & Data Visualization',
       technologies: [
-        { name: 'Mapbox/Leaflet', icon: <MapPin className="w-6 h-6" />, color: 'from-blue-400 to-blue-600' },
-        { name: 'Cloudinary', icon: <Cloud className="w-6 h-6" />, color: 'from-yellow-400 to-orange-500' },
-        { name: 'Multer', icon: <Upload className="w-6 h-6" />, color: 'from-gray-500 to-gray-700' },
-        { name: 'Nodemailer', icon: <Mail className="w-6 h-6" />, color: 'from-red-400 to-red-600' },
-      ]
-    },
-    {
-      category: 'State & Deployment',
-      technologies: [
-        { name: 'Context API', icon: <BarChart3 className="w-6 h-6" />, color: 'from-purple-400 to-purple-600' },
-        { name: 'Redux Toolkit', icon: <GitBranch className="w-6 h-6" />, color: 'from-violet-500 to-violet-700' },
-        { name: 'Vercel', icon: <Globe className="w-6 h-6" />, color: 'from-black to-gray-800' },
-        { name: 'Render/Heroku', icon: <Server className="w-6 h-6" />, color: 'from-pink-500 to-rose-600' },
+        { name: 'React Leaflet', icon: <MapPin className="w-6 h-6" />, color: 'from-green-500 to-teal-600' },
+        { name: 'Recharts', icon: <BarChart3 className="w-6 h-6" />, color: 'from-blue-400 to-indigo-600' },
+        { name: 'React Hook Form', icon: <ClipboardList className="w-6 h-6" />, color: 'from-pink-400 to-rose-600' },
+        { name: 'Swiper', icon: <Layers className="w-6 h-6" />, color: 'from-blue-500 to-purple-600' },
       ]
     },
   ];
