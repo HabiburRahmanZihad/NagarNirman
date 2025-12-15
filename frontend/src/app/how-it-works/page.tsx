@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/common';
 import { useState, useEffect, useRef } from 'react';
 import {
   FaMapMarkerAlt, FaCamera, FaCheckCircle, FaUserCheck, FaBuilding,
@@ -11,7 +10,7 @@ import {
   FaStar, FaCity,
   FaFileAlt, FaLocationArrow, FaListAlt, FaHistory,
   FaSearch, FaUpload, FaRoute, FaClipboardCheck,
-  FaPlay, FaArrowRight
+  FaArrowRight
 } from 'react-icons/fa';
 import {
   MdAssignment, MdVerified,
