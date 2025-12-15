@@ -12,11 +12,24 @@ import { FullPageLoading } from '@/components/common';
 import { Users, BarChart3, RefreshCw, FileText, CheckCircle2, AlertCircle, TrendingUp, Clock } from 'lucide-react';
 import Card from '@/components/common/Card';
 
+interface Report {
+  _id: string;
+  title: string;
+  description?: string;
+  status: string;
+  category?: string;
+  location?: {
+    district?: string;
+    division?: string;
+  };
+  createdAt: string;
+}
+
 export default function SuperAdminDashboard() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const [allUsers, setAllUsers] = useState<User[]>([]);
-  const [allReports, setAllReports] = useState<any[]>([]);
+  const [allReports, setAllReports] = useState<Report[]>([]);
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalReports: 0,
@@ -113,14 +126,15 @@ export default function SuperAdminDashboard() {
       setShowRoleModal(false);
       setSelectedUser(null);
       fetchDashboardData(); // Refresh data
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to update role');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update role';
+      toast.error(errorMessage);
     }
   };
 
   const openRoleModal = (user: User) => {
     setSelectedUser(user);
-    setNewRole(user.role as any);
+    setNewRole(user.role as 'user' | 'authority' | 'problemSolver');
     setShowRoleModal(true);
   };
 
@@ -323,7 +337,7 @@ export default function SuperAdminDashboard() {
                         </div>
                         <div className="min-w-0">
                           <div className="text-xs xs:text-sm font-bold text-neutral truncate">{user.name}</div>
-                          <div className="text-[10px] xs:text-xs text-neutral/60 truncate max-w-[80px] xs:max-w-[120px] sm:max-w-none">{user.email}</div>
+                          <div className="text-[10px] xs:text-xs text-neutral/60 truncate max-w-20 xs:max-w-[120px] sm:max-w-none">{user.email}</div>
                         </div>
                       </div>
                     </td>
@@ -492,7 +506,7 @@ export default function SuperAdminDashboard() {
                   key={role}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setNewRole(role as any)}
+                  onClick={() => setNewRole(role as 'user' | 'authority' | 'problemSolver')}
                   disabled={selectedUser.role === role}
                   className={`w-full p-4 rounded-xl border-2 text-left transition-all font-bold ${newRole === role
                     ? 'border-accent bg-linear-to-r from-accent/10 to-secondary/10 shadow-md'
