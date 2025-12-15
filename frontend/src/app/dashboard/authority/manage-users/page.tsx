@@ -193,19 +193,20 @@ export default function ManageUsersPage() {
   };
 
   return (
-    <div className="space-y-8 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
+    <div className="space-y-4 xs:space-y-6 sm:space-y-8 px-3 xs:px-4 sm:px-6 lg:px-8 py-4 xs:py-6 lg:py-8 bg-base-300 min-h-screen container mx-auto">
       {/* Welcome Section with Gradient Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-primary text-white rounded-3xl shadow-2xl p-8 sm:p-12 border-t-4 border-accent flex items-center justify-between"
+        className="bg-primary text-white rounded-xl xs:rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl p-4 xs:p-6 sm:p-8 lg:p-12 border-t-4 border-accent flex items-center justify-between gap-3 xs:gap-4"
       >
-        <div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold mb-3">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-xl xs:text-2xl sm:text-4xl lg:text-5xl font-extrabold mb-1 xs:mb-2 sm:mb-3">
             Manage Users 👥
           </h1>
-          <p className="text-white/90 text-lg font-semibold">
-            Manage and monitor user accounts in <span className="text-accent font-bold">{authUser?.division} Division</span>
+          <p className="text-white/90 text-xs xs:text-sm sm:text-lg font-semibold">
+            <span className="hidden xs:inline">Manage and monitor user accounts in </span>
+            <span className="text-accent font-bold">{authUser?.division}<span className="hidden xs:inline"> Division</span></span>
           </p>
         </div>
         <motion.button
@@ -213,15 +214,15 @@ export default function ManageUsersPage() {
           whileHover={{ rotate: 180 }}
           whileTap={{ scale: 0.95 }}
           disabled={isLoading}
-          className="p-3 bg-white/20 hover:bg-white/30 rounded-2xl transition-all disabled:opacity-50 shrink-0"
+          className="p-2 xs:p-2.5 sm:p-3 bg-white/20 hover:bg-white/30 rounded-lg xs:rounded-xl sm:rounded-2xl transition-all disabled:opacity-50 shrink-0"
           title="Refresh users"
         >
-          <RefreshCw className={`w-6 h-6 ${isLoading ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 ${isLoading ? 'animate-spin' : ''}`} />
         </motion.button>
       </motion.div>
 
       {/* Quick Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4 lg:gap-6">
         {[
           { title: 'Total Users', value: users.length, icon: Users, color: 'text-blue-600', bgColor: 'bg-blue-50' },
           { title: 'Active Users', value: users.filter(u => u.isActive).length, icon: UserCheck, color: 'text-green-600', bgColor: 'bg-green-50' },
@@ -235,15 +236,15 @@ export default function ManageUsersPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`${stat.bgColor} rounded-2xl p-6 border-2 border-accent/20 hover:scale-105 transition-transform`}
+              className={`${stat.bgColor} rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 border-2 border-accent/20 hover:scale-105 transition-transform`}
             >
               <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-bold text-neutral/70 uppercase tracking-wide">{stat.title}</p>
-                  <p className="text-3xl font-extrabold text-info mt-2">{stat.value}</p>
+                <div className="min-w-0">
+                  <p className="text-[10px] xs:text-xs sm:text-sm font-bold text-neutral/70 uppercase tracking-wide truncate">{stat.title}</p>
+                  <p className="text-lg xs:text-xl sm:text-2xl lg:text-3xl font-extrabold text-info mt-1 xs:mt-2">{stat.value}</p>
                 </div>
-                <div className={`${stat.color} bg-white/50 p-3 rounded-xl`}>
-                  <Icon className="w-6 h-6" />
+                <div className={`${stat.color} bg-white/50 p-1.5 xs:p-2 sm:p-3 rounded-lg xs:rounded-xl shrink-0`}>
+                  <Icon className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" />
                 </div>
               </div>
             </motion.div>
