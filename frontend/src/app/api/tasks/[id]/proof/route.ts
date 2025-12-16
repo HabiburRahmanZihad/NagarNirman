@@ -7,7 +7,6 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const body = await request.json();
 
     // Simulate processing delay
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -22,6 +21,7 @@ export async function POST(
       pointsAwarded: 0
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: 'Failed to submit proof' },
       { status: 500 }
