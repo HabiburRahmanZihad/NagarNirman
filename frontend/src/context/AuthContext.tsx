@@ -18,23 +18,23 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Load user/token from localStorage on client only
   useEffect(() => {
-    // Load user from localStorage on mount
-    const storedToken = localStorage.getItem(STORAGE_KEYS.TOKEN);
-    const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
-
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem(STORAGE_KEYS.TOKEN);
+      const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
+      if (storedToken) setToken(storedToken);
+      if (storedUser) setUser(JSON.parse(storedUser));
     }
     setIsLoading(false);
   }, []);
 
   const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
+    setIsLoading(true);
     try {
       const response = await fetch(API_ENDPOINTS.LOGIN, {
         method: 'POST',
@@ -43,26 +43,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
         body: JSON.stringify(credentials),
       });
-
       const data: AuthResponse = await response.json();
-
       if (data.success && data.token && data.user) {
         setToken(data.token);
         setUser(data.user);
-        localStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
-        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
+          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+        }
       }
-
       return data;
     } catch (error) {
+      console.log(error);
       return {
         success: false,
         message: 'Login failed. Please try again.',
       };
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const register = async (data: RegisterData): Promise<AuthResponse> => {
+    setIsLoading(true);
     try {
       const response = await fetch(API_ENDPOINTS.REGISTER, {
         method: 'POST',
@@ -71,40 +74,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         },
         body: JSON.stringify(data),
       });
-
       const result: AuthResponse = await response.json();
-
       if (result.success && result.token && result.user) {
         setToken(result.token);
         setUser(result.user);
-        localStorage.setItem(STORAGE_KEYS.TOKEN, result.token);
-        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(result.user));
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(STORAGE_KEYS.TOKEN, result.token);
+          localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(result.user));
+        }
       }
-
       return result;
     } catch (error) {
+      console.log(error);
       return {
         success: false,
         message: 'Registration failed. Please try again.',
       };
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem(STORAGE_KEYS.TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.USER);
-
-    // Redirect to login page
     if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEYS.TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.USER);
       window.location.href = '/auth/login';
     }
   };
 
   const updateUser = (updatedUser: User) => {
     setUser(updatedUser);
-    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
+    }
   };
 
   return (

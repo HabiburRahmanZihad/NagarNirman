@@ -18,14 +18,6 @@ const StatusBarChart = ({ data }: StatusBarChartProps) => {
     }
   };
 
-  const getStatusGradient = (status: string) => {
-    switch (status) {
-      case 'pending': return 'from-[#f59e0b] to-[#d97706]';
-      case 'inProgress': return 'from-[#2563eb] to-[#1d4ed8]';
-      case 'resolved': return 'from-[#2a7d2f] to-[#1f6b2a]';
-      default: return 'from-[#6b7280] to-[#4b5563]';
-    }
-  };
 
   return (
     <motion.div
@@ -118,7 +110,7 @@ const StatusBarChart = ({ data }: StatusBarChartProps) => {
         
         {/* Custom Legend */}
         <div className="flex justify-center gap-4 mt-6 flex-wrap">
-          {data.map((entry, index) => (
+          {data.map((entry) => (
             <div key={entry.status} className="flex items-center gap-2">
               <div 
                 className="w-3 h-3 rounded-full"

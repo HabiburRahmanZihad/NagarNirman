@@ -223,16 +223,18 @@ const Navbar: React.FC = () => {
 
                       {/* Submenu for About */}
                       {link.subLinks && (
-                        <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-1 w-48 bg-white/90 backdrop-blur-md rounded-lg shadow-lg border border-white/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                          {link.subLinks.map((subLink) => (
-                            <Link
-                              key={subLink.href}
-                              href={subLink.href}
-                              className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50/80 font-medium transition-colors text-sm ${isActiveLink(subLink.href) ? 'text-[#004d40] font-semibold' : ''}`}
-                            >
-                              {subLink.label}
-                            </Link>
-                          ))}
+                        <div className="absolute left-1/2 transform -translate-x-1/2 top-full pt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                          <div className="bg-white/90 backdrop-blur-md rounded-lg shadow-lg border border-white/20 overflow-hidden">
+                            {link.subLinks.map((subLink) => (
+                              <Link
+                                key={subLink.href}
+                                href={subLink.href}
+                                className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50/80 font-medium transition-colors text-sm ${isActiveLink(subLink.href) ? 'text-[#004d40] font-semibold' : ''}`}
+                              >
+                                {subLink.label}
+                              </Link>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -255,16 +257,18 @@ const Navbar: React.FC = () => {
 
                       {/* Submenu for About */}
                       {link.subLinks && (
-                        <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                          {link.subLinks.map((subLink) => (
-                            <Link
-                              key={subLink.href}
-                              href={subLink.href}
-                              className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50 font-medium transition-colors text-sm ${isActiveLink(subLink.href) ? 'text-[#004d40] font-semibold' : ''}`}
-                            >
-                              {subLink.label}
-                            </Link>
-                          ))}
+                        <div className="absolute left-1/2 transform -translate-x-1/2 top-full pt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                          <div className="bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden">
+                            {link.subLinks.map((subLink) => (
+                              <Link
+                                key={subLink.href}
+                                href={subLink.href}
+                                className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50 font-medium transition-colors text-sm ${isActiveLink(subLink.href) ? 'text-[#004d40] font-semibold' : ''}`}
+                              >
+                                {subLink.label}
+                              </Link>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>

@@ -5,7 +5,7 @@ interface FetchOptions extends RequestInit {
   requiresAuth?: boolean;
 }
 
-export const apiClient = async <T = any>(
+export const apiClient = async <T = unknown>(
   endpoint: string,
   options: FetchOptions = {}
 ): Promise<T> => {

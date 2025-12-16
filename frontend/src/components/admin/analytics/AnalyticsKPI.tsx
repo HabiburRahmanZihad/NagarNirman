@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { TrendingUp, CheckCircle, Clock, Target, Users, Award } from 'lucide-react';
+import { TrendingUp, CheckCircle, Clock, Target} from 'lucide-react';
 
 interface AnalyticsKPIProps {
   totalReports: number;
@@ -11,7 +11,7 @@ interface AnalyticsKPIProps {
   completionRate: number;
 }
 
-const AnalyticsKPI = ({ totalReports, completedReports, ongoingReports, averageResolutionTime, completionRate }: AnalyticsKPIProps) => {
+const AnalyticsKPI = ({ totalReports, completedReports, ongoingReports, completionRate }: AnalyticsKPIProps) => {
   const kpis = [
     {
       label: 'Total Reports',

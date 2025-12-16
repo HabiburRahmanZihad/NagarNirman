@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, PieLabelRenderProps } from 'recharts';
 import { CategoryStat } from './types';
 
 interface CategoryPieChartProps {
@@ -14,6 +14,8 @@ const COLORS = [
 ];
 
 const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
+  // Recharts expects a 'name' property for each data item
+  const chartData = data.map(item => ({ ...item, name: item.category }));
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -35,7 +37,7 @@ const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={data as any}
+                data={chartData}
                 cx="50%"
                 cy="50%"
                 innerRadius={60}
@@ -44,9 +46,21 @@ const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
                 dataKey="count"
                 animationBegin={200}
                 animationDuration={1500}
-                label={({ name, percent }: any) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                label={(props: PieLabelRenderProps) => {
+                  const percent = typeof props.percent === 'number' ? props.percent : 0;
+                  let name = '';
+
+                  if (props && 'payload' in props) {
+                    const payload = props.payload as Record<string, unknown> | undefined;
+                    if (payload && typeof payload.name === 'string') {
+                      name = payload.name;
+                    }
+                  }
+
+                  return name ? `${name}: ${(percent * 100).toFixed(1)}%` : '';
+                }}
               >
-                {data.map((entry, index) => (
+                {chartData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}

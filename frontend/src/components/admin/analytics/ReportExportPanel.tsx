@@ -89,6 +89,7 @@ const ReportExportPanel = ({ onExport }: ReportExportPanelProps) => {
               Start Date
             </label>
             <input
+              placeholder='s'
               type="date"
               value={filters.startDate.toISOString().split('T')[0]}
               onChange={(e) => setFilters({ ...filters, startDate: new Date(e.target.value) })}
@@ -102,6 +103,7 @@ const ReportExportPanel = ({ onExport }: ReportExportPanelProps) => {
               End Date
             </label>
             <input
+              placeholder='a'
               type="date"
               value={filters.endDate.toISOString().split('T')[0]}
               onChange={(e) => setFilters({ ...filters, endDate: new Date(e.target.value) })}
@@ -115,6 +117,7 @@ const ReportExportPanel = ({ onExport }: ReportExportPanelProps) => {
               Division
             </label>
             <select
+              title='a'
               value={filters.division}
               onChange={(e) => setFilters({ ...filters, division: e.target.value })}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent transition-all"
@@ -131,6 +134,7 @@ const ReportExportPanel = ({ onExport }: ReportExportPanelProps) => {
               District
             </label>
             <select
+              title='a'
               value={filters.district}
               onChange={(e) => setFilters({ ...filters, district: e.target.value })}
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent transition-all"

@@ -11,10 +11,11 @@ import {
   Coffee,
   CpuIcon,
   Database,
+  ExternalLink,
+  Facebook,
   GitBranch,
   Github,
   Globe2,
-  Heart,
   Key,
   Layers,
   Lightbulb,
@@ -136,67 +137,87 @@ const FileText = ({ className }: { className?: string }) => (
 );
 
 const AboutTeamPage = () => {
-  // Team Members Data - Added 4th member
+  // Team Members Data - The Dream Team
   const TEAM_MEMBERS = [
     {
-      name: 'Ahmed Rahman',
-      role: 'Lead Architect',
-      subRole: 'DevOps & System Design',
-      bio: 'Orchestrating the entire NagarNirman ecosystem with precision. Specializes in scalable architecture that handles thousands of concurrent civic reports across all 64 districts.',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+      name: 'Habibur Rahman Zihad',
+      role: 'Founder & Community Director',
+      subRole: 'Vision & Strategy Lead',
+      bio: 'The visionary behind NagarNirman, driving community engagement and strategic direction. Passionate about leveraging technology to solve civic problems and create meaningful impact across Bangladesh.',
+      image: 'https://res.cloudinary.com/dvq3pcykn/image/upload/v1758785330/IMG-20241101-WA0192_vyojiv.jpg',
       color: 'from-[#004d40] to-[#00695c]',
       accentColor: '#004d40',
-      skills: ['Cloud Architecture', 'API Design', 'System Scaling', 'DevOps'],
-      contributions: ['System Infrastructure', 'API Development', 'Deployment Strategy'],
-      social: { github: '#', linkedin: '#', twitter: '#' },
-      funFact: 'Can troubleshoot server issues in his sleep',
-      stats: { commits: 980, projects: 12, coffees: 2340 },
+      skills: ['Leadership', 'Community Building', 'Strategic Planning', 'Project Management'],
+      contributions: ['Project Vision', 'Community Outreach', 'Team Coordination'],
+      social: {
+        github: 'https://github.com/HabiburRahmanZihad',
+        linkedin: 'https://linkedin.com/in/habiburrahmanzihad',
+        portfolio: 'https://habibur-rahman-zihad.vercel.app/',
+        facebook: 'https://www.facebook.com/habiburrahmanzihad.zihad'
+      },
+      funFact: 'Dreams in code and wakes up with solutions',
+      stats: { commits: 2100, projects: 25, coffees: 4500 },
+      quote: '"Together we build, together we rise."'
+    },
+    {
+      name: 'Md. Shahariar Hafiz',
+      role: 'Co-Founder & Tech Lead',
+      subRole: 'Full Stack & Architecture',
+      bio: 'The technical mastermind orchestrating the entire NagarNirman ecosystem. Specializes in scalable architecture and cutting-edge development practices that power our civic platform.',
+      image: 'https://avatars.githubusercontent.com/u/102473526?v=4',
+      color: 'from-[#f2a921] to-[#ffb74d]',
+      accentColor: '#f2a921',
+      skills: ['Next.js', 'Node.js', 'MongoDB', 'System Architecture'],
+      contributions: ['Core Development', 'API Design', 'Database Architecture'],
+      social: {
+        github: 'https://github.com/mdshahariarhafizofficial',
+        linkedin: 'https://www.linkedin.com/in/devshahariarhafiz',
+        portfolio: 'https://shahariar-hafiz.netlify.app/',
+        facebook: 'https://www.facebook.com/mdshahariarhafizofficial'
+      },
+      funFact: 'Can debug production issues at 3 AM with eyes closed',
+      stats: { commits: 1900, projects: 22, coffees: 3500 },
       quote: '"Code is poetry, architecture is the symphony."'
     },
     {
-      name: 'Fatima Khan',
-      role: 'Data Guardian',
-      subRole: 'Backend & Security Lead',
-      bio: 'Protects every byte of civic data with military-grade security. Designs robust MongoDB schemas that ensure data integrity while maintaining lightning-fast query performance.',
-      image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&crop=face',
-      color: 'from-[#f2a921] to-[#ffb74d]',
-      accentColor: '#f2a921',
-      skills: ['MongoDB', 'Data Security', 'Node.js', 'GDPR Compliance'],
-      contributions: ['Database Design', 'Security Protocols', 'Data Analytics'],
-      social: { github: '#', linkedin: '#', twitter: '#' },
-      funFact: 'Perfectionist who notices 1px alignment issues',
-      stats: { commits: 856, projects: 10, coffees: 1890 },
-      quote: '"Security is not a feature, it\'s a mindset."'
-    },
-    {
-      name: 'Rafi Hassan',
-      role: 'Pixel Alchemist',
-      subRole: 'UI/UX & Frontend Lead',
-      bio: 'Transforms complex civic problems into beautiful, intuitive interfaces. Believes great design should be accessible to everyone, from tech experts to smartphone beginners.',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
+      name: 'MD Mizanur Malita',
+      role: 'Operations Manager',
+      subRole: 'Process & Quality Lead',
+      bio: 'Ensures seamless operations and maintains the highest quality standards across all NagarNirman processes. Expert in optimizing workflows and delivering exceptional user experiences.',
+      image: 'https://avatars.githubusercontent.com/u/193724330?v=4',
       color: 'from-[#004d40] to-[#f2a921]',
       accentColor: '#00695c',
-      skills: ['React/Next.js', 'UI/UX Design', 'Accessibility', 'Performance'],
-      contributions: ['User Interface', 'Mobile Design', 'Frontend Architecture'],
-      social: { github: '#', linkedin: '#', twitter: '#' },
-      funFact: 'Has interviewed over 100 citizens about civic issues',
-      stats: { commits: 1120, projects: 15, coffees: 3200 },
-      quote: '"Design is not just what it looks like, it\'s how it works."'
+      skills: ['Operations', 'Quality Assurance', 'Process Optimization', 'Team Management'],
+      contributions: ['Quality Control', 'Process Design', 'User Testing'],
+      social: {
+        github: 'https://github.com/mizanur2734',
+        linkedin: 'https://www.linkedin.com/in/md-mizanur-malita',
+        portfolio: 'https://my-portfolio-4wlb.vercel.app/',
+        facebook: 'https://www.facebook.com/md.mizanur.rahman.959549'
+      },
+      funFact: 'Has a sixth sense for catching bugs before they happen',
+      stats: { commits: 890, projects: 12, coffees: 2100 },
+      quote: '"Excellence is not an act, but a habit."'
     },
     {
-      name: 'Sabrina Akter',
-      role: 'AI Specialist',
-      subRole: 'Machine Learning & NLP Engineer',
-      bio: 'Builds intelligent systems that understand and categorize civic reports automatically. Specializes in natural language processing for Bengali text and image recognition for issue classification.',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face',
+      name: 'Mohammad Bin Amin',
+      role: 'Outreach Coordinator',
+      subRole: 'Community & Growth Lead',
+      bio: 'Bridges the gap between technology and community. Drives user adoption and ensures NagarNirman reaches every corner of Bangladesh through strategic outreach and engagement initiatives.',
+      image: 'https://res.cloudinary.com/dfm0bhtyb/image/upload/v1765699151/qmbjzklvweuy3brrnt3v.png',
       color: 'from-[#9c27b0] to-[#673ab7]',
       accentColor: '#9c27b0',
-      skills: ['Python', 'TensorFlow', 'NLP', 'Computer Vision'],
-      contributions: ['AI Classification', 'Report Analysis', 'Predictive Models'],
-      social: { github: '#', linkedin: '#', twitter: '#' },
-      funFact: 'Can train ML models while binge-watching documentaries',
-      stats: { commits: 720, projects: 8, coffees: 1560 },
-      quote: '"AI should amplify human potential, not replace it."'
+      skills: ['Community Outreach', 'Marketing', 'User Engagement', 'Content Strategy'],
+      contributions: ['User Growth', 'Community Building', 'Brand Awareness'],
+      social: {
+        github: 'https://github.com/Mohammad7558/',
+        linkedin: 'https://www.linkedin.com/in/iammohammad',
+        portfolio: 'https://iam-mohammad.vercel.app/',
+        facebook: 'https://www.facebook.com/imMOHAMMOD/'
+      },
+      funFact: 'Can convince anyone to try NagarNirman in under 2 minutes',
+      stats: { commits: 650, projects: 10, coffees: 3100 },
+      quote: '"Connection is the key to community transformation."'
     },
   ];
 
@@ -664,7 +685,7 @@ const AboutTeamPage = () => {
                           {member.skills.map((skill, i) => (
                             <motion.span
                               key={i}
-                              className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium rounded-lg bg-gray-100 text-gray-700 group-hover:bg-linear-to-r group-hover:from-gray-100 group-hover:to-gray-50 transition-all duration-300"
+                              className="px-2.5 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium rounded-lg bg-gray-100 text-gray-700  transition-all duration-300"
                               whileHover={{
                                 scale: 1.05,
                                 backgroundColor: member.accentColor,
@@ -697,7 +718,9 @@ const AboutTeamPage = () => {
                           {Object.entries(member.social).map(([platform, url], i) => (
                             <motion.a
                               key={i}
-                              href={url}
+                              href={url as string}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className={`p-2 sm:p-2.5 rounded-xl bg-gray-50 text-gray-500 hover:text-white transition-all duration-300`}
                               whileHover={{
                                 y: -3,
@@ -707,7 +730,8 @@ const AboutTeamPage = () => {
                             >
                               {platform === 'github' && <Github className="w-4 h-4 sm:w-5 sm:h-5" />}
                               {platform === 'linkedin' && <Linkedin className="w-4 h-4 sm:w-5 sm:h-5" />}
-                              {platform === 'twitter' && <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />}
+                              {platform === 'facebook' && <Facebook className="w-4 h-4 sm:w-5 sm:h-5" />}
+                              {platform === 'portfolio' && <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />}
                             </motion.a>
                           ))}
                         </div>
@@ -859,7 +883,7 @@ const AboutTeamPage = () => {
                   </div>
 
                   {/* Technologies Grid */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                     {category.technologies.map((tech, techIndex) => (
                       <motion.div
                         key={techIndex}
