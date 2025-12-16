@@ -1056,19 +1056,19 @@ export default function ReportDetailsPage() {
                   {/* Quick Actions */}
                   <div className="border-t border-gray-100 pt-4">
                     <h4 className="font-semibold text-gray-900 mb-3">Quick Actions</h4>
-                    <div className="space-y-2">
+                    <div className="flex flex-col gap-3">
                       <Link href="/reports">
-                        <Button variant="outline" fullWidth size="sm" className="justify-center">
+                        <button className="btn w-full justify-center hover:bg-primary hover:text-white">
                           View All Reports
-                        </Button>
+                        </button>
                       </Link>
-                      <Link href="/dashboard">
-                        <Button variant="outline" fullWidth size="sm" className="justify-center">
+                      <Link href={`/dashboard/${user?.role}`}>
+                        <button className="justify-center btn w-full hover:bg-primary hover:text-white">
                           Go to Dashboard
-                        </Button>
+                        </button>
                       </Link>
                       <Link href="/reports/create">
-                        <Button variant="primary" fullWidth size="sm" className="justify-center">
+                        <Button variant="primary" fullWidth size="md" className="justify-center">
                           Submit New Report
                         </Button>
                       </Link>
