@@ -57,29 +57,36 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       }
 
       // Handle API response format
-      let dataArray: any[] = [];
+      let dataArray: unknown[] = [];
 
       if (Array.isArray(response)) {
         dataArray = response;
-      } else if (response.data && Array.isArray(response.data)) {
-        dataArray = response.data;
+      } else {
+        type ResponseWithData = { data?: unknown };
+        const maybeData = (response as unknown as ResponseWithData).data;
+        if (Array.isArray(maybeData)) {
+          dataArray = maybeData as unknown[];
+        }
       }
 
       // Transform notifications
       if (Array.isArray(dataArray) && dataArray.length > 0) {
         const transformed = dataArray
-          .filter((n: any) => n && typeof n === 'object')
-          .map((n: any) => ({
-            _id: n._id || n.id,
-            id: n._id || n.id,
-            title: n.title || 'Notification',
-            message: n.message || '',
-            type: n.type || 'info',
-            timestamp: new Date(n.createdAt || new Date()),
-            createdAt: n.createdAt,
-            read: n.read ?? false,
-            actionUrl: n.actionUrl,
-          }));
+          .filter((n: unknown) => n && typeof n === 'object')
+          .map((n) => {
+            const notif = n as Record<string, unknown>;
+            return {
+              _id: (notif._id as string) || (notif.id as string),
+              id: (notif._id as string) || (notif.id as string),
+              title: (notif.title as string) || 'Notification',
+              message: (notif.message as string) || '',
+              type: (notif.type as Notification['type']) || 'info',
+              timestamp: new Date((notif.createdAt as string) || new Date()),
+              createdAt: notif.createdAt ? new Date(notif.createdAt as string) : undefined,
+              read: (notif.read as boolean) ?? false,
+              actionUrl: notif.actionUrl as string | undefined,
+            };
+          });
 
         setNotifications(transformed);
       } else {
