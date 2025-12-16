@@ -80,16 +80,16 @@ const solvers = ['solver1', 'solver2', 'solver3', 'solver4', 'solver5'];
 
 export const fetchReportAnalytics = async (): Promise<AnalyticsData> => {
   await new Promise(resolve => setTimeout(resolve, 1500));
-  
+
   const totalReports = dummyReports.length;
   const completedReports = dummyReports.filter(r => r.status === 'resolved').length;
   const ongoingReports = dummyReports.filter(r => r.status === 'inProgress').length;
   const completionRate = totalReports > 0 ? (completedReports / totalReports) * 100 : 0;
-  
-  const monthlyStats: any[] = Array.from({ length: 12 }, (_, i) => ({
+
+  const monthlyStats: { month: string; reports: number; completed: number }[] = Array.from({ length: 12 }, (_, i) => ({
     month: new Date(2024, i).toLocaleString('default', { month: 'short' }),
-    reports: Math.floor(Math.random() * 50) + 20,
-    completed: Math.floor(Math.random() * 30) + 10
+    reports: 20 + (i * 7) % 31, // deterministic, not random
+    completed: 10 + (i * 5) % 21
   }));
 
   const districtStats = districts.map(district => ({
@@ -147,15 +147,15 @@ export const generateCSV = (filters: ExportFilters): string => {
     filters.division,
     filters.district
   ]);
-  
-  return [headers, ...data].map(row => 
+
+  return [headers, ...data].map(row =>
     row.map(field => `"${field}"`).join(',')
   ).join('\n');
 };
 
 export const generatePDF = async (filters: ExportFilters): Promise<Blob> => {
   await new Promise(resolve => setTimeout(resolve, 2000));
-  
+
   try {
     const pdfContent = `
 NAGARNIRMAN - PERFORMANCE ANALYTICS REPORT
@@ -195,15 +195,15 @@ Generated on: ${new Date().toLocaleString()}
 This is a demo PDF export. Real implementation would include actual data and charts.
     `;
 
-    const blob = new Blob([pdfContent], { 
-      type: 'application/pdf' 
+    const blob = new Blob([pdfContent], {
+      type: 'application/pdf'
     });
-    
+
     return blob;
   } catch (error) {
     console.error('PDF generation error:', error);
-    return new Blob(['PDF export service is currently unavailable. Please try again later.'], { 
-      type: 'application/pdf' 
+    return new Blob(['PDF export service is currently unavailable. Please try again later.'], {
+      type: 'application/pdf'
     });
   }
 };
