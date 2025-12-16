@@ -16,7 +16,6 @@ import {
   GitBranch,
   Github,
   Globe2,
-  Heart,
   Key,
   Layers,
   Lightbulb,
