@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { FaMapMarkerAlt, FaEnvelope, FaPhone, FaClock } from 'react-icons/fa';
 import Button from '@/components/common/Button';
+import Link from 'next/link';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ export default function ContactPage() {
             Get in Touch
           </h1>
           <p className="text-lg text-gray-600">
-            Have questions? We'd love to hear from you. Send us a message!
+            {`Have questions? We'd love to hear from you. Send us a message!`}
           </p>
         </div>
 
@@ -205,12 +206,12 @@ export default function ContactPage() {
                 >
                   → Community Guidelines
                 </a>
-                <a
+                <Link
                   href="/reports/new"
                   className="block text-gray-700 hover:text-primary transition-colors font-medium"
                 >
                   → Submit a Report
-                </a>
+                </Link>
               </div>
             </div>
           </div>
