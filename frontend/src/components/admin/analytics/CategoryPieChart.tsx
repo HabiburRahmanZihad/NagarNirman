@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, PieLabelRenderProps } from 'recharts';
 import { CategoryStat } from './types';
 
 interface CategoryPieChartProps {
@@ -46,7 +46,19 @@ const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
                 dataKey="count"
                 animationBegin={200}
                 animationDuration={1500}
-                label={({ name, percent }: { name: string; percent: number }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                label={(props: PieLabelRenderProps) => {
+                  const percent = typeof props.percent === 'number' ? props.percent : 0;
+                  let name = '';
+
+                  if (props && 'payload' in props) {
+                    const payload = props.payload as Record<string, unknown> | undefined;
+                    if (payload && typeof payload.name === 'string') {
+                      name = payload.name;
+                    }
+                  }
+
+                  return name ? `${name}: ${(percent * 100).toFixed(1)}%` : '';
+                }}
               >
                 {chartData.map((entry, index) => (
                   <Cell
