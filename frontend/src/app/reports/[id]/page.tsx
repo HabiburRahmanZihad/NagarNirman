@@ -632,7 +632,7 @@ export default function ReportDetailsPage() {
                           {/* Animated progress fill */}
                           <div
                             style={{ width: `${progress}%` }}
-                            className="h-full bg-gradient-to-r from-[#004d40] via-[#00695c] to-[#004d40] transition-all duration-1000 ease-out rounded-full relative overflow-hidden"
+                            className="h-full bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] transition-all duration-1000 ease-out rounded-full relative overflow-hidden"
                           >
                             {/* Shimmer effect */}
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
