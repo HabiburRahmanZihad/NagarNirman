@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/common/Button";
+import Image from "next/image";
 
 // --- TEAM DATA ---
 const teamMembers = [
@@ -121,11 +122,14 @@ export default function TeamSection() {
               {/* IMAGE WRAPPER */}
               <div className="relative h-[250px] sm:h-[280px] md:h-[300px] w-full overflow-hidden rounded-xl sm:rounded-[20px]">
                 {/* Main Image with Zoom Effect */}
-                <img
+                <Image
                   src={member.image}
                   alt={member.name}
-                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   loading="lazy"
+                  unoptimized
                 />
 
                 {/* Share Button (Top Right) */}
@@ -140,7 +144,7 @@ export default function TeamSection() {
                   {socialIcons.map((social, i) => {
                     const socialUrl = member.social[social.key as keyof typeof member.social];
                     return (
-                      <a
+                      <Link
                         key={i}
                         href={socialUrl}
                         target="_blank"
@@ -156,7 +160,7 @@ export default function TeamSection() {
                         style={{ transitionDelay: `${i * 100}ms` }}
                       >
                         <social.Icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${social.iconColor}`} />
-                      </a>
+                      </Link>
                     );
                   })}
                 </div>
