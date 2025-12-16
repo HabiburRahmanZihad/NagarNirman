@@ -14,6 +14,8 @@ const COLORS = [
 ];
 
 const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
+  // Recharts expects a 'name' property for each data item
+  const chartData = data.map(item => ({ ...item, name: item.category }));
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -35,7 +37,7 @@ const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={data as any}
+                data={chartData}
                 cx="50%"
                 cy="50%"
                 innerRadius={60}
@@ -44,9 +46,9 @@ const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
                 dataKey="count"
                 animationBegin={200}
                 animationDuration={1500}
-                label={({ name, percent }: any) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                label={({ name, percent }: { name: string; percent: number }) => `${name}: ${(percent * 100).toFixed(1)}%`}
               >
-                {data.map((entry, index) => (
+                {chartData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={COLORS[index % COLORS.length]}
