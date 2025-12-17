@@ -4,6 +4,9 @@ import { getDB } from '../config/db.js';
 // Get reports collection
 const getReportsCollection = () => getDB().collection('reports');
 
+
+
+
 /**
  * Get comprehensive statistics for all divisions and districts
  * Returns complete breakdown of all report states
@@ -177,6 +180,9 @@ export const getCompleteStatistics = async () => {
   }
 };
 
+
+
+
 /**
  * Get division-level aggregated statistics
  */
@@ -284,6 +290,9 @@ export const getDivisionStatistics = async () => {
   }
 };
 
+
+
+
 /**
  * Get district-level statistics for a specific division
  */
@@ -380,6 +389,8 @@ export const getDistrictStatisticsByDivision = async (divisionName) => {
   }
 };
 
+
+
 /**
  * Get complete map data with all statistics
  */
@@ -449,6 +460,9 @@ export const getCompleteMapData = async () => {
     throw error;
   }
 };
+
+
+
 
 export default {
   getCompleteStatistics,
