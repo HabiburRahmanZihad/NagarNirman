@@ -20,6 +20,9 @@ import { uploadToImgBB, validateImage } from '../utils/imageUpload.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { sendApprovalEmail } from '../services/emailService.js';
 
+
+
+
 // @desc    Get all users
 // @route   GET /api/users
 // @access  Private (Authority, SuperAdmin)
@@ -60,6 +63,10 @@ export const getUsers = asyncHandler(async (req, res) => {
   });
 });
 
+
+
+
+
 // @desc    Get single user
 // @route   GET /api/users/:id
 // @access  Private
@@ -85,6 +92,9 @@ export const getUser = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
 
 // @desc    Apply to become problem solver
 // @route   POST /api/users/apply-problem-solver
@@ -204,6 +214,10 @@ export const applyProblemSolver = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
+
 // @desc    Approve user (problem solver)
 // @route   PATCH /api/users/:id/approve
 // @access  Private (Authority)
@@ -239,6 +253,10 @@ export const approveUser = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
+
 
 // @desc    Delete rejected application to allow reapply
 // @route   DELETE /api/users/my-application
@@ -278,6 +296,10 @@ export const deleteMyApplication = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
+
 
 // @desc    Get user statistics
 // @route   GET /api/users/:id/stats
@@ -347,6 +369,10 @@ export const getUserStats = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
+
 // @desc    Get leaderboard
 // @route   GET /api/users/leaderboard
 // @access  Public
@@ -378,6 +404,10 @@ export const getLeaderboard = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
+
 
 // @desc    Update user profile (own profile)
 // @route   PUT /api/users/profile
@@ -433,6 +463,9 @@ export const updateProfile = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
 
 // @desc    Update user status (activate/deactivate)
 // @route   PATCH /api/users/:id/status

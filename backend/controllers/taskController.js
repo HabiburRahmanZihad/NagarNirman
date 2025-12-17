@@ -890,7 +890,7 @@ export const approveTaskSubmission = asyncHandler(async (req, res) => {
       if (now > deadline) {
         // Task missed deadline - apply 50% penalty
         awardPoints = Math.floor(awardPoints / 2);
-        console.log(`⚠️ Deadline missed! Points reduced from ${awardPoints * 2} to ${awardPoints}`);
+        // console.log(`⚠️ Deadline missed! Points reduced from ${awardPoints * 2} to ${awardPoints}`);
       }
     }
 
@@ -916,11 +916,11 @@ export const approveTaskSubmission = asyncHandler(async (req, res) => {
         const reportId = typeof task.report === 'object' ? task.report._id : task.report;
         const userId = req.user?._id || req.user?.id;
 
-        console.log('🔄 Updating report status to resolved:', {
-          reportId: reportId?.toString(),
-          userId: userId?.toString(),
-          taskId: task._id
-        });
+        // console.log('🔄 Updating report status to resolved:', {
+        //   reportId: reportId?.toString(),
+        //   userId: userId?.toString(),
+        //   taskId: task._id
+        // });
 
         if (userId && reportId) {
           const result = await updateReportStatus(
@@ -929,7 +929,7 @@ export const approveTaskSubmission = asyncHandler(async (req, res) => {
             `Task completed and approved. Reward: ${awardPoints} points`,
             userId.toString()
           );
-          console.log('✅ Report status updated successfully:', result);
+          // console.log('✅ Report status updated successfully:', result);
         } else {
           console.warn('⚠️ Missing userId or reportId:', { userId, reportId });
         }
@@ -999,7 +999,7 @@ export const syncCompletedTasksWithReports = asyncHandler(async (req, res) => {
       .find({ status: 'completed' })
       .toArray();
 
-    console.log(`Found ${completedTasks.length} completed tasks to sync`);
+    // console.log(`Found ${completedTasks.length} completed tasks to sync`);
 
     let successCount = 0;
     let errorCount = 0;
@@ -1018,7 +1018,7 @@ export const syncCompletedTasksWithReports = asyncHandler(async (req, res) => {
               userId.toString()
             );
             successCount++;
-            console.log(`✅ Synced report ${reportId} for task ${task._id}`);
+            // console.log(`✅ Synced report ${reportId} for task ${task._id}`);
           }
         }
       } catch (error) {
