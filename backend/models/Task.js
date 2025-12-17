@@ -13,11 +13,14 @@ export const createTaskIndexes = async () => {
     await collection.createIndex({ report: 1 });
     await collection.createIndex({ status: 1, reviewStatus: 1 });
     await collection.createIndex({ createdAt: -1 });
-    console.log('Task indexes created successfully');
+    // console.log('Task indexes created successfully');
   } catch (error) {
     console.error('Error creating task indexes:', error);
   }
 };
+
+
+
 
 // Validate priority
 export const isValidPriority = (priority) => {
@@ -25,17 +28,27 @@ export const isValidPriority = (priority) => {
   return validPriorities.includes(priority);
 };
 
+
+
+
 // Validate status
 export const isValidStatus = (status) => {
   const validStatuses = ['pending', 'assigned', 'accepted', 'in-progress', 'submitted', 'completed', 'verified', 'rejected'];
   return validStatuses.includes(status);
 };
 
+
+
+
 // Validate review status
 export const isValidReviewStatus = (reviewStatus) => {
   const validReviewStatuses = ['pending', 'approved', 'rejected'];
   return validReviewStatuses.includes(reviewStatus);
 };
+
+
+
+
 
 // Create new task
 export const createTask = async (taskData) => {
@@ -98,6 +111,9 @@ export const createTask = async (taskData) => {
 
   return task;
 };
+
+
+
 
 // Get task by ID
 export const getTaskById = async (taskId) => {
@@ -163,6 +179,9 @@ export const getTaskById = async (taskId) => {
   return tasks.length > 0 ? tasks[0] : null;
 };
 
+
+
+
 // Find tasks with filters
 export const findTasks = async (filter = {}, options = {}) => {
   const { page = 1, limit = 10, sort = { createdAt: -1 }, populate = true } = options;
@@ -226,6 +245,9 @@ export const findTasks = async (filter = {}, options = {}) => {
   };
 };
 
+
+
+
 // Update task
 export const updateTask = async (taskId, updateData) => {
   if (!ObjectId.isValid(taskId)) {
@@ -242,6 +264,9 @@ export const updateTask = async (taskId, updateData) => {
 
   return result;
 };
+
+
+
 
 // Update task status
 export const updateTaskStatus = async (taskId, status) => {
@@ -277,6 +302,8 @@ export const updateTaskStatus = async (taskId, status) => {
   return result;
 };
 
+
+
 // Submit task completion proof
 export const submitTaskProof = async (taskId, proofUrl, notes) => {
   if (!ObjectId.isValid(taskId)) {
@@ -299,6 +326,9 @@ export const submitTaskProof = async (taskId, proofUrl, notes) => {
 
   return result;
 };
+
+
+
 
 // Verify task and award points
 export const verifyTask = async (taskId, points, rating, feedback) => {
@@ -324,6 +354,9 @@ export const verifyTask = async (taskId, points, rating, feedback) => {
   return result;
 };
 
+
+
+
 // Delete task
 export const deleteTask = async (taskId) => {
   if (!ObjectId.isValid(taskId)) {
@@ -336,6 +369,9 @@ export const deleteTask = async (taskId) => {
 
   return result.deletedCount > 0;
 };
+
+
+
 
 // Get tasks by user ID (optimized for solver's own tasks)
 export const getTasksByUserId = async (userId, options = {}) => {
@@ -398,6 +434,9 @@ export const getTasksByUserId = async (userId, options = {}) => {
   };
 };
 
+
+
+
 // Get tasks by report ID
 export const getTasksByReportId = async (reportId) => {
   if (!ObjectId.isValid(reportId)) {
@@ -408,6 +447,9 @@ export const getTasksByReportId = async (reportId) => {
     .find({ report: new ObjectId(reportId) })
     .toArray();
 };
+
+
+
 
 // Accept task (solver accepts the assignment)
 export const acceptTask = async (taskId) => {
@@ -431,6 +473,9 @@ export const acceptTask = async (taskId) => {
   return result;
 };
 
+
+
+
 // Start working on task
 export const startTask = async (taskId) => {
   if (!ObjectId.isValid(taskId)) {
@@ -452,6 +497,9 @@ export const startTask = async (taskId) => {
 
   return result;
 };
+
+
+
 
 // Submit proof for task completion
 export const submitProof = async (taskId, proofData) => {
@@ -484,6 +532,9 @@ export const submitProof = async (taskId, proofData) => {
   return result;
 };
 
+
+
+
 // Review and approve task
 export const approveTask = async (taskId, reviewData) => {
   if (!ObjectId.isValid(taskId)) {
@@ -513,6 +564,9 @@ export const approveTask = async (taskId, reviewData) => {
   return result;
 };
 
+
+
+
 // Reject task submission
 export const rejectTask = async (taskId, rejectionReason) => {
   if (!ObjectId.isValid(taskId)) {
@@ -535,6 +589,8 @@ export const rejectTask = async (taskId, rejectionReason) => {
 
   return result;
 };
+
+
 
 // Get tasks pending review (for authority/superadmin)
 export const getTasksPendingReview = async (options = {}) => {
