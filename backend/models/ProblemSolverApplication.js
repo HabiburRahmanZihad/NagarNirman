@@ -2,9 +2,13 @@
 import { ObjectId } from 'mongodb';
 import { getDB } from '../config/db.js';
 
+
+
 // Get problem solver applications collection
 export const getProblemSolverApplicationsCollection = () =>
   getDB().collection('problemSolverApplications');
+
+
 
 // Create new application
 export const createApplication = async (applicationData) => {
@@ -123,6 +127,9 @@ export const createApplication = async (applicationData) => {
   return application;
 };
 
+
+
+
 // Get application by ID
 export const getApplicationById = async (applicationId) => {
   if (!ObjectId.isValid(applicationId)) {
@@ -133,6 +140,9 @@ export const getApplicationById = async (applicationId) => {
   });
 };
 
+
+
+
 // Get application by user ID
 export const getApplicationByUserId = async (userId) => {
   if (!ObjectId.isValid(userId)) {
@@ -142,6 +152,9 @@ export const getApplicationByUserId = async (userId) => {
     userId: new ObjectId(userId)
   });
 };
+
+
+
 
 // Get all applications with filters
 export const getApplications = async (filters = {}, options = {}) => {
@@ -199,6 +212,9 @@ export const getApplications = async (filters = {}, options = {}) => {
   };
 };
 
+
+
+
 // Update application status (approve/reject)
 export const updateApplicationStatus = async (applicationId, statusData, reviewerId) => {
   if (!ObjectId.isValid(applicationId)) {
@@ -240,6 +256,9 @@ export const updateApplicationStatus = async (applicationId, statusData, reviewe
   return await getApplicationById(applicationId);
 };
 
+
+
+
 // Delete application
 export const deleteApplication = async (applicationId) => {
   if (!ObjectId.isValid(applicationId)) {
@@ -256,6 +275,9 @@ export const deleteApplication = async (applicationId) => {
 
   return true;
 };
+
+
+
 
 // Get application statistics
 export const getApplicationStatistics = async () => {
