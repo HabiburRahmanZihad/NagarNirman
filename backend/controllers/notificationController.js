@@ -1,6 +1,5 @@
 // Notification Controller (Native MongoDB)
 import {
-  createNotification,
   getUserNotifications,
   getUnreadCount,
   markAsRead,
@@ -10,6 +9,8 @@ import {
   getNotificationById,
 } from '../models/Notification.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+
+
 
 // @desc    Get user's notifications
 // @route   GET /api/notifications
@@ -47,6 +48,8 @@ export const getNotifications = asyncHandler(async (req, res) => {
   });
 });
 
+
+
 // @desc    Get unread notification count
 // @route   GET /api/notifications/unread-count
 // @access  Private
@@ -67,6 +70,9 @@ export const getUnreadNotificationCount = asyncHandler(async (req, res) => {
     data: { count },
   });
 });
+
+
+
 
 // @desc    Mark notification as read
 // @route   PUT /api/notifications/:id/read
@@ -108,6 +114,9 @@ export const markNotificationAsRead = asyncHandler(async (req, res) => {
   });
 });
 
+
+
+
 // @desc    Mark all notifications as read
 // @route   PUT /api/notifications/mark-all-read
 // @access  Private
@@ -129,6 +138,9 @@ export const markAllNotificationsAsRead = asyncHandler(async (req, res) => {
     data: { count },
   });
 });
+
+
+
 
 // @desc    Delete notification
 // @route   DELETE /api/notifications/:id
@@ -169,6 +181,9 @@ export const deleteNotificationById = asyncHandler(async (req, res) => {
     message: 'Notification deleted successfully',
   });
 });
+
+
+
 
 // @desc    Delete all user notifications
 // @route   DELETE /api/notifications/all
