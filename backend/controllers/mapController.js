@@ -24,6 +24,8 @@ export const getDivisionsStats = async (req, res) => {
   }
 };
 
+
+
 // Get statistics for a specific division
 export const getDivisionStats = async (req, res) => {
   try {
@@ -52,6 +54,8 @@ export const getDivisionStats = async (req, res) => {
     });
   }
 };
+
+
 
 // Get statistics for a specific district
 export const getDistrictStats = async (req, res) => {

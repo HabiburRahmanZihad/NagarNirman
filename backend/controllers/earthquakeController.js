@@ -11,7 +11,6 @@ import {
   deleteEarthquake,
   getEarthquakeCount,
   createEarthquakeIndexes,
-  calculateAlertLevel,
 } from '../models/Earthquake.js';
 import { fetchUSGSEarthquakes } from '../services/usgsService.js';
 import { createEarthquakeNotifications } from '../services/earthquakeNotificationService.js';

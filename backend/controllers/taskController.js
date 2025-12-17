@@ -1,10 +1,7 @@
-// Task Controller (Native MongoDB)
-import { ObjectId } from 'mongodb';
 import {
   createTask,
   getTaskById,
   findTasks,
-  updateTask,
   updateTaskStatus,
   submitTaskProof,
   verifyTask,
@@ -22,6 +19,10 @@ import { getUserById, incrementUserPoints, getUsersCollection } from '../models/
 import { createNotification } from '../models/Notification.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { sendTaskAssignmentEmail, sendRewardEmail } from '../services/emailService.js';
+
+
+
+
 
 // @desc    Get all tasks
 // @route   GET /api/tasks
@@ -56,6 +57,11 @@ export const getTasks = asyncHandler(async (req, res) => {
   });
 });
 
+
+
+
+
+
 // @desc    Get single task
 // @route   GET /api/tasks/:id
 // @access  Private
@@ -81,6 +87,9 @@ export const getTask = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
 
 // @desc    Assign task
 // @route   POST /api/tasks/assign
@@ -174,6 +183,11 @@ export const assignTask = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
+
+
 // @desc    Update task status
 // @route   PATCH /api/tasks/:id/status
 // @access  Private
@@ -209,6 +223,9 @@ export const changeTaskStatus = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
 
 // @desc    Complete task
 // @route   POST /api/tasks/:id/complete
@@ -255,6 +272,9 @@ export const completeTask = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
 
 // @desc    Grant reward for completed task
 // @route   POST /api/tasks/:id/reward
@@ -313,6 +333,9 @@ export const grantReward = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 // @desc    Get my tasks
 // @route   GET /api/tasks/my-tasks
 // @access  Private (Approved users)
@@ -336,6 +359,9 @@ export const getMyTasks = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
 
 // @desc    Get solver statistics (task performance)
 // @route   GET /api/tasks/solver-statistics
@@ -531,6 +557,9 @@ export const getSolverStatistics = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 // @desc    Accept task (problem solver accepts the assignment)
 // @route   POST /api/tasks/:id/accept
 // @access  Private (Problem Solver, NGO)
@@ -613,6 +642,9 @@ export const acceptTaskAssignment = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 // @desc    Start working on task
 // @route   POST /api/tasks/:id/start
 // @access  Private (Problem Solver, NGO)
@@ -666,6 +698,9 @@ export const startWorkingOnTask = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
 
 // @desc    Submit proof for task completion
 // @route   POST /api/tasks/:id/submit-proof
@@ -750,6 +785,10 @@ export const submitTaskProofHandler = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
+
 // @desc    Get tasks pending review
 // @route   GET /api/tasks/pending-review
 // @access  Private (Authority, SuperAdmin)
@@ -810,6 +849,9 @@ export const getPendingReviewTasks = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 // @desc    Approve task submission
 // @route   POST /api/tasks/:id/approve
 // @access  Private (Authority, SuperAdmin)
@@ -848,7 +890,7 @@ export const approveTaskSubmission = asyncHandler(async (req, res) => {
       if (now > deadline) {
         // Task missed deadline - apply 50% penalty
         awardPoints = Math.floor(awardPoints / 2);
-        console.log(`⚠️ Deadline missed! Points reduced from ${awardPoints * 2} to ${awardPoints}`);
+        // console.log(`⚠️ Deadline missed! Points reduced from ${awardPoints * 2} to ${awardPoints}`);
       }
     }
 
@@ -874,11 +916,11 @@ export const approveTaskSubmission = asyncHandler(async (req, res) => {
         const reportId = typeof task.report === 'object' ? task.report._id : task.report;
         const userId = req.user?._id || req.user?.id;
 
-        console.log('🔄 Updating report status to resolved:', {
-          reportId: reportId?.toString(),
-          userId: userId?.toString(),
-          taskId: task._id
-        });
+        // console.log('🔄 Updating report status to resolved:', {
+        //   reportId: reportId?.toString(),
+        //   userId: userId?.toString(),
+        //   taskId: task._id
+        // });
 
         if (userId && reportId) {
           const result = await updateReportStatus(
@@ -887,7 +929,7 @@ export const approveTaskSubmission = asyncHandler(async (req, res) => {
             `Task completed and approved. Reward: ${awardPoints} points`,
             userId.toString()
           );
-          console.log('✅ Report status updated successfully:', result);
+          // console.log('✅ Report status updated successfully:', result);
         } else {
           console.warn('⚠️ Missing userId or reportId:', { userId, reportId });
         }
@@ -944,6 +986,9 @@ export const approveTaskSubmission = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 // @desc    Sync completed tasks with report status (utility endpoint)
 // @route   POST /api/tasks/sync-reports
 // @access  Private (SuperAdmin)
@@ -954,7 +999,7 @@ export const syncCompletedTasksWithReports = asyncHandler(async (req, res) => {
       .find({ status: 'completed' })
       .toArray();
 
-    console.log(`Found ${completedTasks.length} completed tasks to sync`);
+    // console.log(`Found ${completedTasks.length} completed tasks to sync`);
 
     let successCount = 0;
     let errorCount = 0;
@@ -973,7 +1018,7 @@ export const syncCompletedTasksWithReports = asyncHandler(async (req, res) => {
               userId.toString()
             );
             successCount++;
-            console.log(`✅ Synced report ${reportId} for task ${task._id}`);
+            // console.log(`✅ Synced report ${reportId} for task ${task._id}`);
           }
         }
       } catch (error) {
@@ -999,6 +1044,10 @@ export const syncCompletedTasksWithReports = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
+
 
 // @desc    Reject task submission
 // @route   POST /api/tasks/:id/reject
@@ -1082,6 +1131,10 @@ export const rejectTaskSubmission = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
+
 
 // @desc    Get task statistics (fast counts only)
 // @route   GET /api/tasks/statistics

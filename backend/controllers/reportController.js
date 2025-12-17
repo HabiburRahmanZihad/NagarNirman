@@ -9,12 +9,14 @@ import {
   toggleReportUpvote,
   updateReportStatus,
   deleteReport,
-  assignReportTo,
 } from '../models/Report.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
-import { uploadToImgBB, uploadMultipleToImgBB } from '../utils/imageUpload.js';
+import { uploadMultipleToImgBB } from '../utils/imageUpload.js';
 import { getUserById, checkReportSubmissionLimit, incrementReportSubmission } from '../models/User.js';
 import { sendReportStatusEmail } from '../services/emailService.js';
+
+
+
 
 // @desc    Get all reports
 // @route   GET /api/reports
@@ -67,6 +69,9 @@ export const getReports = asyncHandler(async (req, res) => {
   });
 });
 
+
+
+
 // @desc    Get single report
 // @route   GET /api/reports/:id
 // @access  Public
@@ -93,6 +98,9 @@ export const getReport = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 // @desc    Create new report
 // @route   POST /api/reports
 // @access  Private
@@ -113,15 +121,15 @@ export const createNewReport = asyncHandler(async (req, res) => {
     }
 
     // Debug log
-    console.log('=== Report Creation Debug ===');
-    console.log('Title:', title);
-    console.log('Description:', description?.substring(0, 50));
-    console.log('Problem Type:', problemType);
-    console.log('Severity:', severity);
-    console.log('Location:', location);
-    console.log('Images count:', images?.length || 0);
-    console.log('User ID:', req.user?.id);
-    console.log('===========================');
+    // console.log('=== Report Creation Debug ===');
+    // console.log('Title:', title);
+    // console.log('Description:', description?.substring(0, 50));
+    // console.log('Problem Type:', problemType);
+    // console.log('Severity:', severity);
+    // console.log('Location:', location);
+    // console.log('Images count:', images?.length || 0);
+    // console.log('User ID:', req.user?.id);
+    // console.log('===========================');
 
     // Parse location if it's a string
     let parsedLocation = location;
@@ -139,13 +147,13 @@ export const createNewReport = asyncHandler(async (req, res) => {
 
     // Validate required fields
     if (!title || !description || !problemType || !severity || !parsedLocation) {
-      console.log('Validation failed:', {
-        hasTitle: !!title,
-        hasDescription: !!description,
-        hasProblemType: !!problemType,
-        hasSeverity: !!severity,
-        hasLocation: !!parsedLocation
-      });
+      // console.log('Validation failed:', {
+      //   hasTitle: !!title,
+      //   hasDescription: !!description,
+      //   hasProblemType: !!problemType,
+      //   hasSeverity: !!severity,
+      //   hasLocation: !!parsedLocation
+      // });
       return res.status(400).json({
         success: false,
         message: 'Please provide all required fields',
@@ -155,12 +163,12 @@ export const createNewReport = asyncHandler(async (req, res) => {
     // Upload images to ImgBB using centralized utility
     let imageUrls = [];
     if (images && Array.isArray(images) && images.length > 0) {
-      console.log(`Uploading ${images.length} images to ImgBB...`);
+      // console.log(`Uploading ${images.length} images to ImgBB...`);
 
       const uploadResults = await uploadMultipleToImgBB(images, `report_${title.substring(0, 20)}`);
       imageUrls = uploadResults.map(result => result.url);
 
-      console.log('Images uploaded successfully to ImgBB:', imageUrls);
+      // console.log('Images uploaded successfully to ImgBB:', imageUrls);
     }
 
     const report = await createReport({

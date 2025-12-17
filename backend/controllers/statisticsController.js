@@ -7,6 +7,8 @@ import {
 } from '../models/Statistics.js';
 import { getDB } from '../config/db.js';
 
+
+
 /**
  * @desc    Get complete map data with all divisions and districts
  * @route   GET /api/statistics/map
@@ -26,6 +28,9 @@ export const getMapStatistics = async (req, res) => {
     });
   }
 };
+
+
+
 
 /**
  * @desc    Get all division-level statistics
@@ -50,6 +55,8 @@ export const getAllDivisionStatistics = async (req, res) => {
     });
   }
 };
+
+
 
 /**
  * @desc    Get district statistics for a specific division
@@ -85,6 +92,9 @@ export const getDivisionDistrictStatistics = async (req, res) => {
   }
 };
 
+
+
+
 /**
  * @desc    Get complete statistics (all divisions and districts)
  * @route   GET /api/statistics/complete
@@ -119,6 +129,9 @@ export const getCompleteStats = async (req, res) => {
     });
   }
 };
+
+
+
 
 /**
  * @desc    Get summary statistics
@@ -209,6 +222,9 @@ export const getSummaryStatistics = async (req, res) => {
     });
   }
 };
+
+
+
 
 /**
  * @desc    Get comprehensive analytics data for dashboard
@@ -420,6 +436,9 @@ export const getAnalytics = async (req, res) => {
   }
 };
 
+
+
+
 /**
  * @desc    Get SuperAdmin dashboard statistics
  * @route   GET /api/statistics/admin-dashboard
@@ -476,6 +495,8 @@ export const getAdminDashboardStats = async (req, res) => {
     });
   }
 };
+
+
 
 export default {
   getMapStatistics,
