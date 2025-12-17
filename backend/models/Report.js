@@ -5,6 +5,8 @@ import { getDB } from '../config/db.js';
 // Get reports collection
 export const getReportsCollection = () => getDB().collection('reports');
 
+
+
 // Validate problem type
 export const isValidProblemType = (type) => {
   const validTypes = [
@@ -20,17 +22,26 @@ export const isValidProblemType = (type) => {
   return validTypes.includes(type);
 };
 
+
+
+
 // Validate severity
 export const isValidSeverity = (severity) => {
   const validSeverities = ['low', 'medium', 'high', 'urgent'];
   return validSeverities.includes(severity);
 };
 
+
+
+
 // Validate status
 export const isValidStatus = (status) => {
   const validStatuses = ['pending', 'approved', 'in-progress', 'resolved', 'rejected'];
   return validStatuses.includes(status);
 };
+
+
+
 
 // Create new report
 export const createReport = async (reportData) => {
@@ -100,6 +111,9 @@ export const createReport = async (reportData) => {
 
   return report;
 };
+
+
+
 
 // Get report by ID
 export const getReportById = async (reportId) => {
@@ -327,6 +341,9 @@ export const getReportById = async (reportId) => {
   return reports[0] || null;
 };
 
+
+
+
 // Find reports with filters
 export const findReports = async (filter = {}, options = {}) => {
   const { page = 1, limit = 10, sort = { createdAt: -1 } } = options;
@@ -352,6 +369,9 @@ export const findReports = async (filter = {}, options = {}) => {
   };
 };
 
+
+
+
 // Update report
 export const updateReport = async (reportId, updateData) => {
   if (!ObjectId.isValid(reportId)) {
@@ -368,6 +388,9 @@ export const updateReport = async (reportId, updateData) => {
 
   return result;
 };
+
+
+
 
 // Add comment to report
 export const addCommentToReport = async (reportId, commentData) => {
@@ -397,6 +420,9 @@ export const addCommentToReport = async (reportId, commentData) => {
 
   return result;
 };
+
+
+
 
 // Add upvote to report
 export const toggleReportUpvote = async (reportId, userId) => {
@@ -439,6 +465,9 @@ export const toggleReportUpvote = async (reportId, userId) => {
   }
 };
 
+
+
+
 // Update report status with history
 export const updateReportStatus = async (reportId, status, note, updatedBy) => {
   if (!ObjectId.isValid(reportId) || !ObjectId.isValid(updatedBy)) {
@@ -468,6 +497,10 @@ export const updateReportStatus = async (reportId, status, note, updatedBy) => {
   return result;
 };
 
+
+
+
+
 // Delete report
 export const deleteReport = async (reportId) => {
   if (!ObjectId.isValid(reportId)) {
@@ -480,6 +513,9 @@ export const deleteReport = async (reportId) => {
 
   return result.deletedCount > 0;
 };
+
+
+
 
 // Assign report to user
 export const assignReportTo = async (reportId, userId) => {
@@ -500,6 +536,9 @@ export const assignReportTo = async (reportId, userId) => {
 
   return result;
 };
+
+
+
 
 // Get report statistics by division
 export const getReportStatsByDivision = async (division) => {
@@ -582,6 +621,10 @@ export const getReportStatsByDivision = async (division) => {
   return stats;
 };
 
+
+
+
+
 // Get report statistics by district
 export const getReportStatsByDistrict = async (district) => {
   const stats = await getReportsCollection()
@@ -645,6 +688,10 @@ export const getReportStatsByDistrict = async (district) => {
     problemTypes: []
   };
 };
+
+
+
+
 
 // Get all divisions with statistics
 export const getAllDivisionsStats = async () => {
