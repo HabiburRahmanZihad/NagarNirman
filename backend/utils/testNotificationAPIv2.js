@@ -78,13 +78,13 @@ function makeRequest(method, path, data = null, token = null) {
  * Step 1: Create test user and get token
  */
 async function setupTestUser() {
-  console.log('\n🔐 Step 1: Setting Up Test User');
-  console.log('═'.repeat(60));
+  // console.log('\n🔐 Step 1: Setting Up Test User');
+  // console.log('═'.repeat(60));
 
   try {
     const testEmail = `apitest_${Date.now()}@test.com`;
 
-    console.log(`📧 Email: ${testEmail}`);
+    // console.log(`📧 Email: ${testEmail}`);
 
     const signupResponse = await makeRequest('POST', '/api/auth/register', {
       name: 'API Tester Pro',
@@ -97,8 +97,8 @@ async function setupTestUser() {
     if (signupResponse.statusCode === 201 && signupResponse.body?.token) {
       TEST_TOKEN = signupResponse.body.token;
       TEST_USER_ID = signupResponse.body.user?._id;
-      console.log('✅ Test user created successfully');
-      console.log(`👤 User ID: ${TEST_USER_ID}`);
+      // console.log('✅ Test user created successfully');
+      // console.log(`👤 User ID: ${TEST_USER_ID}`);
       return true;
     } else {
       console.error('❌ Failed to create test user');
@@ -115,8 +115,8 @@ async function setupTestUser() {
  * Step 2: Create test notifications directly in database
  */
 async function createTestNotifications() {
-  console.log('\n📝 Step 2: Creating Test Notifications');
-  console.log('═'.repeat(60));
+  // console.log('\n📝 Step 2: Creating Test Notifications');
+  // console.log('═'.repeat(60));
 
   try {
     const db = getDB();
@@ -178,9 +178,9 @@ async function createTestNotifications() {
     const result = await collection.insertMany(notifications);
     TEST_NOTIFICATION_IDS = Array.from(result.insertedIds);
 
-    console.log(`✅ Created ${TEST_NOTIFICATION_IDS.length} test notifications`);
+    // console.log(`✅ Created ${TEST_NOTIFICATION_IDS.length} test notifications`);
     TEST_NOTIFICATION_IDS.forEach((id, index) => {
-      console.log(`   ${index + 1}. ${notifications[index].title}`);
+      // console.log(`   ${index + 1}. ${notifications[index].title}`);
     });
 
     return true;
@@ -194,9 +194,9 @@ async function createTestNotifications() {
  * Test 1: GET /api/notifications
  */
 async function testGetNotifications() {
-  console.log('\n📬 Test 1: GET /api/notifications');
-  console.log('═'.repeat(60));
-  console.log('Purpose: Fetch user notifications with pagination');
+  // console.log('\n📬 Test 1: GET /api/notifications');
+  // console.log('═'.repeat(60));
+  // console.log('Purpose: Fetch user notifications with pagination');
 
   try {
     const response = await makeRequest(
@@ -206,16 +206,16 @@ async function testGetNotifications() {
       TEST_TOKEN
     );
 
-    console.log(`Status: ${response.statusCode} ${response.statusText}`);
+    // console.log(`Status: ${response.statusCode} ${response.statusText}`);
 
     if (response.statusCode === 200 && response.body?.success) {
-      console.log(`✅ PASS - Retrieved ${response.body.data?.length || 0} notifications`);
-      console.log(`   Total: ${response.body.pagination?.total || 0}`);
-      console.log(`   Pagination: Page ${response.body.pagination?.page}/${response.body.pagination?.pages}`);
+      // console.log(`✅ PASS - Retrieved ${response.body.data?.length || 0} notifications`);
+      // console.log(`   Total: ${response.body.pagination?.total || 0}`);
+      // console.log(`   Pagination: Page ${response.body.pagination?.page}/${response.body.pagination?.pages}`);
       return true;
     } else {
-      console.log('❌ FAIL - Could not retrieve notifications');
-      console.log('Response:', response.body);
+      // console.log('❌ FAIL - Could not retrieve notifications');
+      // console.log('Response:', response.body);
       return false;
     }
   } catch (error) {
@@ -228,9 +228,9 @@ async function testGetNotifications() {
  * Test 2: GET /api/notifications/unread-count
  */
 async function testGetUnreadCount() {
-  console.log('\n📊 Test 2: GET /api/notifications/unread-count');
-  console.log('═'.repeat(60));
-  console.log('Purpose: Get unread notification count');
+  // console.log('\n📊 Test 2: GET /api/notifications/unread-count');
+  // console.log('═'.repeat(60));
+  // console.log('Purpose: Get unread notification count');
 
   try {
     const response = await makeRequest(
@@ -240,15 +240,15 @@ async function testGetUnreadCount() {
       TEST_TOKEN
     );
 
-    console.log(`Status: ${response.statusCode} ${response.statusText}`);
+    // console.log(`Status: ${response.statusCode} ${response.statusText}`);
 
     if (response.statusCode === 200 && response.body?.success) {
       const count = response.body.data?.count ?? 0;
-      console.log(`✅ PASS - Unread count retrieved: ${count}`);
+      // console.log(`✅ PASS - Unread count retrieved: ${count}`);
       return true;
     } else {
-      console.log('❌ FAIL - Could not get unread count');
-      console.log('Response:', response.body);
+      // console.log('❌ FAIL - Could not get unread count');
+      // console.log('Response:', response.body);
       return false;
     }
   } catch (error) {
@@ -261,12 +261,12 @@ async function testGetUnreadCount() {
  * Test 3: PUT /api/notifications/:id/read
  */
 async function testMarkAsRead() {
-  console.log('\n✅ Test 3: PUT /api/notifications/:id/read');
-  console.log('═'.repeat(60));
-  console.log('Purpose: Mark single notification as read');
+  // console.log('\n✅ Test 3: PUT /api/notifications/:id/read');
+  // console.log('═'.repeat(60));
+  // console.log('Purpose: Mark single notification as read');
 
   if (!TEST_NOTIFICATION_IDS.length) {
-    console.log('⚠️ SKIP - No test notifications available');
+    // console.log('⚠️ SKIP - No test notifications available');
     return null;
   }
 
@@ -279,18 +279,18 @@ async function testMarkAsRead() {
       TEST_TOKEN
     );
 
-    console.log(`Status: ${response.statusCode} ${response.statusText}`);
+    // console.log(`Status: ${response.statusCode} ${response.statusText}`);
 
     if (response.statusCode === 200 && response.body?.success) {
-      console.log('✅ PASS - Notification marked as read');
-      console.log(`   Notification ID: ${notificationId}`);
+      // console.log('✅ PASS - Notification marked as read');
+      // console.log(`   Notification ID: ${notificationId}`);
       return true;
     } else if (response.statusCode === 404) {
-      console.log('⚠️ SKIP - Notification not found');
+      // console.log('⚠️ SKIP - Notification not found');
       return null;
     } else {
-      console.log('❌ FAIL - Could not mark as read');
-      console.log('Response:', response.body);
+      // console.log('❌ FAIL - Could not mark as read');
+      // console.log('Response:', response.body);
       return false;
     }
   } catch (error) {
@@ -303,9 +303,9 @@ async function testMarkAsRead() {
  * Test 4: PUT /api/notifications/mark-all-read
  */
 async function testMarkAllRead() {
-  console.log('\n📋 Test 4: PUT /api/notifications/mark-all-read');
-  console.log('═'.repeat(60));
-  console.log('Purpose: Mark all user notifications as read');
+  // console.log('\n📋 Test 4: PUT /api/notifications/mark-all-read');
+  // console.log('═'.repeat(60));
+  // console.log('Purpose: Mark all user notifications as read');
 
   try {
     const response = await makeRequest(
@@ -315,16 +315,16 @@ async function testMarkAllRead() {
       TEST_TOKEN
     );
 
-    console.log(`Status: ${response.statusCode} ${response.statusText}`);
+    // console.log(`Status: ${response.statusCode} ${response.statusText}`);
 
     if (response.statusCode === 200 && response.body?.success) {
       const count = response.body.data?.count ?? 0;
-      console.log(`✅ PASS - All notifications marked as read`);
-      console.log(`   Modified count: ${count}`);
+      // console.log(`✅ PASS - All notifications marked as read`);
+      // console.log(`   Modified count: ${count}`);
       return true;
     } else {
-      console.log('❌ FAIL - Could not mark all as read');
-      console.log('Response:', response.body);
+      // console.log('❌ FAIL - Could not mark all as read');
+      // console.log('Response:', response.body);
       return false;
     }
   } catch (error) {
@@ -337,12 +337,12 @@ async function testMarkAllRead() {
  * Test 5: DELETE /api/notifications/:id
  */
 async function testDeleteNotification() {
-  console.log('\n🗑️ Test 5: DELETE /api/notifications/:id');
-  console.log('═'.repeat(60));
-  console.log('Purpose: Delete single notification');
+  // console.log('\n🗑️ Test 5: DELETE /api/notifications/:id');
+  // console.log('═'.repeat(60));
+  // console.log('Purpose: Delete single notification');
 
   if (TEST_NOTIFICATION_IDS.length < 2) {
-    console.log('⚠️ SKIP - Not enough test notifications');
+    // console.log('⚠️ SKIP - Not enough test notifications');
     return null;
   }
 
@@ -355,18 +355,18 @@ async function testDeleteNotification() {
       TEST_TOKEN
     );
 
-    console.log(`Status: ${response.statusCode} ${response.statusText}`);
+    // console.log(`Status: ${response.statusCode} ${response.statusText}`);
 
     if (response.statusCode === 200 && response.body?.success) {
-      console.log('✅ PASS - Notification deleted');
-      console.log(`   Deleted ID: ${notificationId}`);
+      // console.log('✅ PASS - Notification deleted');
+      // console.log(`   Deleted ID: ${notificationId}`);
       return true;
     } else if (response.statusCode === 404) {
-      console.log('⚠️ SKIP - Notification not found');
+      // console.log('⚠️ SKIP - Notification not found');
       return null;
     } else {
-      console.log('❌ FAIL - Could not delete notification');
-      console.log('Response:', response.body);
+      // console.log('❌ FAIL - Could not delete notification');
+      // console.log('Response:', response.body);
       return false;
     }
   } catch (error) {
@@ -379,9 +379,9 @@ async function testDeleteNotification() {
  * Test 6: DELETE /api/notifications/all
  */
 async function testDeleteAll() {
-  console.log('\n🗑️🗑️ Test 6: DELETE /api/notifications/all');
-  console.log('═'.repeat(60));
-  console.log('Purpose: Delete all user notifications');
+  // console.log('\n🗑️🗑️ Test 6: DELETE /api/notifications/all');
+  // console.log('═'.repeat(60));
+  // console.log('Purpose: Delete all user notifications');
 
   try {
     const response = await makeRequest(
@@ -391,16 +391,16 @@ async function testDeleteAll() {
       TEST_TOKEN
     );
 
-    console.log(`Status: ${response.statusCode} ${response.statusText}`);
+    // console.log(`Status: ${response.statusCode} ${response.statusText}`);
 
     if (response.statusCode === 200 && response.body?.success) {
       const count = response.body.data?.count ?? 0;
-      console.log(`✅ PASS - All notifications deleted`);
-      console.log(`   Deleted count: ${count}`);
+      // console.log(`✅ PASS - All notifications deleted`);
+      // console.log(`   Deleted count: ${count}`);
       return true;
     } else {
-      console.log('❌ FAIL - Could not delete all');
-      console.log('Response:', response.body);
+      // console.log('❌ FAIL - Could not delete all');
+      // console.log('Response:', response.body);
       return false;
     }
   } catch (error) {
@@ -413,9 +413,9 @@ async function testDeleteAll() {
  * Test 7: Security - Invalid Token
  */
 async function testInvalidToken() {
-  console.log('\n🔑 Test 7: Security - Invalid Token');
-  console.log('═'.repeat(60));
-  console.log('Purpose: Verify invalid tokens are rejected');
+  // console.log('\n🔑 Test 7: Security - Invalid Token');
+  // console.log('═'.repeat(60));
+  // console.log('Purpose: Verify invalid tokens are rejected');
 
   try {
     const response = await makeRequest(
@@ -425,14 +425,14 @@ async function testInvalidToken() {
       'invalid.token.here'
     );
 
-    console.log(`Status: ${response.statusCode} ${response.statusText}`);
+    // console.log(`Status: ${response.statusCode} ${response.statusText}`);
 
     if (response.statusCode === 401 && response.body?.success === false) {
-      console.log('✅ PASS - Invalid token properly rejected');
-      console.log(`   Message: ${response.body.message}`);
+      // console.log('✅ PASS - Invalid token properly rejected');
+      // console.log(`   Message: ${response.body.message}`);
       return true;
     } else {
-      console.log('❌ FAIL - Invalid token not rejected properly');
+      // console.log('❌ FAIL - Invalid token not rejected properly');
       return false;
     }
   } catch (error) {
@@ -445,9 +445,9 @@ async function testInvalidToken() {
  * Test 8: Security - No Token
  */
 async function testNoToken() {
-  console.log('\n🔐 Test 8: Security - No Token');
-  console.log('═'.repeat(60));
-  console.log('Purpose: Verify requests without token are rejected');
+  // console.log('\n🔐 Test 8: Security - No Token');
+  // console.log('═'.repeat(60));
+  // console.log('Purpose: Verify requests without token are rejected');
 
   try {
     const response = await makeRequest(
@@ -457,14 +457,14 @@ async function testNoToken() {
       null
     );
 
-    console.log(`Status: ${response.statusCode} ${response.statusText}`);
+    // console.log(`Status: ${response.statusCode} ${response.statusText}`);
 
     if (response.statusCode === 401 && response.body?.success === false) {
-      console.log('✅ PASS - Request without token properly rejected');
-      console.log(`   Message: ${response.body.message}`);
+      // console.log('✅ PASS - Request without token properly rejected');
+      // console.log(`   Message: ${response.body.message}`);
       return true;
     } else {
-      console.log('❌ FAIL - Missing token not rejected properly');
+      // console.log('❌ FAIL - Missing token not rejected properly');
       return false;
     }
   } catch (error) {
@@ -477,25 +477,25 @@ async function testNoToken() {
  * Main test runner
  */
 async function runAllTests() {
-  console.log('╔══════════════════════════════════════════════════════════╗');
-  console.log('║   🔔 PROFESSIONAL NOTIFICATION API TEST SUITE v2.0 🔔    ║');
-  console.log('║   Complete Testing with Data Setup & Verification        ║');
-  console.log('╚══════════════════════════════════════════════════════════╝');
+  // console.log('╔══════════════════════════════════════════════════════════╗');
+  // console.log('║   🔔 PROFESSIONAL NOTIFICATION API TEST SUITE v2.0 🔔    ║');
+  // console.log('║   Complete Testing with Data Setup & Verification        ║');
+  // console.log('╚══════════════════════════════════════════════════════════╝');
 
-  console.log('\n⏳ Starting comprehensive test suite...\n');
+  // console.log('\n⏳ Starting comprehensive test suite...\n');
 
   // Setup phase
   const userSetup = await setupTestUser();
   if (!userSetup) {
-    console.log('\n❌ Cannot proceed without test user');
-    console.log('📝 Ensure: Backend running, auth endpoints accessible');
+    // console.log('\n❌ Cannot proceed without test user');
+    // console.log('📝 Ensure: Backend running, auth endpoints accessible');
     return;
   }
 
   const notificationsCreated = await createTestNotifications();
   if (!notificationsCreated) {
-    console.log('\n❌ Cannot proceed without test notifications');
-    console.log('📝 Ensure: Database connected properly');
+    // console.log('\n❌ Cannot proceed without test notifications');
+    // console.log('📝 Ensure: Database connected properly');
     return;
   }
 
@@ -512,9 +512,9 @@ async function runAllTests() {
   };
 
   // Summary
-  console.log('\n' + '═'.repeat(60));
-  console.log('📊 COMPREHENSIVE TEST SUMMARY');
-  console.log('═'.repeat(60));
+  // console.log('\n' + '═'.repeat(60));
+  // console.log('📊 COMPREHENSIVE TEST SUMMARY');
+  // console.log('═'.repeat(60));
 
   let passed = 0;
   let failed = 0;
@@ -522,33 +522,33 @@ async function runAllTests() {
 
   for (const [test, result] of Object.entries(results)) {
     if (result === true) {
-      console.log(`✅ ${test}`);
+      // console.log(`✅ ${test}`);
       passed++;
     } else if (result === false) {
-      console.log(`❌ ${test}`);
+      // console.log(`❌ ${test}`);
       failed++;
     } else {
-      console.log(`⚠️ ${test}`);
+      // console.log(`⚠️ ${test}`);
       skipped++;
     }
   }
 
-  console.log('═'.repeat(60));
-  console.log(`Passed: ${passed} | Failed: ${failed} | Skipped: ${skipped}`);
-  console.log(`Success Rate: ${Math.round((passed / (passed + failed + skipped)) * 100)}%`);
+  // console.log('═'.repeat(60));
+  // console.log(`Passed: ${passed} | Failed: ${failed} | Skipped: ${skipped}`);
+  // console.log(`Success Rate: ${Math.round((passed / (passed + failed + skipped)) * 100)}%`);
 
   if (failed === 0 && passed > 0) {
-    console.log('\n✅ ALL CRITICAL TESTS PASSED!');
-    console.log('🚀 System is production-ready!');
+    // console.log('\n✅ ALL CRITICAL TESTS PASSED!');
+    // console.log('🚀 System is production-ready!');
   } else if (failed > 0) {
-    console.log('\n❌ SOME TESTS FAILED - Review errors above');
+    // console.log('\n❌ SOME TESTS FAILED - Review errors above');
   } else if (skipped > 0) {
-    console.log('\n⚠️ TESTS SKIPPED - May need retry');
+    // console.log('\n⚠️ TESTS SKIPPED - May need retry');
   }
 
-  console.log('\n' + '═'.repeat(60));
-  console.log('✨ Test Suite Complete');
-  console.log('═'.repeat(60));
+  // console.log('\n' + '═'.repeat(60));
+  // console.log('✨ Test Suite Complete');
+  // console.log('═'.repeat(60));
 }
 
 // Run tests
