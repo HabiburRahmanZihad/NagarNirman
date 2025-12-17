@@ -5,12 +5,14 @@ import connectDB, { getDB, closeDB } from "../config/db.js";
 // Load environment variables
 dotenv.config({ path: ".env" });
 
+
+
+
 /**
  * Seed script to populate test data for leaderboard
  * Creates problem solvers with statistics and tasks
  * Run: node backend/scripts/seedLeaderboard.js
  */
-
 const seedLeaderboardData = async () => {
   try {
     // Initialize database connection
@@ -20,7 +22,7 @@ const seedLeaderboardData = async () => {
     const statisticsCollection = db.collection("statistics");
     const tasksCollection = db.collection("tasks");
 
-    console.log("🌱 Starting leaderboard seed...");
+    // console.log("🌱 Starting leaderboard seed...");
 
     // Clear existing test data
     await usersCollection.deleteMany({
@@ -82,7 +84,7 @@ const seedLeaderboardData = async () => {
     // Insert problem solvers
     const insertedSolvers = await usersCollection.insertMany(problemSolvers);
     const solversCount = Object.keys(insertedSolvers.insertedIds).length;
-    console.log(`✅ Created ${solversCount} problem solvers`);
+    // console.log(`✅ Created ${solversCount} problem solvers`);
 
     // Create statistics for each solver
     const statistics = [];
@@ -113,7 +115,7 @@ const seedLeaderboardData = async () => {
     // Insert statistics
     const insertedStats = await statisticsCollection.insertMany(statistics);
     const statsCount = Object.keys(insertedStats.insertedIds).length;
-    console.log(`✅ Created ${statsCount} statistics records`);
+    // console.log(`✅ Created ${statsCount} statistics records`);
 
     // Create sample tasks
     const tasks = [];
@@ -144,16 +146,16 @@ const seedLeaderboardData = async () => {
     // Insert tasks
     const insertedTasks = await tasksCollection.insertMany(tasks);
     const tasksCount = Object.keys(insertedTasks.insertedIds).length;
-    console.log(`✅ Created ${tasksCount} sample tasks`);
+    // console.log(`✅ Created ${tasksCount} sample tasks`);
 
-    console.log("✨ Leaderboard seed completed successfully!");
-    console.log("\n📊 Summary:");
-    console.log(`   - Problem Solvers: ${solversCount}`);
-    console.log(`   - Statistics Records: ${statsCount}`);
-    console.log(`   - Sample Tasks: ${tasksCount}`);
-    console.log(
-      "\n🎯 You can now visit /api/leaderboard to see the leaderboard data!"
-    );
+    // console.log("✨ Leaderboard seed completed successfully!");
+    // console.log("\n📊 Summary:");
+    // console.log(`   - Problem Solvers: ${solversCount}`);
+    // console.log(`   - Statistics Records: ${statsCount}`);
+    // console.log(`   - Sample Tasks: ${tasksCount}`);
+    // console.log(
+    //   "\n🎯 You can now visit /api/leaderboard to see the leaderboard data!"
+    // );
 
     await closeDB();
     process.exit(0);
@@ -162,6 +164,9 @@ const seedLeaderboardData = async () => {
     process.exit(1);
   }
 };
+
+
+
 
 // Run seed
 seedLeaderboardData();
