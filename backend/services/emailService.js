@@ -1,6 +1,8 @@
 // Email Service using Nodemailer
 import nodemailer from 'nodemailer';
 
+
+
 // Create reusable transporter
 const createTransporter = () => {
   return nodemailer.createTransport({
@@ -13,6 +15,8 @@ const createTransporter = () => {
     },
   });
 };
+
+
 
 // Email template wrapper
 const emailTemplate = (title, content) => {
@@ -206,6 +210,8 @@ const emailTemplate = (title, content) => {
   `;
 };
 
+
+
 // Send welcome email
 export const sendWelcomeEmail = async (user) => {
   const transporter = createTransporter();
@@ -236,11 +242,13 @@ export const sendWelcomeEmail = async (user) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('✅ Welcome email sent to:', user.email);
+    // console.log('✅ Welcome email sent to:', user.email);
   } catch (error) {
     console.error('❌ Error sending welcome email:', error);
   }
 };
+
+
 
 // Send task assignment email
 export const sendTaskAssignmentEmail = async (user, task, report) => {
@@ -281,11 +289,13 @@ export const sendTaskAssignmentEmail = async (user, task, report) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('✅ Task assignment email sent to:', user.email);
+    // console.log('✅ Task assignment email sent to:', user.email);
   } catch (error) {
     console.error('❌ Error sending task assignment email:', error);
   }
 };
+
+
 
 // Send report status update email
 export const sendReportStatusEmail = async (user, report, newStatus) => {
@@ -337,11 +347,13 @@ export const sendReportStatusEmail = async (user, report, newStatus) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('✅ Report status email sent to:', user.email);
+    // console.log('✅ Report status email sent to:', user.email);
   } catch (error) {
     console.error('❌ Error sending report status email:', error);
   }
 };
+
+
 
 // Send approval notification email
 export const sendApprovalEmail = async (user, approved) => {
@@ -389,11 +401,13 @@ export const sendApprovalEmail = async (user, approved) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log(`✅ Approval email (${approved ? 'approved' : 'rejected'}) sent to:`, user.email);
+    // console.log(`✅ Approval email (${approved ? 'approved' : 'rejected'}) sent to:`, user.email);
   } catch (error) {
     console.error('❌ Error sending approval email:', error);
   }
 };
+
+
 
 // Send reward notification email
 export const sendRewardEmail = async (user, task, points) => {
@@ -426,11 +440,13 @@ export const sendRewardEmail = async (user, task, points) => {
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('✅ Reward email sent to:', user.email);
+    // console.log('✅ Reward email sent to:', user.email);
   } catch (error) {
     console.error('❌ Error sending reward email:', error);
   }
 };
+
+
 
 export default {
   sendWelcomeEmail,
