@@ -6,7 +6,11 @@ import { getDB } from '../config/db.js';
 import { calculateDistance } from './usgsService.js';
 import { createNotification } from '../models/Notification.js';
 
+
+
 const NOTIFICATION_RADIUS_KM = 150; // Notify users within 150km of earthquake
+
+
 
 /**
  * Create earthquake notifications for affected users
@@ -86,6 +90,9 @@ export const createEarthquakeNotifications = async (earthquake) => {
   }
 };
 
+
+
+
 /**
  * Get earthquake notifications for a specific user
  * @param {string} userId - User ID
@@ -124,6 +131,9 @@ export const getUserEarthquakeNotifications = async (userId, options = {}) => {
   }
 };
 
+
+
+
 /**
  * Get earthquake notifications by alert level and location
  * @param {string} userId - User ID
@@ -152,6 +162,9 @@ export const getEarthquakeNotificationsByAlertLevel = async (userId, alertLevel)
     return [];
   }
 };
+
+
+
 
 /**
  * Mark earthquake notifications as read for a user
@@ -186,6 +199,9 @@ export const markEarthquakeNotificationsAsRead = async (userId, notificationIds 
     return 0;
   }
 };
+
+
+
 
 /**
  * Get earthquake statistics for notifications
@@ -232,6 +248,9 @@ export const getEarthquakeNotificationStats = async (userId) => {
   }
 };
 
+
+
+
 /**
  * Delete old earthquake notifications
  * @param {number} daysOld - Delete notifications older than this many days
@@ -254,6 +273,8 @@ export const deleteOldEarthquakeNotifications = async (daysOld = 30) => {
     return 0;
   }
 };
+
+
 
 export default {
   createEarthquakeNotifications,
