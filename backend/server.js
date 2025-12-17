@@ -4,18 +4,29 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
+
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+
+
+
 // Load .env file with explicit path
 const result = dotenv.config({ path: join(__dirname, '.env') });
+
+
 
 if (result.error) {
   console.error('❌ Error loading .env file:', result.error);
 } else {
   console.log('✅ .env file loaded successfully');
-  console.log('📁 .env path:', join(__dirname, '.env'));
+  // console.log('📁 .env path:', join(__dirname, '.env'));
 }
+
+
+
 
 import express from 'express';
 import cors from 'cors';
@@ -31,8 +42,14 @@ import leaderboardRoutes from './routes/leaderboardRoutes.js';
 import earthquakeRoutes from './routes/earthquakeRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
+
+
+
 // Initialize Express app
 const app = express();
+
+
+
 
 // Connect to MongoDB and create indexes
 connectDB().then(async () => {
@@ -47,14 +64,23 @@ connectDB().then(async () => {
   }
 });
 
+
+
+
 // Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true
 }));
+
+
+
 // Increase payload limit to handle base64 images (50MB)
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+
+
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -67,6 +93,9 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/earthquakes', earthquakeRoutes);
 
+
+
+
 // Health check route
 app.get('/api/health', (req, res) => {
   res.status(200).json({
@@ -76,6 +105,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({
@@ -84,8 +115,14 @@ app.use((req, res) => {
   });
 });
 
+
+
+
 // Error handling middleware
 app.use(errorHandler);
+
+
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

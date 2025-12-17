@@ -2,8 +2,13 @@
 import { ObjectId } from 'mongodb';
 import { getDB } from '../config/db.js';
 
+
+
 // Get notifications collection
 export const getNotificationsCollection = () => getDB().collection('notifications');
+
+
+
 
 // Create indexes for better query performance
 export const createNotificationIndexes = async () => {
@@ -13,11 +18,14 @@ export const createNotificationIndexes = async () => {
     await collection.createIndex({ userId: 1, createdAt: -1 });
     await collection.createIndex({ type: 1 });
     await collection.createIndex({ read: 1 });
-    console.log('Notification indexes created successfully');
+    // console.log('Notification indexes created successfully');
   } catch (error) {
     console.error('Error creating notification indexes:', error);
   }
 };
+
+
+
 
 // Validate notification type
 export const isValidNotificationType = (type) => {
@@ -39,6 +47,9 @@ export const isValidNotificationType = (type) => {
   ];
   return validTypes.includes(type);
 };
+
+
+
 
 // Create notification
 export const createNotification = async (notificationData) => {
@@ -83,6 +94,8 @@ export const createNotification = async (notificationData) => {
   return notification;
 };
 
+
+
 // Get notification by ID
 export const getNotificationById = async (notificationId) => {
   if (!ObjectId.isValid(notificationId)) {
@@ -93,6 +106,9 @@ export const getNotificationById = async (notificationId) => {
     _id: new ObjectId(notificationId),
   });
 };
+
+
+
 
 // Get user's notifications with pagination
 export const getUserNotifications = async (userId, options = {}) => {
@@ -140,6 +156,9 @@ export const getUserNotifications = async (userId, options = {}) => {
   };
 };
 
+
+
+
 // Get unread count for user
 export const getUnreadCount = async (userId) => {
   if (!ObjectId.isValid(userId)) {
@@ -151,6 +170,8 @@ export const getUnreadCount = async (userId) => {
     read: false,
   });
 };
+
+
 
 // Mark notification as read
 export const markAsRead = async (notificationId) => {
@@ -172,6 +193,9 @@ export const markAsRead = async (notificationId) => {
   return result;
 };
 
+
+
+
 // Mark all user notifications as read
 export const markAllAsRead = async (userId) => {
   if (!ObjectId.isValid(userId)) {
@@ -191,6 +215,9 @@ export const markAllAsRead = async (userId) => {
   return result.modifiedCount;
 };
 
+
+
+
 // Delete notification
 export const deleteNotification = async (notificationId) => {
   if (!ObjectId.isValid(notificationId)) {
@@ -204,6 +231,9 @@ export const deleteNotification = async (notificationId) => {
   return result.deletedCount > 0;
 };
 
+
+
+
 // Delete all user notifications
 export const deleteAllUserNotifications = async (userId) => {
   if (!ObjectId.isValid(userId)) {
@@ -216,6 +246,9 @@ export const deleteAllUserNotifications = async (userId) => {
 
   return result.deletedCount;
 };
+
+
+
 
 // Bulk create notifications (for multiple users)
 export const createBulkNotifications = async (notificationsData) => {
@@ -255,6 +288,9 @@ export const createBulkNotifications = async (notificationsData) => {
   const result = await getNotificationsCollection().insertMany(notifications);
   return result.insertedCount;
 };
+
+
+
 
 // Clean up old read notifications (older than 30 days)
 export const cleanupOldNotifications = async () => {

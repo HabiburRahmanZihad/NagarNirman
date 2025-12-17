@@ -6,16 +6,27 @@ import { getDB } from '../config/db.js';
 // Get users collection
 export const getUsersCollection = () => getDB().collection('users');
 
+
+
+
 // Hash password
 export const hashPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
   return await bcrypt.hash(password, salt);
 };
 
+
+
+
+
 // Compare password
 export const matchPassword = async (enteredPassword, hashedPassword) => {
   return await bcrypt.compare(enteredPassword, hashedPassword);
 };
+
+
+
+
 
 // Validate email
 export const isValidEmail = (email) => {
@@ -23,11 +34,17 @@ export const isValidEmail = (email) => {
   return emailRegex.test(email);
 };
 
+
+
+
 // Validate role
 export const isValidRole = (role) => {
   const validRoles = ['user', 'authority', 'problemSolver', 'superAdmin'];
   return validRoles.includes(role);
 };
+
+
+
 
 // Create new user
 export const createUser = async (userData) => {
@@ -101,6 +118,9 @@ export const createUser = async (userData) => {
   return user;
 };
 
+
+
+
 // Get user by ID
 export const getUserById = async (userId) => {
   if (!ObjectId.isValid(userId)) {
@@ -112,6 +132,9 @@ export const getUserById = async (userId) => {
   );
 };
 
+
+
+
 // Get user by ID with password
 export const getUserByIdWithPassword = async (userId) => {
   if (!ObjectId.isValid(userId)) {
@@ -119,6 +142,9 @@ export const getUserByIdWithPassword = async (userId) => {
   }
   return await getUsersCollection().findOne({ _id: new ObjectId(userId) });
 };
+
+
+
 
 // Get user by email
 export const getUserByEmail = async (email) => {
@@ -128,10 +154,16 @@ export const getUserByEmail = async (email) => {
   );
 };
 
+
+
+
 // Get user by email with password
 export const getUserByEmailWithPassword = async (email) => {
   return await getUsersCollection().findOne({ email: email.toLowerCase() });
 };
+
+
+
 
 // Update user
 export const updateUser = async (userId, updateData) => {
@@ -153,6 +185,10 @@ export const updateUser = async (userId, updateData) => {
 
   return result;
 };
+
+
+
+
 
 // Update user password
 export const updateUserPassword = async (userId, newPassword) => {
@@ -176,12 +212,18 @@ export const updateUserPassword = async (userId, newPassword) => {
   return result;
 };
 
+
+
+
 // Get public profile (without password)
 export const getPublicProfile = (user) => {
   if (!user) return null;
   const { password, ...publicProfile } = user;
   return publicProfile;
 };
+
+
+
 
 // Find users with filters
 export const findUsers = async (filter = {}, options = {}) => {
@@ -208,6 +250,9 @@ export const findUsers = async (filter = {}, options = {}) => {
   };
 };
 
+
+
+
 // Increment user points
 export const incrementUserPoints = async (userId, points) => {
   if (!ObjectId.isValid(userId)) {
@@ -225,6 +270,9 @@ export const incrementUserPoints = async (userId, points) => {
 
   return result;
 };
+
+
+
 
 // Update user approval status
 export const updateUserApproval = async (userId, approved) => {
@@ -245,6 +293,9 @@ export const updateUserApproval = async (userId, approved) => {
 
   return result;
 };
+
+
+
 
 // Check if user has exceeded weekly report submission limit
 export const checkReportSubmissionLimit = async (userId) => {
@@ -339,6 +390,9 @@ export const checkReportSubmissionLimit = async (userId) => {
   };
 };
 
+
+
+
 // Increment user's weekly report submission count
 export const incrementReportSubmission = async (userId) => {
   if (!ObjectId.isValid(userId)) {
@@ -356,6 +410,9 @@ export const incrementReportSubmission = async (userId) => {
   return result;
 };
 
+
+
+
 // Increment user's weekly completed report count
 export const incrementCompletedReport = async (userId) => {
   if (!ObjectId.isValid(userId)) {
@@ -372,6 +429,9 @@ export const incrementCompletedReport = async (userId) => {
 
   return result;
 };
+
+
+
 
 // Reset weekly report limit for a user
 export const resetWeeklyReportLimit = async (userId) => {

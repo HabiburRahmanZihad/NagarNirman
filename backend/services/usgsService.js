@@ -1,6 +1,8 @@
 // USGS Earthquake Data Service
 // Fetches real earthquake data from USGS GeoJSON API (free, no API key required)
 
+
+
 /**
  * Map USGS magnitude to alert level
  */
@@ -10,6 +12,8 @@ const getAlertLevel = (magnitude) => {
   if (magnitude >= 4.5) return 'Yellow';
   return 'Green';
 };
+
+
 
 /**
  * Map magnitude to intensity description
@@ -25,7 +29,11 @@ const getIntensity = (magnitude) => {
   return 'Not Felt';
 };
 
+
+
 const USGS_API_BASE = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary';
+
+
 
 /**
  * Calculate distance between two geographic coordinates using Haversine formula
@@ -49,6 +57,9 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
   return R * c; // Distance in kilometers
 };
 
+
+
+
 /**
  * Fetch earthquakes from USGS API
  * @param {number} days - Number of days of data to fetch (default: 7)
@@ -64,7 +75,7 @@ export const fetchUSGSEarthquakes = async (days = 7, minMagnitude = 2.5) => {
 
     const url = `${USGS_API_BASE}/${dataset}.geojson`;
 
-    console.log(`📡 Fetching earthquake data from USGS API: ${url}`);
+    // console.log(`📡 Fetching earthquake data from USGS API: ${url}`);
 
     const response = await fetch(url, {
       timeout: 10000,
@@ -115,13 +126,16 @@ export const fetchUSGSEarthquakes = async (days = 7, minMagnitude = 2.5) => {
       })
       .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by most recent
 
-    console.log(`✅ Successfully fetched ${earthquakes.length} earthquakes from USGS`);
+    // console.log(`✅ Successfully fetched ${earthquakes.length} earthquakes from USGS`);
     return earthquakes;
   } catch (error) {
     console.error('❌ Error fetching from USGS API:', error.message);
     throw error;
   }
 };
+
+
+
 
 /**
  * Fetch earthquakes by geographic bounds
@@ -137,7 +151,7 @@ export const fetchUSGSEarthquakesByBounds = async (bounds) => {
       `?minlatitude=${minLatitude}&maxlatitude=${maxLatitude}` +
       `&minlongitude=${minLongitude}&maxlongitude=${maxLongitude}`;
 
-    console.log(`📡 Fetching earthquakes by bounds from USGS API`);
+    // console.log(`📡 Fetching earthquakes by bounds from USGS API`);
 
     const response = await fetch(url, {
       timeout: 10000,
@@ -181,13 +195,16 @@ export const fetchUSGSEarthquakesByBounds = async (bounds) => {
       };
     });
 
-    console.log(`✅ Successfully fetched ${earthquakes.length} earthquakes by bounds`);
+    // console.log(`✅ Successfully fetched ${earthquakes.length} earthquakes by bounds`);
     return earthquakes;
   } catch (error) {
     console.error('❌ Error fetching from USGS API by bounds:', error.message);
     throw error;
   }
 };
+
+
+
 
 /**
  * Sync USGS earthquakes to database
@@ -197,7 +214,7 @@ export const fetchUSGSEarthquakesByBounds = async (bounds) => {
  */
 export const syncUSGSEarthquakes = async (Earthquake, days = 7) => {
   try {
-    console.log(`🔄 Starting USGS earthquake sync for last ${days} days...`);
+    // console.log(`🔄 Starting USGS earthquake sync for last ${days} days...`);
 
     // Fetch from USGS
     const usgsEarthquakes = await fetchUSGSEarthquakes(days);
@@ -233,7 +250,7 @@ export const syncUSGSEarthquakes = async (Earthquake, days = 7) => {
       }
     }
 
-    console.log(`✅ USGS sync complete: ${synced} new, ${updated} updated, ${errors} errors`);
+    // console.log(`✅ USGS sync complete: ${synced} new, ${updated} updated, ${errors} errors`);
     return { synced, updated, errors, total: usgsEarthquakes.length };
   } catch (error) {
     console.error('❌ Error syncing USGS earthquakes:', error.message);

@@ -20,6 +20,8 @@ const testUser = {
   role: 'citizen',
 };
 
+
+
 // Test report
 const testReport = {
   _id: '507f1f77bcf86cd799439013',
@@ -45,26 +47,30 @@ const testReport = {
   ],
 };
 
+
+
 // Status to update to
 const newStatus = 'in-progress';
 
-console.log('🧪 Testing Report Status Update Email...');
-console.log('📧 SMTP Host:', process.env.SMTP_HOST);
-console.log('📧 SMTP Port:', process.env.SMTP_PORT);
-console.log('📧 SMTP User:', process.env.SMTP_USER);
-console.log('');
 
-console.log('📤 Sending report status update email to:', testUser.email);
-console.log('📋 Report:', testReport.problemType);
-console.log('🔄 New Status:', newStatus.toUpperCase());
-console.log('📍 Location:', testReport.location.address);
-console.log('');
+
+// console.log('🧪 Testing Report Status Update Email...');
+// console.log('📧 SMTP Host:', process.env.SMTP_HOST);
+// console.log('📧 SMTP Port:', process.env.SMTP_PORT);
+// console.log('📧 SMTP User:', process.env.SMTP_USER);
+// console.log('');
+
+// console.log('📤 Sending report status update email to:', testUser.email);
+// console.log('📋 Report:', testReport.problemType);
+// console.log('🔄 New Status:', newStatus.toUpperCase());
+// console.log('📍 Location:', testReport.location.address);
+// console.log('');
 
 (async () => {
   try {
     await sendReportStatusEmail(testUser, testReport, newStatus);
-    console.log('✅ Report status update email sent successfully!');
-    console.log('📬 Check your inbox at:', testUser.email);
+    // console.log('✅ Report status update email sent successfully!');
+    // console.log('📬 Check your inbox at:', testUser.email);
     process.exit(0);
   } catch (error) {
     console.error('❌ Failed to send report status update email:');

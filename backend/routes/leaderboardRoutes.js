@@ -7,7 +7,13 @@ import {
 } from "../controllers/leaderboardController.js";
 import { protect } from "../middleware/auth.js";
 
+
+
+
 const router = express.Router();
+
+
+
 
 /**
  * GET /api/leaderboard
@@ -15,6 +21,9 @@ const router = express.Router();
  * Public route
  */
 router.get("/", getLeaderboard);
+
+
+
 
 /**
  * GET /api/leaderboard/filtered
@@ -24,6 +33,9 @@ router.get("/", getLeaderboard);
  */
 router.get("/filtered", getLeaderboardFiltered);
 
+
+
+
 /**
  * GET /api/leaderboard/rank/:userId
  * Get user's rank and nearby competitors
@@ -31,11 +43,15 @@ router.get("/filtered", getLeaderboardFiltered);
  */
 router.get("/rank/:userId", protect, getUserRankWithNearby);
 
+
+
 /**
  * GET /api/leaderboard/district/:district
  * Get leaderboard for specific district
  * Public route
  */
 router.get("/district/:district", getDistrictLeaderboard);
+
+
 
 export default router;

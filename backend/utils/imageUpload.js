@@ -54,6 +54,9 @@ export const uploadToImgBB = async (base64Image, imageName = 'image') => {
   }
 };
 
+
+
+
 /**
  * Upload multiple images to ImgBB
  * @param {Array<string>} base64Images - Array of base64 encoded images
@@ -72,6 +75,10 @@ export const uploadMultipleToImgBB = async (base64Images, prefix = 'image') => {
     throw new Error(`Failed to upload images: ${error.message}`);
   }
 };
+
+
+
+
 
 /**
  * Validate image size and format
