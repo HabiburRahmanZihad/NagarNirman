@@ -5,6 +5,8 @@ import { getDB } from '../config/db.js';
 // Get earthquakes collection
 export const getEarthquakesCollection = () => getDB().collection('earthquakes');
 
+
+
 // Create indexes for better performance
 export const createEarthquakeIndexes = async () => {
   const collection = getEarthquakesCollection();
@@ -15,7 +17,7 @@ export const createEarthquakeIndexes = async () => {
     await collection.createIndex({ alertLevel: 1 });
     await collection.createIndex({ 'coordinates.coordinates': '2dsphere' }); // Geospatial index
     await collection.createIndex({ isActive: 1 });
-    console.log('✅ Earthquake indexes created successfully');
+    // console.log('✅ Earthquake indexes created successfully');
   } catch (error) {
     if (!error.message.includes('already exists')) {
       console.error('Error creating earthquake indexes:', error);
@@ -23,11 +25,16 @@ export const createEarthquakeIndexes = async () => {
   }
 };
 
+
+
 // Validate alert level
 export const isValidAlertLevel = (level) => {
   const validLevels = ['Red', 'Orange', 'Yellow', 'Green'];
   return validLevels.includes(level);
 };
+
+
+
 
 // Calculate alert level from magnitude
 export const calculateAlertLevel = (magnitude) => {
@@ -36,6 +43,9 @@ export const calculateAlertLevel = (magnitude) => {
   if (magnitude >= 4.5) return 'Yellow';
   return 'Green';
 };
+
+
+
 
 // Calculate intensity from magnitude
 export const calculateIntensity = (magnitude) => {
@@ -49,10 +59,16 @@ export const calculateIntensity = (magnitude) => {
   return 'Not Felt';
 };
 
+
+
+
 // Check if earthquake is in Bangladesh region
 export const isBangladeshEarthquake = (latitude, longitude) => {
   return latitude >= 20 && latitude <= 27 && longitude >= 88 && longitude <= 93;
 };
+
+
+
 
 // Create new earthquake from USGS data
 export const createEarthquake = async (earthquakeData) => {
@@ -101,6 +117,9 @@ export const createEarthquake = async (earthquakeData) => {
   return { ...earthquake, _id: result.insertedId };
 };
 
+
+
+
 // Get all earthquakes
 export const getAllEarthquakes = async (filter = {}, options = {}) => {
   const { sort = { timestamp: -1 }, limit = 100, skip = 0 } = options;
@@ -114,6 +133,9 @@ export const getAllEarthquakes = async (filter = {}, options = {}) => {
     .limit(limit)
     .toArray();
 };
+
+
+
 
 // Get recent earthquakes (past 7 days)
 export const getRecentEarthquakes = async (daysBack = 7, limit = 50) => {
@@ -130,6 +152,8 @@ export const getRecentEarthquakes = async (daysBack = 7, limit = 50) => {
     .toArray();
 };
 
+
+
 // Get earthquake by ID
 export const getEarthquakeById = async (id) => {
   if (!ObjectId.isValid(id)) {
@@ -138,6 +162,9 @@ export const getEarthquakeById = async (id) => {
 
   return await getEarthquakesCollection().findOne({ _id: new ObjectId(id) });
 };
+
+
+
 
 // Get earthquakes by location (geospatial query)
 export const getEarthquakesByLocation = async (longitude, latitude, maxDistance = 100000) => {
@@ -158,6 +185,8 @@ export const getEarthquakesByLocation = async (longitude, latitude, maxDistance 
     .toArray();
 };
 
+
+
 // Get high alert earthquakes (Red/Orange)
 export const getHighAlertEarthquakes = async (daysBack = 7) => {
   const startDate = new Date();
@@ -173,6 +202,8 @@ export const getHighAlertEarthquakes = async (daysBack = 7) => {
     .toArray();
 };
 
+
+
 // Get Bangladesh earthquakes
 export const getBangladeshEarthquakes = async (limit = 50) => {
   return await getEarthquakesCollection()
@@ -181,6 +212,8 @@ export const getBangladeshEarthquakes = async (limit = 50) => {
     .limit(limit)
     .toArray();
 };
+
+
 
 // Get earthquake statistics
 export const getEarthquakeStats = async () => {
@@ -224,6 +257,8 @@ export const getEarthquakeStats = async () => {
   };
 };
 
+
+
 // Update earthquake
 export const updateEarthquake = async (id, updates) => {
   if (!ObjectId.isValid(id)) {
@@ -250,6 +285,8 @@ export const updateEarthquake = async (id, updates) => {
   return result.value;
 };
 
+
+
 // Delete earthquake (soft delete)
 export const deleteEarthquake = async (id) => {
   if (!ObjectId.isValid(id)) {
@@ -265,10 +302,14 @@ export const deleteEarthquake = async (id) => {
   return result.value;
 };
 
+
+
 // Get earthquake count
 export const getEarthquakeCount = async (filter = {}) => {
   return await getEarthquakesCollection().countDocuments({ isActive: true, ...filter });
 };
+
+
 
 // Clear old earthquakes (older than X days)
 export const clearOldEarthquakes = async (daysOld = 30) => {
@@ -282,6 +323,8 @@ export const clearOldEarthquakes = async (daysOld = 30) => {
 
   return result.deletedCount;
 };
+
+
 
 export default {
   getEarthquakesCollection,
