@@ -503,6 +503,9 @@ export const updateUserStatus = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 // @desc    Get user's problem solver application
 // @route   GET /api/users/my-application
 // @access  Private
@@ -528,6 +531,9 @@ export const getMyApplication = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
 
 // @desc    Get all problem solver applications
 // @route   GET /api/users/applications
@@ -572,6 +578,9 @@ export const getAllApplications = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 // @desc    Get single application by ID
 // @route   GET /api/users/applications/:id
 // @access  Private (Authority)
@@ -608,6 +617,9 @@ export const getApplicationDetails = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
 
 // @desc    Review problem solver application (approve/reject)
 // @route   PATCH /api/users/applications/:id/review
@@ -647,9 +659,9 @@ export const reviewApplication = asyncHandler(async (req, res) => {
         district: application.district,
       };
 
-      console.log('Updating user with data:', updateData);
+      // console.log('Updating user with data:', updateData);
       const updatedUser = await updateUser(application.userId.toString(), updateData);
-      console.log('User updated successfully:', updatedUser);
+      // console.log('User updated successfully:', updatedUser);
     }
 
     // Get user details for email
@@ -673,6 +685,10 @@ export const reviewApplication = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
+
 
 // @desc    Delete user
 // @route   DELETE /api/users/:id
@@ -701,6 +717,9 @@ export const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 // @desc    Get all Problem Solvers
 // @route   GET /api/users/solvers
 // @access  Private (Authority)
@@ -724,7 +743,7 @@ export const getSolvers = asyncHandler(async (req, res) => {
     if (division) filter.division = division;
     if (district) filter.district = district;
 
-    console.log('getSolvers filter:', filter);
+    // console.log('getSolvers filter:', filter);
 
     const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
 
@@ -734,7 +753,7 @@ export const getSolvers = asyncHandler(async (req, res) => {
       sort,
     });
 
-    console.log(`Found ${result.users.length} solvers`);
+    // console.log(`Found ${result.users.length} solvers`);
 
     // Get task statistics for all solvers in bulk using aggregation
     const { getTasksCollection } = await import('../models/Task.js');
@@ -839,6 +858,9 @@ export const getSolvers = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 // @desc    Update user role (superAdmin and Authority)
 // @route   PATCH /api/users/:id/role
 // @access  Private (SuperAdmin, Authority)
@@ -916,6 +938,9 @@ export const updateUserRole = asyncHandler(async (req, res) => {
     });
   }
 });
+
+
+
 
 // Get current user's weekly report submission limit info
 export const getWeeklyReportLimit = asyncHandler(async (req, res) => {
