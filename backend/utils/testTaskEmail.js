@@ -47,22 +47,22 @@ const testReport = {
   createdAt: new Date(),
 };
 
-console.log('🧪 Testing Task Assignment Email...');
-console.log('📧 SMTP Host:', process.env.SMTP_HOST);
-console.log('📧 SMTP Port:', process.env.SMTP_PORT);
-console.log('📧 SMTP User:', process.env.SMTP_USER);
-console.log('');
+// console.log('🧪 Testing Task Assignment Email...');
+// console.log('📧 SMTP Host:', process.env.SMTP_HOST);
+// console.log('📧 SMTP Port:', process.env.SMTP_PORT);
+// console.log('📧 SMTP User:', process.env.SMTP_USER);
+// console.log('');
 
-console.log('📤 Sending task assignment email to:', testUser.email);
-console.log('📋 Task:', testTask.title);
-console.log('👤 Assigned to:', testUser.name);
-console.log('');
+// console.log('📤 Sending task assignment email to:', testUser.email);
+// console.log('📋 Task:', testTask.title);
+// console.log('👤 Assigned to:', testUser.name);
+// console.log('');
 
 (async () => {
   try {
     await sendTaskAssignmentEmail(testUser, testTask, testReport);
-    console.log('✅ Task assignment email sent successfully!');
-    console.log('📬 Check your inbox at:', testUser.email);
+    // console.log('✅ Task assignment email sent successfully!');
+    // console.log('📬 Check your inbox at:', testUser.email);
     process.exit(0);
   } catch (error) {
     console.error('❌ Failed to send task assignment email:');
