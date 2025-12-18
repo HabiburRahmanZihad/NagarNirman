@@ -2,7 +2,7 @@
 import { Sprout } from "lucide-react";
 import Image from "next/image";
 import React from "react";
-
+import { LuSiren } from "react-icons/lu";
 const images = [
   "https://i.postimg.cc/SQ2SBwDh/download-(14).png",
   "https://i.postimg.cc/x1RnGYTn/download-(13).png",
@@ -24,7 +24,7 @@ export default function EmergencyHotlineMarquee() {
     <section className="container mx-auto py-8 sm:py-12 md:py-16 lg:py-20 px-3 xs:px-4 sm:px-6 md:px-8">
       <div className="text-center mb-8 xs:mb-10 sm:mb-12 md:mb-14 lg:mb-16">
         <div className="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 mb-2 xs:mb-2.5 sm:mb-3">
-          <Sprout className="w-4 h-4 xs:w-5 xs:h-5 text-[#3C6E59]" />
+          <LuSiren className="w-6 h-6 xs:w-5 xs:h-5 text-[#3C6E59]" />
           <span className="text-[#555555] text-xs xs:text-sm sm:text-base md:text-lg font-medium tracking-wide">24/7 Support</span>
         </div>
         <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold text-[#003B31]">

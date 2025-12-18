@@ -1,6 +1,6 @@
 "use client";
 
-import { Sprout } from "lucide-react";
+import { LucideNotebookPen, Sprout } from "lucide-react";
 import React from "react";
 
 const StepsProgress = () => {
@@ -76,7 +76,7 @@ const StepsProgress = () => {
         {/* Section Header */}
         <div className="text-center mb-8 md:mb-16">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <Sprout className="w-5 h-5 text-[#004d40]" />
+            <LucideNotebookPen className="w-6 h-6 text-[#004d40]" />
             <span className="text-[#555555] text-lg font-medium">
               How to Report
             </span>

@@ -4,6 +4,7 @@ import React from "react";
 import { MapPin, Clock, ArrowRight, Sprout, Calendar } from "lucide-react";
 import Button from "@/components/common/Button";
 import Image from "next/image";
+import { MdEventNote } from "react-icons/md";
 
 // --- EVENT DATA ---
 const events = [
@@ -70,7 +71,7 @@ export default function EventsSection() {
         {/* --- HEADER --- */}
         <div className="text-center mb-12 sm:mb-16 md:mb-20">
           <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
-            <Sprout className="w-4 h-4 sm:w-5 sm:h-5 text-[#004d40]" />
+            <MdEventNote className="w-8 h-8 sm:w-5 sm:h-5 text-[#004d40]" />
             <span className="text-[#555555] text-sm sm:text-base md:text-lg font-medium">
               Upcoming Event
             </span>

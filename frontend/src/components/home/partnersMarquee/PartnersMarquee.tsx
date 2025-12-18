@@ -2,6 +2,7 @@
 import { Sprout } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { FaHandHoldingHand } from "react-icons/fa6";
 
 const logos = [
   "https://econest-html.netlify.app/econest/assets/img/logo/logo-2.webp",
@@ -17,8 +18,8 @@ export default function PartnersMarquee() {
     <section className="container mx-auto py-8 sm:py-12 md:py-16 lg:py-20 px-3 xs:px-4 sm:px-6 md:px-8">
       <div className="text-center mb-8 xs:mb-10 sm:mb-12 md:mb-14 lg:mb-16">
         <div className="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 mb-2 xs:mb-2.5 sm:mb-3">
-          <Sprout className="w-4 h-4 xs:w-5 xs:h-5 text-[#3C6E59]" />
-          <span className="text-[#555555] text-xs xs:text-sm sm:text-base md:text-lg font-medium tracking-wide">          Trusted By The Best</span>
+          <FaHandHoldingHand className="w-6 h-6 xs:w-5 xs:h-5 text-[#3C6E59]" />
+          <span className="text-[#555555] text-xs xs:text-sm sm:text-base md:text-lg font-medium tracking-wide">Trusted By The Best</span>
         </div>
         <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold text-[#003B31]">
           Our Major Partners

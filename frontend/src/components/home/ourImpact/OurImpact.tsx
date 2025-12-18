@@ -1,6 +1,8 @@
 import { Sprout, Users } from "lucide-react";
 import { FaHandHoldingHeart } from "react-icons/fa";
 import Image from "next/image";
+import { BiSolidCity } from "react-icons/bi";
+
 
 const images = [
   "https://images.unsplash.com/photo-1633788989414-8a8d43ff985e?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -14,7 +16,7 @@ export default function OurImpact() {
       {/* Text & Logo Section */}
       <div className="text-center mb-8 xs:mb-10 sm:mb-12 md:mb-16">
         <div className="flex items-center justify-center gap-2 mb-3">
-          <Sprout className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 text-primary" />
+          <BiSolidCity className="w-6 h-6 xs:w-5 xs:h-5 sm:w-6 sm:h-6 text-primary" />
           <span className="text-gray-600 text-xs xs:text-sm sm:text-base md:text-lg font-medium tracking-wide">
             Building Sustainable Cities Together
           </span>
