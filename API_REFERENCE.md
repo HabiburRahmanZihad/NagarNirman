@@ -379,7 +379,7 @@ location[coordinates][1]: 23.7925
 - `user` - Regular citizen
 - `authority` - Government official
 - `problemSolver` - Verified problem solver (needs approval)
-- `ngo` - NGO member (needs approval)
+- `superAdmin` - Full system access (root user)
 
 ---
 

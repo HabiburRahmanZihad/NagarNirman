@@ -30,8 +30,10 @@ src/
 │   │   │   └── page.tsx        # Citizen dashboard
 │   │   ├── authority/
 │   │   │   └── page.tsx        # City authority dashboard
-│   │   └── solver/
-│   │       └── page.tsx        # Problem solver/NGO dashboard
+│   │   ├── solver/
+│   │   │   └── page.tsx        # Problem solver dashboard
+│   │   └── admin/
+│   │       └── page.tsx        # Super Admin dashboard
 │   │
 │   └── reports/                 # Report management
 │       └── page.tsx            # Reports listing page

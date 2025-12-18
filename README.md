@@ -1,5 +1,3 @@
-# 🏗️ NagarNirman - Report, Resolve, Rebuild
-
 <div align="center">
 
 ![NagarNirman Logo](frontend/public/logo/logo.png)
@@ -649,7 +647,6 @@ Register → Login → Create Report → Track Status → Engage with Community
 - ✅ Assign tasks to problem solvers
 - ✅ Review task submissions
 - ✅ Grant ratings and rewards
-- ✅ Manage users (approve problem solver applications)
 - ✅ View analytics and statistics
 
 **Workflow**:
@@ -675,14 +672,23 @@ Apply as Solver → Wait for Approval → View Assigned Tasks →
 Accept Task → Complete Work → Submit Proof → Earn Rewards
 ```
 
-### 4️⃣ **NGO** (Organization Account)
-**Similar permissions to Problem Solver**
+### 4️⃣ **Super Admin** (System Manager)
+**Highest level unique access**
 
 **Permissions**:
-- ✅ All problem solver permissions
-- ✅ Organization profile
-- ✅ Higher task limits
-- ✅ Special recognition on leaderboard
+- ✅ **Full System Access**
+- ✅ Manage all user roles (User → Authority)
+- ✅ Manage system configuration
+- ✅ Database backups and restoration
+- ✅ View global audit logs
+- ✅ Resolve complex disputes
+- ✅ Manage platform content (banners, announcements)
+
+**Workflow**:
+```
+System Config → User Role Management → Platform Oversight → Security Audits
+```
+
 
 ---
 
