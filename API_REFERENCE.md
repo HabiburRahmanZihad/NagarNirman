@@ -1,5 +1,3 @@
-# API Quick Reference - NagarNirman
-
 <div align="center">
 
 ![NagarNirman Logo](frontend/public/logo/logo.png)
