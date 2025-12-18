@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Button from "@/components/common/Button";
 import { FaPlay, FaChartLine, FaLightbulb, FaThumbsUp, FaUsers, FaTrophy } from "react-icons/fa";
 import { Sprout } from "lucide-react";
+import { BsFillInfoCircleFill, BsInfoCircle } from "react-icons/bs";
 import CountUp from "react-countup";
 import Link from "next/link";
 
@@ -211,7 +212,7 @@ export default function AboutSection() {
         {/* RIGHT CONTENT */}
         <div className="w-full">
           <p className="text-primary font-semibold mb-2 sm:mb-3 flex items-center gap-1 sm:gap-2 text-base sm:text-lg">
-            <Sprout className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+            <BsFillInfoCircleFill className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
             <span>About Us</span>
           </p>
 

@@ -6,6 +6,7 @@ import {
   Route, Sprout, Waves, Wrench
 } from "lucide-react";
 import Image from "next/image";
+import { FaBuildingWheat } from "react-icons/fa6";
 
 // --- DATA ---
 const works = [
@@ -91,7 +92,7 @@ export default function WhatWeDo() {
           transition={{ duration: 0.6 }}
         >
           <div className="flex items-center justify-center gap-2 mb-3 sm:mb-4">
-            <Sprout className="w-4 h-4 sm:w-5 sm:h-5 text-[#004d40]" />
+            <FaBuildingWheat className="w-4 h-4 sm:w-5 sm:h-5 text-[#004d40]" />
             <span className="text-[#555555] text-sm sm:text-base md:text-lg font-medium">
               What We Do
             </span>
