@@ -1,384 +1,170 @@
-# NagarNirman Backend API
+# ⚙️ NagarNirman Backend API
 
-Backend REST API for NagarNirman - A citizen-powered platform for reporting and resolving infrastructure issues in Bangladesh.
+<div align="center">
 
-## 🚀 Tech Stack
+![NagarNirman Backend](https://img.shields.io/badge/NagarNirman-Backend_API-004d40?style=for-the-badge&logo=nodedotjs&logoColor=white)
 
-- **Runtime**: Node.js (ES6 Modules)
-- **Framework**: Express.js 4.18.2
-- **Database**: MongoDB with Mongoose 8.0.3
-- **Authentication**: JWT with bcryptjs
-- **File Upload**: Multer + Cloudinary
-- **Email**: Nodemailer
-- **Other**: CORS, dotenv, express-async-handler
+**The Robust Engine Powering Bangladesh's Infrastructure Platform**
 
-## 📁 Project Structure
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green?style=flat-square&logo=node.js)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4.18-lightgrey?style=flat-square&logo=express)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-6.0-green?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
+[![JWT](https://img.shields.io/badge/JWT-Auth-purple?style=flat-square&logo=jsonwebtokens)](https://jwt.io/)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-Media-blue?style=flat-square&logo=cloudinary)](https://cloudinary.com/)
 
-```
-backend/
-├── config/
-│   └── db.js                 # MongoDB connection
-├── controllers/
-│   ├── authController.js     # Authentication logic
-│   ├── reportController.js   # Report management
-│   ├── taskController.js     # Task management
-│   └── userController.js     # User management
-├── middleware/
-│   ├── auth.js              # JWT & authorization
-│   ├── errorHandler.js      # Error handling
-│   └── upload.js            # Image upload (Cloudinary)
-├── models/
-│   ├── User.js              # User schema
-│   ├── Report.js            # Report schema
-│   └── Task.js              # Task schema
-├── routes/
-│   ├── authRoutes.js        # Auth endpoints
-│   ├── reportRoutes.js      # Report endpoints
-│   ├── taskRoutes.js        # Task endpoints
-│   └── userRoutes.js        # User endpoints
-├── services/
-│   └── emailService.js      # Email notifications
-├── .env.example             # Environment variables template
-├── package.json             # Dependencies
-└── server.js                # Entry point
-```
+</div>
 
-## 🔧 Installation
+---
 
-1. **Clone and navigate to backend**:
+## 📖 Overview
+
+The **NagarNirman Backend** is a scalable RESTful API built with **Node.js** and **Express**. It handles the complex logic for user management, report processing, task assignment, and real-time data flow, serving as the backbone of the NagarNirman platform.
+
+### 🌟 Key Features
+
+- **🔐 Secure Authentication**: JWT-based stateless authentication with role-based authorization guards.
+- **📋 Report Management**: Complex CRUD operations for reports with geo-tagging and status workflows.
+- **💾 Media Handling**: Seamless image uploads using Multer and Cloudinary storage.
+- **📧 Notification System**: Automatic email alerts via Nodemailer for critical actions.
+- **🌍 Geospatial Data**: Location-based queries and organization of reports.
+- **🛡️ Security**: Helmet headers, CORS policies, and input validation to preventing common attacks.
+- **📊 Analytics Engine**: Aggregation pipelines for user statistics and leaderboard generation.
+
+---
+
+## 🔧 Installation & Setup
+
+### Prerequisites
+- Node.js 18+
+- MongoDB Atlas Account
+- Cloudinary Account
+- Gmail/SMTP Account
+
+### 1. Clone & Install
 ```bash
 cd backend
-```
-
-2. **Install dependencies**:
-```bash
 npm install
 ```
 
-3. **Set up environment variables**:
-```bash
-cp .env.example .env
-```
+### 2. Environment Configuration
+Create a `.env` file in the `backend` directory based on `.env.example`:
 
-Edit `.env` with your configuration:
 ```env
 # Server
-NODE_ENV=development
 PORT=5000
+NODE_ENV=development
 
 # Database
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/nagarnirman
+MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/nagarnirman
 
-# JWT
-JWT_SECRET=your_jwt_secret_key_here
+# Authentication
+JWT_SECRET=your_super_secure_secret_key
 JWT_EXPIRE=30d
 
-# Cloudinary
+# Cloudinary (Image Uploads)
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
-# Email (Gmail example)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASSWORD=your_app_password
+# Email Service
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
 
-# Frontend URL
-FRONTEND_URL=http://localhost:3000
+# Client
+CLIENT_URL=http://localhost:3000
 ```
 
-4. **Start the server**:
+### 3. Start Server
 ```bash
-# Development
+# Development (with Nodemon)
 npm run dev
 
 # Production
 npm start
 ```
 
-## 📡 API Endpoints
+---
 
-### Authentication (`/api/auth`)
+## 📡 API Endpoints Reference
 
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| POST | `/register` | Public | Register new user |
-| POST | `/login` | Public | Login user |
-| GET | `/me` | Private | Get current user |
-| PUT | `/profile` | Private | Update profile |
-| PUT | `/change-password` | Private | Change password |
+### 🔐 Authentication (`/api/auth`)
+| Method | Endpoint | Description | Access |
+|:---:|---|---|:---:|
+| `POST` | `/register` | Register new user | Public |
+| `POST` | `/login` | Authenticate user & get token | Public |
+| `GET` | `/me` | Get current user profile | Private |
+| `PUT` | `/profile` | Update profile details | Private |
 
-### Reports (`/api/reports`)
+### 📋 Reports (`/api/reports`)
+| Method | Endpoint | Description | Access |
+|:---:|---|---|:---:|
+| `POST` | `/` | Create new infrastructure report | Private |
+| `GET` | `/` | Get all reports (with filters) | Public |
+| `GET` | `/:id` | Get single report details | Public |
+| `PATCH` | `/:id/status` | Update status (Pending → Resolved) | Authority |
+| `POST` | `/:id/upvote` | Upvote a report | Private |
 
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| GET | `/` | Public | Get all reports (with pagination) |
-| GET | `/:id` | Public | Get single report |
-| POST | `/` | Private | Create report |
-| PUT | `/:id` | Private (Own) | Update report |
-| DELETE | `/:id` | Private (Own) | Delete report |
-| PATCH | `/:id/status` | Authority | Update report status |
-| POST | `/:id/comment` | Private | Add comment |
-| POST | `/:id/upvote` | Private | Upvote report |
-| GET | `/user/:userId` | Private | Get user's reports |
+### 🛠️ Tasks (`/api/tasks`)
+| Method | Endpoint | Description | Access |
+|:---:|---|---|:---:|
+| `POST` | `/assign` | Assign report to solver | Authority |
+| `GET` | `/my-tasks` | Get assigned tasks | Solver |
+| `POST` | `/:id/complete` | Submit proof of completion | Solver |
+| `POST` | `/:id/reward` | Approve & grant points | Authority |
 
-### Tasks (`/api/tasks`)
-
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| GET | `/` | Authority | Get all tasks |
-| GET | `/:id` | Private | Get single task |
-| POST | `/assign` | Authority | Assign task |
-| PATCH | `/:id/status` | Private | Update task status |
-| POST | `/:id/complete` | Solver (Approved) | Mark task complete |
-| POST | `/:id/reward` | Authority | Grant reward |
-| GET | `/my-tasks` | Private (Approved) | Get my assigned tasks |
-
-### Users (`/api/users`)
-
-| Method | Endpoint | Access | Description |
-|--------|----------|--------|-------------|
-| GET | `/` | Authority | Get all users |
-| GET | `/:id` | Private | Get single user |
-| GET | `/:id/stats` | Private | Get user statistics |
-| GET | `/leaderboard` | Public | Get top problem solvers |
-| POST | `/apply-problem-solver` | Private | Apply to be solver |
-| PATCH | `/:id/approve` | Authority | Approve user |
-| PATCH | `/:id/status` | Authority | Update user status |
-
-## 🔐 Authentication
-
-The API uses JWT (JSON Web Tokens) for authentication.
-
-### Register/Login Response:
-```json
-{
-  "success": true,
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "_id": "507f1f77bcf86cd799439011",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "role": "user",
-    "avatar": "https://...",
-    "isApproved": true
-  }
-}
-```
-
-### Using Token:
-Include in request headers:
-```
-Authorization: Bearer YOUR_JWT_TOKEN
-```
-
-## 👤 User Roles
-
-| Role | Description | Permissions |
-|------|-------------|-------------|
-| `user` | Regular citizen | Report issues, comment, upvote |
-| `authority` | Government official | Approve reports, assign tasks, manage users |
-| `problemSolver` | Verified solver | Accept & complete tasks, earn rewards |
-| `ngo` | NGO member | Similar to problemSolver |
-
-## 📤 File Upload
-
-### Upload Report Images
-
-```bash
-POST /api/reports
-Content-Type: multipart/form-data
-
-{
-  "title": "Broken road",
-  "description": "...",
-  "images": [file1.jpg, file2.jpg],  # Max 5 images, 5MB each
-  "location": {...}
-}
-```
-
-Supported formats: JPEG, PNG, GIF, WebP
-Max file size: 5MB per image
-Max images: 5 per report
-
-## 📧 Email Notifications
-
-Automated emails are sent for:
-
-1. **Welcome Email** - When user registers
-2. **Task Assignment** - When task is assigned to solver
-3. **Report Status Update** - When report status changes
-4. **Approval Notification** - When solver application is approved/rejected
-5. **Reward Notification** - When solver earns points
-
-## 📊 Sample API Usage
-
-### Register User
-```bash
-curl -X POST http://localhost:5000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "John Doe",
-    "email": "john@example.com",
-    "password": "password123",
-    "phone": "01712345678",
-    "division": "Dhaka"
-  }'
-```
-
-### Login
-```bash
-curl -X POST http://localhost:5000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "john@example.com",
-    "password": "password123"
-  }'
-```
-
-### Create Report (with token)
-```bash
-curl -X POST http://localhost:5000/api/reports \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Broken street light",
-    "description": "Street light not working for 2 weeks",
-    "problemType": "street light",
-    "severity": "medium",
-    "location": {
-      "address": "Dhanmondi 27, Dhaka",
-      "division": "Dhaka",
-      "district": "Dhaka",
-      "coordinates": [90.3742, 23.7461]
-    }
-  }'
-```
-
-### Get Reports (with filters)
-```bash
-curl "http://localhost:5000/api/reports?status=pending&severity=high&page=1&limit=10"
-```
-
-## 🧪 Testing
-
-Test the API using:
-
-1. **Postman**: Import the collection (coming soon)
-2. **cURL**: Use examples above
-3. **VS Code REST Client**: Create `.http` files
-
-### Health Check:
-```bash
-curl http://localhost:5000/api/health
-```
-
-Expected response:
-```json
-{
-  "success": true,
-  "message": "API is running"
-}
-```
-
-## 🗃️ Database Schema
-
-### User Model
-- name, email, password (hashed)
-- phone, avatar, division
-- role: user | authority | problemSolver | ngo
-- isApproved (for problemSolver/ngo)
-- rewardPoints, solvedIssues
-- createdAt, updatedAt
-
-### Report Model
-- title, description, images[]
-- problemType, severity, status
-- location (address, division, district, coordinates)
-- upvotes[], comments[]
-- createdBy, assignedTo
-- history[] (status changes)
-- createdAt, updatedAt
-
-### Task Model
-- title, description
-- report (reference)
-- assignedTo, assignedBy
-- status, priority, deadline
-- proofURL, completedAt
-- rewardPoints, rating
-- createdAt, updatedAt
-
-## 🛠️ Development
-
-### Run in Development Mode:
-```bash
-npm run dev
-```
-Uses nodemon for auto-restart on file changes.
-
-### Linting:
-```bash
-npm run lint
-```
-
-### Environment Variables:
-Never commit `.env` file. Always use `.env.example` as template.
-
-## 🚨 Error Handling
-
-All errors return consistent format:
-
-```json
-{
-  "success": false,
-  "message": "Error description",
-  "error": "Detailed error info (development only)"
-}
-```
-
-Common HTTP status codes:
-- `200` - Success
-- `201` - Created
-- `400` - Bad Request
-- `401` - Unauthorized
-- `403` - Forbidden
-- `404` - Not Found
-- `500` - Server Error
-
-## 🔒 Security Features
-
-- ✅ Password hashing with bcryptjs
-- ✅ JWT authentication
-- ✅ Role-based authorization
-- ✅ Input validation
-- ✅ CORS configuration
-- ✅ File upload validation
-- ✅ Rate limiting (recommended to add)
-
-## 📝 Notes
-
-- API runs on port 5000 by default
-- Uses ES6 module syntax (`import`/`export`)
-- MongoDB connection with retry logic
-- Cloudinary for image storage (auto-optimization)
-- Email service uses Nodemailer (configure SMTP)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch
-3. Make changes
-4. Test thoroughly
-5. Submit pull request
-
-## 📄 License
-
-This project is part of NagarNirman platform.
+### 👥 Users (`/api/users`)
+| Method | Endpoint | Description | Access |
+|:---:|---|---|:---:|
+| `GET` | `/leaderboard` | Get top problem solvers | Public |
+| `POST` | `/apply-problem-solver` | Apply for solver role | Private |
+| `PATCH` | `/:id/approve` | Approve solver application | Authority |
 
 ---
 
-**Built with ❤️ for Bangladesh**
+## 📁 Project Structure
 
-For frontend documentation, see [FRONTEND_STRUCTURE.md](../FRONTEND_STRUCTURE.md)
+```
+backend/
+├── config/           # Database & external service config
+├── controllers/      # Request handlers (Business logic)
+├── middleware/       # Auth checks, error handling, uploaders
+├── models/           # Mongoose schemas (User, Report, Task)
+├── routes/           # API Route definitions
+├── services/         # Logic for Email, Earthquake API
+├── utils/            # Helper functions
+└── server.js         # App entry point
+```
+
+---
+
+## 🗃️ Data Models
+
+### User
+Extends to 4 roles: `user`, `authority`, `problemSolver`, `ngo`. Tracks reputation points.
+
+### Report
+Contains `title`, `description`, `images` (array), `location` (Lat/Lng), and `status` history.
+
+### Task
+Links `Report` to `User` (Solver). Tracks `deadlines`, `priority`, and `proof` submissions.
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run basic health check
+curl http://localhost:5000/api/health
+```
+
+Use the provided `test-system.sh` script in the root directory for automated testing of endpoints.
+
+---
+
+<div align="center">
+
+**[⬅ Back to Main Project](../README.md)**
+
+</div>

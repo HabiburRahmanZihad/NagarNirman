@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
 import Card from "@/components/common/Card";
 import { isValidEmail } from "@/utils/helpers";
@@ -127,7 +126,7 @@ export default function RegisterPage() {
 
     setIsLoading(true);
     try {
-      const { confirmPassword, ...registerData } = formData;
+      const { ...registerData } = formData;
       const result = await register(registerData);
 
       if (result.success && result.user) {
@@ -139,6 +138,7 @@ export default function RegisterPage() {
         setApiError(result.message || "Registration failed. Please try again.");
       }
     } catch (error) {
+      console.error("Registration error:", error);
       setApiError("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
