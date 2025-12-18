@@ -97,3 +97,6 @@ test-results/
 *.zip
 *.tar
 *.tar.gz
+
+test-system.sh
+test-notification-api-v2.sh

@@ -185,7 +185,7 @@ Content-Type: application/json
   "description": "Replace the street light bulb",
   "reportId": "report_id_here",
   "assignedTo": "user_id_here",
-  "deadline": "2024-12-31",
+  "deadline": "2026-12-31",
   "priority": "high",
   "rewardPoints": 50
 }

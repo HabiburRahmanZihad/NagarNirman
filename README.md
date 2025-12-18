@@ -971,10 +971,9 @@ Use the included test scripts:
 
 <div align="center">
 
-| | |
-|:---:|:---:|
-| <img src="https://res.cloudinary.com/dvq3pcykn/image/upload/WhatsApp_Image_2025-12-18_at_16.09.59_fqnwho.jpg" width="160" height="160" style="border-radius: 50%"> <br> **Habibur Rahman Zihad** <br> <sub>Founder & Community Director</sub> <br> *Vision & Strategy Lead* <br> [GitHub](https://github.com/HabiburRahmanZihad) • [LinkedIn](https://linkedin.com/in/habiburrahmanzihad) | <img src="https://avatars.githubusercontent.com/u/102473526?v=4" width="160" height="160" style="border-radius: 50%"> <br> **Md. Shahariar Hafiz** <br> <sub>Co-Founder & Tech Lead</sub> <br> *Full Stack & Architecture* <br> [GitHub](https://github.com/mdshahariarhafizofficial) • [LinkedIn](https://www.linkedin.com/in/devshahariarhafiz) |
-| <img src="https://avatars.githubusercontent.com/u/193724330?v=4" width="160" height="160" style="border-radius: 50%"> <br> **MD Mizanur Malita** <br> <sub>Operations Manager</sub> <br> *Process & Quality Lead* <br> [GitHub](https://github.com/mizanur2734) • [LinkedIn](https://www.linkedin.com/in/md-mizanur-malita) | <img src="https://res.cloudinary.com/dfm0bhtyb/image/upload/v1765699151/qmbjzklvweuy3brrnt3v.png" width="160" height="160" style="border-radius: 50%"> <br> **Mohammad Bin Amin** <br> <sub>Outreach Coordinator</sub> <br> *Community & Growth Lead* <br> [GitHub](https://github.com/Mohammad7558/) • [LinkedIn](https://www.linkedin.com/in/iammohammad) |
+| | | | |
+|:---:|:---:|:---:|:---:|
+| <img src="https://res.cloudinary.com/dvq3pcykn/image/upload/WhatsApp_Image_2025-12-18_at_16.09.59_fqnwho.jpg" width="160" height="160" style="border-radius: 50%"> <br> **Habibur Rahman Zihad** <br> <sub>Founder & Community Director</sub> <br> *Vision & Strategy Lead* <br> [GitHub](https://github.com/HabiburRahmanZihad) • [LinkedIn](https://linkedin.com/in/habiburrahmanzihad) | <img src="https://avatars.githubusercontent.com/u/102473526?v=4" width="160" height="160" style="border-radius: 50%"> <br> **Md. Shahariar Hafiz** <br> <sub>Co-Founder & Tech Lead</sub> <br> *Full Stack & Architecture* <br> [GitHub](https://github.com/mdshahariarhafizofficial) • [LinkedIn](https://www.linkedin.com/in/devshahariarhafiz) | <img src="https://avatars.githubusercontent.com/u/193724330?v=4" width="160" height="160" style="border-radius: 50%"> <br> **MD Mizanur Malita** <br> <sub>Operations Manager</sub> <br> *Process & Quality Lead* <br> [GitHub](https://github.com/mizanur2734) • [LinkedIn](https://www.linkedin.com/in/md-mizanur-malita) | <img src="https://res.cloudinary.com/dfm0bhtyb/image/upload/v1765699151/qmbjzklvweuy3brrnt3v.png" width="160" height="160" style="border-radius: 50%"> <br> **Mohammad Bin Amin** <br> <sub>Outreach Coordinator</sub> <br> *Community & Growth Lead* <br> [GitHub](https://github.com/Mohammad7558/) • [LinkedIn](https://www.linkedin.com/in/iammohammad) |
 
 </div>
 
@@ -994,7 +993,7 @@ Use the included test scripts:
 
 ## 📄 License
 
-**© 2024 NagarNirman. All Rights Reserved.**
+**© 2026 NagarNirman. All Rights Reserved.**
 
 This project is **PROPRIETARY** and is protected by copyright laws. 
 Unauthorized copying, modification, distribution, or use of this software is strictly prohibited. 

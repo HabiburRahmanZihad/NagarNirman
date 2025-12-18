@@ -80,5 +80,5 @@ If unauthorized use is detected:
 
 ---
 
-**© 2024 NagarNirman. All Rights Reserved.**
+**© 2026 NagarNirman. All Rights Reserved.**
 *Official Security & Legal Policy*
