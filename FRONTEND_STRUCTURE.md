@@ -1,5 +1,3 @@
-# NagarNirman Frontend Structure
-
 <div align="center">
 
 ![NagarNirman Logo](frontend/public/logo/logo.png)
