@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 import Button from "@/components/common/Button";
 import Image from "next/image";
-
+import { RiTeamFill } from "react-icons/ri";
 // --- TEAM DATA ---
 const teamMembers = [
   {
@@ -104,7 +104,7 @@ export default function TeamSection() {
         {/* --- HEADER --- */}
         <div className="text-center mb-12 sm:mb-16">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <Sprout className="w-5 h-5 text-[#3C6E59]" />
+            <RiTeamFill className="w-6 h-6 text-[#3C6E59]" />
             <span className="text-[#555555] text-base sm:text-lg font-medium tracking-wide">We Are Volunteer</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#003B31] px-4">
