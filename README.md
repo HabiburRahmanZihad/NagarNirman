@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![NagarNirman Logo](https://img.shields.io/badge/NagarNirman-Infrastructure%20Platform-81d586?style=for-the-badge)
+![NagarNirman Logo](frontend/public/logo/logo.png)
 
 **Empowering Citizens to Improve Bangladesh's Infrastructure**
 
@@ -719,11 +719,9 @@ Comprehensive documentation is available:
 | **Complete Setup Guide** | Detailed installation and configuration | [COMPLETE_SETUP_GUIDE.md](./COMPLETE_SETUP_GUIDE.md) |
 | **API Reference** | All API endpoints with examples | [API_REFERENCE.md](./API_REFERENCE.md) |
 | **Frontend Structure** | Component architecture and state management | [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md) |
-| **Routes Documentation** | Complete route mapping | [ROUTES.md](./ROUTES.md) |
+| **Routes Map** | Complete route mapping | [ROUTES.md](./ROUTES.md) |
+| **Frontend Documentation** | Components and Design System | [frontend/README.md](./frontend/README.md) |
 | **Backend Documentation** | Detailed backend architecture | [backend/README.md](./backend/README.md) |
-| **Earthquake System** | Earthquake monitoring documentation | [EARTHQUAKE_DOCUMENTATION_INDEX.md](./EARTHQUAKE_DOCUMENTATION_INDEX.md) |
-| **Email System** | Email notification setup | [EMAIL_FEATURE_GUIDE.md](./EMAIL_FEATURE_GUIDE.md) |
-| **Leaderboard System** | Leaderboard and rewards | [LEADERBOARD_README.md](./LEADERBOARD_README.md) |
 
 ---
 
@@ -972,7 +970,7 @@ Use the included test scripts:
 
 | | |
 |:---:|:---:|
-| <img src="https://res.cloudinary.com/dvq3pcykn/image/upload/v1758785330/IMG-20241101-WA0192_vyojiv.jpg" width="160" height="160" style="border-radius: 50%"> <br> **Habibur Rahman Zihad** <br> <sub>Founder & Community Director</sub> <br> *Vision & Strategy Lead* <br> [GitHub](https://github.com/HabiburRahmanZihad) • [LinkedIn](https://linkedin.com/in/habiburrahmanzihad) | <img src="https://avatars.githubusercontent.com/u/102473526?v=4" width="160" height="160" style="border-radius: 50%"> <br> **Md. Shahariar Hafiz** <br> <sub>Co-Founder & Tech Lead</sub> <br> *Full Stack & Architecture* <br> [GitHub](https://github.com/mdshahariarhafizofficial) • [LinkedIn](https://www.linkedin.com/in/devshahariarhafiz) |
+| <img src="https://res.cloudinary.com/dvq3pcykn/image/upload/WhatsApp_Image_2025-12-18_at_16.09.59_fqnwho.jpg" width="160" height="160" style="border-radius: 50%"> <br> **Habibur Rahman Zihad** <br> <sub>Founder & Community Director</sub> <br> *Vision & Strategy Lead* <br> [GitHub](https://github.com/HabiburRahmanZihad) • [LinkedIn](https://linkedin.com/in/habiburrahmanzihad) | <img src="https://avatars.githubusercontent.com/u/102473526?v=4" width="160" height="160" style="border-radius: 50%"> <br> **Md. Shahariar Hafiz** <br> <sub>Co-Founder & Tech Lead</sub> <br> *Full Stack & Architecture* <br> [GitHub](https://github.com/mdshahariarhafizofficial) • [LinkedIn](https://www.linkedin.com/in/devshahariarhafiz) |
 | <img src="https://avatars.githubusercontent.com/u/193724330?v=4" width="160" height="160" style="border-radius: 50%"> <br> **MD Mizanur Malita** <br> <sub>Operations Manager</sub> <br> *Process & Quality Lead* <br> [GitHub](https://github.com/mizanur2734) • [LinkedIn](https://www.linkedin.com/in/md-mizanur-malita) | <img src="https://res.cloudinary.com/dfm0bhtyb/image/upload/v1765699151/qmbjzklvweuy3brrnt3v.png" width="160" height="160" style="border-radius: 50%"> <br> **Mohammad Bin Amin** <br> <sub>Outreach Coordinator</sub> <br> *Community & Growth Lead* <br> [GitHub](https://github.com/Mohammad7558/) • [LinkedIn](https://www.linkedin.com/in/iammohammad) |
 
 </div>
