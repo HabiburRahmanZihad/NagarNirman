@@ -717,11 +717,14 @@ Comprehensive documentation is available:
 | Document | Description | Link |
 |----------|-------------|------|
 | **Complete Setup Guide** | Detailed installation and configuration | [COMPLETE_SETUP_GUIDE.md](./COMPLETE_SETUP_GUIDE.md) |
+| **Quick Start Guide** | Email & Notification System Manual | [QUICK_START_GUIDE.md](./QUICK_START_GUIDE.md) |
 | **API Reference** | All API endpoints with examples | [API_REFERENCE.md](./API_REFERENCE.md) |
+| **API Testing Guide** | Task Workflow Validation Manual | [API_TESTING_GUIDE.md](./API_TESTING_GUIDE.md) |
 | **Frontend Structure** | Component architecture and state management | [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md) |
 | **Routes Map** | Complete route mapping | [ROUTES.md](./ROUTES.md) |
 | **Frontend Documentation** | Components and Design System | [frontend/README.md](./frontend/README.md) |
 | **Backend Documentation** | Detailed backend architecture | [backend/README.md](./backend/README.md) |
+| **Security Policy** | Legal protocols & copyright | [SECURITY.md](./SECURITY.md) |
 
 ---
 

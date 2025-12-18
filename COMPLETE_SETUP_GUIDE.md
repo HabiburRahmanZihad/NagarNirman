@@ -1,5 +1,3 @@
-# 🏗️ NagarNirman - Complete Setup Guide
-
 <div align="center">
 
 ![NagarNirman Logo](frontend/public/logo/logo.png)
@@ -465,8 +463,6 @@ Used throughout the app for branding consistency.
 - **Backend API**: `backend/README.md`
 - **Frontend Structure**: `FRONTEND_STRUCTURE.md`
 - **Routes Map**: `ROUTES.md`
-- **Backend Complete**: `BACKEND_COMPLETE.md`
-- **Setup Complete**: `SETUP_COMPLETE.md`
 
 ---
 

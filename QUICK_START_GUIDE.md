@@ -253,26 +253,12 @@ const countResponse = await notificationAPI.getUnreadCount();
 
 ## 📚 Documentation Files
 
-Created comprehensive documentation:
+This guide is part of the comprehensive documentation suite:
 
-1. **NOTIFICATION_EMAIL_TESTING_GUIDE.md**
-   - Detailed system audit
-   - Testing procedures
-   - Performance metrics
-   - Deployment checklist
-
-2. **EMAIL_NOTIFICATION_VERIFICATION_REPORT.md**
-   - Verification results
-   - Issues found & fixed
-   - Component analysis
-   - Production readiness
-   - Maintenance guidelines
-
-3. **QUICK_START_GUIDE.md** (this file)
-   - Quick reference
-   - Testing commands
-   - Feature list
-   - Troubleshooting
+1. **README.md** (Main Project Documentation)
+2. **COMPLETE_SETUP_GUIDE.md** (Installation & Setup)
+3. **API_REFERENCE.md** (API Endpoints)
+4. **QUICK_START_GUIDE.md** (This file)
 
 ---
 
