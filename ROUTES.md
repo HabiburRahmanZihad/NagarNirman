@@ -1,5 +1,3 @@
-# 🗺️ NagarNirman - Complete Route Map
-
 <div align="center">
 
 ![NagarNirman Logo](frontend/public/logo/logo.png)
