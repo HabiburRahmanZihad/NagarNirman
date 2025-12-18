@@ -479,7 +479,7 @@ Content-Type: application/json
   "reportId": "report_id_here",
   "assignedTo": "solver_user_id",
   "priority": "high",
-  "deadline": "2024-12-31T23:59:59.000Z",
+  "deadline": "2026-12-31T23:59:59.000Z",
   "description": "Fix the broken street light"
 }
 ```
@@ -1064,5 +1064,5 @@ If you find this project helpful, please consider:
 
 ---
 
-**Last Updated**: December 2024  
+**Last Updated**: December 2026  
 **Status**: Production Ready ✅
