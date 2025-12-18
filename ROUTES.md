@@ -1,5 +1,3 @@
-# 🗺️ NagarNirman - Complete Route Map
-
 <div align="center">
 
 ![NagarNirman Logo](frontend/public/logo/logo.png)
@@ -76,7 +74,24 @@
 
 ---
 
-## 🔧 Problem Solver Routes (Role: 'problemSolver' or 'ngo')
+## ⚡ Super Admin Routes (Role: 'superAdmin')
+
+### Dashboard
+- `/dashboard/admin` - Main admin overview
+- `/dashboard/admin/logs` - System audit logs
+- `/dashboard/admin/settings` - Global configuration
+
+### User Role Management
+- `/dashboard/admin/roles` - Manage roles
+- `/dashboard/admin/users` - Advanced user controls (Ban/Delete)
+
+### System Health
+- `/dashboard/admin/health` - Server health status
+- `/dashboard/admin/database` - Database backup/restore
+
+---
+
+## 🔧 Problem Solver Routes (Role: 'problemSolver')
 
 ### Dashboard
 - `/dashboard/solver` - Main solver dashboard

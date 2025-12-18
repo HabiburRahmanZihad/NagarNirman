@@ -1,5 +1,3 @@
-# 🏗️ NagarNirman - Report, Resolve, Rebuild
-
 <div align="center">
 
 ![NagarNirman Logo](frontend/public/logo/logo.png)
@@ -649,7 +647,6 @@ Register → Login → Create Report → Track Status → Engage with Community
 - ✅ Assign tasks to problem solvers
 - ✅ Review task submissions
 - ✅ Grant ratings and rewards
-- ✅ Manage users (approve problem solver applications)
 - ✅ View analytics and statistics
 
 **Workflow**:
@@ -675,14 +672,23 @@ Apply as Solver → Wait for Approval → View Assigned Tasks →
 Accept Task → Complete Work → Submit Proof → Earn Rewards
 ```
 
-### 4️⃣ **NGO** (Organization Account)
-**Similar permissions to Problem Solver**
+### 4️⃣ **Super Admin** (System Manager)
+**Highest level unique access**
 
 **Permissions**:
-- ✅ All problem solver permissions
-- ✅ Organization profile
-- ✅ Higher task limits
-- ✅ Special recognition on leaderboard
+- ✅ **Full System Access**
+- ✅ Manage all user roles (User → Authority)
+- ✅ Manage system configuration
+- ✅ Database backups and restoration
+- ✅ View global audit logs
+- ✅ Resolve complex disputes
+- ✅ Manage platform content (banners, announcements)
+
+**Workflow**:
+```
+System Config → User Role Management → Platform Oversight → Security Audits
+```
+
 
 ---
 
@@ -717,11 +723,14 @@ Comprehensive documentation is available:
 | Document | Description | Link |
 |----------|-------------|------|
 | **Complete Setup Guide** | Detailed installation and configuration | [COMPLETE_SETUP_GUIDE.md](./COMPLETE_SETUP_GUIDE.md) |
+| **Quick Start Guide** | Email & Notification System Manual | [QUICK_START_GUIDE.md](./QUICK_START_GUIDE.md) |
 | **API Reference** | All API endpoints with examples | [API_REFERENCE.md](./API_REFERENCE.md) |
+| **API Testing Guide** | Task Workflow Validation Manual | [API_TESTING_GUIDE.md](./API_TESTING_GUIDE.md) |
 | **Frontend Structure** | Component architecture and state management | [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md) |
 | **Routes Map** | Complete route mapping | [ROUTES.md](./ROUTES.md) |
 | **Frontend Documentation** | Components and Design System | [frontend/README.md](./frontend/README.md) |
 | **Backend Documentation** | Detailed backend architecture | [backend/README.md](./backend/README.md) |
+| **Security Policy** | Legal protocols & copyright | [SECURITY.md](./SECURITY.md) |
 
 ---
 
@@ -968,10 +977,9 @@ Use the included test scripts:
 
 <div align="center">
 
-| | |
-|:---:|:---:|
-| <img src="https://res.cloudinary.com/dvq3pcykn/image/upload/WhatsApp_Image_2025-12-18_at_16.09.59_fqnwho.jpg" width="160" height="160" style="border-radius: 50%"> <br> **Habibur Rahman Zihad** <br> <sub>Founder & Community Director</sub> <br> *Vision & Strategy Lead* <br> [GitHub](https://github.com/HabiburRahmanZihad) • [LinkedIn](https://linkedin.com/in/habiburrahmanzihad) | <img src="https://avatars.githubusercontent.com/u/102473526?v=4" width="160" height="160" style="border-radius: 50%"> <br> **Md. Shahariar Hafiz** <br> <sub>Co-Founder & Tech Lead</sub> <br> *Full Stack & Architecture* <br> [GitHub](https://github.com/mdshahariarhafizofficial) • [LinkedIn](https://www.linkedin.com/in/devshahariarhafiz) |
-| <img src="https://avatars.githubusercontent.com/u/193724330?v=4" width="160" height="160" style="border-radius: 50%"> <br> **MD Mizanur Malita** <br> <sub>Operations Manager</sub> <br> *Process & Quality Lead* <br> [GitHub](https://github.com/mizanur2734) • [LinkedIn](https://www.linkedin.com/in/md-mizanur-malita) | <img src="https://res.cloudinary.com/dfm0bhtyb/image/upload/v1765699151/qmbjzklvweuy3brrnt3v.png" width="160" height="160" style="border-radius: 50%"> <br> **Mohammad Bin Amin** <br> <sub>Outreach Coordinator</sub> <br> *Community & Growth Lead* <br> [GitHub](https://github.com/Mohammad7558/) • [LinkedIn](https://www.linkedin.com/in/iammohammad) |
+| | | | |
+|:---:|:---:|:---:|:---:|
+| <img src="https://res.cloudinary.com/dvq3pcykn/image/upload/WhatsApp_Image_2025-12-18_at_16.09.59_fqnwho.jpg" width="160" height="160" style="border-radius: 50%"> <br> **Habibur Rahman Zihad** <br> <sub>Founder & Community Director</sub> <br> *Vision & Strategy Lead* <br> [GitHub](https://github.com/HabiburRahmanZihad) • [LinkedIn](https://linkedin.com/in/habiburrahmanzihad) | <img src="https://avatars.githubusercontent.com/u/102473526?v=4" width="160" height="160" style="border-radius: 50%"> <br> **Md. Shahariar Hafiz** <br> <sub>Co-Founder & Tech Lead</sub> <br> *Full Stack & Architecture* <br> [GitHub](https://github.com/mdshahariarhafizofficial) • [LinkedIn](https://www.linkedin.com/in/devshahariarhafiz) | <img src="https://avatars.githubusercontent.com/u/193724330?v=4" width="160" height="160" style="border-radius: 50%"> <br> **MD Mizanur Malita** <br> <sub>Operations Manager</sub> <br> *Process & Quality Lead* <br> [GitHub](https://github.com/mizanur2734) • [LinkedIn](https://www.linkedin.com/in/md-mizanur-malita) | <img src="https://res.cloudinary.com/dfm0bhtyb/image/upload/v1765699151/qmbjzklvweuy3brrnt3v.png" width="160" height="160" style="border-radius: 50%"> <br> **Mohammad Bin Amin** <br> <sub>Outreach Coordinator</sub> <br> *Community & Growth Lead* <br> [GitHub](https://github.com/Mohammad7558/) • [LinkedIn](https://www.linkedin.com/in/iammohammad) |
 
 </div>
 
@@ -991,7 +999,7 @@ Use the included test scripts:
 
 ## 📄 License
 
-**© 2024 NagarNirman. All Rights Reserved.**
+**© 2026 NagarNirman. All Rights Reserved.**
 
 This project is **PROPRIETARY** and is protected by copyright laws. 
 Unauthorized copying, modification, distribution, or use of this software is strictly prohibited. 

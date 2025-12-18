@@ -1,5 +1,3 @@
-# 🏗️ NagarNirman - Complete Setup Guide
-
 <div align="center">
 
 ![NagarNirman Logo](frontend/public/logo/logo.png)
@@ -317,9 +315,9 @@ curl "http://localhost:5000/api/reports?status=pending&severity=high&page=1&limi
 | Role | Description | Permissions |
 |------|-------------|-------------|
 | **user** | Regular citizen | Create reports, comment, upvote |
-| **authority** | Government official | All user permissions + Approve reports, assign tasks, manage users |
 | **problemSolver** | Verified problem solver | All user permissions + Accept tasks, submit proof, earn rewards |
-| **ngo** | NGO member | Same as problemSolver |
+| **authority** | Government official | All user permissions + Approve reports, assign tasks, manage users |
+| **superAdmin** | System Administrator | Full system access + Manage roles, system config, audits |
 
 ### Role Flow
 1. User registers (default role: `user`)
@@ -465,8 +463,6 @@ Used throughout the app for branding consistency.
 - **Backend API**: `backend/README.md`
 - **Frontend Structure**: `FRONTEND_STRUCTURE.md`
 - **Routes Map**: `ROUTES.md`
-- **Backend Complete**: `BACKEND_COMPLETE.md`
-- **Setup Complete**: `SETUP_COMPLETE.md`
 
 ---
 
