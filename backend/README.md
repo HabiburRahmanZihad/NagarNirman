@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![NagarNirman Backend](https://img.shields.io/badge/NagarNirman-Backend_API-004d40?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![NagarNirman Logo](../frontend/public/logo/logo.png)
 
 **The Robust Engine Powering Bangladesh's Infrastructure Platform**
 

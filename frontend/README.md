@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![NagarNirman Frontend](https://img.shields.io/badge/NagarNirman-Frontend-81d586?style=for-the-badge&logo=next.js&logoColor=white)
+![NagarNirman Logo](./public/logo/logo.png)
 
 **The Modern User Interface for Bangladesh's Infrastructure Platform**
 
