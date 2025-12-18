@@ -991,7 +991,11 @@ Use the included test scripts:
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+**© 2024 NagarNirman. All Rights Reserved.**
+
+This project is **PROPRIETARY** and is protected by copyright laws. 
+Unauthorized copying, modification, distribution, or use of this software is strictly prohibited. 
+See the [SECURITY.md](SECURITY.md) file for more details.
 
 ---
 

@@ -1,5 +1,13 @@
 # 🚀 QUICK START GUIDE - Email & Notification System
 
+<div align="center">
+
+![NagarNirman Logo](frontend/public/logo/logo.png)
+
+**Email & Notifications System Manual**
+
+</div>
+
 **Project:** NagarNirman
 **Status:** ✅ Production Ready
 **Last Updated:** December 11, 2025

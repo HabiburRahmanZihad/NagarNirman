@@ -1,5 +1,13 @@
 # 🏗️ NagarNirman - Complete Setup Guide
 
+<div align="center">
+
+![NagarNirman Logo](frontend/public/logo/logo.png)
+
+**Complete Installation & Configuration Manual**
+
+</div>
+
 ## 🎯 Project Overview
 
 **NagarNirman** (NN) is a full-stack citizen-powered platform for reporting and resolving infrastructure issues in Bangladesh.
