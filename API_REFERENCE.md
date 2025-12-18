@@ -1,5 +1,13 @@
 # API Quick Reference - NagarNirman
 
+<div align="center">
+
+![NagarNirman Logo](frontend/public/logo/logo.png)
+
+**Comprehensive API Documentation**
+
+</div>
+
 Base URL: `http://localhost:5000/api`
 
 ## 🔐 Authentication Endpoints

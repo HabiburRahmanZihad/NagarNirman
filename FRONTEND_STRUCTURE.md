@@ -1,5 +1,13 @@
 # NagarNirman Frontend Structure
 
+<div align="center">
+
+![NagarNirman Logo](frontend/public/logo/logo.png)
+
+**Frontend Architecture & Design System**
+
+</div>
+
 ## ✅ Created Structure
 
 ### 📁 Folder Organization
