@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronDown, Sprout } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/common/Button";
+import { FaQuestionCircle } from "react-icons/fa";
 
 const faqs = [
   {
@@ -47,7 +48,7 @@ export default function FaqSection() {
         {/* --- HEADER --- */}
         <div className="text-center mb-8 xs:mb-10 sm:mb-12 md:mb-16">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <Sprout className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 text-[#3C6E59]" />
+            <FaQuestionCircle className="w-6 h-6 xs:w-5 xs:h-5 sm:w-6 sm:h-6 text-[#3C6E59]" />
             <span className="text-[#555555] text-lg font-medium tracking-wide">Question & Answer</span>
           </div>
           <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold text-[#003B31]">
