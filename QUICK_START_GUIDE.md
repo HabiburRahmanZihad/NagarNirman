@@ -1,5 +1,3 @@
-# 🚀 QUICK START GUIDE - Email & Notification System
-
 <div align="center">
 
 ![NagarNirman Logo](frontend/public/logo/logo.png)
