@@ -210,7 +210,7 @@ const AnalyticsPage = () => {
         filters.division = user.division;
       }
 
-      console.log('📊 Fetching analytics with filters:', filters);
+      // console.log('📊 Fetching analytics with filters:', filters);
       const data = await statisticsAPI.getAnalytics(filters);
 
       // Validate data exists
@@ -218,7 +218,7 @@ const AnalyticsPage = () => {
         throw new Error('No data received from API. The backend may not have data for the selected filters.');
       }
 
-      console.log('✅ Raw API response:', data);
+      // console.log('✅ Raw API response:', data);
 
       // Transform data to match component expectations with null checks
       const transformedData: AnalyticsData = {
@@ -271,7 +271,7 @@ const AnalyticsPage = () => {
         }))
       };
 
-      console.log('✅ Transformed data:', transformedData);
+      // console.log('✅ Transformed data:', transformedData);
       setAnalyticsData(transformedData);
       setLastUpdated(new Date());
 
@@ -324,7 +324,7 @@ const AnalyticsPage = () => {
   };
 
   const handleExport = (filters: ExportFilters) => {
-    console.log('Exporting with filters:', filters);
+    // console.log('Exporting with filters:', filters);
     toast.success('Export functionality coming soon!');
   };
 
