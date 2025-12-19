@@ -543,7 +543,7 @@ const Navbar: React.FC = () => {
                           alt={user.name}
                           width={isMobile ? 40 : 48}
                           height={isMobile ? 40 : 48}
-                          className="rounded-full object-cover"
+                          className="w-full h-full rounded-full object-cover"
                         />
                       ) : (
                         <FaUser
