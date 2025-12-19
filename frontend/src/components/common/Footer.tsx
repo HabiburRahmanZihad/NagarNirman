@@ -98,7 +98,6 @@ const Footer: React.FC = () => {
     if (user.role === 'problemSolver') {
       return [
         ...commonResources,
-        { label: "Task History", href: SOLVER_ROUTES.HISTORY },
         { label: "Leaderboard", href: SOLVER_ROUTES.LEADERBOARD },
       ];
     }
