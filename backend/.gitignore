@@ -64,3 +64,5 @@ Thumbs.db
 *.swp
 *.swo
 *~
+.vercel
+.env*.local
