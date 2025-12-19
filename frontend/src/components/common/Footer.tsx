@@ -257,7 +257,7 @@ const Footer: React.FC = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm sm:text-base font-semibold text-white mb-0.5">Address</h3>
-                  <p className="text-xs sm:text-sm text-gray-300 leading-relaxed break-words">
+                  <p className="text-xs sm:text-sm text-gray-300 leading-relaxed wrap-break-words">
                     Dhaka, Bangladesh
                   </p>
                 </div>
@@ -316,7 +316,7 @@ const Footer: React.FC = () => {
 
           <div className="bg-primary text-white rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl py-3 sm:py-4 md:py-5 px-3 sm:px-4 md:px-6 hover:bg-accent transition-colors duration-300">
             <div className="flex flex-col sm:flex-col lg:flex-row justify-center lg:justify-between items-center gap-3 sm:gap-4">
-              <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2 sm:gap-3 md:gap-4 text-center sm:text-left order-1 md:order-none">
+              <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2 sm:gap-3 md:gap-4 text-center sm:text-left order-1 md:order">
                 <p className="text-xs sm:text-sm md:text-base font-semibold whitespace-nowrap">
                   &copy; 2025 NagarNirman. All rights reserved.
                 </p>
