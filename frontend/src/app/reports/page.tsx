@@ -108,7 +108,7 @@ export default function AllReportsPage() {
           inProgress: allReports.filter((r: Report) => r.status === 'in-progress').length,
           resolved: allReports.filter((r: Report) => r.status === 'resolved').length,
         };
-        console.log('All reports stats:', stats);
+        // console.log('All reports stats:', stats);
         setAllReportsStats(stats);
       }
     } catch (error) {
@@ -134,7 +134,7 @@ export default function AllReportsPage() {
       });
 
       const url = `${apiUrl}/api/reports?${params}`;
-      console.log('📡 Fetching reports from:', url);
+      // console.log('📡 Fetching reports from:', url);
 
       const res = await fetch(url, {
         method: 'GET',
@@ -149,12 +149,12 @@ export default function AllReportsPage() {
       }
 
       const data = await res.json();
-      console.log('✅ Response data:', data);
+      // console.log('✅ Response data:', data);
 
       if (data.success && data.data) {
         setReports(data.data);
         if (data.pagination) {
-          console.log('✅ Pagination data received:', data.pagination);
+          // console.log('✅ Pagination data received:', data.pagination);
           setPagination(data.pagination);
         } else {
           console.warn('⚠️ No pagination in response, using defaults');

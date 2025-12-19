@@ -117,7 +117,7 @@ export default function SuperAdminAssignTaskPage() {
         status: reportFilter.status || undefined
       });
 
-      console.log('Reports response:', response);
+      // console.log('Reports response:', response);
 
       if (response.success && Array.isArray(response.data)) {
         let filtered = response.data;
@@ -127,7 +127,7 @@ export default function SuperAdminAssignTaskPage() {
         }
 
         setReports(filtered);
-        console.log('Loaded reports:', filtered.length);
+        // console.log('Loaded reports:', filtered.length);
       } else {
         console.error('Invalid reports response:', response);
         toast.error('Failed to load reports');
@@ -147,9 +147,9 @@ export default function SuperAdminAssignTaskPage() {
       if (solverFilter.division) filters.division = solverFilter.division;
       if (solverFilter.district) filters.district = solverFilter.district;
 
-      console.log('Fetching solvers with filters:', filters);
+      // console.log('Fetching solvers with filters:', filters);
       const response = await userAPI.getSolvers(filters);
-      console.log('Solvers response:', response);
+      // console.log('Solvers response:', response);
 
       if (response.success && response.users) {
         let filtered = response.users;
@@ -168,7 +168,7 @@ export default function SuperAdminAssignTaskPage() {
         }
 
         setSolvers(filtered);
-        console.log('Loaded solvers:', filtered.length);
+        // console.log('Loaded solvers:', filtered.length);
       } else {
         console.error('Invalid solvers response:', response);
         toast.error('Failed to load problem solvers and NGOs');

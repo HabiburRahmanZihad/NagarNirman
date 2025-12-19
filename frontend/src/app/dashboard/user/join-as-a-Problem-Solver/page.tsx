@@ -593,9 +593,9 @@ export default function ApplyProblemSolver() {
       };
 
       // Debug log to check data
-      console.log('Submission Data:', submissionData);
-      console.log('Skills:', submissionData.skills);
-      console.log('Languages:', submissionData.languagesSpoken);
+      // console.log('Submission Data:', submissionData);
+      // console.log('Skills:', submissionData.skills);
+      // console.log('Languages:', submissionData.languagesSpoken);
 
       // Clear draft
       localStorage.removeItem('problem-solver-draft');

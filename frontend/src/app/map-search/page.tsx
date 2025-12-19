@@ -835,7 +835,7 @@ export default function MapSearchPage() {
     const fetchDivisionsStats = async () => {
       try {
         const response = await statisticsAPI.getCompleteMapData();
-        console.log('📊 Complete Map Data Response:', response);
+        // console.log('📊 Complete Map Data Response:', response);
 
         if (response.success && response.data) {
           const updatedDivisions = DIVISIONS_DATA.map(division => {
@@ -870,7 +870,7 @@ export default function MapSearchPage() {
             return division;
           });
 
-          console.log('✅ Updated Divisions Data:', updatedDivisions);
+          // console.log('✅ Updated Divisions Data:', updatedDivisions);
           setDivisionsData(updatedDivisions);
         }
       } catch (error) {
@@ -915,7 +915,7 @@ export default function MapSearchPage() {
       const divisionName = division.name.replace(' Division', '');
       const response = await statisticsAPI.getDivisionDistricts(divisionName);
 
-      console.log(`📍 Division Click - ${divisionName}:`, response);
+      // console.log(`📍 Division Click - ${divisionName}:`, response);
 
       if (response.success && response.data && response.data.length > 0) {
         const updatedDivision: Division = {
@@ -1004,7 +1004,7 @@ export default function MapSearchPage() {
     const fetchSummaryStats = async () => {
       try {
         const response = await statisticsAPI.getSummary();
-        console.log('📈 Summary Stats Response:', response);
+        // console.log('📈 Summary Stats Response:', response);
 
         if (response.success && response.data) {
           setSummaryStats({

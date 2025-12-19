@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       return data;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         success: false,
         message: 'Login failed. Please try again.',
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       return result;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return {
         success: false,
         message: 'Registration failed. Please try again.',
