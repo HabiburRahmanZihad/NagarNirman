@@ -253,7 +253,7 @@ const Footer: React.FC = () => {
             <div className="space-y-3 sm:space-y-4">
               {/* Location */}
               <div className="flex items-start gap-3 group">
-                <div className="bg-primary w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-accent group-hover:scale-105 flex-shrink-0">
+                <div className="bg-primary w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-accent group-hover:scale-105 shrink-0">
                   <CiLocationOn size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -266,7 +266,7 @@ const Footer: React.FC = () => {
 
               {/* Email */}
               <div className="flex items-start gap-3 group">
-                <div className="bg-accent w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-primary group-hover:scale-105 flex-shrink-0">
+                <div className="bg-accent w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-primary group-hover:scale-105 shrink-0">
                   <SiMinutemailer size={16} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -282,7 +282,7 @@ const Footer: React.FC = () => {
 
               {/* Phone */}
               <div className="flex items-start gap-3 group">
-                <div className="bg-primary w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-accent group-hover:scale-105 flex-shrink-0">
+                <div className="bg-primary w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-accent group-hover:scale-105 shrink-0">
                   <FaPhoneAlt size={14} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
