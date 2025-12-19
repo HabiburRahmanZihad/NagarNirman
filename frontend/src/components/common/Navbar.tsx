@@ -400,14 +400,14 @@ const Navbar: React.FC = () => {
                         >
                           <div className="p-3 lg:p-4 border-b border-gray-100">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold shrink-0">
+                              <div className="w-12 h-12 bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold shrink-0">
                                 {user.profilePicture ? (
                                   <Image
                                     src={user.profilePicture}
                                     alt={user.name}
                                     width={40}
                                     height={40}
-                                    className="rounded-full object-cover"
+                                    className="w-full h-full rounded-full object-cover"
                                   />
                                 ) : (
                                   <FaUser className="w-5 h-5" />
