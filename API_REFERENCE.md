@@ -1,4 +1,10 @@
-# API Quick Reference - NagarNirman
+<div align="center">
+
+![NagarNirman Logo](frontend/public/logo/logo.png)
+
+**Comprehensive API Documentation**
+
+</div>
 
 Base URL: `http://localhost:5000/api`
 
@@ -177,7 +183,7 @@ Content-Type: application/json
   "description": "Replace the street light bulb",
   "reportId": "report_id_here",
   "assignedTo": "user_id_here",
-  "deadline": "2024-12-31",
+  "deadline": "2026-12-31",
   "priority": "high",
   "rewardPoints": 50
 }
@@ -371,7 +377,7 @@ location[coordinates][1]: 23.7925
 - `user` - Regular citizen
 - `authority` - Government official
 - `problemSolver` - Verified problem solver (needs approval)
-- `ngo` - NGO member (needs approval)
+- `superAdmin` - Full system access (root user)
 
 ---
 
