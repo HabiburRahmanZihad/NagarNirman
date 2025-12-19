@@ -208,7 +208,7 @@ const Footer: React.FC = () => {
                     ? 'opacity-100 text-accent'
                     : 'opacity-0 text-accent group-hover:opacity-100'
                     }`}>
-                    <LucideArrowUpRight size={14} className="sm:w-4 sm:h-4" />
+                    <LucideArrowUpRight size={14} className="sm:w-4 sm:h-4 text-accent" />
                   </span>
                 </li>
               ))}
@@ -237,7 +237,7 @@ const Footer: React.FC = () => {
                     ? 'opacity-100 text-primary'
                     : 'opacity-0 text-primary group-hover:opacity-100'
                     }`}>
-                    <LucideArrowUpRight size={14} className="sm:w-4 sm:h-4" />
+                    <LucideArrowUpRight size={14} className="sm:w-4 sm:h-4 text-accent" />
                   </span>
                 </li>
               ))}
