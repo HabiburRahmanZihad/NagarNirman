@@ -46,15 +46,15 @@ export const AUTHORITY_ROUTES = {
 } as const;
 
 export const SOLVER_ROUTES = {
-  DASHBOARD: '/dashboard/solver',
+  DASHBOARD: '/dashboard/problemSolver',
   PROFILE: '/dashboard/solver/profile',
-  TASKS: '/dashboard/solver/tasks',
+  TASKS: '/dashboard/problemSolver/tasks',
   TASKS_PENDING: '/dashboard/solver/tasks/pending',
   TASKS_IN_PROGRESS: '/dashboard/solver/tasks/in-progress',
   COMPLETED: '/dashboard/solver/completed',
-  LEADERBOARD: '/dashboard/solver/leaderboard',
+  LEADERBOARD: '/dashboard/problemSolver/leaderboard',
   REWARDS: '/dashboard/solver/rewards',
-  STATISTICS: '/dashboard/solver/statistics',
+  STATISTICS: '/dashboard/problemSolver/statistics',
   HISTORY: '/dashboard/solver/history',
 } as const;
 
