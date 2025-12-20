@@ -2,18 +2,15 @@
 // Run this file to test email configuration: node utils/testEmail.js
 
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 
 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 
-
-// Load environment variables
-dotenv.config({ path: join(__dirname, '..', '.env') });
+// Load environment variables (local development only)
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 
 import { sendWelcomeEmail } from '../services/emailService.js';
