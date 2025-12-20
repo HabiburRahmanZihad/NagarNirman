@@ -25,6 +25,7 @@ import {
   Search,
   RefreshCw,
 } from 'lucide-react';
+import Image from 'next/image';
 
 interface Solver {
   _id: string;
@@ -386,7 +387,9 @@ export default function SolversPage() {
                 <div className="flex items-start justify-between mb-4 xs:mb-5 sm:mb-6">
                   <div className="flex items-center gap-2 xs:gap-3 sm:gap-4">
                     {solver.profilePicture ? (
-                      <img
+                      <Image
+                        width={200}
+                        height={200}
                         src={solver.profilePicture}
                         alt={solver.name}
                         className="w-10 h-10 xs:w-12 xs:h-12 sm:w-16 sm:h-16 rounded-lg xs:rounded-xl sm:rounded-2xl object-cover border-2 border-accent/20"
