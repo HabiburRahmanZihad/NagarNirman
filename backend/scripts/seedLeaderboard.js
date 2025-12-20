@@ -2,8 +2,10 @@ import { ObjectId } from "mongodb";
 import dotenv from "dotenv";
 import connectDB, { getDB, closeDB } from "../config/db.js";
 
-// Load environment variables
-dotenv.config({ path: ".env" });
+// Load environment variables (local only)
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 
 
