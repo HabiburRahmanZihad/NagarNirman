@@ -1,34 +1,21 @@
-<div align="center">
+MIT License
 
-![NagarNirman Logo](frontend/public/logo/logo.png)
+Copyright (c) 2026 Habibur Rahman Zihad
 
-</div>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-PROPRIETARY SOURCE CODE LICENSE AGREEMENT
-Copyright (c) 2026 NagarNirman. All Rights Reserved.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-1. RESERVATION OF RIGHTS
-   This software and associated documentation files (the "Software") are the
-   proprietary and confidential information of NagarNirman. All rights, title,
-   and interest in and to the Software, including all intellectual property
-   rights, are reserved by NagarNirman.
-
-2. LICENSE RESTRICTIONS
-   You are strictly prohibited from:
-   (a) Copying, modifying, duplicating, or distributing the Software;
-   (b) Reverse engineering, decompiling, or disassembling the Software;
-   (c) Renting, leasing, lending, or sublicensing the Software;
-   (d) Using the Software for commercial purposes without a separate written license;
-   (e) Removing or altering any proprietary notices, labels, or marks.
-
-3. UNAUTHORIZED USE
-   Any unauthorized use, reproduction, or distribution of this Software
-   constitutes a violation of copyright laws and international treaties, and may
-   result in severe civil and criminal penalties.
-
-4. NO WARRANTY
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-
-For usage inquiries, please contact: legal@nagarnirman.com
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
