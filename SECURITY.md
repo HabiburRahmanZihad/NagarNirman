@@ -1,3 +1,11 @@
+<div align="center">
+
+![NagarNirman Logo](frontend/public/logo/logo.png)
+
+</div>
+
+##
+
 # Security Policy
 
 ## Supported Versions
