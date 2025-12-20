@@ -11,6 +11,7 @@ import {
   FaArrowUp
 } from 'react-icons/fa';
 import divisionData from '@/data/divisionsData.json';
+import Image from 'next/image';
 
 interface Report {
   _id: string;
@@ -538,7 +539,8 @@ export default function AllReportsPage() {
                       {/* Image Section with Overlay */}
                       <div className="relative h-48 bg-linear-to-br from-[#F6FFF9] to-[#E8F5E9] overflow-hidden">
                         {hasImage ? (
-                          <img
+                          <Image
+                            fill
                             src={report.images![0]}
                             alt={report.title}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"

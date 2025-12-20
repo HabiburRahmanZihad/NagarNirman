@@ -191,7 +191,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <div className="p-4 bg-white/10 rounded-2xl border-2 border-accent/30 hover:border-accent/60 transition-all duration-300">
                 <div className="flex items-center space-x-3 mb-3">
                   {user.profilePicture ? (
-                    <img
+                    <Image
+                      width={48}
+                      height={48}
                       src={user.profilePicture}
                       alt={user.name}
                       className="w-12 h-12 rounded-full object-cover border-3 border-accent shadow-lg shrink-0"
