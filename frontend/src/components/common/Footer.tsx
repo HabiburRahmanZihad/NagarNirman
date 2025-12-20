@@ -98,7 +98,6 @@ const Footer: React.FC = () => {
     if (user.role === 'problemSolver') {
       return [
         ...commonResources,
-        { label: "Task History", href: SOLVER_ROUTES.HISTORY },
         { label: "Leaderboard", href: SOLVER_ROUTES.LEADERBOARD },
       ];
     }
@@ -208,7 +207,7 @@ const Footer: React.FC = () => {
                     ? 'opacity-100 text-accent'
                     : 'opacity-0 text-accent group-hover:opacity-100'
                     }`}>
-                    <LucideArrowUpRight size={14} className="sm:w-4 sm:h-4" />
+                    <LucideArrowUpRight size={14} className="sm:w-4 sm:h-4 text-accent" />
                   </span>
                 </li>
               ))}
@@ -237,7 +236,7 @@ const Footer: React.FC = () => {
                     ? 'opacity-100 text-primary'
                     : 'opacity-0 text-primary group-hover:opacity-100'
                     }`}>
-                    <LucideArrowUpRight size={14} className="sm:w-4 sm:h-4" />
+                    <LucideArrowUpRight size={14} className="sm:w-4 sm:h-4 text-accent" />
                   </span>
                 </li>
               ))}
@@ -253,12 +252,12 @@ const Footer: React.FC = () => {
             <div className="space-y-3 sm:space-y-4">
               {/* Location */}
               <div className="flex items-start gap-3 group">
-                <div className="bg-primary w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-accent group-hover:scale-105 flex-shrink-0">
+                <div className="bg-primary w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-accent group-hover:scale-105 shrink-0">
                   <CiLocationOn size={18} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm sm:text-base font-semibold text-white mb-0.5">Address</h3>
-                  <p className="text-xs sm:text-sm text-gray-300 leading-relaxed break-words">
+                  <p className="text-xs sm:text-sm text-gray-300 leading-relaxed wrap-break-words">
                     Dhaka, Bangladesh
                   </p>
                 </div>
@@ -266,7 +265,7 @@ const Footer: React.FC = () => {
 
               {/* Email */}
               <div className="flex items-start gap-3 group">
-                <div className="bg-accent w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-primary group-hover:scale-105 flex-shrink-0">
+                <div className="bg-accent w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-primary group-hover:scale-105 shrink-0">
                   <SiMinutemailer size={16} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -282,7 +281,7 @@ const Footer: React.FC = () => {
 
               {/* Phone */}
               <div className="flex items-start gap-3 group">
-                <div className="bg-primary w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-accent group-hover:scale-105 flex-shrink-0">
+                <div className="bg-primary w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-accent group-hover:scale-105 shrink-0">
                   <FaPhoneAlt size={14} className="sm:w-5 sm:h-5 md:w-6 md:h-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -317,7 +316,7 @@ const Footer: React.FC = () => {
 
           <div className="bg-primary text-white rounded-xl sm:rounded-2xl shadow-xl sm:shadow-2xl py-3 sm:py-4 md:py-5 px-3 sm:px-4 md:px-6 hover:bg-accent transition-colors duration-300">
             <div className="flex flex-col sm:flex-col lg:flex-row justify-center lg:justify-between items-center gap-3 sm:gap-4">
-              <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2 sm:gap-3 md:gap-4 text-center sm:text-left order-1 md:order-none">
+              <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2 sm:gap-3 md:gap-4 text-center sm:text-left order-1 md:order">
                 <p className="text-xs sm:text-sm md:text-base font-semibold whitespace-nowrap">
                   &copy; 2025 NagarNirman. All rights reserved.
                 </p>

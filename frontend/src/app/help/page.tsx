@@ -231,7 +231,7 @@ export default function HelpPage() {
             <div className="bg-white rounded-2xl shadow-lg p-8">
               <h2 className="text-2xl font-bold text-[#002E2E] mb-6">Contact Support</h2>
               <div className="space-y-6">
-                <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-[#F6FFF9] transition-colors border border-accent hover:border-[#004540]/30">
+                <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-[#F6FFF9] transition-colors border border-primary hover:border-[#004540]/30">
                   <div className="w-12 h-12 bg-[#004540] flex items-center justify-center rounded-full shrink-0">
                     <FaEnvelope className="text-white text-xl" />
                   </div>

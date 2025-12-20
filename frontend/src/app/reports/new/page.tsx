@@ -212,12 +212,12 @@ export default function NewReportPage() {
       };
 
       // Debug log
-      console.log('=== Frontend Debug ===');
-      console.log('Form Data:', data);
-      console.log('Problem Type:', problemType);
-      console.log('Location Data:', locationData);
-      console.log('Images count:', base64Images.length);
-      console.log('=====================');
+      // console.log('=== Frontend Debug ===');
+      // console.log('Form Data:', data);
+      // console.log('Problem Type:', problemType);
+      // console.log('Location Data:', locationData);
+      // console.log('Images count:', base64Images.length);
+      // console.log('=====================');
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/reports`, {
         method: "POST",
@@ -230,8 +230,8 @@ export default function NewReportPage() {
 
       const result = await res.json();
 
-      console.log('Server Response:', result);
-      console.log('Response Status:', res.status);
+      // console.log('Server Response:', result);
+      // console.log('Response Status:', res.status);
 
       toast.dismiss(submitToast);
 

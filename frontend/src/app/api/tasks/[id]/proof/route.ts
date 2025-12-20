@@ -21,7 +21,7 @@ export async function POST(
       pointsAwarded: 0
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json(
       { error: 'Failed to submit proof' },
       { status: 500 }

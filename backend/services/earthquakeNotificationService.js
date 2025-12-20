@@ -73,9 +73,9 @@ export const createEarthquakeNotifications = async (earthquake) => {
           notified++;
 
           // Log notification
-          console.log(
-            `📢 Notification sent to user ${user._id}: ${distance.toFixed(1)}km away`
-          );
+          // console.log(
+          //   `📢 Notification sent to user ${user._id}: ${distance.toFixed(1)}km away`
+          // );
         }
       } catch (error) {
         console.error(`Failed to notify user ${user._id}:`, error.message);
@@ -266,7 +266,7 @@ export const deleteOldEarthquakeNotifications = async (daysOld = 30) => {
       createdAt: { $lt: cutoffDate },
     });
 
-    console.log(`Deleted ${result.deletedCount} old earthquake notifications`);
+    // console.log(`Deleted ${result.deletedCount} old earthquake notifications`);
     return result.deletedCount;
   } catch (error) {
     console.error('Error deleting old notifications:', error);

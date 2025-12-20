@@ -65,7 +65,7 @@ export const getRecentEarthquakesController = async (req, res) => {
 
     // If database is empty, fetch from USGS and save
     if (earthquakes.length === 0) {
-      console.log('📡 Database empty, fetching from USGS...');
+      // console.log('📡 Database empty, fetching from USGS...');
       const usgsData = await fetchUSGSEarthquakes('7days', 2.5);
 
       for (const eq of usgsData.slice(0, 50)) {
@@ -312,7 +312,7 @@ export const deleteEarthquakeController = async (req, res) => {
 // Sync with USGS
 export const syncUSGSDataController = async (req, res) => {
   try {
-    console.log('🔄 Starting USGS data sync...');
+    // console.log('🔄 Starting USGS data sync...');
 
     // Create indexes first
     await createEarthquakeIndexes();

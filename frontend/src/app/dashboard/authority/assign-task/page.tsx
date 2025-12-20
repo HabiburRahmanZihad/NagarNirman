@@ -117,7 +117,7 @@ const AssignTaskPage = () => {
       }
 
       setLoading(true);
-      console.log('Loading data for division:', authUser.division);
+      // console.log('Loading data for division:', authUser.division);
 
       try {
         // Fetch reports and solvers in parallel
@@ -134,8 +134,8 @@ const AssignTaskPage = () => {
           })
         ]);
 
-        console.log('Reports response:', reportsResponse);
-        console.log('Solvers response:', solversResponse);
+        // console.log('Reports response:', reportsResponse);
+        // console.log('Solvers response:', solversResponse);
 
         // Set reports
         if (reportsResponse.success && reportsResponse.data) {
@@ -164,7 +164,7 @@ const AssignTaskPage = () => {
         const reportCount = reportsResponse.data?.length || 0;
         const solverCount = solversResponse.users?.length || 0;
 
-        console.log(`Loaded ${reportCount} reports and ${solverCount} solvers`);
+        // console.log(`Loaded ${reportCount} reports and ${solverCount} solvers`);
 
         if (reportCount === 0 && solverCount === 0) {
           toast.error(`No reports or solvers found in ${authUser.division} division`);

@@ -95,14 +95,35 @@ app.use('/api/earthquakes', earthquakeRoutes);
 
 
 
-
-// Health check route
-app.get('/api/health', (req, res) => {
+// Root Welcome Route
+app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
-    message: 'NagarNirman API is running',
+    message: "👋 Welcome to NagarNirman Backend API",
+    tagline: "Report • Resolve • Rebuild",
+    status: "Server is running smoothly",
     timestamp: new Date().toISOString()
   });
+});
+
+
+
+// Health check route
+app.get("/api/health", async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      message: "NagarNirman API is healthy",
+      uptime: process.uptime(),
+      memoryUsage: process.memoryUsage().rss,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Health check failed"
+    });
+  }
 });
 
 
