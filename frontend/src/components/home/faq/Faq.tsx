@@ -5,6 +5,7 @@ import { ChevronDown, Sprout } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/common/Button";
 import { FaQuestionCircle } from "react-icons/fa";
+import Image from "next/image";
 
 const faqs = [
   {
@@ -112,7 +113,9 @@ export default function FaqSection() {
                   <div className="flex -space-x-4">
                     {avatars.map((avatar, i) => (
                       <div key={i} className="relative">
-                        <img
+                        <Image
+                          width={48}
+                          height={48}
                           src={avatar}
                           alt="User"
                           className="w-12 h-12 rounded-full border-3 border-white object-cover shadow-lg hover:scale-110 transition-transform duration-300"

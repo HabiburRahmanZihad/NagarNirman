@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, FileText, CheckCircle, Camera, Sparkles, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 interface Task {
   _id: string;
@@ -183,7 +184,8 @@ export default function ProofUploadModal({ task, onClose, onSubmit }: ProofUploa
                           animate={{ opacity: 1, scale: 1 }}
                           className="relative group"
                         >
-                          <img
+                          <Image
+                            fill
                             src={URL.createObjectURL(file)}
                             alt={`Preview ${index + 1}`}
                             className="w-full h-24 object-cover rounded-lg shadow-sm group-hover:shadow-md transition-all"

@@ -30,6 +30,7 @@ import {
   Search,
   RefreshCw,
 } from 'lucide-react';
+import Image from 'next/image';
 
 interface Application {
   _id: string;
@@ -650,7 +651,9 @@ export default function ProblemSolverApplications() {
                         rel="noopener noreferrer"
                         className="inline-block"
                       >
-                        <img
+                        <Image
+                          width={200}
+                          height={200}
                           src={selectedApp.nidOrIdDoc}
                           alt="NID Document"
                           className="max-w-full h-auto max-h-48 xs:max-h-64 sm:max-h-96 rounded-md xs:rounded-lg object-contain border-2 border-accent/20 hover:border-accent/60 transition-colors cursor-pointer"

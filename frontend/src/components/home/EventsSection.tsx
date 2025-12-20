@@ -113,7 +113,9 @@ export default function EventsSection() {
                     <div className="flex -space-x-2 xs:-space-x-3">
                       {event.avatars.map((avatar, i) => (
                         <div key={i} className="relative">
-                          <img
+                          <Image
+                            width={32}
+                            height={32}
                             src={avatar}
                             alt="User"
                             className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-full border-[2px] border-white object-cover"
@@ -196,7 +198,8 @@ export default function EventsSection() {
 
                 {/* MAIN IMAGE */}
                 <div className="relative w-full h-full">
-                  <img
+                  <Image
+                    fill
                     src={event.image}
                     alt={event.title}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
