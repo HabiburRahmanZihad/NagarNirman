@@ -893,7 +893,7 @@ export default function MapSearchPage() {
             if (stats) {
               const updatedDistricts = division.districts.map(district => {
                 const districtStats = stats.districts?.find((d: { district: string }) =>
-                  district.name.toLowerCase() === d.district.toLowerCase()
+                  district.name.toLowerCase() === d?.district?.toLowerCase()
                 );
 
                 if (districtStats) {
