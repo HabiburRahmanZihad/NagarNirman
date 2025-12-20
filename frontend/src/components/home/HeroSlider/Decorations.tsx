@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 interface DecorationsProps {
   imageUrl: string;
@@ -16,7 +17,9 @@ export default function Decorations({ imageUrl }: DecorationsProps) {
         className="relative z-10"
       >
         <div className="w-96 h-96 rounded-full overflow-hidden border-8 border-white/20 shadow-2xl">
-          <img
+          <Image
+            width={500}
+            height={500}
             src={imageUrl}
             alt="Community development"
             className="w-full h-full object-cover"

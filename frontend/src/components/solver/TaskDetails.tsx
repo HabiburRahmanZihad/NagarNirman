@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { MapPin, Calendar, AlertTriangle, User, Award, Clock, Navigation, Clock3, CheckCircle2, Image as ImageIcon } from "lucide-react";
 import Button from '@/components/common/Button';
+import Image from "next/image";
 
 interface Task {
   _id: string;
@@ -148,7 +149,8 @@ export default function TaskDetails({ task }: TaskDetailsProps) {
                   transition={{ delay: 0.3 + index * 0.1 }}
                   className="group relative rounded-xl overflow-hidden shadow-md border border-gray-200"
                 >
-                  <img
+                  <Image
+                    fill
                     src={image}
                     alt={`Task image ${index + 1}`}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
