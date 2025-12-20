@@ -5,17 +5,50 @@ import { getDB } from '../config/db.js';
 // Get tasks collection
 export const getTasksCollection = () => getDB().collection('tasks');
 
+// Create indexes for better query performance
+export const createTaskIndexes = async () => {
+  const collection = getTasksCollection();
+  try {
+    await collection.createIndex({ assignedTo: 1, status: 1 });
+    await collection.createIndex({ report: 1 });
+    await collection.createIndex({ status: 1, reviewStatus: 1 });
+    await collection.createIndex({ createdAt: -1 });
+    // console.log('Task indexes created successfully');
+  } catch (error) {
+    console.error('Error creating task indexes:', error);
+  }
+};
+
+
+
+
 // Validate priority
 export const isValidPriority = (priority) => {
   const validPriorities = ['low', 'medium', 'high', 'urgent'];
   return validPriorities.includes(priority);
 };
 
+
+
+
 // Validate status
 export const isValidStatus = (status) => {
-  const validStatuses = ['pending', 'assigned', 'in-progress', 'completed', 'verified'];
+  const validStatuses = ['pending', 'assigned', 'accepted', 'in-progress', 'submitted', 'completed', 'verified', 'rejected'];
   return validStatuses.includes(status);
 };
+
+
+
+
+// Validate review status
+export const isValidReviewStatus = (reviewStatus) => {
+  const validReviewStatuses = ['pending', 'approved', 'rejected'];
+  return validReviewStatuses.includes(reviewStatus);
+};
+
+
+
+
 
 // Create new task
 export const createTask = async (taskData) => {
@@ -50,11 +83,22 @@ export const createTask = async (taskData) => {
     assignedTo: new ObjectId(assignedTo),
     assignedBy: new ObjectId(assignedBy),
     status: 'assigned',
+    progress: 50, // 50% when assigned
     priority,
     deadline: deadline ? new Date(deadline) : null,
-    proofUrl: null,
+    acceptedAt: null,
+    startedAt: null,
+    submittedAt: null,
     completedAt: null,
     verifiedAt: null,
+    proof: {
+      images: [],
+      description: '',
+      submittedAt: null,
+    },
+    reviewStatus: 'pending',
+    rejectionReason: '',
+    resubmissionCount: 0,
     points: 0,
     rating: null,
     feedback: '',
@@ -68,24 +112,124 @@ export const createTask = async (taskData) => {
   return task;
 };
 
+
+
+
 // Get task by ID
 export const getTaskById = async (taskId) => {
   if (!ObjectId.isValid(taskId)) {
     throw new Error('Invalid task ID');
   }
-  return await getTasksCollection().findOne({ _id: new ObjectId(taskId) });
+
+  // Use aggregation to populate related data
+  const tasks = await getTasksCollection()
+    .aggregate([
+      { $match: { _id: new ObjectId(taskId) } },
+      {
+        $lookup: {
+          from: 'reports',
+          localField: 'report',
+          foreignField: '_id',
+          as: 'report'
+        }
+      },
+      {
+        $unwind: {
+          path: '$report',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'assignedTo',
+          foreignField: '_id',
+          as: 'solver'
+        }
+      },
+      {
+        $unwind: {
+          path: '$solver',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'assignedBy',
+          foreignField: '_id',
+          as: 'assigner'
+        }
+      },
+      {
+        $unwind: {
+          path: '$assigner',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $project: {
+          'solver.password': 0,
+          'assigner.password': 0
+        }
+      }
+    ])
+    .toArray();
+
+  return tasks.length > 0 ? tasks[0] : null;
 };
+
+
+
 
 // Find tasks with filters
 export const findTasks = async (filter = {}, options = {}) => {
-  const { page = 1, limit = 10, sort = { createdAt: -1 } } = options;
+  const { page = 1, limit = 10, sort = { createdAt: -1 }, populate = true } = options;
   const skip = (page - 1) * limit;
 
+  // Build aggregation pipeline
+  const pipeline = [
+    { $match: filter },
+    { $sort: sort },
+    { $skip: skip },
+    { $limit: limit }
+  ];
+
+  // Only add lookups if populate is true
+  if (populate) {
+    pipeline.push(
+      {
+        $lookup: {
+          from: 'reports',
+          localField: 'report',
+          foreignField: '_id',
+          as: 'report',
+          pipeline: [
+            {
+              $project: {
+                title: 1,
+                location: 1,
+                images: 1,
+                severity: 1,
+                problemType: 1,
+                category: 1,
+                subcategory: 1
+              }
+            }
+          ]
+        }
+      },
+      {
+        $unwind: {
+          path: '$report',
+          preserveNullAndEmptyArrays: true
+        }
+      }
+    );
+  }
+
   const tasks = await getTasksCollection()
-    .find(filter)
-    .sort(sort)
-    .skip(skip)
-    .limit(limit)
+    .aggregate(pipeline)
     .toArray();
 
   const total = await getTasksCollection().countDocuments(filter);
@@ -100,6 +244,9 @@ export const findTasks = async (filter = {}, options = {}) => {
     },
   };
 };
+
+
+
 
 // Update task
 export const updateTask = async (taskId, updateData) => {
@@ -117,6 +264,9 @@ export const updateTask = async (taskId, updateData) => {
 
   return result;
 };
+
+
+
 
 // Update task status
 export const updateTaskStatus = async (taskId, status) => {
@@ -152,6 +302,8 @@ export const updateTaskStatus = async (taskId, status) => {
   return result;
 };
 
+
+
 // Submit task completion proof
 export const submitTaskProof = async (taskId, proofUrl, notes) => {
   if (!ObjectId.isValid(taskId)) {
@@ -174,6 +326,9 @@ export const submitTaskProof = async (taskId, proofUrl, notes) => {
 
   return result;
 };
+
+
+
 
 // Verify task and award points
 export const verifyTask = async (taskId, points, rating, feedback) => {
@@ -199,6 +354,9 @@ export const verifyTask = async (taskId, points, rating, feedback) => {
   return result;
 };
 
+
+
+
 // Delete task
 export const deleteTask = async (taskId) => {
   if (!ObjectId.isValid(taskId)) {
@@ -212,14 +370,72 @@ export const deleteTask = async (taskId) => {
   return result.deletedCount > 0;
 };
 
-// Get tasks by user ID
+
+
+
+// Get tasks by user ID (optimized for solver's own tasks)
 export const getTasksByUserId = async (userId, options = {}) => {
   if (!ObjectId.isValid(userId)) {
     throw new Error('Invalid user ID');
   }
 
-  return await findTasks({ assignedTo: new ObjectId(userId) }, options);
+  const { page = 1, limit = 100, sort = { createdAt: -1 } } = options;
+  const skip = (page - 1) * limit;
+
+  // Optimized aggregation - only fetch essential report fields
+  const tasks = await getTasksCollection()
+    .aggregate([
+      { $match: { assignedTo: new ObjectId(userId) } },
+      { $sort: sort },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: 'reports',
+          localField: 'report',
+          foreignField: '_id',
+          as: 'report',
+          pipeline: [
+            {
+              $project: {
+                title: 1,
+                'location.division': 1,
+                'location.district': 1,
+                'location.address': 1,
+                images: { $slice: ['$images', 1] }, // Only first image
+                severity: 1,
+                problemType: 1,
+                category: 1,
+                subcategory: 1
+              }
+            }
+          ]
+        }
+      },
+      {
+        $unwind: {
+          path: '$report',
+          preserveNullAndEmptyArrays: true
+        }
+      }
+    ])
+    .toArray();
+
+  const total = await getTasksCollection().countDocuments({ assignedTo: new ObjectId(userId) });
+
+  return {
+    tasks,
+    pagination: {
+      page,
+      pages: Math.ceil(total / limit),
+      total,
+      limit
+    }
+  };
 };
+
+
+
 
 // Get tasks by report ID
 export const getTasksByReportId = async (reportId) => {
@@ -230,4 +446,224 @@ export const getTasksByReportId = async (reportId) => {
   return await getTasksCollection()
     .find({ report: new ObjectId(reportId) })
     .toArray();
+};
+
+
+
+
+// Accept task (solver accepts the assignment)
+export const acceptTask = async (taskId) => {
+  if (!ObjectId.isValid(taskId)) {
+    throw new Error('Invalid task ID');
+  }
+
+  const result = await getTasksCollection().findOneAndUpdate(
+    { _id: new ObjectId(taskId) },
+    {
+      $set: {
+        status: 'accepted',
+        progress: 75, // 75% when accepted and in progress
+        acceptedAt: new Date(),
+        updatedAt: new Date(),
+      },
+    },
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+
+
+
+// Start working on task
+export const startTask = async (taskId) => {
+  if (!ObjectId.isValid(taskId)) {
+    throw new Error('Invalid task ID');
+  }
+
+  const result = await getTasksCollection().findOneAndUpdate(
+    { _id: new ObjectId(taskId) },
+    {
+      $set: {
+        status: 'in-progress',
+        progress: 75,
+        startedAt: new Date(),
+        updatedAt: new Date(),
+      },
+    },
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+
+
+
+// Submit proof for task completion
+export const submitProof = async (taskId, proofData) => {
+  if (!ObjectId.isValid(taskId)) {
+    throw new Error('Invalid task ID');
+  }
+
+  const { images, description } = proofData;
+
+  const result = await getTasksCollection().findOneAndUpdate(
+    { _id: new ObjectId(taskId) },
+    {
+      $set: {
+        status: 'submitted',
+        progress: 90, // 90% when submitted, waiting for review
+        'proof.images': images || [],
+        'proof.description': description || '',
+        'proof.submittedAt': new Date(),
+        submittedAt: new Date(),
+        reviewStatus: 'pending',
+        updatedAt: new Date(),
+      },
+      $inc: {
+        resubmissionCount: 1,
+      },
+    },
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+
+
+
+// Review and approve task
+export const approveTask = async (taskId, reviewData) => {
+  if (!ObjectId.isValid(taskId)) {
+    throw new Error('Invalid task ID');
+  }
+
+  const { points = 0, rating = null, feedback = '' } = reviewData;
+
+  const result = await getTasksCollection().findOneAndUpdate(
+    { _id: new ObjectId(taskId) },
+    {
+      $set: {
+        status: 'completed',
+        progress: 100, // 100% when approved
+        reviewStatus: 'approved',
+        points,
+        rating,
+        feedback,
+        completedAt: new Date(),
+        verifiedAt: new Date(),
+        updatedAt: new Date(),
+      },
+    },
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+
+
+
+// Reject task submission
+export const rejectTask = async (taskId, rejectionReason) => {
+  if (!ObjectId.isValid(taskId)) {
+    throw new Error('Invalid task ID');
+  }
+
+  const result = await getTasksCollection().findOneAndUpdate(
+    { _id: new ObjectId(taskId) },
+    {
+      $set: {
+        status: 'rejected',
+        progress: 75, // Back to 75%, need to resubmit
+        reviewStatus: 'rejected',
+        rejectionReason: rejectionReason || 'Work needs improvement',
+        updatedAt: new Date(),
+      },
+    },
+    { returnDocument: 'after' }
+  );
+
+  return result;
+};
+
+
+
+// Get tasks pending review (for authority/superadmin)
+export const getTasksPendingReview = async (options = {}) => {
+  const { page = 1, limit = 10, division } = options;
+  const skip = (page - 1) * limit;
+
+  // Build aggregation pipeline to filter by report division
+  const pipeline = [
+    { $match: { status: 'submitted', reviewStatus: 'pending' } },
+    {
+      $lookup: {
+        from: 'reports',
+        localField: 'report',
+        foreignField: '_id',
+        as: 'report'
+      }
+    },
+    { $unwind: { path: '$report', preserveNullAndEmptyArrays: true } }
+  ];
+
+  // Add division filter if provided (filter by report's location.division)
+  if (division) {
+    pipeline.push({ $match: { 'report.location.division': division } });
+  }
+
+  // Add solver lookup and final stages
+  pipeline.push(
+    { $sort: { createdAt: -1 } },
+    { $skip: skip },
+    { $limit: limit },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'assignedTo',
+        foreignField: '_id',
+        as: 'solver'
+      }
+    },
+    { $unwind: { path: '$solver', preserveNullAndEmptyArrays: true } },
+    { $project: { 'solver.password': 0 } }
+  );
+
+  const tasks = await getTasksCollection().aggregate(pipeline).toArray();
+
+  // Count total matching tasks
+  const countPipeline = [
+    { $match: { status: 'submitted', reviewStatus: 'pending' } },
+    {
+      $lookup: {
+        from: 'reports',
+        localField: 'report',
+        foreignField: '_id',
+        as: 'report'
+      }
+    },
+    { $unwind: { path: '$report', preserveNullAndEmptyArrays: true } }
+  ];
+
+  if (division) {
+    countPipeline.push({ $match: { 'report.location.division': division } });
+  }
+
+  countPipeline.push({ $count: 'total' });
+  const countResult = await getTasksCollection().aggregate(countPipeline).toArray();
+  const total = countResult.length > 0 ? countResult[0].total : 0;
+
+  return {
+    tasks,
+    pagination: {
+      page,
+      pages: Math.ceil(total / limit),
+      total,
+      limit
+    }
+  };
 };

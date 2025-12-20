@@ -11,8 +11,8 @@ const connectDB = async () => {
 
     db = client.db('nagarNirmanDB'); // Specify database name
 
-    console.log(`✅ MongoDB Connected: ${client.options.hosts[0]}`);
-    console.log(`📊 Database Name: ${db.databaseName}`);
+    // console.log(`✅ MongoDB Connected: ${client.options.hosts[0]}`);
+    // console.log(`📊 Database Name: ${db.databaseName}`);
 
     // Create indexes
     await createIndexes();
@@ -41,7 +41,7 @@ const createIndexes = async () => {
     await db.collection('tasks').createIndex({ status: 1 });
     await db.collection('tasks').createIndex({ report: 1 });
 
-    console.log('✅ Database indexes created');
+    // console.log('✅ Database indexes created');
   } catch (error) {
     console.error('⚠️ Warning: Could not create indexes:', error.message);
   }

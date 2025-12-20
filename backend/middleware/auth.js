@@ -33,9 +33,11 @@ export const protect = async (req, res, next) => {
 
       // Attach user to request
       req.user = {
+        _id: user._id,
         id: user._id.toString(),
         role: user.role,
         approved: user.approved,
+        division: user.division || null,
       };
 
       next();
@@ -54,6 +56,8 @@ export const protect = async (req, res, next) => {
   }
 };
 
+
+
 // Authorize specific roles
 export const authorize = (...roles) => {
   return (req, res, next) => {
@@ -67,15 +71,30 @@ export const authorize = (...roles) => {
   };
 };
 
-// Check if user is approved (for problem solvers/NGOs)
+
+
+// Check if user is approved (for problem solvers)
 export const checkApproved = (req, res, next) => {
-  if (req.user.role === 'problemSolver' || req.user.role === 'ngo') {
+  if (req.user.role === 'problemSolver') {
     if (!req.user.approved) {
       return res.status(403).json({
         success: false,
         message: 'Your account is pending approval',
       });
     }
+  }
+  next();
+};
+
+
+
+// Only allow superAdmin
+export const superAdminOnly = (req, res, next) => {
+  if (!req.user || req.user.role !== 'superAdmin') {
+    return res.status(403).json({
+      success: false,
+      message: 'Access denied. Super Admins only.'
+    });
   }
   next();
 };

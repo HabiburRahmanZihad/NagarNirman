@@ -9,9 +9,14 @@ import {
   toggleReportUpvote,
   updateReportStatus,
   deleteReport,
-  assignReportTo,
 } from '../models/Report.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+import { uploadMultipleToImgBB } from '../utils/imageUpload.js';
+import { getUserById, checkReportSubmissionLimit, incrementReportSubmission } from '../models/User.js';
+import { sendReportStatusEmail } from '../services/emailService.js';
+
+
+
 
 // @desc    Get all reports
 // @route   GET /api/reports
@@ -23,7 +28,9 @@ export const getReports = asyncHandler(async (req, res) => {
     status,
     severity,
     problemType,
+    division,
     district,
+    search,
     sortBy = 'createdAt',
     order = 'desc',
   } = req.query;
@@ -32,7 +39,19 @@ export const getReports = asyncHandler(async (req, res) => {
   if (status) filter.status = status;
   if (severity) filter.severity = severity;
   if (problemType) filter.problemType = problemType;
+  if (division) filter['location.division'] = division;
   if (district) filter['location.district'] = district;
+
+  // Add search functionality
+  if (search) {
+    filter.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { description: { $regex: search, $options: 'i' } },
+      { 'location.address': { $regex: search, $options: 'i' } },
+      { 'location.district': { $regex: search, $options: 'i' } },
+      { problemType: { $regex: search, $options: 'i' } },
+    ];
+  }
 
   const sort = { [sortBy]: order === 'desc' ? -1 : 1 };
 
@@ -49,6 +68,9 @@ export const getReports = asyncHandler(async (req, res) => {
     data: result.reports,
   });
 });
+
+
+
 
 // @desc    Get single report
 // @route   GET /api/reports/:id
@@ -76,6 +98,9 @@ export const getReport = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
 // @desc    Create new report
 // @route   POST /api/reports
 // @access  Private
@@ -83,25 +108,99 @@ export const createNewReport = asyncHandler(async (req, res) => {
   const { title, description, problemType, severity, location, images } = req.body;
 
   try {
+    // Check user report submission limit
+    const limitCheck = await checkReportSubmissionLimit(req.user.id);
+
+    if (!limitCheck.canSubmit) {
+      return res.status(429).json({
+        success: false,
+        message: limitCheck.message,
+        limitInfo: limitCheck.limitInfo,
+        daysLeft: limitCheck.daysLeft,
+      });
+    }
+
+    // Debug log
+    // console.log('=== Report Creation Debug ===');
+    // console.log('Title:', title);
+    // console.log('Description:', description?.substring(0, 50));
+    // console.log('Problem Type:', problemType);
+    // console.log('Severity:', severity);
+    // console.log('Location:', location);
+    // console.log('Images count:', images?.length || 0);
+    // console.log('User ID:', req.user?.id);
+    // console.log('===========================');
+
+    // Parse location if it's a string
+    let parsedLocation = location;
+    if (typeof location === 'string') {
+      try {
+        parsedLocation = JSON.parse(location);
+      } catch (parseError) {
+        console.error('Location parse error:', parseError);
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid location data format',
+        });
+      }
+    }
+
+    // Validate required fields
+    if (!title || !description || !problemType || !severity || !parsedLocation) {
+      // console.log('Validation failed:', {
+      //   hasTitle: !!title,
+      //   hasDescription: !!description,
+      //   hasProblemType: !!problemType,
+      //   hasSeverity: !!severity,
+      //   hasLocation: !!parsedLocation
+      // });
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide all required fields',
+      });
+    }
+
+    // Upload images to ImgBB using centralized utility
+    let imageUrls = [];
+    if (images && Array.isArray(images) && images.length > 0) {
+      // console.log(`Uploading ${images.length} images to ImgBB...`);
+
+      const uploadResults = await uploadMultipleToImgBB(images, `report_${title.substring(0, 20)}`);
+      imageUrls = uploadResults.map(result => result.url);
+
+      // console.log('Images uploaded successfully to ImgBB:', imageUrls);
+    }
+
     const report = await createReport({
       title,
       description,
       problemType,
+      category: req.body.category || problemType, // Save original category
+      subcategory: req.body.subcategory || null, // Save subcategory
       severity,
-      location,
-      images: images || [],
+      location: parsedLocation,
+      images: imageUrls,
       createdBy: req.user.id,
     });
+
+    // Increment user's report submission count
+    await incrementReportSubmission(req.user.id);
+
+    // Return updated limit info
+    const updatedLimitCheck = await checkReportSubmissionLimit(req.user.id);
 
     res.status(201).json({
       success: true,
       message: 'Report created successfully',
       data: report,
+      limitInfo: updatedLimitCheck,
     });
   } catch (error) {
+    console.error('Error creating report:', error);
     res.status(400).json({
       success: false,
-      message: error.message,
+      message: error.message || 'Error creating report',
+      error: error.toString(),
     });
   }
 });
@@ -120,8 +219,8 @@ export const updateExistingReport = asyncHandler(async (req, res) => {
       });
     }
 
-    // Check if user is owner
-    if (report.createdBy.toString() !== req.user.id) {
+    // Check if user is owner or superAdmin
+    if (report.createdBy.toString() !== req.user.id && req.user.role !== 'superAdmin') {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to update this report',
@@ -173,6 +272,18 @@ export const changeReportStatus = asyncHandler(async (req, res) => {
       });
     }
 
+    // Send status update email to report creator (non-blocking)
+    if (report.createdBy) {
+      const creatorId = typeof report.createdBy === 'object' ? report.createdBy._id : report.createdBy;
+      getUserById(creatorId.toString()).then(creator => {
+        if (creator) {
+          sendReportStatusEmail(creator, report, status).catch(err =>
+            console.error('Failed to send report status email:', err)
+          );
+        }
+      }).catch(err => console.error('Failed to get report creator:', err));
+    }
+
     res.status(200).json({
       success: true,
       message: 'Report status updated successfully',
@@ -200,8 +311,8 @@ export const removeReport = asyncHandler(async (req, res) => {
       });
     }
 
-    // Check if user is owner
-    if (report.createdBy.toString() !== req.user.id) {
+    // Check if user is owner or superAdmin
+    if (report.createdBy.toString() !== req.user.id && req.user.role !== 'superAdmin') {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to delete this report',

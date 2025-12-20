@@ -5,6 +5,8 @@ import { getDB } from '../config/db.js';
 // Get reports collection
 export const getReportsCollection = () => getDB().collection('reports');
 
+
+
 // Validate problem type
 export const isValidProblemType = (type) => {
   const validTypes = [
@@ -20,17 +22,26 @@ export const isValidProblemType = (type) => {
   return validTypes.includes(type);
 };
 
+
+
+
 // Validate severity
 export const isValidSeverity = (severity) => {
   const validSeverities = ['low', 'medium', 'high', 'urgent'];
   return validSeverities.includes(severity);
 };
 
+
+
+
 // Validate status
 export const isValidStatus = (status) => {
   const validStatuses = ['pending', 'approved', 'in-progress', 'resolved', 'rejected'];
   return validStatuses.includes(status);
 };
+
+
+
 
 // Create new report
 export const createReport = async (reportData) => {
@@ -42,6 +53,8 @@ export const createReport = async (reportData) => {
     location,
     images = [],
     createdBy,
+    category,
+    subcategory,
   } = reportData;
 
   // Validate required fields
@@ -67,11 +80,14 @@ export const createReport = async (reportData) => {
     description: description.trim(),
     images,
     problemType,
+    category: category || problemType, // Store original category
+    subcategory: subcategory || null, // Store subcategory
     severity,
     status: 'pending',
     location: {
       address: location.address,
       district: location.district,
+      division: location.division || null, // Add division field
       coordinates: location.coordinates || [], // [longitude, latitude]
     },
     upvotes: [],
@@ -96,13 +112,237 @@ export const createReport = async (reportData) => {
   return report;
 };
 
+
+
+
 // Get report by ID
 export const getReportById = async (reportId) => {
   if (!ObjectId.isValid(reportId)) {
     throw new Error('Invalid report ID');
   }
-  return await getReportsCollection().findOne({ _id: new ObjectId(reportId) });
+
+  // Use aggregation to populate user details
+  const reports = await getReportsCollection()
+    .aggregate([
+      { $match: { _id: new ObjectId(reportId) } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'createdBy',
+          foreignField: '_id',
+          as: 'createdByUser',
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'assignedTo',
+          foreignField: '_id',
+          as: 'assignedToUser',
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'assignedBy',
+          foreignField: '_id',
+          as: 'assignedByUser',
+        },
+      },
+      // Unwind history array to lookup each updatedBy user
+      {
+        $unwind: {
+          path: '$history',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'history.updatedBy',
+          foreignField: '_id',
+          as: 'history.updatedByUser',
+        },
+      },
+      // Reconstruct history with populated user
+      {
+        $addFields: {
+          history: {
+            $cond: {
+              if: { $gt: [{ $size: { $ifNull: ['$history.updatedByUser', []] } }, 0] },
+              then: {
+                status: '$history.status',
+                note: '$history.note',
+                date: '$history.date',
+                updatedBy: {
+                  _id: { $arrayElemAt: ['$history.updatedByUser._id', 0] },
+                  name: { $arrayElemAt: ['$history.updatedByUser.name', 0] },
+                },
+              },
+              else: '$history',
+            },
+          },
+        },
+      },
+      // Group back to reconstruct the document
+      {
+        $group: {
+          _id: '$_id',
+          title: { $first: '$title' },
+          description: { $first: '$description' },
+          problemType: { $first: '$problemType' },
+          severity: { $first: '$severity' },
+          status: { $first: '$status' },
+          location: { $first: '$location' },
+          images: { $first: '$images' },
+          upvotes: { $first: '$upvotes' },
+          comments: { $first: '$comments' },
+          createdBy: { $first: '$createdBy' },
+          createdByUser: { $first: '$createdByUser' },
+          assignedTo: { $first: '$assignedTo' },
+          assignedToUser: { $first: '$assignedToUser' },
+          assignedBy: { $first: '$assignedBy' },
+          assignedByUser: { $first: '$assignedByUser' },
+          createdAt: { $first: '$createdAt' },
+          updatedAt: { $first: '$updatedAt' },
+          history: { $push: '$history' },
+        },
+      },
+      {
+        $addFields: {
+          createdBy: {
+            $cond: {
+              if: { $gt: [{ $size: '$createdByUser' }, 0] },
+              then: {
+                _id: { $arrayElemAt: ['$createdByUser._id', 0] },
+                name: { $arrayElemAt: ['$createdByUser.name', 0] },
+                email: { $arrayElemAt: ['$createdByUser.email', 0] },
+                phone: { $arrayElemAt: ['$createdByUser.phone', 0] },
+              },
+              else: '$createdBy',
+            },
+          },
+          assignedTo: {
+            $cond: {
+              if: { $gt: [{ $size: '$assignedToUser' }, 0] },
+              then: {
+                _id: { $arrayElemAt: ['$assignedToUser._id', 0] },
+                name: { $arrayElemAt: ['$assignedToUser.name', 0] },
+                email: { $arrayElemAt: ['$assignedToUser.email', 0] },
+                role: { $arrayElemAt: ['$assignedToUser.role', 0] },
+              },
+              else: '$assignedTo',
+            },
+          },
+          assignedBy: {
+            $cond: {
+              if: { $gt: [{ $size: '$assignedByUser' }, 0] },
+              then: {
+                _id: { $arrayElemAt: ['$assignedByUser._id', 0] },
+                name: { $arrayElemAt: ['$assignedByUser.name', 0] },
+                email: { $arrayElemAt: ['$assignedByUser.email', 0] },
+              },
+              else: '$assignedBy',
+            },
+          },
+        },
+      },
+      // Filter out null/empty history entries
+      {
+        $addFields: {
+          history: {
+            $filter: {
+              input: '$history',
+              as: 'h',
+              cond: { $ne: ['$$h', {}] },
+            },
+          },
+        },
+      },
+      // Unwind comments to populate user details
+      {
+        $unwind: {
+          path: '$comments',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'comments.user',
+          foreignField: '_id',
+          as: 'comments.userDetails',
+        },
+      },
+      {
+        $addFields: {
+          comments: {
+            $cond: {
+              if: { $gt: [{ $size: { $ifNull: ['$comments.userDetails', []] } }, 0] },
+              then: {
+                _id: '$comments._id',
+                user: {
+                  _id: { $arrayElemAt: ['$comments.userDetails._id', 0] },
+                  name: { $arrayElemAt: ['$comments.userDetails.name', 0] },
+                  role: { $arrayElemAt: ['$comments.userDetails.role', 0] },
+                  district: { $arrayElemAt: ['$comments.userDetails.district', 0] },
+                },
+                comment: '$comments.comment',
+                createdAt: '$comments.date',
+              },
+              else: '$comments',
+            },
+          },
+        },
+      },
+      // Group again to reconstruct comments array
+      {
+        $group: {
+          _id: '$_id',
+          title: { $first: '$title' },
+          description: { $first: '$description' },
+          problemType: { $first: '$problemType' },
+          severity: { $first: '$severity' },
+          status: { $first: '$status' },
+          location: { $first: '$location' },
+          images: { $first: '$images' },
+          upvotes: { $first: '$upvotes' },
+          createdBy: { $first: '$createdBy' },
+          assignedTo: { $first: '$assignedTo' },
+          assignedBy: { $first: '$assignedBy' },
+          createdAt: { $first: '$createdAt' },
+          updatedAt: { $first: '$updatedAt' },
+          history: { $first: '$history' },
+          comments: { $push: '$comments' },
+        },
+      },
+      // Filter out empty comments
+      {
+        $addFields: {
+          comments: {
+            $filter: {
+              input: '$comments',
+              as: 'c',
+              cond: { $ne: ['$$c', {}] },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          createdByUser: 0,
+          assignedToUser: 0,
+          assignedByUser: 0,
+        },
+      },
+    ])
+    .toArray();
+
+  return reports[0] || null;
 };
+
+
+
 
 // Find reports with filters
 export const findReports = async (filter = {}, options = {}) => {
@@ -121,13 +361,16 @@ export const findReports = async (filter = {}, options = {}) => {
   return {
     reports,
     pagination: {
-      page,
-      limit,
-      total,
-      pages: Math.ceil(total / limit),
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalReports: total,
+      reportsPerPage: limit,
     },
   };
 };
+
+
+
 
 // Update report
 export const updateReport = async (reportId, updateData) => {
@@ -145,6 +388,9 @@ export const updateReport = async (reportId, updateData) => {
 
   return result;
 };
+
+
+
 
 // Add comment to report
 export const addCommentToReport = async (reportId, commentData) => {
@@ -174,6 +420,9 @@ export const addCommentToReport = async (reportId, commentData) => {
 
   return result;
 };
+
+
+
 
 // Add upvote to report
 export const toggleReportUpvote = async (reportId, userId) => {
@@ -216,6 +465,9 @@ export const toggleReportUpvote = async (reportId, userId) => {
   }
 };
 
+
+
+
 // Update report status with history
 export const updateReportStatus = async (reportId, status, note, updatedBy) => {
   if (!ObjectId.isValid(reportId) || !ObjectId.isValid(updatedBy)) {
@@ -245,6 +497,10 @@ export const updateReportStatus = async (reportId, status, note, updatedBy) => {
   return result;
 };
 
+
+
+
+
 // Delete report
 export const deleteReport = async (reportId) => {
   if (!ObjectId.isValid(reportId)) {
@@ -257,6 +513,9 @@ export const deleteReport = async (reportId) => {
 
   return result.deletedCount > 0;
 };
+
+
+
 
 // Assign report to user
 export const assignReportTo = async (reportId, userId) => {
@@ -276,4 +535,208 @@ export const assignReportTo = async (reportId, userId) => {
   );
 
   return result;
+};
+
+
+
+
+// Get report statistics by division
+export const getReportStatsByDivision = async (division) => {
+  const stats = await getReportsCollection()
+    .aggregate([
+      {
+        $match: {
+          'location.division': { $regex: new RegExp(division, 'i') }
+        }
+      },
+      {
+        $group: {
+          _id: '$location.district',
+          total: { $sum: 1 },
+          pending: {
+            $sum: {
+              $cond: [{ $in: ['$status', ['pending', 'approved']] }, 1, 0]
+            }
+          },
+          inProgress: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'in-progress'] }, 1, 0]
+            }
+          },
+          completed: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'resolved'] }, 1, 0]
+            }
+          },
+          rejected: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'rejected'] }, 1, 0]
+            }
+          },
+          high: {
+            $sum: {
+              $cond: [{ $eq: ['$severity', 'high'] }, 1, 0]
+            }
+          },
+          urgent: {
+            $sum: {
+              $cond: [{ $eq: ['$severity', 'urgent'] }, 1, 0]
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          district: '$_id',
+          total: 1,
+          pending: 1,
+          inProgress: 1,
+          completed: 1,
+          rejected: 1,
+          priority: {
+            $cond: [
+              { $gte: ['$urgent', 1] }, 'urgent',
+              {
+                $cond: [
+                  { $gte: ['$high', 1] }, 'high',
+                  {
+                    $cond: [
+                      { $gte: ['$pending', '$completed'] }, 'medium',
+                      'low'
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      {
+        $sort: { total: -1 }
+      }
+    ])
+    .toArray();
+
+  return stats;
+};
+
+
+
+
+
+// Get report statistics by district
+export const getReportStatsByDistrict = async (district) => {
+  const stats = await getReportsCollection()
+    .aggregate([
+      {
+        $match: {
+          'location.district': { $regex: new RegExp(district, 'i') }
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          pending: {
+            $sum: {
+              $cond: [{ $in: ['$status', ['pending', 'approved']] }, 1, 0]
+            }
+          },
+          inProgress: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'in-progress'] }, 1, 0]
+            }
+          },
+          completed: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'resolved'] }, 1, 0]
+            }
+          },
+          rejected: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'rejected'] }, 1, 0]
+            }
+          },
+          problemTypes: {
+            $push: '$problemType'
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          district: district,
+          total: 1,
+          pending: 1,
+          inProgress: 1,
+          completed: 1,
+          rejected: 1,
+          problemTypes: 1
+        }
+      }
+    ])
+    .toArray();
+
+  return stats.length > 0 ? stats[0] : {
+    district,
+    total: 0,
+    pending: 0,
+    inProgress: 0,
+    completed: 0,
+    rejected: 0,
+    problemTypes: []
+  };
+};
+
+
+
+
+
+// Get all divisions with statistics
+export const getAllDivisionsStats = async () => {
+  const stats = await getReportsCollection()
+    .aggregate([
+      {
+        $group: {
+          _id: '$location.division',
+          total: { $sum: 1 },
+          pending: {
+            $sum: {
+              $cond: [{ $in: ['$status', ['pending', 'approved']] }, 1, 0]
+            }
+          },
+          inProgress: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'in-progress'] }, 1, 0]
+            }
+          },
+          completed: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'resolved'] }, 1, 0]
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          division: '$_id',
+          total: 1,
+          pending: 1,
+          inProgress: 1,
+          completed: 1,
+          intensity: '$total',
+          trend: {
+            $concat: ['+', { $toString: { $round: [{ $multiply: [{ $divide: ['$completed', '$total'] }, 100] }, 0] } }, '%']
+          }
+        }
+      },
+      {
+        $sort: { total: -1 }
+      }
+    ])
+    .toArray();
+
+  return stats;
 };
