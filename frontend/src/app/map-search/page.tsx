@@ -29,6 +29,54 @@ interface Division {
   districts: District[];
 }
 
+// ✅ ADDED: API Response Interfaces
+interface DivisionStats {
+  total: number;
+  pending: number;
+  resolved: number;
+  completionRate: number;
+  trend: string;
+  districts?: Array<{
+    district: string;
+    total: number;
+    pending: number;
+    completed: number;
+    priority: 'high' | 'medium' | 'low';
+  }>;
+}
+
+interface MapStatsResponse {
+  success: boolean;
+  data: {
+    [divisionName: string]: DivisionStats;
+  };
+  message?: string;
+}
+
+interface DivisionDistrictsResponse {
+  success: boolean;
+  data: Array<{
+    district: string;
+    total: number;
+    pending: number;
+    completed: number;
+    priority: 'high' | 'medium' | 'low';
+  }>;
+  message?: string;
+}
+
+interface SummaryStatsResponse {
+  success: boolean;
+  data: {
+    totalReports: number;
+    totalPending: number;
+    totalInProgress: number;
+    totalResolved: number;
+    overallCompletionRate: number;
+  };
+  message?: string;
+}
+
 interface SelectedItem {
   type: 'division' | 'district';
   data: Division | District;
@@ -830,11 +878,11 @@ export default function MapSearchPage() {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>('');
 
-  // Fetch all divisions stats on mount using comprehensive statistics API
+  // ✅ FIXED: Fetch all divisions stats on mount using comprehensive statistics API
   useEffect(() => {
     const fetchDivisionsStats = async () => {
       try {
-        const response = await statisticsAPI.getCompleteMapData();
+        const response = await statisticsAPI.getCompleteMapData() as MapStatsResponse;
         // console.log('📊 Complete Map Data Response:', response);
 
         if (response.success && response.data) {
@@ -844,8 +892,8 @@ export default function MapSearchPage() {
 
             if (stats) {
               const updatedDistricts = division.districts.map(district => {
-                const districtStats = stats.districts?.find((d: District) =>
-                  d.name.toLowerCase() === district.name.toLowerCase()
+                const districtStats = stats.districts?.find((d: { district: string }) =>
+                  district.name.toLowerCase() === d?.district?.toLowerCase()
                 );
 
                 if (districtStats) {
@@ -907,13 +955,14 @@ export default function MapSearchPage() {
     setTimeout(() => setShowAlert(false), 5000);
   }, [searchQuery]);
 
+  // ✅ FIXED: handleDivisionClick function with proper typing
   const handleDivisionClick = useCallback(async (division: Division) => {
     setSelectedItem({ type: 'division', data: division });
     setShowDistricts(true);
 
     try {
       const divisionName = division.name.replace(' Division', '');
-      const response = await statisticsAPI.getDivisionDistricts(divisionName);
+      const response = await statisticsAPI.getDivisionDistricts(divisionName) as DivisionDistrictsResponse;
 
       // console.log(`📍 Division Click - ${divisionName}:`, response);
 
@@ -921,8 +970,8 @@ export default function MapSearchPage() {
         const updatedDivision: Division = {
           ...division,
           districts: division.districts.map(district => {
-            const stats = response.data.find((s: { district?: string; total?: number; pending?: number; completed?: number; priority?: 'high' | 'medium' | 'low' }) =>
-              district.name.toLowerCase() === s.district?.toLowerCase()
+            const stats = response.data.find(s =>
+              district.name.toLowerCase() === s.district.toLowerCase()
             );
             if (stats) {
               return {
@@ -1000,10 +1049,11 @@ export default function MapSearchPage() {
     completionRate: 0
   });
 
+  // ✅ FIXED: fetchSummaryStats with proper typing
   useEffect(() => {
     const fetchSummaryStats = async () => {
       try {
-        const response = await statisticsAPI.getSummary();
+        const response = await statisticsAPI.getSummary() as SummaryStatsResponse;
         // console.log('📈 Summary Stats Response:', response);
 
         if (response.success && response.data) {
