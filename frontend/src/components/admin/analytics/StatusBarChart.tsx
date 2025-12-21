@@ -18,7 +18,6 @@ const StatusBarChart = ({ data }: StatusBarChartProps) => {
     }
   };
 
-
   return (
     <motion.div
       initial={{ opacity: 0, x: -20 }}
@@ -60,8 +59,8 @@ const StatusBarChart = ({ data }: StatusBarChartProps) => {
                 tick={{ fill: '#6B7280', fontSize: 12 }}
               />
               <Tooltip 
-                formatter={(value: number) => [
-                  <span key={value} className="font-bold text-[#2563eb]">{value} reports</span>, 
+                formatter={(value: number | undefined) => [
+                  <span key={value || 'undefined'} className="font-bold text-[#2563eb]">{value || 0} reports</span>, 
                   'Count'
                 ]}
                 contentStyle={{

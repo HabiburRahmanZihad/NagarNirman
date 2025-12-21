@@ -62,6 +62,14 @@ interface TaskReview {
   createdAt: string;
 }
 
+// Add ApiResponse interface
+interface ApiResponse<T = any> {
+  success: boolean;
+  data: T;
+  message?: string;
+  error?: string;
+}
+
 export default function TaskReviewPage() {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
@@ -88,8 +96,14 @@ export default function TaskReviewPage() {
     try {
       setLoading(true);
       const response = await taskAPI.getPendingReview();
-      if (response.success) {
-        setTasks(response.data);
+      
+      // Type assertion for API response
+      const apiResponse = response as ApiResponse<TaskReview[]>;
+      
+      if (apiResponse.success) {
+        setTasks(apiResponse.data);
+      } else {
+        toast.error(apiResponse.message || 'Failed to load pending tasks');
       }
     } catch (error) {
       console.error('Error fetching pending tasks:', error);
@@ -123,26 +137,40 @@ export default function TaskReviewPage() {
     try {
       setSubmitting(true);
       if (reviewAction === 'approve') {
-        await taskAPI.approveTask(selectedTask._id, {
+        const response = await taskAPI.approveTask(selectedTask._id, {
           points: reviewData.points,
           rating: reviewData.rating,
           feedback: reviewData.feedback,
         });
-        const solverName = selectedTask.solver?.name || 'the solver';
-        toast.success(`✅ Task approved! ${reviewData.points} points awarded to ${solverName}`);
-        addNotification({
-          title: 'Task Approved',
-          message: `You approved "${selectedTask.title}" and awarded ${reviewData.points} points to ${solverName}`,
-          type: 'success',
-        });
+        const apiResponse = response as ApiResponse;
+        
+        if (apiResponse.success) {
+          const solverName = selectedTask.solver?.name || 'the solver';
+          toast.success(`✅ Task approved! ${reviewData.points} points awarded to ${solverName}`);
+          addNotification({
+            title: 'Task Approved',
+            message: `You approved "${selectedTask.title}" and awarded ${reviewData.points} points to ${solverName}`,
+            type: 'success',
+          });
+        } else {
+          toast.error(apiResponse.message || 'Failed to approve task');
+          return;
+        }
       } else {
-        await taskAPI.rejectTask(selectedTask._id, reviewData.rejectionReason);
-        toast.success('📝 Task rejected. Solver will be notified to resubmit.');
-        addNotification({
-          title: 'Task Rejected',
-          message: `You rejected "${selectedTask.title}". The solver has been notified to resubmit.`,
-          type: 'warning',
-        });
+        const response = await taskAPI.rejectTask(selectedTask._id, reviewData.rejectionReason);
+        const apiResponse = response as ApiResponse;
+        
+        if (apiResponse.success) {
+          toast.success('📝 Task rejected. Solver will be notified to resubmit.');
+          addNotification({
+            title: 'Task Rejected',
+            message: `You rejected "${selectedTask.title}". The solver has been notified to resubmit.`,
+            type: 'warning',
+          });
+        } else {
+          toast.error(apiResponse.message || 'Failed to reject task');
+          return;
+        }
       }
 
       setShowReviewModal(false);

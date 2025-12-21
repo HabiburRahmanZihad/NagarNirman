@@ -33,6 +33,25 @@ interface Report {
   createdAt: string;
 }
 
+// Add API Response interfaces
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
+
+interface UserStatsResponse {
+  reports?: {
+    total: number;
+    byStatus?: {
+      pending: number;
+      in_progress: number;
+      resolved: number;
+      rejected: number;
+    };
+  };
+}
+
 export default function UserDashboard() {
   const { user, isLoading } = useAuth();
   const [stats, setStats] = useState<UserStats | null>(null);
@@ -45,7 +64,7 @@ export default function UserDashboard() {
     if (!user?._id) return;
 
     try {
-      const response = await userAPI.getUserStats(user._id);
+      const response = await userAPI.getUserStats(user._id) as ApiResponse<UserStatsResponse>;
       if (response.success && response.data) {
         const { reports } = response.data;
         setStats({
@@ -67,7 +86,7 @@ export default function UserDashboard() {
     if (!user?._id) return;
 
     try {
-      const response = await reportAPI.getAll();
+      const response = await reportAPI.getAll() as ApiResponse<Report[]>;
       if (response.success && Array.isArray(response.data)) {
         const userReports = response.data.filter(
           (report: Report) => report.createdBy === user._id || (report.createdBy as { _id: string })?._id === user._id
@@ -81,7 +100,7 @@ export default function UserDashboard() {
 
   const fetchApplicationStatus = useCallback(async () => {
     try {
-      const response = await problemSolverAPI.getMyApplication();
+      const response = await problemSolverAPI.getMyApplication() as ApiResponse<ApplicationStatus>;
       if (response.success) {
         setApplicationStatus(response.data);
       }
