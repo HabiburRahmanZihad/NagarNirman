@@ -42,8 +42,8 @@ const DivisionDistrictChart = ({ data }: DivisionDistrictChartProps) => {
                 tick={{ fontSize: 12 }}
               />
               <Tooltip 
-                formatter={(value: number) => [
-                  <span key={value} className="font-bold text-[#2a7d2f]">{value} reports</span>, 
+                formatter={(value: number | undefined) => [
+                  <span key={value || 'undefined'} className="font-bold text-[#2a7d2f]">{value || 0} reports</span>, 
                   'Count'
                 ]}
                 contentStyle={{

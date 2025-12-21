@@ -70,8 +70,8 @@ const CategoryPieChart = ({ data }: CategoryPieChartProps) => {
                 ))}
               </Pie>
               <Tooltip
-                formatter={(value: number) => [
-                  <span key={value} className="font-bold text-[#2563eb]">{value} reports</span>,
+                formatter={(value: number | undefined) => [
+                  <span key={value} className="font-bold text-[#2563eb]">{value || 0} reports</span>,
                   'Count'
                 ]}
                 contentStyle={{

@@ -63,6 +63,13 @@ interface Application {
   appliedAt: string;
 }
 
+// Add API Response interface
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
+
 export default function MyApplicationStatus() {
   const router = useRouter();
   const [application, setApplication] = useState<Application | null>(null);
@@ -74,7 +81,7 @@ export default function MyApplicationStatus() {
   const fetchApplication = useCallback(async () => {
     try {
       const { problemSolverAPI } = await import('@/utils/api');
-      const response = await problemSolverAPI.getMyApplication();
+      const response = await problemSolverAPI.getMyApplication() as ApiResponse<Application>;
       setApplication(response.data);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -155,8 +162,12 @@ export default function MyApplicationStatus() {
         }));
       }
 
-      await problemSolverAPI.deleteMyApplication();
-      toast.success('Application deleted. Redirecting to application form...');
+      const response = await problemSolverAPI.deleteMyApplication() as ApiResponse<{ message: string }>;
+      if (response.success) {
+        toast.success('Application deleted. Redirecting to application form...');
+      } else {
+        throw new Error(response.message || 'Failed to delete application');
+      }
 
       setTimeout(() => {
         router.push('/dashboard/user/join-as-a-Problem-Solver');

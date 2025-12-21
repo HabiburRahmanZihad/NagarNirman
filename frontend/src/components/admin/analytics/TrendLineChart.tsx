@@ -61,8 +61,8 @@ const TrendLineChart = ({ data }: TrendLineChartProps) => {
                   borderRadius: '12px',
                   boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
                 }}
-                formatter={(value: number) => [
-                  <span key={value} className="font-bold">{value}</span>, 
+                formatter={(value: number | undefined) => [
+                  <span key={value || 'undefined'} className="font-bold">{value || 0}</span>, 
                   ''
                 ]}
               />
