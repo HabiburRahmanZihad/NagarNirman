@@ -26,6 +26,15 @@ interface LeaderboardUser {
   badges: string[];
 }
 
+// Define API response type
+interface LeaderboardApiResponse {
+  success: boolean;
+  message?: string;
+  data?: {
+    leaderboard: LeaderboardUser[];
+  };
+}
+
 export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,17 +50,24 @@ export default function LeaderboardPage() {
         sortBy
       });
 
-      if (response.success) {
-        const data = response.data.leaderboard;
+      // Type assertion for the response
+      const leaderboardResponse = response as LeaderboardApiResponse;
+
+      if (leaderboardResponse.success && leaderboardResponse.data) {
+        const data = leaderboardResponse.data.leaderboard;
         setLeaderboard(data);
         // Set first user as current user (for display purposes)
         if (data.length > 0) {
           setCurrentUser(data[0]);
         }
+      } else {
+        toast.error(leaderboardResponse.message || 'Failed to load leaderboard');
+        setLeaderboard([]);
       }
     } catch (error) {
       console.error('Error fetching leaderboard:', error);
       toast.error('Failed to load leaderboard');
+      setLeaderboard([]);
     } finally {
       setLoading(false);
     }
