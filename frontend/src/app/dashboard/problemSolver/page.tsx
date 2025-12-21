@@ -48,6 +48,13 @@ interface Task {
   createdAt: string;
 }
 
+// Define API response types
+interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}
+
 export default function SolverDashboard() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -87,8 +94,11 @@ export default function SolverDashboard() {
       // Fetch user's tasks with real data
       const tasksResponse = await taskAPI.getMyTasks(100);
 
-      if (tasksResponse.success && tasksResponse.data) {
-        const tasks = tasksResponse.data;
+      // Type assertion for the response
+      const tasksApiResponse = tasksResponse as ApiResponse<Task[]>;
+
+      if (tasksApiResponse.success && tasksApiResponse.data) {
+        const tasks = tasksApiResponse.data;
         setRecentTasks(tasks.slice(0, 6)); // Show 6 most recent tasks
 
         // Calculate real statistics
