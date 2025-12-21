@@ -66,6 +66,28 @@ interface SolverFilters {
   district?: string;
 }
 
+// Add ApiResponse interfaces
+interface ApiResponse<T = any> {
+  success: boolean;
+  data: T;
+  message?: string;
+  error?: string;
+}
+
+interface UserApiResponse {
+  success: boolean;
+  users: ProblemSolver[];
+  message?: string;
+  error?: string;
+}
+
+interface TaskApiResponse {
+  success: boolean;
+  data?: any;
+  message?: string;
+  error?: string;
+}
+
 export default function SuperAdminAssignTaskPage() {
   const searchParams = useSearchParams();
   const { user: authUser } = useAuth();
@@ -117,20 +139,20 @@ export default function SuperAdminAssignTaskPage() {
         status: reportFilter.status || undefined
       });
 
-      // console.log('Reports response:', response);
-
-      if (response.success && Array.isArray(response.data)) {
-        let filtered = response.data;
+      // Type assertion for API response
+      const apiResponse = response as ApiResponse<Report[]>;
+      
+      if (apiResponse.success && Array.isArray(apiResponse.data)) {
+        let filtered = apiResponse.data;
 
         if (reportFilter.severity) {
           filtered = filtered.filter((r: Report) => r.severity === reportFilter.severity);
         }
 
         setReports(filtered);
-        // console.log('Loaded reports:', filtered.length);
       } else {
-        console.error('Invalid reports response:', response);
-        toast.error('Failed to load reports');
+        console.error('Invalid reports response:', apiResponse);
+        toast.error(apiResponse.message || 'Failed to load reports');
       }
     } catch (error: unknown) {
       console.error('Error fetching reports:', error);
@@ -147,12 +169,13 @@ export default function SuperAdminAssignTaskPage() {
       if (solverFilter.division) filters.division = solverFilter.division;
       if (solverFilter.district) filters.district = solverFilter.district;
 
-      // console.log('Fetching solvers with filters:', filters);
       const response = await userAPI.getSolvers(filters);
-      // console.log('Solvers response:', response);
-
-      if (response.success && response.users) {
-        let filtered = response.users;
+      
+      // Type assertion for API response
+      const apiResponse = response as UserApiResponse;
+      
+      if (apiResponse.success && apiResponse.users) {
+        let filtered = apiResponse.users;
 
         if (solverFilter.role !== 'all') {
           filtered = filtered.filter((s: ProblemSolver) => s.role === solverFilter.role);
@@ -168,10 +191,9 @@ export default function SuperAdminAssignTaskPage() {
         }
 
         setSolvers(filtered);
-        // console.log('Loaded solvers:', filtered.length);
       } else {
-        console.error('Invalid solvers response:', response);
-        toast.error('Failed to load problem solvers and NGOs');
+        console.error('Invalid solvers response:', apiResponse);
+        toast.error(apiResponse.message || 'Failed to load problem solvers and NGOs');
       }
     } catch (error) {
       console.error('Error fetching solvers:', error);
@@ -223,8 +245,9 @@ export default function SuperAdminAssignTaskPage() {
       };
 
       const response = await taskAPI.assign(taskData);
+      const apiResponse = response as TaskApiResponse;
 
-      if (response.success) {
+      if (apiResponse.success) {
         toast.success('🎉 Task assigned successfully! Report status updated to approved.');
         setSelectedReport(null);
         setSelectedSolver('');
@@ -233,7 +256,7 @@ export default function SuperAdminAssignTaskPage() {
         fetchReports(); // Refresh reports to update status
         fetchSolvers(); // Refresh solvers
       } else {
-        toast.error(response.message || 'Failed to assign task');
+        toast.error(apiResponse.message || 'Failed to assign task');
       }
     } catch (error) {
       console.error('Error assigning task:', error);
