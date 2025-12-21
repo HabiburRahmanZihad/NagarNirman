@@ -39,7 +39,7 @@ interface Solver {
   expertise?: string[];
   rating?: number;
   completedTasks?: number;
-  successRate?: number;
+  successRate?: number | string; // Updated to accept both number and string
   isActive: boolean;
   phone?: string;
   createdAt: string;
@@ -49,10 +49,17 @@ interface Solver {
     completed: number;
     pending: number;
     rating: string | number;
-    successRate: string;
+    successRate: string; // This is always string according to your code
     status: string;
     isBusy: boolean;
   };
+}
+
+// Define API response type
+interface SolversApiResponse {
+  success: boolean;
+  message?: string;
+  users?: Solver[];
 }
 
 export default function SolversPage() {
@@ -78,14 +85,17 @@ export default function SolversPage() {
         limit: 100
       });
 
-      if (response.success) {
-        const solversList = response.users || [];
+      // Type assertion for the response
+      const solversResponse = response as SolversApiResponse;
+
+      if (solversResponse.success) {
+        const solversList = solversResponse.users || [];
         setSolvers(solversList);
         if (showToast) {
           toast.success(`Loaded ${solversList.length} solvers from ${authUser?.division}`);
         }
       } else {
-        toast.error(response.message || 'Failed to load solvers');
+        toast.error(solversResponse.message || 'Failed to load solvers');
       }
     } catch (error: any) {
       console.error('Error fetching solvers:', error);
@@ -111,7 +121,6 @@ export default function SolversPage() {
   const getRoleIcon = (role: string) => {
     switch (role) {
       case 'problemSolver': return '💡';
-
       default: return '👤';
     }
   };
@@ -120,7 +129,6 @@ export default function SolversPage() {
     switch (role) {
       case 'problemSolver':
         return 'bg-blue-100 text-blue-800 border-blue-200';
-
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -129,7 +137,6 @@ export default function SolversPage() {
   const getRoleLabel = (role: string) => {
     switch (role) {
       case 'problemSolver': return 'Problem Solver';
-
       default: return role;
     }
   };
@@ -166,11 +173,20 @@ export default function SolversPage() {
       switch (sortBy) {
         case 'rating': {
           // Use the best available rating (taskStats.rating, rating, or 0)
-          const getRating = (solver: any) => {
-            if (typeof solver.taskStats?.rating === 'number') return solver.taskStats.rating;
-            if (!isNaN(Number(solver.taskStats?.rating))) return Number(solver.taskStats.rating);
-            if (typeof solver.rating === 'number') return solver.rating;
-            if (!isNaN(Number(solver.rating))) return Number(solver.rating);
+          const getRating = (solver: Solver) => {
+            // Check if taskStats exists and has rating
+            if (solver.taskStats?.rating !== undefined) {
+              const taskStatsRating = solver.taskStats.rating;
+              if (typeof taskStatsRating === 'number') return taskStatsRating;
+              if (!isNaN(Number(taskStatsRating))) return Number(taskStatsRating);
+            }
+            
+            // Fall back to solver.rating
+            if (solver.rating !== undefined) {
+              if (typeof solver.rating === 'number') return solver.rating;
+              if (!isNaN(Number(solver.rating))) return Number(solver.rating);
+            }
+            
             return 0;
           };
           return getRating(b) - getRating(a);
@@ -181,11 +197,25 @@ export default function SolversPage() {
           return bCompleted - aCompleted;
         }
         case 'successRate': {
-          const getSuccess = (solver: any) => {
-            if (typeof solver.taskStats?.successRate === 'string') return parseInt(solver.taskStats.successRate.replace('%', ''));
-            if (typeof solver.successRate === 'string') return parseInt(solver.successRate.replace('%', ''));
-            if (typeof solver.taskStats?.successRate === 'number') return solver.taskStats.successRate;
-            if (typeof solver.successRate === 'number') return solver.successRate;
+          const getSuccess = (solver: Solver) => {
+            // Handle taskStats success rate
+            if (solver.taskStats?.successRate) {
+              const taskStatsSuccess = solver.taskStats.successRate;
+              if (typeof taskStatsSuccess === 'string') {
+                return parseInt(taskStatsSuccess.replace('%', '')) || 0;
+              }
+            }
+            
+            // Handle solver success rate (can be number or string)
+            if (solver.successRate) {
+              if (typeof solver.successRate === 'string') {
+                return parseInt(solver.successRate.replace('%', '')) || 0;
+              }
+              if (typeof solver.successRate === 'number') {
+                return solver.successRate;
+              }
+            }
+            
             return 0;
           };
           return getSuccess(b) - getSuccess(a);
@@ -236,7 +266,12 @@ export default function SolversPage() {
             { title: 'Total Solvers', value: solvers.length, icon: Users, color: 'text-green-600', bgColor: 'bg-green-50' },
             { title: 'Problem Solvers', value: solvers.filter(s => s.role === 'problemSolver').length, icon: Star, color: 'text-blue-600', bgColor: 'bg-blue-50' },
             { title: 'Active Members', value: solvers.filter(s => s.isActive).length, icon: Activity, color: 'text-purple-600', bgColor: 'bg-purple-50' },
-            { title: 'Avg Rating', value: (solvers.reduce((sum, s) => sum + ((typeof s.taskStats?.rating === 'number' ? s.taskStats.rating : s.rating) || 0), 0) / Math.max(solvers.length, 1)).toFixed(1), icon: TrendingUp, color: 'text-yellow-600', bgColor: 'bg-yellow-50' }
+            { title: 'Avg Rating', value: (solvers.reduce((sum, s) => {
+              const rating = s.taskStats?.rating !== undefined 
+                ? (typeof s.taskStats.rating === 'number' ? s.taskStats.rating : Number(s.taskStats.rating) || 0)
+                : s.rating || 0;
+              return sum + rating;
+            }, 0) / Math.max(solvers.length, 1)).toFixed(1), icon: TrendingUp, color: 'text-yellow-600', bgColor: 'bg-yellow-50' }
           ].map((stat, index) => {
             const Icon = stat.icon;
             return (
