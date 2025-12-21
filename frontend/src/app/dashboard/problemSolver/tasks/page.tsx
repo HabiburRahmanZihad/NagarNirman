@@ -45,6 +45,14 @@ interface Task {
   resubmissionCount?: number;
 }
 
+// Add ApiResponse interface
+interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+}
+
 export default function SolverTasksPage() {
   const { user, isLoading: authLoading } = useAuth();
   const { addNotification } = useNotifications();
@@ -69,12 +77,15 @@ export default function SolverTasksPage() {
       setLoading(true);
       const response = await taskAPI.getMyTasks();
 
-      if (response.success && Array.isArray(response.data)) {
-        setTasks(response.data);
-        setFilteredTasks(response.data);
+      // Type assertion for API response
+      const apiResponse = response as ApiResponse<Task[]>;
+      
+      if (apiResponse.success && Array.isArray(apiResponse.data)) {
+        setTasks(apiResponse.data);
+        setFilteredTasks(apiResponse.data);
         if (showToast) toast.success('Tasks refreshed successfully!');
       } else {
-        console.error('Invalid tasks response:', response);
+        console.error('Invalid tasks response:', apiResponse);
         toast.error('Failed to load tasks');
       }
     } catch (error: unknown) {
@@ -149,7 +160,8 @@ export default function SolverTasksPage() {
   const handleStartTask = async (taskId: string) => {
     try {
       const response = await taskAPI.startTask(taskId);
-      if (response.success) {
+      const apiResponse = response as ApiResponse;
+      if (apiResponse.success) {
         toast.success("Task started! Good luck! 🚀");
         addNotification({
           title: 'Task Started',
@@ -158,11 +170,12 @@ export default function SolverTasksPage() {
         });
         // Refresh tasks
         const updatedTasks = await taskAPI.getMyTasks();
-        if (updatedTasks.success) {
-          setTasks(updatedTasks.data);
+        const updatedApiResponse = updatedTasks as ApiResponse<Task[]>;
+        if (updatedApiResponse.success && updatedApiResponse.data) {
+          setTasks(updatedApiResponse.data);
         }
       } else {
-        toast.error(response.message || 'Failed to start task');
+        toast.error(apiResponse.message || 'Failed to start task');
       }
     } catch (error: unknown) {
       console.error('Error starting task:', error);
@@ -220,7 +233,8 @@ export default function SolverTasksPage() {
         description: proofDescription
       });
 
-      if (response.success) {
+      const apiResponse = response as ApiResponse;
+      if (apiResponse.success) {
         toast.success("Proof submitted successfully! Waiting for review. ✅");
         addNotification({
           title: 'Proof Submitted',
@@ -234,11 +248,12 @@ export default function SolverTasksPage() {
 
         // Refresh tasks
         const updatedTasks = await taskAPI.getMyTasks();
-        if (updatedTasks.success) {
-          setTasks(updatedTasks.data);
+        const updatedApiResponse = updatedTasks as ApiResponse<Task[]>;
+        if (updatedApiResponse.success && updatedApiResponse.data) {
+          setTasks(updatedApiResponse.data);
         }
       } else {
-        toast.error(response.message || 'Failed to submit proof');
+        toast.error(apiResponse.message || 'Failed to submit proof');
       }
     } catch (error: unknown) {
       console.error('Error submitting proof:', error);
