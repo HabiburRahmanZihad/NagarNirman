@@ -25,6 +25,50 @@ interface Report {
   createdAt: string;
 }
 
+// Add ApiResponse interfaces
+interface ApiResponse<T = any> {
+  success: boolean;
+  data: T;
+  message?: string;
+  error?: string;
+}
+
+interface DashboardResponse {
+  success: boolean;
+  data: {
+    stats: {
+      totalUsers: number;
+      totalReports: number;
+      authorities: number;
+      problemSolvers: number;
+      pendingApplications?: number;
+    };
+    recentReports: Report[];
+  };
+  message?: string;
+  error?: string;
+}
+
+interface UsersApiResponse {
+  success: boolean;
+  data: User[];
+  message?: string;
+  error?: string;
+}
+
+interface TaskStatsResponse {
+  success: boolean;
+  data: {
+    totalTasks?: number;
+    completedTasks?: number;
+    assignedTasks?: number;
+    inProgressTasks?: number;
+    pendingReviewTasks?: number;
+  };
+  message?: string;
+  error?: string;
+}
+
 export default function SuperAdminDashboard() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
@@ -83,28 +127,31 @@ export default function SuperAdminDashboard() {
       ]);
 
       // Set stats from API
-      if (dashboardResponse.success) {
+      const dashboardApiResponse = dashboardResponse as DashboardResponse;
+      if (dashboardApiResponse.success) {
         setStats(prev => ({
           ...prev,
-          ...dashboardResponse.data.stats
+          ...dashboardApiResponse.data.stats
         }));
-        setAllReports(dashboardResponse.data.recentReports || []);
+        setAllReports(dashboardApiResponse.data.recentReports || []);
       }
 
       // Set all users for user management section
-      if (usersResponse.success) {
-        setAllUsers(usersResponse.data || []);
+      const usersApiResponse = usersResponse as UsersApiResponse;
+      if (usersApiResponse.success) {
+        setAllUsers(usersApiResponse.data || []);
       }
 
       // Set task stats from fast statistics endpoint
-      if (taskStatsResponse.success && taskStatsResponse.data) {
+      const taskStatsApiResponse = taskStatsResponse as TaskStatsResponse;
+      if (taskStatsApiResponse.success && taskStatsApiResponse.data) {
         setStats(prev => ({
           ...prev,
-          totalTasks: taskStatsResponse.data.totalTasks || 0,
-          completedTasks: taskStatsResponse.data.completedTasks || 0,
-          assignedTasks: taskStatsResponse.data.assignedTasks || 0,
-          inProgressTasks: taskStatsResponse.data.inProgressTasks || 0,
-          pendingReviewTasks: taskStatsResponse.data.pendingReviewTasks || 0,
+          totalTasks: taskStatsApiResponse.data.totalTasks || 0,
+          completedTasks: taskStatsApiResponse.data.completedTasks || 0,
+          assignedTasks: taskStatsApiResponse.data.assignedTasks || 0,
+          inProgressTasks: taskStatsApiResponse.data.inProgressTasks || 0,
+          pendingReviewTasks: taskStatsApiResponse.data.pendingReviewTasks || 0,
         }));
       }
 
