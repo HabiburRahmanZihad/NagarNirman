@@ -64,6 +64,19 @@ interface ApplicationFilters {
   status?: string;
 }
 
+// Add ApiResponse interface
+interface ApiResponse<T = any> {
+  success: boolean;
+  data: T;
+  pagination?: {
+    page: number;
+    pages: number;
+    total: number;
+  };
+  message?: string;
+  error?: string;
+}
+
 export default function SuperAdminApplications() {
   const { user, isLoading: authLoading } = useAuth();
   const [applications, setApplications] = useState<Application[]>([]);
@@ -92,8 +105,18 @@ export default function SuperAdminApplications() {
       }
 
       const response = await problemSolverAPI.getAllApplications(filters);
-      setApplications(response.data);
-      setPagination(response.pagination);
+      
+      // Type assertion for API response
+      const apiResponse = response as ApiResponse<Application[]>;
+      
+      if (apiResponse.success && apiResponse.data) {
+        setApplications(apiResponse.data);
+        if (apiResponse.pagination) {
+          setPagination(apiResponse.pagination);
+        }
+      } else {
+        toast.error(apiResponse.message || 'Failed to load applications');
+      }
     } catch (error) {
       toast.error('Failed to load applications');
       console.error(error);
@@ -570,6 +593,8 @@ export default function SuperAdminApplications() {
                   <a href={selectedApp.nidOrIdDoc} title='NID Document' target="_blank" rel="noopener noreferrer" className="block">
                     <Image
                       src={selectedApp.nidOrIdDoc}
+                      width={500}
+                      height={250}
                       alt="NID Document"
                       className="max-w-full h-auto max-h-64 xs:max-h-80 sm:max-h-96 rounded-lg xs:rounded-xl object-contain border-2 border-accent/20 hover:border-accent/50 transition-colors cursor-pointer"
                     />

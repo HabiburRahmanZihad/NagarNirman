@@ -55,6 +55,12 @@ interface SolverStats {
   status?: string;
 }
 
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
+
 type SortOption = 'name' | 'points' | 'total' | 'completed' | 'pending' | 'rating' | 'successRate';
 type SortOrder = 'asc' | 'desc';
 
@@ -155,7 +161,7 @@ export default function SolverStatisticsPage() {
   const fetchStatistics = async () => {
     try {
       setLoading(true);
-      const response = await taskAPI.getSolverStatistics();
+      const response = await taskAPI.getSolverStatistics() as ApiResponse<SolverStats[]>;
 
       if (response.success) {
         setStatistics(response.data);

@@ -25,6 +25,13 @@ interface User {
   createdAt: string;
 }
 
+// Add API Response interface
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
+
 export default function SuperAdminUsersPage() {
   const { user: authUser, isLoading: authLoading } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
@@ -52,7 +59,7 @@ export default function SuperAdminUsersPage() {
       // Fetch all users (superAdmin has no division restrictions)
       const response = await userAPI.getAllUsers({
         limit: 1000 // Get all users
-      });
+      }) as ApiResponse<User[]>;
 
       if (response.success && response.data) {
         setUsers(response.data);
@@ -107,7 +114,7 @@ export default function SuperAdminUsersPage() {
 
   const handleRoleChange = async (userId: string, newRole: string) => {
     try {
-      const response = await userAPI.updateUserRole(userId, newRole);
+      const response = await userAPI.updateUserRole(userId, newRole) as ApiResponse<{ message: string }>;
       if (response.success) {
         setUsers(prevUsers =>
           prevUsers.map(user =>
@@ -125,7 +132,7 @@ export default function SuperAdminUsersPage() {
 
   const handleStatusToggle = async (userId: string, isActive: boolean) => {
     try {
-      const response = await userAPI.updateUserStatus(userId, isActive);
+      const response = await userAPI.updateUserStatus(userId, isActive) as ApiResponse<{ message: string }>;
       if (response.success) {
         setUsers(prevUsers =>
           prevUsers.map(user =>
@@ -145,7 +152,7 @@ export default function SuperAdminUsersPage() {
     if (!confirm("Are you sure you want to delete this user?")) return;
 
     try {
-      const response = await userAPI.deleteUser(userId);
+      const response = await userAPI.deleteUser(userId) as ApiResponse<{ message: string }>;
       if (response.success) {
         setUsers(prevUsers => prevUsers.filter(user => user._id !== userId));
         toast.success("User deleted successfully!");

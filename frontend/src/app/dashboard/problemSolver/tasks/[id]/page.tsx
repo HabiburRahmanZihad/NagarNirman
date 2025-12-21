@@ -71,6 +71,14 @@ interface Task {
   feedback?: string;
 }
 
+// Add ApiResponse interface
+interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+}
+
 export default function TaskDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -90,10 +98,13 @@ export default function TaskDetailPage() {
       setLoading(true);
       const response = await taskAPI.getById(params.id as string);
 
-      if (response && response.success) {
-        setTask(response.data);
+      // Type assertion for API response
+      const apiResponse = response as ApiResponse<Task>;
+      
+      if (apiResponse && apiResponse.success && apiResponse.data) {
+        setTask(apiResponse.data);
       } else {
-        const errorMsg = response?.message || 'Failed to load task details';
+        const errorMsg = apiResponse?.message || 'Failed to load task details';
         toast.error(errorMsg);
         router.push('/dashboard/problemSolver/tasks');
       }
@@ -118,12 +129,13 @@ export default function TaskDetailPage() {
 
     try {
       const response = await taskAPI.acceptTask(task._id);
-      if (response.success) {
+      const apiResponse = response as ApiResponse;
+      if (apiResponse.success) {
         toast.success('Task accepted! You can now start working on it. 🎯');
         // Refresh task details
         fetchTaskDetails();
       } else {
-        toast.error(response.message || 'Failed to accept task');
+        toast.error(apiResponse.message || 'Failed to accept task');
       }
     } catch (err: unknown) {
       console.error('Error accepting task:', err);
@@ -136,11 +148,12 @@ export default function TaskDetailPage() {
 
     try {
       const response = await taskAPI.startTask(task._id);
-      if (response.success) {
+      const apiResponse = response as ApiResponse;
+      if (apiResponse.success) {
         toast.success('Task started! Good luck! 🚀');
         fetchTaskDetails();
       } else {
-        toast.error(response.message || 'Failed to start task');
+        toast.error(apiResponse.message || 'Failed to start task');
       }
     } catch (err: unknown) {
       console.error('Error starting task:', err);
@@ -192,7 +205,8 @@ export default function TaskDetailPage() {
         description: proofDescription,
       });
 
-      if (response && response.success) {
+      const apiResponse = response as ApiResponse;
+      if (apiResponse && apiResponse.success) {
         toast.success('Proof submitted successfully! Waiting for review. ✅');
         setShowProofModal(false);
         setProofImages([]);
@@ -200,7 +214,7 @@ export default function TaskDetailPage() {
         setProofError(null);
         fetchTaskDetails();
       } else {
-        const errorMsg = response?.message || 'Failed to submit proof';
+        const errorMsg = apiResponse?.message || 'Failed to submit proof';
         setProofError(errorMsg);
         toast.error(errorMsg);
       }
