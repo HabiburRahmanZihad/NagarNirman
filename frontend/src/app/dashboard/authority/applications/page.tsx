@@ -19,7 +19,6 @@ import {
   FaClock,
 } from 'react-icons/fa';
 import {
-
   FullPageLoading,
 } from '@/components/common';
 import {
@@ -31,6 +30,21 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import Image from 'next/image';
+
+// ✅ ADDED: API Response Interface
+interface PaginatedResponse<T = any> {
+  success: boolean;
+  data: T[];
+  pagination: {
+    page: number;
+    pages: number;
+    total: number;
+    limit?: number;
+    totalPages?: number;
+  };
+  message?: string;
+  error?: string;
+}
 
 interface Application {
   _id: string;
@@ -131,7 +145,10 @@ export default function ProblemSolverApplications() {
         filters.status = filterStatus;
       }
 
-      const response = await problemSolverAPI.getAllApplications(filters);
+      // ✅ FIXED: Add type assertion for API response
+      const response = await problemSolverAPI.getAllApplications(filters) as PaginatedResponse<Application>;
+      
+      // ✅ FIXED: Now TypeScript knows the response structure
       setApplications(response.data);
       setPagination(response.pagination);
     } catch (error: any) {
