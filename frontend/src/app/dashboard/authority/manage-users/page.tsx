@@ -36,6 +36,18 @@ interface FilterState {
   status: string;
 }
 
+// Define API response types
+interface UsersApiResponse {
+  success: boolean;
+  message?: string;
+  data?: User[];
+}
+
+interface BasicApiResponse {
+  success: boolean;
+  message?: string;
+}
+
 export default function ManageUsersPage() {
   const { user: authUser } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
@@ -62,14 +74,24 @@ export default function ManageUsersPage() {
         limit: 100 // Get all users from this division
       });
 
-      if (response.success && response.data) {
-        setUsers(response.data);
-        setFilteredUsers(response.data);
-        toast.success(`Loaded ${response.data.length} users from ${authUser.division}`);
+      // Type assertion for the response
+      const usersResponse = response as UsersApiResponse;
+
+      if (usersResponse.success && usersResponse.data) {
+        setUsers(usersResponse.data);
+        setFilteredUsers(usersResponse.data);
+        toast.success(`Loaded ${usersResponse.data.length} users from ${authUser.division}`);
+      } else {
+        // Handle unsuccessful response
+        toast.error(usersResponse.message || 'Failed to load users');
+        setUsers([]);
+        setFilteredUsers([]);
       }
     } catch (error) {
       console.error('Error loading users:', error);
       toast.error('Failed to load users. Please try again.');
+      setUsers([]);
+      setFilteredUsers([]);
     } finally {
       setIsLoading(false);
     }
@@ -117,7 +139,10 @@ export default function ManageUsersPage() {
     try {
       const response = await userAPI.updateUserRole(userId, newRole);
 
-      if (response.success) {
+      // Type assertion for the response
+      const roleResponse = response as BasicApiResponse;
+
+      if (roleResponse.success) {
         setUsers(users.map(user =>
           user._id === userId ? { ...user, role: newRole as User['role'] } : user
         ));
@@ -133,7 +158,7 @@ export default function ManageUsersPage() {
           },
         });
       } else {
-        throw new Error(response.message || 'Failed to update role');
+        throw new Error(roleResponse.message || 'Failed to update role');
       }
     } catch (error) {
       console.error('Error updating role:', error);
@@ -146,7 +171,10 @@ export default function ManageUsersPage() {
     try {
       const response = await userAPI.updateUserStatus(userId, isActive);
 
-      if (response.success) {
+      // Type assertion for the response
+      const statusResponse = response as BasicApiResponse;
+
+      if (statusResponse.success) {
         setUsers(users.map(user =>
           user._id === userId ? { ...user, isActive } : user
         ));
@@ -162,7 +190,7 @@ export default function ManageUsersPage() {
           },
         });
       } else {
-        throw new Error(response.message || 'Failed to update status');
+        throw new Error(statusResponse.message || 'Failed to update status');
       }
     } catch (error) {
       console.error('Error updating status:', error);
@@ -177,7 +205,10 @@ export default function ManageUsersPage() {
 
       const response = await userAPI.deleteUser(userId);
 
-      if (response.success) {
+      // Type assertion for the response
+      const deleteResponse = response as BasicApiResponse;
+
+      if (deleteResponse.success) {
         setUsers(users.filter(user => user._id !== userId));
 
         toast.success(`User "${userToDelete?.name}" deleted successfully!`, {
@@ -191,7 +222,7 @@ export default function ManageUsersPage() {
           },
         });
       } else {
-        throw new Error(response.message || 'Failed to delete user');
+        throw new Error(deleteResponse.message || 'Failed to delete user');
       }
     } catch (error) {
       console.error('Error deleting user:', error);
