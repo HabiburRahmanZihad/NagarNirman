@@ -16,6 +16,13 @@ import {
   Users,
 } from 'lucide-react';
 
+// Define API response types
+interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}
+
 interface Report {
   _id: string;
   title: string;
@@ -74,6 +81,18 @@ interface ProblemSolver {
   createdAt: string;
 }
 
+interface SolverApiResponse {
+  success: boolean;
+  users: ProblemSolver[];
+  message?: string;
+}
+
+interface TaskAssignResponse {
+  success: boolean;
+  message?: string;
+  task?: any;
+}
+
 const AssignTaskPage = () => {
   const { user: authUser, isLoading } = useAuth();
   const [reports, setReports] = useState<Report[]>([]);
@@ -117,37 +136,33 @@ const AssignTaskPage = () => {
       }
 
       setLoading(true);
-      // console.log('Loading data for division:', authUser.division);
 
       try {
         // Fetch reports and solvers in parallel
-        // Reports: Filter by authority's division
-        // Solvers: Get ALL approved solvers (no division filter) so authority can assign to anyone
         const [reportsResponse, solversResponse] = await Promise.all([
           reportAPI.getAll({ division: authUser.division }).catch(err => {
             console.error('Reports API error:', err);
-            return { success: false, data: [] };
+            return { success: false, data: [] } as ApiResponse<Report[]>;
           }),
           userAPI.getSolvers({ limit: 100 }).catch(err => {
             console.error('Solvers API error:', err);
-            return { success: false, users: [] };
+            return { success: false, users: [] } as SolverApiResponse;
           })
         ]);
 
-        // console.log('Reports response:', reportsResponse);
-        // console.log('Solvers response:', solversResponse);
-
-        // Set reports
-        if (reportsResponse.success && reportsResponse.data) {
-          setReports(reportsResponse.data);
+        // Set reports - Type assertion for API response
+        const reportsApiResponse = reportsResponse as ApiResponse<Report[]>;
+        if (reportsApiResponse.success && reportsApiResponse.data) {
+          setReports(reportsApiResponse.data);
         } else {
           setReports([]);
         }
 
-        // Set solvers
-        if (solversResponse.success && solversResponse.users) {
+        // Set solvers - Type assertion for API response
+        const solversApiResponse = solversResponse as SolverApiResponse;
+        if (solversApiResponse.success && solversApiResponse.users) {
           // Sort by rating initially
-          const sortedSolvers = [...solversResponse.users].sort((a, b) => {
+          const sortedSolvers = [...solversApiResponse.users].sort((a, b) => {
             const ratingA = a.taskStats?.rating !== undefined && a.taskStats.rating !== 'N/A'
               ? (typeof a.taskStats.rating === 'string' ? parseFloat(a.taskStats.rating) : a.taskStats.rating)
               : a.rating || 0;
@@ -161,10 +176,8 @@ const AssignTaskPage = () => {
           setProblemSolvers([]);
         }
 
-        const reportCount = reportsResponse.data?.length || 0;
-        const solverCount = solversResponse.users?.length || 0;
-
-        // console.log(`Loaded ${reportCount} reports and ${solverCount} solvers`);
+        const reportCount = reportsApiResponse.data?.length || 0;
+        const solverCount = solversApiResponse.users?.length || 0;
 
         if (reportCount === 0 && solverCount === 0) {
           toast.error(`No reports or solvers found in ${authUser.division} division`);
@@ -192,7 +205,6 @@ const AssignTaskPage = () => {
   const availableDistricts = filters.division
     ? (divisionsData.find(d => d.division === filters.division)?.districts.map(d => d.name) || [])
     : [];
-
 
   // Sort problem solvers based on selected criteria
   const getSortedSolvers = (solvers: ProblemSolver[]) => {
@@ -262,11 +274,14 @@ const AssignTaskPage = () => {
         title: report.title,
         description: report.description,
         report: reportId,
-        assignedTo: solver._id, // Use user _id
+        assignedTo: solver._id,
         priority: report.severity === 'high' ? 'high' : report.severity === 'medium' ? 'medium' : 'low',
       });
 
-      if (response.success) {
+      // Type assertion for the response
+      const assignResponse = response as TaskAssignResponse;
+
+      if (assignResponse.success) {
         // Backend automatically updates report status to 'approved'
         // Update local state to reflect the change
         setReports(prev => prev.map(r =>
@@ -274,7 +289,7 @@ const AssignTaskPage = () => {
             ? {
               ...r,
               status: 'approved',
-              assignedTo: solver._id, // Store user _id for consistency
+              assignedTo: solver._id,
               history: [
                 ...r.history,
                 {
@@ -289,7 +304,7 @@ const AssignTaskPage = () => {
             : r
         ));
 
-        toast.success(`✅ Task successfully assigned to ${solver.name}${solver.organization ? ` from ${solver.organization}` : ''}!`, {
+        toast.success(`Task successfully assigned to ${solver.name}${solver.organization ? ` from ${solver.organization}` : ''}!`, {
           duration: 5000,
         });
 
@@ -299,12 +314,13 @@ const AssignTaskPage = () => {
           setSelectedSolver('');
         }, 1000);
       } else {
-        throw new Error(response.message || 'Failed to assign task');
+        throw new Error(assignResponse.message || 'Failed to assign task');
       }
     } catch (error: any) {
       console.error('Error assigning task:', error);
       const errorMessage = error.message || 'Failed to assign task. Please try again.';
       toast.error(errorMessage);
+    } finally {
       setAssigning(false);
     }
   };
@@ -328,7 +344,6 @@ const AssignTaskPage = () => {
       default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
-
 
   // Get available problem solvers for the selected report's location
   const getAvailableSolvers = (report: Report) => {

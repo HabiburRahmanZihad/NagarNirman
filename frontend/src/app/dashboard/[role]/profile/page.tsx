@@ -9,6 +9,14 @@ import divisionsData from '@/data/divisionsData.json';
 import { FaUser, FaPhone, FaMapMarkerAlt, FaCamera, FaCheck, FaClock, FaCheckCircle, FaLock, FaEdit } from 'react-icons/fa';
 import Image from 'next/image';
 
+// ✅ ADDED: API Response Interface
+interface APIResponse {
+  success: boolean;
+  message?: string;
+  data?: any;
+  error?: string;
+}
+
 interface ProfileData {
   phone: string;
   division: string;
@@ -111,8 +119,10 @@ const ProfilePage = () => {
         ...(selectedFile && { profilePicture: profilePicture }),
       };
 
-      const response = await userAPI.updateProfile(updateData);
+      // ✅ FIXED: Add type assertion for API response
+      const response = await userAPI.updateProfile(updateData) as APIResponse;
 
+      // ✅ FIXED: Now TypeScript knows response has 'success' property
       if (response && response.success) {
         if (selectedFile) {
           toast.dismiss('upload');

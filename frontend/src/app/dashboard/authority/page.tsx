@@ -48,8 +48,14 @@ interface Task {
   status: string;
 }
 
-export default function AuthorityDashboard() {
+// Define API response types
+interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}
 
+export default function AuthorityDashboard() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading } = useAuth();
   const [stats, setStats] = useState<Stats>({
@@ -79,46 +85,58 @@ export default function AuthorityDashboard() {
 
       // Fetch all reports
       const reportsResponse = await reportAPI.getAll();
-      if (reportsResponse.success) {
-        const reports = reportsResponse.data as Report[];
+      // Type assertion for the response
+      const reportsApiResponse = reportsResponse as ApiResponse<Report[]>;
+      if (reportsApiResponse.success && reportsApiResponse.data) {
+        const reports = reportsApiResponse.data;
         setRecentReports(reports.slice(0, 5));
 
         setStats(prev => ({
           ...prev,
           totalReports: reports.length,
           pendingReports: reports.filter((r: Report) => r.status === 'pending').length,
-          inProgressReports: reports.filter((r: Report) => r.status === 'in_progress').length,
+          inProgressReports: reports.filter((r: Report) => r.status === 'in_progress' || r.status === 'in-progress').length,
           resolvedReports: reports.filter((r: Report) => r.status === 'resolved').length,
         }));
       }
 
       // Fetch applications from authority's division only
-      const applicationsResponse = await problemSolverAPI.getAllApplications({
-        status: 'pending',
-        division: user?.division // Filter by authority's division
-      });
-      if (applicationsResponse.success) {
-        const applications = applicationsResponse.data;
-        setStats(prev => ({
-          ...prev,
-          pendingApplications: applications.length,
-        }));
+      if (user?.division) {
+        const applicationsResponse = await problemSolverAPI.getAllApplications({
+          status: 'pending',
+          division: user.division // Filter by authority's division
+        });
+        // Type assertion for the response
+        const applicationsApiResponse = applicationsResponse as ApiResponse<any[]>;
+        if (applicationsApiResponse.success && applicationsApiResponse.data) {
+          const applications = applicationsApiResponse.data;
+          setStats(prev => ({
+            ...prev,
+            pendingApplications: applications.length,
+          }));
+        }
       }
 
       // Fetch pending review tasks from authority's division (based on report division)
-      const tasksResponse = await taskAPI.getPendingReview({ division: user?.division });
-      if (tasksResponse.success) {
-        const pendingTasks = tasksResponse.data;
-        setStats(prev => ({
-          ...prev,
-          pendingReviewTasks: pendingTasks.length,
-        }));
+      if (user?.division) {
+        const tasksResponse = await taskAPI.getPendingReview({ division: user.division });
+        // Type assertion for the response
+        const tasksApiResponse = tasksResponse as ApiResponse<any[]>;
+        if (tasksApiResponse.success && tasksApiResponse.data) {
+          const pendingTasks = tasksApiResponse.data;
+          setStats(prev => ({
+            ...prev,
+            pendingReviewTasks: pendingTasks.length,
+          }));
+        }
       }
 
       // Fetch all tasks for additional stats
       const allTasksResponse = await taskAPI.getAll();
-      if (allTasksResponse.success) {
-        const allTasks = allTasksResponse.data as Task[];
+      // Type assertion for the response
+      const allTasksApiResponse = allTasksResponse as ApiResponse<Task[]>;
+      if (allTasksApiResponse.success && allTasksApiResponse.data) {
+        const allTasks = allTasksApiResponse.data;
         setStats(prev => ({
           ...prev,
           totalTasks: allTasks.length,
