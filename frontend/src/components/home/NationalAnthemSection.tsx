@@ -131,7 +131,7 @@ const NationalAnthemSection: React.FC = () => {
             <span className="text-accent">Anthem of Bangladesh</span>
           </h2>
 
-          <p className="text-xs xs:text-sm sm:text-base md:text-base text-white/80 max-w-xl mb-6 xs:mb-7 sm:mb-8">
+          <p className="text-xs xs:text-sm sm:text-base md:text-base text-white/80 max-w-xl mb-6 xs:mb-7 sm:mb-8 text-center mx-auto">
             Ignite your patriotism. As we build smarter cities, let &quot;Amar Shonar Bangla&quot;
             remind us of our duty to protect our environment, resolve issues, and
             rebuild our nation together.

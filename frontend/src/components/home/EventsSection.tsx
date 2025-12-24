@@ -91,7 +91,7 @@ export default function EventsSection() {
               {/* === CONTENT SECTION === */}
               <div className="p-5 sm:p-6 md:p-8 pb-0 flex-grow">
                 {/* 1. TOP ROW: Date & Avatars */}
-                <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-4 sm:gap-6 mb-4 sm:mb-6">
+                <div className="flex flex-row  justify-between items-start xs:items-center gap-4 sm:gap-6 mb-4 sm:mb-6">
                   {/* Left: Date Block */}
                   <div className="flex items-center gap-3 sm:gap-4">
                     <Calendar className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 text-[#777777] stroke-[1.5] flex-shrink-0" />
