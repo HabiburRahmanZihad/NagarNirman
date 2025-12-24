@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow, Pagination } from "swiper/modules";
 import { FaPlay, FaQuoteLeft } from "react-icons/fa";
@@ -62,13 +62,26 @@ export default function Testimonials() {
   const openVideo = (videoId: string) => {
     setCurrentVideoId(videoId);
     setIsVideoOpen(true);
-    if (typeof window !== "undefined") document.body.style.overflow = "hidden";
   };
 
   const closeVideo = () => {
     setIsVideoOpen(false);
     setCurrentVideoId("");
-    if (typeof window !== "undefined") document.body.style.overflow = "";
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    document.body.style.overflow = isVideoOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isVideoOpen]);
+
+  const swiperStyle: React.CSSProperties & Record<string, string> = {
+    "--swiper-pagination-bullet-inactive-color": "#cbd5e1",
+    "--swiper-pagination-bullet-inactive-opacity": "0.4",
+    "--swiper-pagination-bullet-size": "10px",
+    "--swiper-pagination-bullet-horizontal-gap": "8px",
   };
 
   return (
@@ -76,7 +89,7 @@ export default function Testimonials() {
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center min-h-[600px]">
           {/* LEFT SECTION */}
-          <div className="space-y-8 order-2 lg:order-1 px-4 md:px-0">
+          <div className="space-y-8 order-2 lg:order-1 px-4 md:px-0 flex flex-col justify-center">
             <div className="space-y-2">
               <div className="flex items-center gap-3 text-sm">
                 <span className="text-green-700 text-lg">★</span>
@@ -167,7 +180,7 @@ export default function Testimonials() {
 
 
           {/* RIGHT SECTION - SLIDER */}
-          <div className="relative h-[650px] w-full order-1 lg:order-2 flex items-center justify-center py-10 px-0 md:px-0">
+          <div className="relative h-[700px] w-full order-1 lg:order-2 flex items-center justify-center py-6 lg:py-2 px-4 md:px-0">
             <Swiper
               modules={[Autoplay, EffectCoverflow, Pagination]}
               effect="coverflow"
@@ -193,20 +206,15 @@ export default function Testimonials() {
               }}
               loop={true}
               speed={1000}
-              className="testimonial-swiper w-full h-full max-w-[520px] mx-auto rounded-3xl"
-              style={{
-                "--swiper-pagination-bullet-inactive-color": "#cbd5e1",
-                "--swiper-pagination-bullet-inactive-opacity": "0.4",
-                "--swiper-pagination-bullet-size": "10px",
-                "--swiper-pagination-bullet-horizontal-gap": "8px",
-              } as any}
+              className="testimonial-swiper w-full h-full max-w-[520px] lg:max-w-[650px] mx-auto rounded-3xl"
+              style={swiperStyle}
             >
               {testimonials.map((t) => (
-                <SwiperSlide key={t.id} className="!w-[440px] h-auto flex items-center justify-center">
+                <SwiperSlide key={t.id} className="!w-[440px] lg:!w-[520px] h-auto flex items-center justify-center">
                   {({ isActive }) => (
                     <div className={`w-full h-full rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-500 ${isActive
                       ? "bg-linear-to-br from-[#004D40] to-[#00695C] scale-100 shadow-[0_30px_80px_-15px_rgba(0,77,64,0.8)]"
-                      : "bg-linear-to-br from-[#004D40]/70 to-[#00695C]/70 scale-85 shadow-[0_10px_25px_-8px_rgba(0,77,64,0.3)]"
+                      : "bg-linear-to-br from-[#004D40]/70 to-[#00695C]/70 scale-75 shadow-[0_10px_25px_-8px_rgba(0,77,64,0.3)]"
                       }`}
                     >
                       <div className="flex flex-col h-full">
