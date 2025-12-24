@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow, Pagination } from "swiper/modules";
 import { FaPlay, FaQuoteLeft } from "react-icons/fa";
@@ -62,14 +62,20 @@ export default function Testimonials() {
   const openVideo = (videoId: string) => {
     setCurrentVideoId(videoId);
     setIsVideoOpen(true);
-    if (typeof window !== "undefined") document.body.style.overflow = "hidden";
   };
 
   const closeVideo = () => {
     setIsVideoOpen(false);
     setCurrentVideoId("");
-    if (typeof window !== "undefined") document.body.style.overflow = "";
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    document.body.style.overflow = isVideoOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isVideoOpen]);
 
   return (
     <section className="w-full bg-linear-to-b from-gray-50 to-white py-20 px-0 md:px-10 lg:px-20">
