@@ -77,6 +77,13 @@ export default function Testimonials() {
     };
   }, [isVideoOpen]);
 
+  const swiperStyle: React.CSSProperties & Record<string, string> = {
+    "--swiper-pagination-bullet-inactive-color": "#cbd5e1",
+    "--swiper-pagination-bullet-inactive-opacity": "0.4",
+    "--swiper-pagination-bullet-size": "10px",
+    "--swiper-pagination-bullet-horizontal-gap": "8px",
+  };
+
   return (
     <section className="w-full bg-linear-to-b from-gray-50 to-white py-20 px-0 md:px-10 lg:px-20">
       <div className="container mx-auto">
@@ -200,12 +207,7 @@ export default function Testimonials() {
               loop={true}
               speed={1000}
               className="testimonial-swiper w-full h-full max-w-[520px] mx-auto rounded-3xl"
-              style={{
-                "--swiper-pagination-bullet-inactive-color": "#cbd5e1",
-                "--swiper-pagination-bullet-inactive-opacity": "0.4",
-                "--swiper-pagination-bullet-size": "10px",
-                "--swiper-pagination-bullet-horizontal-gap": "8px",
-              } as any}
+              style={swiperStyle}
             >
               {testimonials.map((t) => (
                 <SwiperSlide key={t.id} className="!w-[440px] h-auto flex items-center justify-center">
