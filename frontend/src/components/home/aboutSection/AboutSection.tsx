@@ -255,10 +255,11 @@ export default function AboutSection() {
             </li>
           </ul>
 
-          <div className="mt-6 sm:mt-8 flex flex-col xs:flex-row items-start gap-4 sm:gap-6">
-            <Link href="/about" className="w-full xs:w-auto">
+          <div className="mt-6 sm:mt-8 flex flex-row  items-start xs:items-center justify-around gap-6 xs:gap-8">
+
+            <Link href="/about" className="w- xs:w-auto">
               <Button
-                variant="accent"
+                variant="primary"
                 size="md"
                 className="w-full xs:w-auto text-sm sm:text-base"
               >
@@ -266,7 +267,7 @@ export default function AboutSection() {
               </Button>
             </Link>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full xs:w-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-2 sm:gap-3">
                 <div className="relative w-16 h-4 sm:w-20 sm:h-5 md:w-24 md:h-6">
                   <Image
@@ -288,6 +289,7 @@ export default function AboutSection() {
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
