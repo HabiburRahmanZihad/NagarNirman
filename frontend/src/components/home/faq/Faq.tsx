@@ -90,7 +90,8 @@ export default function FaqSection() {
 
           {/* RIGHT CONTENT */}
           <div className="h-full">
-            <div className="bg-linear-to-br from-primary/95 via-primary to-primary/90 rounded-3xl shadow-2xl p-8 sm:p-10 border-2 border-accent/30 hover:border-accent/50 transition-all duration-300 hover:shadow-3xl min-h-full flex flex-col justify-between">
+
+            <div className="bg-linear-to-br from-primary/95 via-primary to-primary/90 rounded-3xl shadow-2xl p-8 sm:p-10 border-2 border-accent/30 hover:border-accent/50 transition-all duration-300 hover:shadow-3xl min-h-full flex flex-col justify-evenly">
               {/* Text Content */}
               <div className="space-y-6 mb-8">
                 <div>
@@ -101,9 +102,11 @@ export default function FaqSection() {
 
                 {/* BUTTON */}
                 <Link href="/about" className="inline-block">
-                  <button className="px-8 py-3 bg-linear-to-r from-accent to-accent/80 text-white font-bold rounded-2xl hover:shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 border-2 border-accent/50 hover:border-accent">
+                  <Button
+                    variant="primary"
+                    className="font-semibold text-base hover:bg-accent/90 transition-colors duration-300 border-2 border-accent">
                     Have Any Questions?
-                  </button>
+                  </Button>
                 </Link>
               </div>
 
@@ -136,7 +139,9 @@ export default function FaqSection() {
                   </div>
                 </div>
               </div>
+
             </div>
+
           </div>
         </div>
       </div>
