@@ -240,8 +240,11 @@ export const statisticsAPI = {
       ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/analytics?${queryString}`
       : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/analytics`;
 
-    const response: any = await apiClient(url, { requiresAuth: true });
-    return response.data || response; // Extract data property if it exists
+    const response = await apiClient(url, { requiresAuth: true });
+    if (response && typeof response === 'object' && 'data' in response) {
+      return (response as { data?: unknown }).data ?? response;
+    }
+    return response; // Extract data property if it exists
   },
 
   // Get complete map data with all divisions and districts
@@ -280,7 +283,7 @@ export const userAPI = {
   },
 
   // Update user profile
-  updateProfile: (data: any) => {
+  updateProfile: (data: Record<string, unknown>) => {
     return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/profile`, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -359,7 +362,7 @@ export const userAPI = {
 // Problem Solver Application API functions
 export const problemSolverAPI = {
   // Submit application
-  applyAsProblemSolver: (data: any) => {
+  applyAsProblemSolver: (data: Record<string, unknown>) => {
     return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/apply-problem-solver`, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -465,7 +468,7 @@ export const notificationAPI = {
         // Normalize common responses: if API returns ApiResponse with data array, extract it.
         if (!resp) return [];
         if (Array.isArray(resp)) return resp;
-        if (typeof resp === 'object' && (resp as any).data) return (resp as any).data;
+        if (typeof resp === 'object' && 'data' in resp) return (resp as { data?: unknown }).data ?? resp;
         return resp;
       } catch (error) {
         // Network or other errors: fail gracefully and return empty array to callers
