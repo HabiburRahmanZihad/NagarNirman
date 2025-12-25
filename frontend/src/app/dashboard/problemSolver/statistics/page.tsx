@@ -349,7 +349,7 @@ const AnalyticsPage = () => {
     loadAnalytics(true);
   };
 
-  const handleExport = (filters: ExportFilters) => {
+  const handleExport = () => {
     // console.log('Exporting with filters:', filters);
     toast.success('Export functionality coming soon!');
   };
