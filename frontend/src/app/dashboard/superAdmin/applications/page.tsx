@@ -65,7 +65,7 @@ interface ApplicationFilters {
 }
 
 // Add ApiResponse interface
-interface ApiResponse<T = any> {
+interface ApiResponse<T = unknown> {
   success: boolean;
   data: T;
   pagination?: {
@@ -105,10 +105,10 @@ export default function SuperAdminApplications() {
       }
 
       const response = await problemSolverAPI.getAllApplications(filters);
-      
+
       // Type assertion for API response
       const apiResponse = response as ApiResponse<Application[]>;
-      
+
       if (apiResponse.success && apiResponse.data) {
         setApplications(apiResponse.data);
         if (apiResponse.pagination) {
