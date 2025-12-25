@@ -133,6 +133,15 @@ export default function SolversPage() {
     }
   }
 
+  // Typed sort options
+  type SortKey = 'rating' | 'completedTasks' | 'successRate' | 'createdAt';
+  const sortOptions: { value: SortKey; label: string }[] = [
+    { value: 'rating', label: '⭐ Highest Rating' },
+    { value: 'completedTasks', label: '✅ Most Tasks' },
+    { value: 'successRate', label: '🎯 Success Rate' },
+    { value: 'createdAt', label: '🆕 Newest' }
+  ];
+
   // Filter and sort solvers
   const filteredSolvers = solvers
     .filter(solver => {
@@ -310,7 +319,10 @@ export default function SolversPage() {
               <select
                 aria-label="Filter by role"
                 value={filterRole}
-                onChange={(e) => setFilterRole(e.target.value as 'all' | 'problemSolver')}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setFilterRole(val === 'problemSolver' ? 'problemSolver' : 'all');
+                }}
                 className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium"
               >
                 <option value="all">All Types</option>
