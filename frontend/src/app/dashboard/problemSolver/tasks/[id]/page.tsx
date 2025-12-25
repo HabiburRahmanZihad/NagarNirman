@@ -72,7 +72,7 @@ interface Task {
 }
 
 // Add ApiResponse interface
-interface ApiResponse<T = any> {
+interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   message?: string;
@@ -100,7 +100,7 @@ export default function TaskDetailPage() {
 
       // Type assertion for API response
       const apiResponse = response as ApiResponse<Task>;
-      
+
       if (apiResponse && apiResponse.success && apiResponse.data) {
         setTask(apiResponse.data);
       } else {
