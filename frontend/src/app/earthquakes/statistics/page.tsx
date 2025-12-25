@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import type { ComponentType, ReactNode } from 'react';
+import type { ComponentType, ReactNode, SVGProps } from 'react';
 import { motion } from 'framer-motion';
 import {
   TrendingUp,
@@ -50,7 +50,7 @@ interface USGSFeature {
 }
 
 interface StatCardProps {
-  icon: ComponentType<any>;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
   title: string;
   value: ReactNode;
   subtitle?: string;
