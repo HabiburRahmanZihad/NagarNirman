@@ -12,8 +12,6 @@ import {
   AlertTriangle,
   Building2,
   Zap,
-  Globe,
-  Shield,
   Waves,
   Wind,
   AlertCircle,
@@ -69,20 +67,6 @@ const getAlertColor = (alertLevel: string) => {
   }
 };
 
-const getIntensityEmoji = (intensity: string) => {
-  const emojiMap: { [key: string]: string } = {
-    'Not Felt': '😴',
-    'Weak': '😐',
-    'Light': '😕',
-    'Moderate': '😟',
-    'Strong': '😨',
-    'Very Strong': '😱',
-    'Severe': '🤯',
-    'Violent': '💥',
-    'Extreme': '🌍',
-  };
-  return emojiMap[intensity] || '🌍';
-};
 
 // Helper functions
 const getAlertLevel = (magnitude: number): string => {
@@ -391,7 +375,7 @@ export default function EarthquakeDetailPage() {
           <h2 className="text-2xl sm:text-3xl font-extrabold">🛡️ What to Do</h2>
           <div className="grid md:grid-cols-2 gap-8 lg:gap-10">
             <div className="space-y-4 sm:space-y-5">
-              <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">If You're in the Affected Area:</h3>
+              <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">{`If You're in the Affected Area:`}</h3>
               <ul className="space-y-3 sm:space-y-4">
                 <li className="flex items-start gap-3 sm:gap-4">
                   <span className="text-2xl sm:text-3xl shrink-0 font-bold">✓</span>
@@ -407,7 +391,7 @@ export default function EarthquakeDetailPage() {
                 </li>
                 <li className="flex items-start gap-3 sm:gap-4">
                   <span className="text-2xl sm:text-3xl shrink-0 font-bold">✓</span>
-                  <span className="text-base sm:text-lg leading-relaxed">Follow local authorities' instructions</span>
+                  <span className="text-base sm:text-lg leading-relaxed">{`Follow local authorities' instructions`}</span>
                 </li>
               </ul>
             </div>
