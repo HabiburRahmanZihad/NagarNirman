@@ -211,7 +211,7 @@ const AnalyticsPage = () => {
       }
 
       // console.log('📊 Fetching analytics with filters:', filters);
-      const data = await statisticsAPI.getAnalytics(filters);
+      const data = await statisticsAPI.getAnalytics(filters) as any;
 
       // Validate data exists
       if (!data) {
@@ -221,53 +221,62 @@ const AnalyticsPage = () => {
       // console.log('✅ Raw API response:', data);
 
       // Transform data to match component expectations with null checks
+      // Normalize numeric values and use nullish coalescing to preserve zeroes
+      const totalReports = Number(data?.totalReports ?? 0);
+      const completedReports = Number(data?.completedReports ?? 0);
+      const ongoingReports = Number(data?.ongoingReports ?? 0);
+      const pendingReports = Number(data?.pendingReports ?? 0);
+      const averageResolutionTime = Number(data?.averageResolutionTime ?? 0);
+      const completionRate = Number(data?.completionRate ?? 0);
+      const lastUpdated = typeof data?.lastUpdated === 'string' ? data.lastUpdated : new Date().toISOString();
+
       const transformedData: AnalyticsData = {
-        totalReports: data.totalReports || 0,
-        completedReports: data.completedReports || 0,
-        ongoingReports: data.ongoingReports || 0,
-        pendingReports: data.pendingReports || 0,
-        averageResolutionTime: data.averageResolutionTime || 0,
-        completionRate: data.completionRate || 0,
-        lastUpdated: data.lastUpdated || new Date().toISOString(),
+        totalReports,
+        completedReports,
+        ongoingReports,
+        pendingReports,
+        averageResolutionTime,
+        completionRate,
+        lastUpdated,
         // Add percentages to category stats
-        categoryStats: (data.categoryStats || []).map((cat: CategoryStatRaw) => ({
-          category: cat.category || 'Unknown',
-          count: cat.count || 0,
-          percentage: data.totalReports > 0 ? ((cat.count || 0) / data.totalReports) * 100 : 0
+        categoryStats: (data?.categoryStats ?? []).map((cat: CategoryStatRaw) => ({
+          category: cat?.category ?? 'Unknown',
+          count: Number(cat?.count ?? 0),
+          percentage: totalReports > 0 ? (Number(cat?.count ?? 0) / totalReports) * 100 : 0
         })),
         // Add percentages to status stats
-        statusStats: (data.statusStats || []).map((stat: StatusStatRaw) => ({
-          status: stat.status || 'Unknown',
-          count: stat.count || 0,
-          color: stat.color || '#808080',
-          percentage: data.totalReports > 0 ? ((stat.count || 0) / data.totalReports) * 100 : 0
+        statusStats: (data?.statusStats ?? []).map((stat: StatusStatRaw) => ({
+          status: stat?.status ?? 'Unknown',
+          count: Number(stat?.count ?? 0),
+          color: stat?.color ?? '#808080',
+          percentage: totalReports > 0 ? (Number(stat?.count ?? 0) / totalReports) * 100 : 0
         })),
         // Rename fields for monthly stats to match component
-        monthlyStats: (data.monthlyStats || []).map((stat: MonthlyStatRaw) => ({
-          month: stat.month || 'N/A',
-          reports: stat.reports || 0,
-          completed: stat.resolved || stat.completed || 0,
-          pending: stat.pending || 0
+        monthlyStats: (data?.monthlyStats ?? []).map((stat: MonthlyStatRaw) => ({
+          month: stat?.month ?? 'N/A',
+          reports: Number(stat?.reports ?? 0),
+          completed: Number(stat?.resolved ?? stat?.completed ?? 0),
+          pending: Number(stat?.pending ?? 0)
         })),
         // Transform district stats to match component
-        districtStats: (data.districtStats || []).map((stat: DistrictStatRaw) => ({
-          district: stat.district || 'Unknown',
-          division: stat.division || 'Unknown',
-          reports: stat.total || stat.reports || 0,
-          pending: stat.pending || 0,
-          completed: stat.resolved || stat.completed || 0,
-          ongoing: stat.ongoing || 0
+        districtStats: (data?.districtStats ?? []).map((stat: DistrictStatRaw) => ({
+          district: stat?.district ?? 'Unknown',
+          division: stat?.division ?? 'Unknown',
+          reports: Number(stat?.total ?? stat?.reports ?? 0),
+          pending: Number(stat?.pending ?? 0),
+          completed: Number(stat?.resolved ?? stat?.completed ?? 0),
+          ongoing: Number(stat?.ongoing ?? 0)
         })),
         // Ensure solver performance exists
-        solverPerformance: (data.solverPerformance || []).map((solver: SolverPerformanceRaw) => ({
-          solverId: solver.solverId || '',
-          name: solver.name || 'Unknown',
-          completedTasks: solver.completedTasks || 0,
-          totalTasks: solver.totalTasks || solver.completedTasks || 0,
-          successRate: Math.min(100, Math.max(0, solver.successRate || 0)),
-          avgResolutionTime: solver.avgResolutionTime || 0,
-          rating: solver.rating || 0,
-          organization: solver.organization
+        solverPerformance: (data?.solverPerformance ?? []).map((solver: SolverPerformanceRaw) => ({
+          solverId: solver?.solverId ?? '',
+          name: solver?.name ?? 'Unknown',
+          completedTasks: Number(solver?.completedTasks ?? 0),
+          totalTasks: Number(solver?.totalTasks ?? solver?.completedTasks ?? 0),
+          successRate: Math.min(100, Math.max(0, Number(solver?.successRate ?? 0))),
+          avgResolutionTime: Number(solver?.avgResolutionTime ?? 0),
+          rating: Number(solver?.rating ?? 0),
+          organization: solver?.organization
         }))
       };
 
