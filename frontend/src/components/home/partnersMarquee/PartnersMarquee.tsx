@@ -1,7 +1,5 @@
 "use client";
-import { Sprout } from "lucide-react";
 import Image from "next/image";
-import React from "react";
 import { FaHandHoldingHand } from "react-icons/fa6";
 
 const logos = [
