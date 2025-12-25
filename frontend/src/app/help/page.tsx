@@ -251,8 +251,8 @@ export default function HelpPage() {
                   <div>
                     <h3 className="font-semibold text-[#002E2E] mb-1">Phone Support</h3>
                     <p className="text-[#6B7280] text-sm mb-2">Call us directly</p>
-                    <a href="tel:+8801950719346" className="text-[#004540] hover:text-[#2a7d2f] font-medium transition-colors">
-                      +880 1950 719346
+                    <a href="tel:+8801950******" className="text-[#004540] hover:text-[#2a7d2f] font-medium transition-colors">
+                      +880 1950 ******
                     </a>
                   </div>
                 </div>

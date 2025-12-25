@@ -220,15 +220,15 @@ export default function TermsPage() {
                       key={section.id}
                       onClick={() => scrollToSection(section.id)}
                       className={`w-full flex items-center justify-between p-3 rounded-xl text-left transition-all ${expandedSections.includes(section.id)
-                          ? 'bg-linear-to-r from-primary/10 to-secondary/10 border-l-4 border-primary'
-                          : 'hover:bg-base-200 border-l-4 border-transparent'
+                        ? 'bg-linear-to-r from-primary/10 to-secondary/10 border-l-4 border-primary'
+                        : 'hover:bg-base-200 border-l-4 border-transparent'
                         }`}
                     >
                       <div className="flex items-center gap-3">
                         <div
                           className={`p-2 rounded-lg ${expandedSections.includes(section.id)
-                              ? 'bg-primary text-white'
-                              : 'bg-base-200 text-neutral'
+                            ? 'bg-primary text-white'
+                            : 'bg-base-200 text-neutral'
                             }`}
                         >
                           {section.icon}
@@ -239,8 +239,8 @@ export default function TermsPage() {
                       </div>
                       <div
                         className={`p-1 rounded ${expandedSections.includes(section.id)
-                            ? 'bg-primary text-white'
-                            : 'bg-base-200 text-neutral'
+                          ? 'bg-primary text-white'
+                          : 'bg-base-200 text-neutral'
                           }`}
                       >
                         {expandedSections.includes(section.id) ? (
@@ -312,8 +312,8 @@ export default function TermsPage() {
                           sectionRefs.current[section.id] = el;
                         }}
                         className={`border border-base-200 rounded-2xl overflow-hidden transition-all duration-300 ${expandedSections.includes(section.id)
-                            ? 'ring-2 ring-primary/20'
-                            : ''
+                          ? 'ring-2 ring-primary/20'
+                          : ''
                           }`}
                       >
                         <button
@@ -430,10 +430,10 @@ export default function TermsPage() {
                 Available Monday-Friday, 9AM-6PM
               </p>
               <a
-                href="tel:+8801950719346"
+                href="tel:+8801950******"
                 className="text-primary font-semibold hover:underline"
               >
-                +880 1950 719346
+                +880 1950 ******
               </a>
             </div>
           </div>

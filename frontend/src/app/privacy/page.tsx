@@ -546,8 +546,8 @@ export default function PrivacyPage() {
                     {
                       icon: <Phone className="w-5 h-5" />,
                       title: 'Phone Support',
-                      contact: '+880 1950 719346',
-                      link: 'tel:+8801950719346',
+                      contact: '+880 1950 ******',
+                      link: 'tel:+8801950******',
                       desc: 'Available Monday-Friday, 9AM-6PM',
                     },
                     {
