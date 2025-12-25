@@ -41,7 +41,7 @@ export default function EmergencyHotlineMarquee() {
               />
               {/* Overlay for call option */}
               {hovered === i && (
-                <div className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center rounded-xl transition-opacity">
+                <div className="absolute inset-0 bg-[#003D33] bg-opacity-70 flex flex-col items-center justify-center rounded-xl transition-opacity">
                   <span className="text-white text-lg font-semibold mb-2">{item.label}</span>
                   <a
                     href={`tel:${item.number}`}
