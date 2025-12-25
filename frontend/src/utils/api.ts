@@ -5,6 +5,13 @@ interface FetchOptions extends RequestInit {
   requiresAuth?: boolean;
 }
 
+// Typed API error with optional status and data fields
+type ApiError = Error & { status?: number; data?: unknown };
+
+function hasStatus(err: unknown): err is { status?: number } {
+  return typeof err === 'object' && err !== null && 'status' in err;
+}
+
 export const apiClient = async <T = unknown>(
   endpoint: string,
   options: FetchOptions = {}
@@ -36,23 +43,22 @@ export const apiClient = async <T = unknown>(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      const error = new Error(errorData.message || 'An error occurred');
-      (error as any).status = response.status;
-      (error as any).data = errorData;
+      const message = ((errorData as unknown) as { message?: string })?.message ?? 'An error occurred';
+      const apiError = Object.assign(new Error(message), { status: response.status, data: errorData }) as ApiError;
 
       // Don't log expected 404 errors (like "No application found")
       if (response.status !== 404) {
-        console.error('API Error:', error);
+        console.error('API Error:', apiError);
       }
 
-      throw error;
+      throw apiError;
     }
 
     const data = await response.json();
     return data || {};
   } catch (error) {
-    // Only log unexpected errors
-    if (!(error as any).status) {
+    // Only log unexpected errors (errors without a status)
+    if (!hasStatus(error) || !error.status) {
       console.error('Network Error:', error);
     }
     throw error;
