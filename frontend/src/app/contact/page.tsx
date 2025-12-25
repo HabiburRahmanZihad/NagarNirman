@@ -161,10 +161,10 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
                     <a
-                      href="tel:+8801950719346"
+                      href="tel:+8801950******"
                       className="text-primary hover:text-accent transition-colors"
                     >
-                      +880 1950 719346
+                      +880 1950 ******
                     </a>
                   </div>
                 </div>

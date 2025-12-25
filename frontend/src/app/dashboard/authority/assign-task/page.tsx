@@ -87,10 +87,22 @@ interface SolverApiResponse {
   message?: string;
 }
 
+interface AssignedTask {
+  _id: string;
+  title: string;
+  description?: string;
+  report?: string;
+  assignedTo?: string;
+  priority?: 'low' | 'medium' | 'high';
+  status?: 'pending' | 'in-progress' | 'completed' | 'approved' | 'resolved' | 'closed';
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 interface TaskAssignResponse {
   success: boolean;
   message?: string;
-  task?: any;
+  task?: AssignedTask;
 }
 
 const AssignTaskPage = () => {
@@ -107,7 +119,8 @@ const AssignTaskPage = () => {
   const [selectedSolver, setSelectedSolver] = useState('');
   const [loading, setLoading] = useState(true);
   const [assigning, setAssigning] = useState(false);
-  const [sortBy, setSortBy] = useState<'rating' | 'points' | 'completedTasks' | 'successRate'>('rating');
+  type SortKey = 'rating' | 'points' | 'completedTasks' | 'successRate';
+  const [sortBy, setSortBy] = useState<SortKey>('rating');
 
   // Auto-set filters based on user's location
   useEffect(() => {
@@ -188,9 +201,10 @@ const AssignTaskPage = () => {
         } else {
           toast.success(`Loaded ${reportCount} reports and ${solverCount} solvers`);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Error loading data:', error);
-        toast.error('Failed to load data: ' + (error.message || 'Unknown error'));
+        const message = error instanceof Error ? error.message : String(error ?? 'Unknown error');
+        toast.error('Failed to load data: ' + message);
         setReports([]);
         setProblemSolvers([]);
       } finally {
@@ -316,9 +330,9 @@ const AssignTaskPage = () => {
       } else {
         throw new Error(assignResponse.message || 'Failed to assign task');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error assigning task:', error);
-      const errorMessage = error.message || 'Failed to assign task. Please try again.';
+      const errorMessage = error instanceof Error ? error.message : String(error ?? 'Failed to assign task. Please try again.');
       toast.error(errorMessage);
     } finally {
       setAssigning(false);
@@ -346,8 +360,9 @@ const AssignTaskPage = () => {
   };
 
   // Get available problem solvers for the selected report's location
-  const getAvailableSolvers = (report: Report) => {
+  const getAvailableSolvers = (report?: Report | null) => {
     // Show all solvers from the same division, prioritizing those from the same district
+    if (!report) return [] as ProblemSolver[];
     const solvers = problemSolvers.filter(solver =>
       solver.division === report.location.division
     );
@@ -665,15 +680,15 @@ const AssignTaskPage = () => {
               <div className="mb-4 xs:mb-5 sm:mb-6">
                 <p className="text-xs xs:text-sm font-bold text-neutral/70 mb-2 xs:mb-3 uppercase tracking-wide">Sort By:</p>
                 <div className="flex flex-wrap gap-1.5 xs:gap-2">
-                  {[
-                    { value: 'rating', label: '⭐ Rating' },
-                    { value: 'completedTasks', label: '✅ Tasks' },
-                    { value: 'successRate', label: '🎯 Success Rate' },
-                    { value: 'points', label: '🏆 Points' }
-                  ].map(option => (
+                  {([
+                    { value: 'rating' as SortKey, label: '⭐ Rating' },
+                    { value: 'completedTasks' as SortKey, label: '✅ Tasks' },
+                    { value: 'successRate' as SortKey, label: '🎯 Success Rate' },
+                    { value: 'points' as SortKey, label: '🏆 Points' }
+                  ] as { value: SortKey; label: string }[]).map(option => (
                     <button
                       key={option.value}
-                      onClick={() => setSortBy(option.value as any)}
+                      onClick={() => setSortBy(option.value)}
                       className={`px-2 xs:px-3 sm:px-4 py-1 xs:py-1.5 sm:py-2 rounded-lg text-[10px] xs:text-xs sm:text-sm font-bold transition-all transform ${sortBy === option.value
                         ? 'bg-primary text-white shadow-lg scale-105'
                         : 'bg-base-200 text-neutral hover:bg-base-300 scale-100'
@@ -784,6 +799,10 @@ const AssignTaskPage = () => {
                   onClick={() => {
                     if (!selectedSolver) {
                       toast.error('Please select a problem solver');
+                      return;
+                    }
+                    if (!selectedReport) {
+                      toast.error('No report selected');
                       return;
                     }
                     const solver = getAvailableSolvers(selectedReport).find(s => s._id === selectedSolver);

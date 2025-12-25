@@ -1,14 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import Card from '@/components/common/Card';
-import Button from '@/components/common/Button';
-import RefreshButton from '@/components/common/RefreshButton';
+
 import { FullPageLoading } from '@/components/common';
-import { reportAPI, taskAPI } from '@/utils/api';
+import { taskAPI } from '@/utils/api';
 import { motion } from 'framer-motion';
 import {
   CheckCircle2,
@@ -17,12 +16,9 @@ import {
   Star,
   TrendingUp,
   AlertCircle,
-  MapPin,
-  Calendar,
   Award,
   Activity,
   FileText,
-  Target
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -36,6 +32,20 @@ interface TaskStats {
   points: number;
 }
 
+interface Report {
+  location?: {
+    division?: string;
+    district?: string;
+    address?: string;
+    coordinates?: { lat: number; lng: number };
+  };
+  images?: string[];
+  severity?: 'low' | 'medium' | 'high';
+  problemType?: string;
+  category?: string;
+  subcategory?: string;
+}
+
 interface Task {
   _id: string;
   title: string;
@@ -43,7 +53,7 @@ interface Task {
   status: string;
   priority: string;
   progress: number;
-  report: any;
+  report?: Report;
   deadline?: string;
   createdAt: string;
 }

@@ -1,7 +1,5 @@
 "use client";
-import { Sprout } from "lucide-react";
 import Image from "next/image";
-import React from "react";
 import { FaHandHoldingHand } from "react-icons/fa6";
 
 const logos = [
@@ -31,25 +29,23 @@ export default function PartnersMarquee() {
           {logos.concat(logos).map((src, i) => (
             <div
               key={i}
-              className="min-w-[140px] xs:min-w-[160px] sm:min-w-[180px] md:min-w-[200px] h-[80px] xs:h-[100px] sm:h-[110px] md:h-[120px] bg-[#003D33] rounded-xl flex items-center justify-center p-6"
+              className="group min-w-[140px] xs:min-w-[160px] sm:min-w-[180px] md:min-w-[200px] h-20 xs:h-[100px] sm:h-[110px] md:h-[120px] bg-[#003D33] rounded-xl flex items-center justify-center p-6"
             >
               <Image
                 src={src}
                 alt="logo"
                 width={120}
                 height={60}
-                className="object-contain"
+                className="object-contain grayscale group-hover:grayscale-0 transition duration-300"
               />
             </div>
           ))}
         </div>
       </div>
-
       <style jsx>{`
         .animate-scroll {
           animation: scroll 20s linear infinite;
         }
-
         @keyframes scroll {
           0% {
             transform: translateX(0);

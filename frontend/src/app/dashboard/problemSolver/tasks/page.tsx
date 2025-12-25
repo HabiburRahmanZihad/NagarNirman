@@ -46,7 +46,7 @@ interface Task {
 }
 
 // Add ApiResponse interface
-interface ApiResponse<T = any> {
+interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   message?: string;
@@ -79,7 +79,7 @@ export default function SolverTasksPage() {
 
       // Type assertion for API response
       const apiResponse = response as ApiResponse<Task[]>;
-      
+
       if (apiResponse.success && Array.isArray(apiResponse.data)) {
         setTasks(apiResponse.data);
         setFilteredTasks(apiResponse.data);
