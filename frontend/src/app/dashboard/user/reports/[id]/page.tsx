@@ -121,9 +121,9 @@ export default function ReportDetailsPage() {
         toast.error('Report not found');
         setReport(null);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching report:', error);
-      toast.error(error.message || 'Failed to load report details. Please check your connection.');
+      toast.error(error instanceof Error ? error.message : 'Failed to load report details. Please check your connection.');
       setReport(null);
     } finally {
       setIsLoading(false);
