@@ -63,7 +63,7 @@ interface SolversApiResponse {
 }
 
 export default function SolversPage() {
-  const { user: authUser, isLoading, isAuthenticated } = useAuth();
+  const { user: authUser } = useAuth();
   const [solvers, setSolvers] = useState<Solver[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterRole, setFilterRole] = useState<'all' | 'problemSolver'>('all');
@@ -97,9 +97,10 @@ export default function SolversPage() {
       } else {
         toast.error(solversResponse.message || 'Failed to load solvers');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching solvers:', error);
-      toast.error(error.message || 'Failed to load problem solvers and NGOs');
+      const message = error instanceof Error ? error.message : String(error ?? 'Failed to load problem solvers and NGOs');
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -118,28 +119,6 @@ export default function SolversPage() {
       .slice(0, 2);
   };
 
-  const getRoleIcon = (role: string) => {
-    switch (role) {
-      case 'problemSolver': return '💡';
-      default: return '👤';
-    }
-  };
-
-  const getRoleBadge = (role: string) => {
-    switch (role) {
-      case 'problemSolver':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case 'problemSolver': return 'Problem Solver';
-      default: return role;
-    }
-  };
 
   // Get all districts for the authority's division
   let districts: string[] = [];
@@ -147,9 +126,10 @@ export default function SolversPage() {
     // Normalize division names for robust matching (trim, lowercase, remove unicode spaces)
     const normalize = (str: string) => str.replace(/\s+/g, ' ').trim().toLowerCase();
     const userDivision = normalize(authUser.division);
-    const divisionObj = (divisionsData as any[]).find(d => normalize(d.division) === userDivision);
+    type DivisionShape = { division: string; districts: { name: string }[] };
+    const divisionObj = (divisionsData as DivisionShape[]).find(d => normalize(d.division) === userDivision);
     if (divisionObj) {
-      districts = divisionObj.districts.map((d: any) => d.name);
+      districts = divisionObj.districts.map((d) => d.name);
     }
   }
 
@@ -180,13 +160,13 @@ export default function SolversPage() {
               if (typeof taskStatsRating === 'number') return taskStatsRating;
               if (!isNaN(Number(taskStatsRating))) return Number(taskStatsRating);
             }
-            
+
             // Fall back to solver.rating
             if (solver.rating !== undefined) {
               if (typeof solver.rating === 'number') return solver.rating;
               if (!isNaN(Number(solver.rating))) return Number(solver.rating);
             }
-            
+
             return 0;
           };
           return getRating(b) - getRating(a);
@@ -205,7 +185,7 @@ export default function SolversPage() {
                 return parseInt(taskStatsSuccess.replace('%', '')) || 0;
               }
             }
-            
+
             // Handle solver success rate (can be number or string)
             if (solver.successRate) {
               if (typeof solver.successRate === 'string') {
@@ -215,7 +195,7 @@ export default function SolversPage() {
                 return solver.successRate;
               }
             }
-            
+
             return 0;
           };
           return getSuccess(b) - getSuccess(a);
@@ -266,12 +246,14 @@ export default function SolversPage() {
             { title: 'Total Solvers', value: solvers.length, icon: Users, color: 'text-green-600', bgColor: 'bg-green-50' },
             { title: 'Problem Solvers', value: solvers.filter(s => s.role === 'problemSolver').length, icon: Star, color: 'text-blue-600', bgColor: 'bg-blue-50' },
             { title: 'Active Members', value: solvers.filter(s => s.isActive).length, icon: Activity, color: 'text-purple-600', bgColor: 'bg-purple-50' },
-            { title: 'Avg Rating', value: (solvers.reduce((sum, s) => {
-              const rating = s.taskStats?.rating !== undefined 
-                ? (typeof s.taskStats.rating === 'number' ? s.taskStats.rating : Number(s.taskStats.rating) || 0)
-                : s.rating || 0;
-              return sum + rating;
-            }, 0) / Math.max(solvers.length, 1)).toFixed(1), icon: TrendingUp, color: 'text-yellow-600', bgColor: 'bg-yellow-50' }
+            {
+              title: 'Avg Rating', value: (solvers.reduce((sum, s) => {
+                const rating = s.taskStats?.rating !== undefined
+                  ? (typeof s.taskStats.rating === 'number' ? s.taskStats.rating : Number(s.taskStats.rating) || 0)
+                  : s.rating || 0;
+                return sum + rating;
+              }, 0) / Math.max(solvers.length, 1)).toFixed(1), icon: TrendingUp, color: 'text-yellow-600', bgColor: 'bg-yellow-50'
+            }
           ].map((stat, index) => {
             const Icon = stat.icon;
             return (
@@ -328,7 +310,7 @@ export default function SolversPage() {
               <select
                 aria-label="Filter by role"
                 value={filterRole}
-                onChange={(e) => setFilterRole(e.target.value as any)}
+                onChange={(e) => setFilterRole(e.target.value as 'all' | 'problemSolver')}
                 className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium"
               >
                 <option value="all">All Types</option>
@@ -361,15 +343,15 @@ export default function SolversPage() {
               📊 Sort By
             </label>
             <div className="flex flex-wrap gap-2 xs:gap-3">
-              {[
+              {([
                 { value: 'rating', label: '⭐ Highest Rating' },
                 { value: 'completedTasks', label: '✅ Most Tasks' },
                 { value: 'successRate', label: '🎯 Success Rate' },
                 { value: 'createdAt', label: '🆕 Newest' }
-              ].map(option => (
+              ] as { value: 'rating' | 'completedTasks' | 'successRate' | 'createdAt'; label: string }[]).map(option => (
                 <button
                   key={option.value}
-                  onClick={() => setSortBy(option.value as any)}
+                  onClick={() => setSortBy(option.value)}
                   className={`px-2 xs:px-3 sm:px-4 py-1.5 xs:py-2 rounded-lg text-[10px] xs:text-xs sm:text-sm font-bold transition-all transform ${sortBy === option.value
                     ? 'bg-primary text-white shadow-lg scale-105'
                     : 'bg-base-200 text-neutral hover:bg-base-300 scale-100'
