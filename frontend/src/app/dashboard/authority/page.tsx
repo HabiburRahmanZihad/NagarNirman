@@ -106,10 +106,10 @@ export default function AuthorityDashboard() {
           status: 'pending',
           division: user.division // Filter by authority's division
         });
-        // Type assertion for the response
-        const applicationsApiResponse = applicationsResponse as ApiResponse<any[]>;
+        // Type assertion for the response — treat payload as unknown[] and guard at runtime
+        const applicationsApiResponse = applicationsResponse as ApiResponse<unknown[]>;
         if (applicationsApiResponse.success && applicationsApiResponse.data) {
-          const applications = applicationsApiResponse.data;
+          const applications = Array.isArray(applicationsApiResponse.data) ? applicationsApiResponse.data : [];
           setStats(prev => ({
             ...prev,
             pendingApplications: applications.length,
@@ -120,10 +120,10 @@ export default function AuthorityDashboard() {
       // Fetch pending review tasks from authority's division (based on report division)
       if (user?.division) {
         const tasksResponse = await taskAPI.getPendingReview({ division: user.division });
-        // Type assertion for the response
-        const tasksApiResponse = tasksResponse as ApiResponse<any[]>;
+        // Type assertion for the response — treat payload as unknown[] and guard at runtime
+        const tasksApiResponse = tasksResponse as ApiResponse<unknown[]>;
         if (tasksApiResponse.success && tasksApiResponse.data) {
-          const pendingTasks = tasksApiResponse.data;
+          const pendingTasks = Array.isArray(tasksApiResponse.data) ? tasksApiResponse.data : [];
           setStats(prev => ({
             ...prev,
             pendingReviewTasks: pendingTasks.length,

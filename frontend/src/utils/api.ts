@@ -5,6 +5,13 @@ interface FetchOptions extends RequestInit {
   requiresAuth?: boolean;
 }
 
+// Typed API error with optional status and data fields
+type ApiError = Error & { status?: number; data?: unknown };
+
+function hasStatus(err: unknown): err is { status?: number } {
+  return typeof err === 'object' && err !== null && 'status' in err;
+}
+
 export const apiClient = async <T = unknown>(
   endpoint: string,
   options: FetchOptions = {}
@@ -36,23 +43,22 @@ export const apiClient = async <T = unknown>(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      const error = new Error(errorData.message || 'An error occurred');
-      (error as any).status = response.status;
-      (error as any).data = errorData;
+      const message = ((errorData as unknown) as { message?: string })?.message ?? 'An error occurred';
+      const apiError = Object.assign(new Error(message), { status: response.status, data: errorData }) as ApiError;
 
       // Don't log expected 404 errors (like "No application found")
       if (response.status !== 404) {
-        console.error('API Error:', error);
+        console.error('API Error:', apiError);
       }
 
-      throw error;
+      throw apiError;
     }
 
     const data = await response.json();
     return data || {};
   } catch (error) {
-    // Only log unexpected errors
-    if (!(error as any).status) {
+    // Only log unexpected errors (errors without a status)
+    if (!hasStatus(error) || !error.status) {
       console.error('Network Error:', error);
     }
     throw error;
@@ -234,8 +240,11 @@ export const statisticsAPI = {
       ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/analytics?${queryString}`
       : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/statistics/analytics`;
 
-    const response: any = await apiClient(url, { requiresAuth: true });
-    return response.data || response; // Extract data property if it exists
+    const response = await apiClient(url, { requiresAuth: true });
+    if (response && typeof response === 'object' && 'data' in response) {
+      return (response as { data?: unknown }).data ?? response;
+    }
+    return response; // Extract data property if it exists
   },
 
   // Get complete map data with all divisions and districts
@@ -274,7 +283,7 @@ export const userAPI = {
   },
 
   // Update user profile
-  updateProfile: (data: any) => {
+  updateProfile: (data: Record<string, unknown>) => {
     return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/profile`, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -353,7 +362,7 @@ export const userAPI = {
 // Problem Solver Application API functions
 export const problemSolverAPI = {
   // Submit application
-  applyAsProblemSolver: (data: any) => {
+  applyAsProblemSolver: (data: Record<string, unknown>) => {
     return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/users/apply-problem-solver`, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -423,42 +432,50 @@ export const problemSolverAPI = {
 export const notificationAPI = {
   // Get user's notifications with pagination and filters
   getAll: (filters?: { page?: number; limit?: number; unreadOnly?: boolean; type?: string }) => {
-    try {
-      let queryString = '';
+    return (async () => {
+      try {
+        let queryString = '';
 
-      if (filters) {
-        try {
-          const params = new URLSearchParams();
+        if (filters) {
+          try {
+            const params = new URLSearchParams();
 
-          if (typeof filters.page === 'number' && filters.page > 0) {
-            params.append('page', filters.page.toString());
-          }
-          if (typeof filters.limit === 'number' && filters.limit > 0) {
-            params.append('limit', filters.limit.toString());
-          }
-          if (filters.unreadOnly === true) {
-            params.append('unreadOnly', 'true');
-          }
-          if (typeof filters.type === 'string' && filters.type.trim().length > 0) {
-            params.append('type', filters.type.trim());
-          }
+            if (typeof filters.page === 'number' && filters.page > 0) {
+              params.append('page', filters.page.toString());
+            }
+            if (typeof filters.limit === 'number' && filters.limit > 0) {
+              params.append('limit', filters.limit.toString());
+            }
+            if (filters.unreadOnly === true) {
+              params.append('unreadOnly', 'true');
+            }
+            if (typeof filters.type === 'string' && filters.type.trim().length > 0) {
+              params.append('type', filters.type.trim());
+            }
 
-          queryString = params.toString();
-        } catch (paramError) {
-          console.error('Error building query parameters:', paramError);
-          queryString = '';
+            queryString = params.toString();
+          } catch (paramError) {
+            console.error('Error building query parameters:', paramError);
+            queryString = '';
+          }
         }
+
+        const url = queryString
+          ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications?${queryString}`
+          : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications`;
+
+        const resp = await apiClient(url, { requiresAuth: true });
+        // Normalize common responses: if API returns ApiResponse with data array, extract it.
+        if (!resp) return [];
+        if (Array.isArray(resp)) return resp;
+        if (typeof resp === 'object' && 'data' in resp) return (resp as { data?: unknown }).data ?? resp;
+        return resp;
+      } catch (error) {
+        // Network or other errors: fail gracefully and return empty array to callers
+        console.error('Error in notificationAPI.getAll:', error);
+        return [];
       }
-
-      const url = queryString
-        ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications?${queryString}`
-        : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications`;
-
-      return apiClient(url, { requiresAuth: true });
-    } catch (error) {
-      console.error('Error in notificationAPI.getAll:', error);
-      return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications`, { requiresAuth: true });
-    }
+    })();
   },
 
   // Get unread notification count

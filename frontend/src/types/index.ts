@@ -95,6 +95,20 @@ export interface ApiResponse<T = unknown> {
   error?: string;
 }
 
+// Standard paginated response used across admin/list endpoints
+export interface PaginatedResponse<T = unknown> {
+  success: boolean;
+  data: T[];
+  pagination: {
+    page: number;
+    pages: number;
+    total: number;
+    limit?: number;
+    totalPages?: number;
+  };
+  message?: string;
+  error?: string;
+}
 export interface UserOnboardingStep {
   icon: React.ComponentType<{ className?: string }>
   step: string

@@ -42,7 +42,12 @@ interface TaskReview {
     problemType?: string;
     category?: string;
     subcategory?: string;
-    location: any;
+    location: {
+      address?: string;
+      district?: string;
+      division?: string;
+      coordinates?: [number, number];
+    };
     images: string[];
   };
   solver: {
@@ -95,7 +100,7 @@ export default function TaskReviewPage() {
     try {
       setLoading(true);
       // Pass division filter for authority users (filter by report's division, not solver's)
-      const filters: any = {};
+      const filters: { division?: string } = {};
       if (user?.role === 'authority' && user.division) {
         filters.division = user.division;
       }
@@ -111,9 +116,10 @@ export default function TaskReviewPage() {
         toast.error(tasksResponse.message || 'Failed to load pending tasks');
         setTasks([]);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching pending tasks:', error);
-      toast.error(error.message || 'Failed to load pending tasks');
+      const message = error instanceof Error ? error.message : String(error ?? 'Failed to load pending tasks');
+      toast.error(message);
       setTasks([]);
     } finally {
       setLoading(false);
@@ -125,7 +131,7 @@ export default function TaskReviewPage() {
     setReviewAction(action);
 
     // Set default points based on priority
-    const pointsMap: any = { low: 20, medium: 30, high: 50, urgent: 100 };
+    const pointsMap: Record<string, number> = { low: 20, medium: 30, high: 50, urgent: 100 };
     setReviewData({
       points: pointsMap[task.priority] || 30,
       rating: 5,
@@ -153,10 +159,10 @@ export default function TaskReviewPage() {
           rating: reviewData.rating,
           feedback: reviewData.feedback,
         });
-        
+
         // Type assertion for the response
         const approveResponse = response as { success: boolean; message?: string };
-        
+
         if (approveResponse.success) {
           const solverName = selectedTask.solver?.name || 'the solver';
           toast.success(`✅ Task approved! ${reviewData.points} points awarded to ${solverName}`);
@@ -170,10 +176,10 @@ export default function TaskReviewPage() {
         }
       } else {
         const response = await taskAPI.rejectTask(selectedTask._id, reviewData.rejectionReason);
-        
+
         // Type assertion for the response
         const rejectResponse = response as { success: boolean; message?: string };
-        
+
         if (rejectResponse.success) {
           toast.success('📝 Task rejected. Solver will be notified to resubmit.');
           addNotification({
@@ -189,16 +195,17 @@ export default function TaskReviewPage() {
       setShowReviewModal(false);
       setSelectedTask(null);
       fetchPendingTasks();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error reviewing task:', error);
-      toast.error(error.message || 'Failed to review task');
+      const message = error instanceof Error ? error.message : String(error ?? 'Failed to review task');
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
   };
 
   const getPriorityColor = (priority: string) => {
-    const colors: any = {
+    const colors: Record<string, string> = {
       low: 'bg-green-100 text-green-700 border-green-300',
       medium: 'bg-yellow-100 text-yellow-700 border-yellow-300',
       high: 'bg-orange-100 text-orange-700 border-orange-300',
