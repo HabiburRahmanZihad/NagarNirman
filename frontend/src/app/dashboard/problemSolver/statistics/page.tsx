@@ -87,6 +87,23 @@ interface AnalyticsFilters {
   division?: string;
 }
 
+// Raw API response shape (used for type-safe transformation)
+interface AnalyticsApiRaw {
+  totalReports?: number;
+  completedReports?: number;
+  ongoingReports?: number;
+  pendingReports?: number;
+  averageResolutionTime?: number;
+  completionRate?: number;
+  categoryStats?: CategoryStatRaw[];
+  statusStats?: StatusStatRaw[];
+  monthlyStats?: MonthlyStatRaw[];
+  districtStats?: DistrictStatRaw[];
+  solverPerformance?: SolverPerformanceRaw[];
+  lastUpdated?: string;
+  [key: string]: unknown;
+}
+
 const SkeletonLoader = () => (
   <motion.div className="bg-white/80 rounded-2xl p-6 shadow-lg border border-white/20 mb-6">
     <div className="animate-pulse space-y-4">
@@ -211,7 +228,7 @@ const AnalyticsPage = () => {
       }
 
       // console.log('📊 Fetching analytics with filters:', filters);
-      const data = await statisticsAPI.getAnalytics(filters) as any;
+      const data = (await statisticsAPI.getAnalytics(filters)) as AnalyticsApiRaw;
 
       // Validate data exists
       if (!data) {
