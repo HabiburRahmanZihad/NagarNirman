@@ -1,0 +1,67 @@
+[
+  {
+    "image": "https://i.postimg.cc/SQ2SBwDh/download-(14).png",
+    "number": "100",
+    "label": "Police Emergency"
+  },
+  {
+    "image": "https://i.postimg.cc/x1RnGYTn/download-(13).png",
+    "number": "999",
+    "label": "National Emergency"
+  },
+  {
+    "image": "https://i.postimg.cc/KzKbyM7D/download-(12).png",
+    "number": "109",
+    "label": "Women & Children Helpline"
+  },
+  {
+    "image": "https://i.postimg.cc/zDgNtTGD/download-(11).png",
+    "number": "102",
+    "label": "Ambulance"
+  },
+  {
+    "image": "https://i.postimg.cc/x1tVJRtn/download-(10).png",
+    "number": "106",
+    "label": "Fire Service"
+  },
+  {
+    "image": "https://i.postimg.cc/rpK3dLd6/download-(9).png",
+    "number": "1090",
+    "label": "Disaster Help"
+  },
+  {
+    "image": "https://i.postimg.cc/CMkyHYc0/download-(8).png",
+    "number": "16113",
+    "label": "Health Service"
+  },
+  {
+    "image": "https://i.postimg.cc/J4FbrVW3/download-(7).png",
+    "number": "16175",
+    "label": "GP Emergency"
+  },
+  {
+    "image": "https://i.postimg.cc/V6sS9D81/download-(6).png",
+    "number": "16121",
+    "label": "Family Planning"
+  },
+  {
+    "image": "https://i.postimg.cc/3rsvVjjw/download-(4).png",
+    "number": "1098",
+    "label": "Child Helpline"
+  },
+  {
+    "image": "https://i.postimg.cc/8z1jgZ71/download-(3).png",
+    "number": "16136",
+    "label": "Drug Help"
+  },
+  {
+    "image": "https://i.postimg.cc/6QXzKJd6/download-(1).png",
+    "number": "333",
+    "label": "Govt Info"
+  },
+  {
+    "image": "https://i.postimg.cc/d0sdnq2C/download.png",
+    "number": "16111",
+    "label": "Coast Guard"
+  }
+]
