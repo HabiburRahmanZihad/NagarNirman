@@ -9,13 +9,8 @@ import divisionsData from '@/data/divisionsData.json';
 import { FaUser, FaPhone, FaMapMarkerAlt, FaCamera, FaCheck, FaClock, FaCheckCircle, FaLock, FaEdit } from 'react-icons/fa';
 import Image from 'next/image';
 
-// ✅ ADDED: API Response Interface
-interface APIResponse {
-  success: boolean;
-  message?: string;
-  data?: any;
-  error?: string;
-}
+
+import { User, ApiResponse } from '@/types';
 
 interface ProfileData {
   phone: string;
@@ -119,8 +114,8 @@ const ProfilePage = () => {
         ...(selectedFile && { profilePicture: profilePicture }),
       };
 
-      // ✅ FIXED: Add type assertion for API response
-      const response = await userAPI.updateProfile(updateData) as APIResponse;
+      // ✅ Use shared ApiResponse type
+      const response = await userAPI.updateProfile(updateData) as ApiResponse<Partial<User>>;
 
       // ✅ FIXED: Now TypeScript knows response has 'success' property
       if (response && response.success) {
@@ -128,9 +123,9 @@ const ProfilePage = () => {
           toast.dismiss('upload');
         }
 
-        const updatedUser = { ...user, ...response.data };
-        localStorage.setItem('nn_user', JSON.stringify(updatedUser));
-        updateAuthUser(updatedUser);
+        const mergedUser = { ...(user ?? {}), ...(response.data || {}) } as User;
+        localStorage.setItem('nn_user', JSON.stringify(mergedUser));
+        updateAuthUser(mergedUser);
 
         setSelectedFile(null);
         setError(null);
