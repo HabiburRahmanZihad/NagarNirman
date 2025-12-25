@@ -28,7 +28,7 @@ export default function EmergencyHotlineMarquee() {
           {hotlines.map((item, i) => (
             <div
               key={i}
-              className="relative min-w-[140px] xs:min-w-[160px] sm:min-w-[180px] md:min-w-[200px] h-[80px] xs:h-[100px] sm:h-[110px] md:h-[120px] bg-[#003D33] rounded-xl flex items-center justify-center p-6 group cursor-pointer"
+              className="relative min-w-[140px] xs:min-w-[160px] sm:min-w-[180px] md:min-w-[200px] h-20 xs:h-[100px] sm:h-[110px] md:h-[120px] bg-[#003D33] rounded-xl flex items-center justify-center p-6 group cursor-pointer"
               onMouseEnter={() => setHovered(i)}
               onMouseLeave={() => setHovered(null)}
             >
