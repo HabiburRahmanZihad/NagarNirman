@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import {
   TrendingUp,
@@ -32,6 +33,28 @@ interface Earthquake {
   intensity: string;
   alertLevel: string;
   casualties: number;
+}
+
+// Minimal typing for USGS GeoJSON feature used by the client
+interface USGSFeature {
+  properties?: {
+    mag?: number | null;
+    ids?: string | null;
+    code?: string | null;
+    place?: string | null;
+    time?: number | null;
+  };
+  geometry?: {
+    coordinates?: [number, number, number];
+  };
+}
+
+interface StatCardProps {
+  icon: ComponentType<any>;
+  title: string;
+  value: ReactNode;
+  subtitle?: string;
+  color?: 'primary' | 'success' | 'warning' | 'error' | 'info';
 }
 
 interface Statistics {
@@ -72,25 +95,27 @@ const getIntensity = (magnitude: number): string => {
   return 'Not Felt';
 };
 
-const transformUSGSData = (usgsFeatures: any[]): Earthquake[] => {
+const transformUSGSData = (usgsFeatures: USGSFeature[]): Earthquake[] => {
   return usgsFeatures.map((feature) => {
-    const props = feature.properties;
-    const coords = feature.geometry.coordinates;
-    const magnitude = props.mag || 0;
+    const props = feature.properties ?? {};
+    const coords = feature.geometry?.coordinates ?? [0, 0, 0];
+    const magnitude = Number(props.mag ?? 0);
+
+    const id = props.ids ? String(props.ids).split(',')[0] : props.code ?? `USGS-unknown`;
 
     return {
-      _id: props.ids?.split(',')[0] || props.code,
-      eventId: props.code || `USGS-${props.ids?.split(',')[0] || 'unknown'}`,
-      magnitude: magnitude,
-      depth: coords[2] || 0,
-      location: props.place || 'Unknown Location',
-      latitude: coords[1],
-      longitude: coords[0],
-      timestamp: new Date(props.time).toISOString(),
+      _id: id,
+      eventId: String(props.code ?? `USGS-${id}`),
+      magnitude,
+      depth: Number(coords[2] ?? 0),
+      location: String(props.place ?? 'Unknown Location'),
+      latitude: Number(coords[1] ?? 0),
+      longitude: Number(coords[0] ?? 0),
+      timestamp: new Date(Number(props.time ?? Date.now())).toISOString(),
       intensity: getIntensity(magnitude),
       alertLevel: getAlertLevel(magnitude),
       casualties: 0,
-    };
+    } as Earthquake;
   });
 };
 
@@ -153,13 +178,13 @@ export default function EarthquakeAnalyticsPage() {
         // Calculate percentages
         const total = allEarthquakes.length;
         const percentageByAlert = {
-          Red: total > 0 ? ((byAlertLevel.Red / total) * 100).toFixed(1) : 0,
-          Orange: total > 0 ? ((byAlertLevel.Orange / total) * 100).toFixed(1) : 0,
-          Yellow: total > 0 ? ((byAlertLevel.Yellow / total) * 100).toFixed(1) : 0,
-          Green: total > 0 ? ((byAlertLevel.Green / total) * 100).toFixed(1) : 0,
+          Red: total > 0 ? Number(((byAlertLevel.Red / total) * 100).toFixed(1)) : 0,
+          Orange: total > 0 ? Number(((byAlertLevel.Orange / total) * 100).toFixed(1)) : 0,
+          Yellow: total > 0 ? Number(((byAlertLevel.Yellow / total) * 100).toFixed(1)) : 0,
+          Green: total > 0 ? Number(((byAlertLevel.Green / total) * 100).toFixed(1)) : 0,
         };
 
-        const byIntensity: any = {};
+        const byIntensity: Record<string, number> = {};
         ['Extreme', 'Violent', 'Very Strong', 'Strong', 'Moderate', 'Light', 'Weak', 'Not Felt'].forEach((intensity) => {
           byIntensity[intensity] = allEarthquakes.filter((eq) => eq.intensity === intensity).length;
         });
@@ -185,7 +210,7 @@ export default function EarthquakeAnalyticsPage() {
           maxDepth: Math.max(...depths),
           byAlertLevel,
           byIntensity,
-          percentageByAlert: percentageByAlert as any,
+          percentageByAlert,
           topLocations,
           lastUpdated: new Date().toLocaleString(),
         });
@@ -198,7 +223,7 @@ export default function EarthquakeAnalyticsPage() {
     }
   };
 
-  const StatCard = ({ icon: Icon, title, value, subtitle, color = 'primary' }: any) => (
+  const StatCard = ({ icon: Icon, title, value, subtitle, color = 'primary' }: StatCardProps) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -417,7 +442,7 @@ export default function EarthquakeAnalyticsPage() {
             <h2 className="text-2xl font-bold text-primary">Intensity Level Breakdown</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {Object.entries(stats.byIntensity).map(([intensity, count]: [string, any]) => {
+            {Object.entries(stats.byIntensity).map(([intensity, count]: [string, number]) => {
               const maxCount = Math.max(...Object.values(stats.byIntensity));
               const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
               return (
