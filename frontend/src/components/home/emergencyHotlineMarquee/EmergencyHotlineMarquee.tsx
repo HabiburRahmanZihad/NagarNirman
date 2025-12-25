@@ -41,14 +41,22 @@ export default function EmergencyHotlineMarquee() {
               />
               {/* Overlay for call option */}
               {hovered === i && (
-                <div className="absolute inset-0 bg-[#003D33] bg-opacity-70 flex flex-col items-center justify-center rounded-xl transition-opacity">
-                  <span className="text-white text-lg font-semibold mb-2">{item.label}</span>
+                <div className="absolute inset-0 bg-[#003D33] bg-opacity-70 flex flex-col items-center justify-center rounded-xl transition-opacity px-2">
+                  <span
+                    className="text-white text-lg font-semibold mb-2 max-w-[170px] truncate text-center block"
+                    title={item.label}
+                  >
+                    {item.label}
+                  </span>
                   <a
                     href={`tel:${item.number}`}
-                    className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-base font-bold shadow-lg transition"
+                    className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg text-base font-bold shadow-lg transition max-w-[170px] truncate"
                     onClick={e => e.stopPropagation()}
+                    title={`Call ${item.number}`}
+                    style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}
                   >
-                    <LuPhone className="w-5 h-5" /> Call {item.number}
+                    <LuPhone className="w-5 h-5" />
+                    <span className="truncate block">Call {item.number}</span>
                   </a>
                 </div>
               )}
