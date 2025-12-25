@@ -423,42 +423,50 @@ export const problemSolverAPI = {
 export const notificationAPI = {
   // Get user's notifications with pagination and filters
   getAll: (filters?: { page?: number; limit?: number; unreadOnly?: boolean; type?: string }) => {
-    try {
-      let queryString = '';
+    return (async () => {
+      try {
+        let queryString = '';
 
-      if (filters) {
-        try {
-          const params = new URLSearchParams();
+        if (filters) {
+          try {
+            const params = new URLSearchParams();
 
-          if (typeof filters.page === 'number' && filters.page > 0) {
-            params.append('page', filters.page.toString());
-          }
-          if (typeof filters.limit === 'number' && filters.limit > 0) {
-            params.append('limit', filters.limit.toString());
-          }
-          if (filters.unreadOnly === true) {
-            params.append('unreadOnly', 'true');
-          }
-          if (typeof filters.type === 'string' && filters.type.trim().length > 0) {
-            params.append('type', filters.type.trim());
-          }
+            if (typeof filters.page === 'number' && filters.page > 0) {
+              params.append('page', filters.page.toString());
+            }
+            if (typeof filters.limit === 'number' && filters.limit > 0) {
+              params.append('limit', filters.limit.toString());
+            }
+            if (filters.unreadOnly === true) {
+              params.append('unreadOnly', 'true');
+            }
+            if (typeof filters.type === 'string' && filters.type.trim().length > 0) {
+              params.append('type', filters.type.trim());
+            }
 
-          queryString = params.toString();
-        } catch (paramError) {
-          console.error('Error building query parameters:', paramError);
-          queryString = '';
+            queryString = params.toString();
+          } catch (paramError) {
+            console.error('Error building query parameters:', paramError);
+            queryString = '';
+          }
         }
+
+        const url = queryString
+          ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications?${queryString}`
+          : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications`;
+
+        const resp = await apiClient(url, { requiresAuth: true });
+        // Normalize common responses: if API returns ApiResponse with data array, extract it.
+        if (!resp) return [];
+        if (Array.isArray(resp)) return resp;
+        if (typeof resp === 'object' && (resp as any).data) return (resp as any).data;
+        return resp;
+      } catch (error) {
+        // Network or other errors: fail gracefully and return empty array to callers
+        console.error('Error in notificationAPI.getAll:', error);
+        return [];
       }
-
-      const url = queryString
-        ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications?${queryString}`
-        : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications`;
-
-      return apiClient(url, { requiresAuth: true });
-    } catch (error) {
-      console.error('Error in notificationAPI.getAll:', error);
-      return apiClient(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/notifications`, { requiresAuth: true });
-    }
+    })();
   },
 
   // Get unread notification count

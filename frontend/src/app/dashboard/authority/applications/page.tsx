@@ -30,21 +30,9 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import Image from 'next/image';
+import type { PaginatedResponse } from '@/types';
 
-// ✅ ADDED: API Response Interface
-interface PaginatedResponse<T = any> {
-  success: boolean;
-  data: T[];
-  pagination: {
-    page: number;
-    pages: number;
-    total: number;
-    limit?: number;
-    totalPages?: number;
-  };
-  message?: string;
-  error?: string;
-}
+// Using shared `PaginatedResponse` from '@/types'
 
 interface Application {
   _id: string;
@@ -135,7 +123,7 @@ export default function ProblemSolverApplications() {
     }
     try {
       const { problemSolverAPI } = await import('@/utils/api');
-      const filters: any = {
+      const filters: { status?: string; division?: string; district?: string; page?: number; limit?: number } = {
         page: pagination.page,
         limit: 10,
         division: userDivision // Filter by authority's division
@@ -147,12 +135,13 @@ export default function ProblemSolverApplications() {
 
       // ✅ FIXED: Add type assertion for API response
       const response = await problemSolverAPI.getAllApplications(filters) as PaginatedResponse<Application>;
-      
+
       // ✅ FIXED: Now TypeScript knows the response structure
       setApplications(response.data);
       setPagination(response.pagination);
-    } catch (error: any) {
-      toast.error('Failed to load applications');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : typeof error === 'string' ? error : 'Failed to load applications';
+      toast.error(message);
       console.error(error);
     } finally {
       setLoading(false);
@@ -174,8 +163,10 @@ export default function ProblemSolverApplications() {
       setSelectedApp(null);
       setReviewNote('');
       fetchApplications();
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to review application');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : typeof error === 'string' ? error : 'Failed to review application';
+      toast.error(message);
+      console.error(error);
     } finally {
       setIsReviewing(false);
     }
