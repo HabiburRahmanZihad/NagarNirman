@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Trophy, Star, Target, Zap, Award, TrendingUp } from "lucide-react";
+import { Trophy, Target, Zap, Award, TrendingUp } from "lucide-react";
 
 interface LeaderboardUser {
   id: string;
