@@ -695,7 +695,7 @@ System Config → User Role Management → Platform Oversight → Security Audit
 ## 📸 Screenshots
 
 ### Homepage
-![Homepage Hero Section](https://via.placeholder.com/800x400/81d586/ffffff?text=NagarNirman+Homepage)
+![Homepage Hero Section](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145228_ghmqkj.png)
 *Clean, modern homepage with call-to-action*
 
 ### Dashboard
