@@ -3,14 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { Card, Button, Loading, NotFoundDisplay } from '@/components/common';
+import {  Button, Loading, NotFoundDisplay } from '@/components/common';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import {
   FaArrowLeft,
   FaMapMarkerAlt,
-  FaClock,
   FaThumbsUp,
   FaUser,
   FaTasks,
@@ -27,7 +26,6 @@ import {
   FaShareAlt,
   FaRegBookmark,
   FaBookmark,
-  FaFlag,
   FaChartLine,
   FaHistory,
   FaBuilding,
@@ -36,8 +34,6 @@ import {
   FaTag,
   FaInfoCircle,
   FaLocationArrow,
-  FaHeart,
-  FaStar,
   FaCertificate,
   FaShieldAlt,
   FaExpand,
@@ -507,7 +503,7 @@ export default function ReportDetailsPage() {
 
       <div className="min-h-screen bg-gray-50">
         {/* Header Section */}
-        <div className="bg-gradient-to-r from-[#004d40] to-[#00695c] text-white">
+        <div className="bg-linear-to-r from-[#004d40] to-[#00695c] text-white">
           <div className="container mx-auto px-4 py-6">
             <div className="flex items-center justify-between mb-4">
               <button
@@ -568,7 +564,7 @@ export default function ReportDetailsPage() {
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-[#004d40] to-[#00695c] text-white flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-linear-to-r from-[#004d40] to-[#00695c] text-white flex items-center justify-center">
                         <FaChartLine />
                       </div>
                       Resolution Progress
@@ -625,17 +621,17 @@ export default function ReportDetailsPage() {
                           <span className="text-sm font-medium text-gray-700">Current Status: {statusInfo.label}</span>
                           <span className="text-sm font-medium text-[#004d40]">{progress}%</span>
                         </div>
-                        <div className="relative h-4 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 rounded-full overflow-hidden">
-                          {/* Background gradient */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100"></div>
+                        <div className="relative h-4 bg-linear-to-r from-gray-100 via-gray-200 to-gray-100 rounded-full overflow-hidden">
+                          {/* Background linear */}
+                          <div className="absolute inset-0 bg-linear-to-r from-gray-100 via-gray-200 to-gray-100"></div>
                           
                           {/* Animated progress fill */}
                           <div
                             style={{ width: `${progress}%` }}
-                            className="h-full bg-gradient-to-r from-[#004d40] via-[#f2a921] to-[#004d40] transition-all duration-1000 ease-out rounded-full relative overflow-hidden"
+                            className="h-full bg-linear-to-r from-[#004d40] via-[#f2a921] to-[#004d40] transition-all duration-1000 ease-out rounded-full relative overflow-hidden"
                           >
                             {/* Shimmer effect */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                            <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
                           </div>
                           
                           {/* Progress markers */}
@@ -663,7 +659,7 @@ export default function ReportDetailsPage() {
                       Problem Classification
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-300 rounded-lg p-4 hover:border-[#004d40] transition-colors">
+                      <div className="bg-linear-to-br from-gray-50 to-white border border-gray-300 rounded-lg p-4 hover:border-[#004d40] transition-colors">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-white border-2 border-[#004d40]/30 flex items-center justify-center">
                             <FaInfoCircle className="text-[#004d40]" />
@@ -676,7 +672,7 @@ export default function ReportDetailsPage() {
                       </div>
                       
                       {report.category && (
-                        <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-300 rounded-lg p-4 hover:border-[#f2a921] transition-colors">
+                        <div className="bg-linear-to-br from-gray-50 to-white border border-gray-300 rounded-lg p-4 hover:border-[#f2a921] transition-colors">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-lg bg-white border-2 border-[#f2a921]/30 flex items-center justify-center">
                               <FaLayerGroup className="text-[#f2a921]" />
@@ -690,7 +686,7 @@ export default function ReportDetailsPage() {
                       )}
                       
                       {report.subcategory && (
-                        <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-300 rounded-lg p-4 hover:border-[#004d40] transition-colors">
+                        <div className="bg-linear-to-br from-gray-50 to-white border border-gray-300 rounded-lg p-4 hover:border-[#004d40] transition-colors">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-lg bg-white border-2 border-[#004d40]/30 flex items-center justify-center">
                               <FaChevronRight className="text-[#004d40]" />
@@ -728,7 +724,7 @@ export default function ReportDetailsPage() {
                   <div className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center gap-4">
                       <div className="relative">
-                        <div className="w-14 h-14 rounded-full bg-gradient-to-r from-[#004d40] to-[#00695c] text-white flex items-center justify-center font-bold">
+                        <div className="w-14 h-14 rounded-full bg-linear-to-r from-[#004d40] to-[#00695c] text-white flex items-center justify-center font-bold">
                           {report.createdBy.name?.charAt(0).toUpperCase() || 'U'}
                         </div>
                         <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#f2a921] flex items-center justify-center">
@@ -847,7 +843,7 @@ export default function ReportDetailsPage() {
                   </div>
                   
                   {report.location.coordinates && report.location.coordinates.length === 2 && (
-                    <div className="bg-gradient-to-r from-[#004d40] to-[#00695c] rounded-lg p-4 text-white">
+                    <div className="bg-linear-to-r from-[#004d40] to-[#00695c] rounded-lg p-4 text-white">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                         <div>
                           <p className="text-sm text-emerald-100 mb-1">Coordinates</p>
