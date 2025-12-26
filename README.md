@@ -12,7 +12,7 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-6.0-green?style=flat-square&logo=mongodb)](https://www.mongodb.com/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
 
-[Live Demo](https://nagar-nirman.vercel.app) • [Live Demo](#) • [Documentation](#-documentation) • [Features](#-key-features) • [Installation](#-installation)
+[Live Site](https://nagar-nirman.vercel.app) • [Backend Api](https://nagarnirman-backend.onrender.com) • [Documentation](#-documentation) • [Features](#-key-features) • [Installation](#-installation)
 
 </div>
 
@@ -695,23 +695,23 @@ System Config → User Role Management → Platform Oversight → Security Audit
 ## 📸 Screenshots
 
 ### Homepage
-![Homepage Hero Section](https://via.placeholder.com/800x400/81d586/ffffff?text=NagarNirman+Homepage)
+![Homepage Hero Section](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145228_ghmqkj.png)
 *Clean, modern homepage with call-to-action*
 
 ### Dashboard
-![User Dashboard](https://via.placeholder.com/800x400/aef452/333333?text=Interactive+Dashboard)
+![User Dashboard](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145405_am4bka.png)
 *Role-based dashboard with statistics and quick actions*
 
 ### Report Creation
-![Create Report Form](https://via.placeholder.com/800x400/f2a921/ffffff?text=Report+Creation+Form)
+![Create Report Form](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145431_xgjjvf.png)
 *Easy-to-use form with image upload and location selection*
 
 ### Interactive Map
-![Map View](https://via.placeholder.com/800x400/81d586/ffffff?text=Interactive+Map+with+Reports)
+![Map View](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145520_du0hgq.png)
 *Leaflet-powered map showing all reports and earthquakes*
 
 ### Leaderboard
-![Leaderboard](https://via.placeholder.com/800x400/aef452/333333?text=Top+Problem+Solvers)
+![Leaderboard](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145612_cnfx4i.png)
 *Gamified leaderboard showcasing top contributors*
 
 ---
@@ -756,23 +756,6 @@ NEXT_PUBLIC_API_URL=https://your-backend-url.com/api
 ```
 
 ### Backend Deployment (Railway/Render/Heroku)
-
-#### Using Railway:
-
-1. **Install Railway CLI**:
-```bash
-npm install -g @railway/cli
-```
-
-2. **Login and Deploy**:
-```bash
-cd backend
-railway login
-railway init
-railway up
-```
-
-3. **Add Environment Variables** in Railway dashboard
 
 #### Using Render:
 
@@ -944,36 +927,9 @@ Use the included test scripts:
 - [ ] Map functionality
 
 ---
-
-## 📈 Roadmap
-
-### Version 2.0 (Planned)
-
-- [ ] Real-time notifications with WebSockets
-- [ ] Mobile app (React Native)
-- [ ] Push notifications
-- [ ] Advanced analytics dashboard
-- [ ] Google Maps integration
-- [ ] Multi-language support (Bengali, English)
-- [ ] SMS notifications
-- [ ] QR code scanning for reports
-- [ ] Offline mode support
-- [ ] Social media integration
-
-### Version 3.0 (Future)
-
-- [ ] AI-powered problem detection
-- [ ] Blockchain for transparency
-- [ ] IoT sensor integration
-- [ ] Predictive maintenance
-- [ ] Government API integration
-- [ ] Budget tracking
-- [ ] Contractor management
-- [ ] Public polls and voting
-
 ---
 
-## � Meet the Dream Team
+##  Meet the Dream Team 🦖
 
 <div align="center">
 
@@ -1041,7 +997,7 @@ If you find this project helpful, please consider:
 
 **Report • Resolve • Rebuild**
 
-[![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red?style=for-the-badge)](https://github.com/yourusername/nagarnirman)
+[![Made with Love](https://img.shields.io/badge/Made%20with-💚-red?style=for-the-badge)](https://github.com/yourusername/nagarnirman)
 
 **[⬆ Back to Top](#-nagarnirman---report-resolve-rebuild)**
 
@@ -1052,15 +1008,6 @@ If you find this project helpful, please consider:
 ## 📝 Changelog
 
 ### Version 1.0.0 (Current)
-- ✅ Initial release
-- ✅ Complete authentication system
-- ✅ Report management with image uploads
-- ✅ Task assignment system
-- ✅ Email notifications
-- ✅ Earthquake monitoring
-- ✅ Leaderboard and rewards
-- ✅ Responsive UI with Tailwind CSS
-- ✅ Comprehensive documentation
 
 ---
 
