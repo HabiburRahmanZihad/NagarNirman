@@ -34,35 +34,46 @@ const StatusBarChart = ({ data }: StatusBarChartProps) => {
           </h3>
           <div className="flex gap-1">
             <div className="w-2 h-2 bg-[#2563eb] rounded-full animate-bounce"></div>
-            <div className="w-2 h-2 bg-[#2a7d2f] rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-            <div className="w-2 h-2 bg-[#f59e0b] rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+            <div className="w-2 h-2 bg-[#2a7d2f] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+            <div className="w-2 h-2 bg-[#f59e0b] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
           </div>
         </div>
-        
+
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis 
-                dataKey="status" 
+              <XAxis
+                dataKey="status"
                 tick={{ fill: '#6B7280', fontSize: 12 }}
                 tickFormatter={(value) => {
                   const statusMap: { [key: string]: string } = {
                     'pending': 'Pending',
-                    'inProgress': 'In Progress', 
+                    'inProgress': 'In Progress',
                     'resolved': 'Resolved'
                   };
                   return statusMap[value] || value;
                 }}
               />
-              <YAxis 
+              <YAxis
                 tick={{ fill: '#6B7280', fontSize: 12 }}
               />
-              <Tooltip 
-                formatter={(value: number | undefined) => [
-                  <span key={value || 'undefined'} className="font-bold text-[#2563eb]">{value || 0} reports</span>, 
-                  'Count'
-                ]}
+              <Tooltip
+                formatter={(value: unknown) => {
+                  // Recharts `value` can be number | string | (number|string)[] | undefined
+                  let displayNumber = 0;
+                  if (Array.isArray(value)) {
+                    const first = value[0];
+                    displayNumber = Number(first) || 0;
+                  } else {
+                    displayNumber = Number(value) || 0;
+                  }
+
+                  return [
+                    <span key={String(value ?? 'undefined')} className="font-bold text-[#2563eb]">{displayNumber} reports</span>,
+                    'Count'
+                  ];
+                }}
                 contentStyle={{
                   background: 'rgba(255, 255, 255, 0.95)',
                   backdropFilter: 'blur(10px)',
@@ -81,13 +92,13 @@ const StatusBarChart = ({ data }: StatusBarChartProps) => {
               />
               <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                 {data.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
+                  <Cell
+                    key={`cell-${index}`}
                     fill={`url(#gradient-${entry.status})`}
                   />
                 ))}
               </Bar>
-              
+
               <defs>
                 {data.map((entry) => (
                   <linearGradient
@@ -98,20 +109,20 @@ const StatusBarChart = ({ data }: StatusBarChartProps) => {
                     x2="0"
                     y2="1"
                   >
-                    <stop offset="0%" stopColor={getStatusColor(entry.status)} stopOpacity={0.8}/>
-                    <stop offset="100%" stopColor={getStatusColor(entry.status)} stopOpacity={0.4}/>
+                    <stop offset="0%" stopColor={getStatusColor(entry.status)} stopOpacity={0.8} />
+                    <stop offset="100%" stopColor={getStatusColor(entry.status)} stopOpacity={0.4} />
                   </linearGradient>
                 ))}
               </defs>
             </BarChart>
           </ResponsiveContainer>
         </div>
-        
+
         {/* Custom Legend */}
         <div className="flex justify-center gap-4 mt-6 flex-wrap">
           {data.map((entry) => (
             <div key={entry.status} className="flex items-center gap-2">
-              <div 
+              <div
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: getStatusColor(entry.status) }}
               ></div>
