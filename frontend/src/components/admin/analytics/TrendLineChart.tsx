@@ -25,35 +25,35 @@ const TrendLineChart = ({ data }: TrendLineChartProps) => {
           </h3>
           <div className="flex gap-2">
             <div className="w-2 h-2 bg-[#2563eb] rounded-full animate-bounce"></div>
-            <div className="w-2 h-2 bg-[#2a7d2f] rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-            <div className="w-2 h-2 bg-[#f59e0b] rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+            <div className="w-2 h-2 bg-[#2a7d2f] rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+            <div className="w-2 h-2 bg-[#f59e0b] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
           </div>
         </div>
-        
+
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data}>
               <defs>
                 <linearGradient id="colorReports" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2a7d2f" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="#2a7d2f" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#2a7d2f" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#2a7d2f" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis 
-                dataKey="month" 
+              <XAxis
+                dataKey="month"
                 tick={{ fill: '#6B7280', fontSize: 12 }}
                 axisLine={false}
               />
-              <YAxis 
+              <YAxis
                 tick={{ fill: '#6B7280', fontSize: 12 }}
                 axisLine={false}
               />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{
                   background: 'rgba(255, 255, 255, 0.95)',
                   backdropFilter: 'blur(10px)',
@@ -61,40 +61,51 @@ const TrendLineChart = ({ data }: TrendLineChartProps) => {
                   borderRadius: '12px',
                   boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
                 }}
-                formatter={(value: number | undefined) => [
-                  <span key={value || 'undefined'} className="font-bold">{value || 0}</span>, 
-                  ''
-                ]}
+                formatter={(value: unknown) => {
+                  // Recharts `value` can be number | string | (number|string)[] | undefined
+                  let displayNumber = 0;
+                  if (Array.isArray(value)) {
+                    const first = value[0];
+                    displayNumber = Number(first) || 0;
+                  } else {
+                    displayNumber = Number(value) || 0;
+                  }
+
+                  return [
+                    <span key={String(value ?? 'undefined')} className="font-bold">{displayNumber}</span>,
+                    ''
+                  ];
+                }}
               />
-              
-              <Area 
-                type="monotone" 
-                dataKey="reports" 
+
+              <Area
+                type="monotone"
+                dataKey="reports"
                 stroke="none"
-                fill="url(#colorReports)" 
+                fill="url(#colorReports)"
                 fillOpacity={1}
               />
-              
-              <Area 
-                type="monotone" 
-                dataKey="completed" 
+
+              <Area
+                type="monotone"
+                dataKey="completed"
                 stroke="none"
-                fill="url(#colorCompleted)" 
+                fill="url(#colorCompleted)"
                 fillOpacity={1}
               />
-              
-              <Line 
-                type="monotone" 
-                dataKey="reports" 
-                stroke="#2563eb" 
+
+              <Line
+                type="monotone"
+                dataKey="reports"
+                stroke="#2563eb"
                 strokeWidth={4}
                 dot={{ fill: '#2563eb', strokeWidth: 2, r: 6, stroke: 'white' }}
                 activeDot={{ r: 8, fill: '#1d4ed8', stroke: 'white', strokeWidth: 2 }}
               />
-              <Line 
-                type="monotone" 
-                dataKey="completed" 
-                stroke="#2a7d2f" 
+              <Line
+                type="monotone"
+                dataKey="completed"
+                stroke="#2a7d2f"
                 strokeWidth={3}
                 strokeDasharray="5 5"
                 dot={{ fill: '#2a7d2f', strokeWidth: 2, r: 5, stroke: 'white' }}
@@ -103,7 +114,7 @@ const TrendLineChart = ({ data }: TrendLineChartProps) => {
             </LineChart>
           </ResponsiveContainer>
         </div>
-        
+
         <div className="flex justify-center gap-8 mt-6">
           <div className="flex items-center gap-3 bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
             <div className="w-4 h-4 bg-[#2563eb] rounded-full shadow-lg"></div>
