@@ -699,7 +699,7 @@ System Config → User Role Management → Platform Oversight → Security Audit
 *Clean, modern homepage with call-to-action*
 
 ### Dashboard
-![User Dashboard](https://via.placeholder.com/800x400/aef452/333333?text=Interactive+Dashboard)
+![User Dashboard](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145405_am4bka.png)
 *Role-based dashboard with statistics and quick actions*
 
 ### Report Creation
