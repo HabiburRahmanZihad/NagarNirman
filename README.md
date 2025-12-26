@@ -707,7 +707,7 @@ System Config → User Role Management → Platform Oversight → Security Audit
 *Easy-to-use form with image upload and location selection*
 
 ### Interactive Map
-![Map View](https://via.placeholder.com/800x400/81d586/ffffff?text=Interactive+Map+with+Reports)
+![Map View](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145520_du0hgq.png)
 *Leaflet-powered map showing all reports and earthquakes*
 
 ### Leaderboard
