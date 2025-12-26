@@ -29,23 +29,34 @@ const DivisionDistrictChart = ({ data }: DivisionDistrictChartProps) => {
             Top 8
           </div>
         </div>
-        
+
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={sortedData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis type="number" />
-              <YAxis 
-                type="category" 
-                dataKey="district" 
+              <YAxis
+                type="category"
+                dataKey="district"
                 width={80}
                 tick={{ fontSize: 12 }}
               />
-              <Tooltip 
-                formatter={(value: number | undefined) => [
-                  <span key={value || 'undefined'} className="font-bold text-[#2a7d2f]">{value || 0} reports</span>, 
-                  'Count'
-                ]}
+              <Tooltip
+                formatter={(value: unknown) => {
+                  // Recharts `value` can be number | string | (number|string)[] | undefined
+                  let displayNumber = 0;
+                  if (Array.isArray(value)) {
+                    const first = value[0];
+                    displayNumber = Number(first) || 0;
+                  } else {
+                    displayNumber = Number(value) || 0;
+                  }
+
+                  return [
+                    <span key={String(value ?? 'undefined')} className="font-bold text-[#2a7d2f]">{displayNumber} reports</span>,
+                    'Count'
+                  ];
+                }}
                 contentStyle={{
                   background: 'rgba(255, 255, 255, 0.95)',
                   backdropFilter: 'blur(10px)',
@@ -57,8 +68,8 @@ const DivisionDistrictChart = ({ data }: DivisionDistrictChartProps) => {
               />
               <Bar dataKey="reports" radius={[0, 4, 4, 0]}>
                 {sortedData.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
+                  <Cell
+                    key={`cell-${index}`}
                     fill={index < 3 ? '#2a7d2f' : '#3a9d40'}
                     opacity={0.8}
                   />

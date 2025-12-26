@@ -9,7 +9,6 @@ import {
   Lightbulb,
   AlertCircle,
   Radio,
-  Users,
   Building2,
   ChevronDown,
   CheckCircle2,
@@ -207,7 +206,7 @@ export default function EarthquakeGuidelinesPage() {
                 <Hand className="w-6 h-6 text-success" />
               </div>
               <h3 className="text-xl font-bold text-primary mb-2">HOLD ON</h3>
-              <p className="text-neutral">Hold on until shaking stops and it's safe to move</p>
+              <p className="text-neutral">{`Hold on until shaking stops and it's safe to move`}</p>
             </motion.div>
           </div>
         </motion.div>

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNotifications } from '@/context/NotificationContext';
+import { useNotifications, Notification } from '@/context/NotificationContext';
 import { useRouter } from 'next/navigation';
 import { FaBell } from 'react-icons/fa';
 
@@ -41,9 +41,10 @@ export const NotificationCenter: React.FC = () => {
     return 'bg-blue-50 border-blue-200';
   };
 
-  const handleNotificationClick = (notification: any) => {
-    if (!notification.read) {
-      markAsRead(notification._id || notification.id);
+  const handleNotificationClick = (notification: Notification) => {
+    const notifId = notification._id ?? notification.id;
+    if (!notification.read && notifId) {
+      markAsRead(notifId);
     }
     if (notification.actionUrl) {
       router.push(notification.actionUrl);
@@ -159,7 +160,8 @@ export const NotificationCenter: React.FC = () => {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              clearNotification((notification._id || notification.id) as string);
+                              const idToClear = notification._id ?? notification.id;
+                              if (idToClear) clearNotification(idToClear);
                             }}
                             className="text-gray-400 hover:text-red-500 transition-colors p-1 shrink-0"
                             aria-label="Delete notification"

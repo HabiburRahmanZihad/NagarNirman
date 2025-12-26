@@ -12,8 +12,6 @@ import {
   AlertTriangle,
   Building2,
   Zap,
-  Globe,
-  Shield,
   Waves,
   Wind,
   AlertCircle,
@@ -40,6 +38,20 @@ interface Earthquake {
   source: string;
 }
 
+// Minimal typing for USGS GeoJSON feature used by the client
+interface USGSFeature {
+  properties?: {
+    mag?: number | null;
+    ids?: string | null;
+    code?: string | null;
+    place?: string | null;
+    time?: number | null;
+  };
+  geometry?: {
+    coordinates?: [number, number, number];
+  };
+}
+
 const getAlertColor = (alertLevel: string) => {
   switch (alertLevel) {
     case 'Green':
@@ -55,20 +67,6 @@ const getAlertColor = (alertLevel: string) => {
   }
 };
 
-const getIntensityEmoji = (intensity: string) => {
-  const emojiMap: { [key: string]: string } = {
-    'Not Felt': '😴',
-    'Weak': '😐',
-    'Light': '😕',
-    'Moderate': '😟',
-    'Strong': '😨',
-    'Very Strong': '😱',
-    'Severe': '🤯',
-    'Violent': '💥',
-    'Extreme': '🌍',
-  };
-  return emojiMap[intensity] || '🌍';
-};
 
 // Helper functions
 const getAlertLevel = (magnitude: number): string => {
@@ -115,36 +113,38 @@ export default function EarthquakeDetailPage() {
 
       if (data.features && Array.isArray(data.features)) {
         // Transform USGS data
-        const earthquakes = data.features
-          .map((feature: any) => {
-            const props = feature.properties;
-            const coords = feature.geometry.coordinates;
-            const magnitude = props.mag || 0;
+        const earthquakes: Earthquake[] = (data.features as USGSFeature[])
+          .map((feature) => {
+            const props = feature.properties ?? {};
+            const coords = feature.geometry?.coordinates ?? [0, 0, 0];
+            const magnitude = Number(props.mag ?? 0);
+
+            const id = props.ids ? String(props.ids).split(',')[0] : props.code ?? `USGS-unknown`;
 
             return {
-              _id: props.ids?.split(',')[0] || props.code,
-              eventId: props.code || `USGS-${props.ids?.split(',')[0] || 'unknown'}`,
-              magnitude: magnitude,
-              depth: coords[2] || 0,
-              location: props.place || 'Unknown Location',
-              latitude: coords[1],
-              longitude: coords[0],
-              timestamp: new Date(props.time).toISOString(),
+              _id: id,
+              eventId: String(props.code ?? `USGS-${id}`),
+              magnitude,
+              depth: Number(coords[2] ?? 0),
+              location: String(props.place ?? 'Unknown Location'),
+              latitude: Number(coords[1] ?? 0),
+              longitude: Number(coords[0] ?? 0),
+              timestamp: new Date(Number(props.time ?? Date.now())).toISOString(),
               intensity: getIntensity(magnitude),
               alertLevel: getAlertLevel(magnitude),
               casualties: 0,
-              affectedAreas: [props.place || 'Unknown'],
+              affectedAreas: [String(props.place ?? 'Unknown')],
               description: `Magnitude ${magnitude} earthquake detected`,
               reportedDamage: 'No damage data available',
               source: 'USGS Earthquake Hazards Program',
-            };
+            } as Earthquake;
           })
-          .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+          .sort((a: Earthquake, b: Earthquake) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
         setAllEarthquakes(earthquakes);
 
         // Find the specific earthquake by eventId or index
-        const found = earthquakes.find((e: any) => e.eventId === earthquakeId || e._id === earthquakeId);
+        const found = earthquakes.find((e: Earthquake) => e.eventId === earthquakeId || e._id === earthquakeId);
         if (found) {
           setEarthquake(found);
         } else if (earthquakes.length > 0) {
@@ -157,7 +157,7 @@ export default function EarthquakeDetailPage() {
       }
 
       throw new Error('Invalid data format');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('❌ Error fetching from USGS:', error);
       setEarthquake(null);
       setLoading(false);
@@ -375,7 +375,7 @@ export default function EarthquakeDetailPage() {
           <h2 className="text-2xl sm:text-3xl font-extrabold">🛡️ What to Do</h2>
           <div className="grid md:grid-cols-2 gap-8 lg:gap-10">
             <div className="space-y-4 sm:space-y-5">
-              <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">If You're in the Affected Area:</h3>
+              <h3 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">{`If You're in the Affected Area:`}</h3>
               <ul className="space-y-3 sm:space-y-4">
                 <li className="flex items-start gap-3 sm:gap-4">
                   <span className="text-2xl sm:text-3xl shrink-0 font-bold">✓</span>
@@ -391,7 +391,7 @@ export default function EarthquakeDetailPage() {
                 </li>
                 <li className="flex items-start gap-3 sm:gap-4">
                   <span className="text-2xl sm:text-3xl shrink-0 font-bold">✓</span>
-                  <span className="text-base sm:text-lg leading-relaxed">Follow local authorities' instructions</span>
+                  <span className="text-base sm:text-lg leading-relaxed">{`Follow local authorities' instructions`}</span>
                 </li>
               </ul>
             </div>
@@ -402,7 +402,7 @@ export default function EarthquakeDetailPage() {
                 <p className="text-base sm:text-lg leading-relaxed mb-6 text-white/90">Get comprehensive information about earthquake safety, preparedness tips, and emergency protocols.</p>
               </div>
               <Link href="/earthquakes/guidelines" className="w-full">
-                <Button variant="secondary" size="lg" fullWidth>
+                <Button variant="primary" size="lg" fullWidth>
                   View Safety Guidelines
                 </Button>
               </Link>

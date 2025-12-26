@@ -1,27 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Filter, X, Users, MapPin, Shield } from "lucide-react";
+import { Search, X } from "lucide-react";
 import divisionsData from '@/data/divisionsData.json';
 import Button from '@/components/common/Button';
 import Card from '@/components/common/Card';
 
+type Filters = {
+  role: string;
+  division?: string;
+  district: string;
+  status: string;
+};
+
 interface UserFilterBarProps {
   searchTerm?: string;
   setSearchTerm?: (term: string) => void;
-  filters: {
-    role: string;
-    division?: string;
-    district: string;
-    status: string;
-  };
-  setFilters?: (filters: any) => void;
+  filters: Filters;
+  setFilters?: (filters: Filters) => void;
   onSearch?: (term: string) => void;
-  onFilterChange?: (filters: any) => void;
+  onFilterChange?: (filters: Filters) => void;
   divisions?: string[];
   districts?: string[];
-  userDivision?: any;
+  userDivision?: string | null;
   isSuperAdmin?: boolean;
 }
 
@@ -38,16 +40,15 @@ export default function UserFilterBar({
   isSuperAdmin = false
 }: UserFilterBarProps) {
   const [internalSearchTerm, setInternalSearchTerm] = useState("");
-  const [localFilters, setLocalFilters] = useState(filters);
-  const [activeFilters, setActiveFilters] = useState(0);
+  const [localFilters, setLocalFilters] = useState<Filters>(filters);
 
   const searchTerm = externalSearchTerm !== undefined ? externalSearchTerm : internalSearchTerm;
   const setSearchTerm = externalSetSearchTerm || setInternalSearchTerm;
 
-  // Calculate active filters count
-  useEffect(() => {
-    const count = Object.values(localFilters).filter(value => value !== "").length;
-    setActiveFilters(count);
+  // Calculate active filters count (derived)
+  const activeFilters = useMemo(() => {
+    const values = Object.values(localFilters) as Array<string | undefined>;
+    return values.filter((v): v is string => (v ?? "") !== "").length;
   }, [localFilters]);
 
   // Debounce search
@@ -61,8 +62,8 @@ export default function UserFilterBar({
     }
   }, [searchTerm, onSearch]);
 
-  const handleFilterChange = (key: string, value: string) => {
-    const newFilters = { ...localFilters, [key]: value };
+  const handleFilterChange = (key: keyof Filters, value: string) => {
+    const newFilters = { ...localFilters, [key]: value } as Filters;
     setLocalFilters(newFilters);
     if (externalSetFilters) {
       externalSetFilters(newFilters);
@@ -87,7 +88,7 @@ export default function UserFilterBar({
   ];
 
   const clearAllFilters = () => {
-    const clearedFilters = { role: "", division: "", district: "", status: "" };
+    const clearedFilters: Filters = { role: "", division: "", district: "", status: "" };
     setLocalFilters(clearedFilters);
     if (externalSetFilters) {
       externalSetFilters(clearedFilters);
@@ -97,8 +98,8 @@ export default function UserFilterBar({
     setSearchTerm("");
   };
 
-  const removeFilter = (key: string) => {
-    const newFilters = { ...localFilters, [key]: "" };
+  const removeFilter = (key: keyof Filters) => {
+    const newFilters = { ...localFilters, [key]: "" } as Filters;
     setLocalFilters(newFilters);
     if (externalSetFilters) {
       externalSetFilters(newFilters);

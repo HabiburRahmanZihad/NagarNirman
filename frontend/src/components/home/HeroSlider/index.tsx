@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
+import type { Swiper as SwiperClass } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay, EffectFade } from 'swiper/modules';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -52,27 +53,29 @@ const slides = [
 ];
 
 export default function HeroSlider() {
-  const swiperRef = useRef<any>(null);
+  const swiperRef = useRef<SwiperClass | null>(null);
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    if (swiperRef.current) {
-      const { swiper } = swiperRef.current;
+    const swiper = swiperRef.current;
+    if (!swiper) return;
 
-      if (typeof swiper.params.navigation === 'object') {
-        swiper.params.navigation.prevEl = prevRef.current;
-        swiper.params.navigation.nextEl = nextRef.current;
-      }
+    // navigation param can be boolean | object | undefined
+    type NavObj = { prevEl?: HTMLElement | null; nextEl?: HTMLElement | null };
+    const navParam = (swiper.params as unknown as { navigation?: boolean | NavObj }).navigation;
+    if (navParam && typeof navParam === 'object') {
+      (navParam as NavObj).prevEl = prevRef.current;
+      (navParam as NavObj).nextEl = nextRef.current;
+    }
 
+    if (swiper.navigation) {
       swiper.navigation.init();
       swiper.navigation.update();
-
-      swiper.on('slideChange', () => {
-        setActiveIndex(swiper.realIndex);
-      });
     }
+
+    swiper.on('slideChange', () => setActiveIndex(swiper.realIndex));
   }, []);
 
   return (
@@ -104,7 +107,7 @@ export default function HeroSlider() {
       </div>
 
       <Swiper
-        ref={swiperRef}
+        onSwiper={(inst) => { swiperRef.current = inst; }}
         modules={[Navigation, Autoplay, EffectFade]}
         navigation={false}
         effect="fade"

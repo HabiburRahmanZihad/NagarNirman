@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import categoryOptions from "@/data/categoryOptions.json";
 import divisionData from "@/data/divisionsData.json";
-import { FullPageLoading, ErrorDisplay } from '@/components/common';
+import { FullPageLoading } from '@/components/common';
 import Button from '@/components/common/Button';
 
 type ReportFormData = {
@@ -650,8 +650,9 @@ export default function NewReportPage() {
 
                             // If all images removed, clear the file input
                             if (newPreviews.length === 0) {
-                              setValue("image", undefined as any);
-                              // Force re-render by creating a new empty FileList
+                              // Clear the registered FileList value — cast to the field type
+                              setValue("image", undefined as unknown as FileList);
+                              // Force re-render by clearing the native file input
                               const input = document.querySelector('input[type="file"][accept="image/*"]') as HTMLInputElement;
                               if (input) {
                                 input.value = '';

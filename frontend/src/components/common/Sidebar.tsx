@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Image from 'next/image';
-import { LayoutDashboard, User, MapPin, Search, FileText, Edit, Lightbulb, BarChart3, Trophy, Settings, Users, FileCheck, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, User, MapPin, Search, FileText, Edit, Lightbulb, BarChart3, Trophy, Settings, Users, FileCheck, LogOut, X } from 'lucide-react';
 
 interface SidebarLink {
   href: string;
