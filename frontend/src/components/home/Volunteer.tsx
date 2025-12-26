@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Sprout,
   Share2,
   Github,
   Linkedin,
