@@ -1,3 +1,5 @@
+import { HistoryEntry } from '@/types';
+
 export interface Report {
   _id: string;
   title: string;
@@ -15,7 +17,7 @@ export interface Report {
   createdAt: number;
   updatedAt: number;
   assignedTo: string | null;
-  history: any[];
+  history: HistoryEntry[];
 }
 
 export interface AnalyticsData {
