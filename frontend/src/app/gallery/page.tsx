@@ -773,7 +773,7 @@ const GalleryPage = () => {
               {/* Image Section */}
               <div className="flex-1 flex items-center justify-center overflow-hidden min-h-[35vh] sm:min-h-[45vh] relative">
                 <div className="relative w-full h-full max-h-[45vh] sm:max-h-[55vh] lg:max-h-[70vh] flex items-center justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
+
                   <Image
                     fill
                     src={selectedItem.src}
