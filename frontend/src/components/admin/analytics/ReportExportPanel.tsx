@@ -11,7 +11,11 @@ import toast from 'react-hot-toast';
 const divisions = ['All Divisions', 'Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna', 'Barishal', 'Rangpur', 'Mymensingh'];
 const districts = ['All Districts', 'Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna', 'Barishal', 'Rangpur', 'Mymensingh', 'Comilla', 'Noakhali'];
 
-const ReportExportPanel = () => {
+interface ReportExportPanelProps {
+  onExport?: () => void;
+}
+
+export default function ReportExportPanel({ onExport }: ReportExportPanelProps) {
   const [filters, setFilters] = useState<ExportFilters>({
     startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
     endDate: new Date(),
@@ -33,8 +37,9 @@ const ReportExportPanel = () => {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      
+
       toast.success('CSV exported successfully!');
+      onExport?.();
     } catch (error) {
       console.error('CSV export error:', error);
       toast.error('Failed to export CSV');
@@ -55,8 +60,9 @@ const ReportExportPanel = () => {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      
+
       toast.success('PDF exported successfully!');
+      onExport?.();
     } catch (error) {
       console.error('PDF export error:', error);
       toast.error('Failed to export PDF');
@@ -78,7 +84,7 @@ const ReportExportPanel = () => {
           <Download className="w-6 h-6 text-[#2a7d2f]" />
           Export Analytics Report
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
@@ -93,7 +99,7 @@ const ReportExportPanel = () => {
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent transition-all"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
               <Calendar className="w-4 h-4" />
@@ -107,7 +113,7 @@ const ReportExportPanel = () => {
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-transparent transition-all"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
               <Filter className="w-4 h-4" />
@@ -124,7 +130,7 @@ const ReportExportPanel = () => {
               ))}
             </select>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
               <Filter className="w-4 h-4" />
@@ -158,7 +164,7 @@ const ReportExportPanel = () => {
             )}
             {exporting === 'csv' ? 'Exporting...' : 'Export CSV'}
           </motion.button>
-          
+
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -184,6 +190,4 @@ const ReportExportPanel = () => {
       </div>
     </motion.div>
   );
-};
-
-export default ReportExportPanel;
+}

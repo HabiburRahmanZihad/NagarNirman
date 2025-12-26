@@ -14,7 +14,6 @@ import StatusBarChart from '@/components/admin/analytics/StatusBarChart';
 import TrendLineChart from '@/components/admin/analytics/TrendLineChart';
 import DivisionDistrictChart from '@/components/admin/analytics/DivisionDistrictChart';
 import ReportExportPanel from '@/components/admin/analytics/ReportExportPanel';
-import { ExportFilters } from '@/components/admin/analytics/types';
 
 interface AnalyticsData {
   totalReports: number;
