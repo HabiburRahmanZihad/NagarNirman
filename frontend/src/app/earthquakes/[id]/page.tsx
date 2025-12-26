@@ -402,7 +402,7 @@ export default function EarthquakeDetailPage() {
                 <p className="text-base sm:text-lg leading-relaxed mb-6 text-white/90">Get comprehensive information about earthquake safety, preparedness tips, and emergency protocols.</p>
               </div>
               <Link href="/earthquakes/guidelines" className="w-full">
-                <Button variant="secondary" size="lg" fullWidth>
+                <Button variant="primary" size="lg" fullWidth>
                   View Safety Guidelines
                 </Button>
               </Link>
