@@ -107,18 +107,18 @@ export default function LeaderboardTable({ users }: LeaderboardTableProps) {
                       {user.name.charAt(0)}
                     </div>
                     <div className="min-w-0">
-                      <div className="font-medium text-gray-900 text-xs xs:text-sm sm:text-base truncate max-w-[80px] xs:max-w-[100px] sm:max-w-[150px] md:max-w-none">{user.name}</div>
+                      <div className="font-medium text-gray-900 text-xs xs:text-sm sm:text-base truncate max-w-20 xs:max-w-[100px] sm:max-w-[150px] md:max-w-none">{user.name}</div>
                       <div className="flex items-center space-x-1 text-[10px] xs:text-xs sm:text-sm text-gray-500">
                         <Trophy className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-yellow-500" />
                         <span>Level {user.level}</span>
                       </div>
                       {/* Show district on mobile under name */}
-                      <div className="sm:hidden text-[10px] xs:text-xs text-gray-500 truncate max-w-[80px] xs:max-w-[100px]">{user.district}</div>
+                      <div className="sm:hidden text-[10px] xs:text-xs text-gray-500 truncate max-w-20 xs:max-w-[100px]">{user.district}</div>
                     </div>
                   </div>
                 </td>
                 <td className="px-2 xs:px-3 sm:px-4 md:px-6 py-2 xs:py-3 sm:py-4 whitespace-nowrap hidden sm:table-cell">
-                  <div className="text-xs sm:text-sm text-gray-900 truncate max-w-[80px] sm:max-w-[120px] md:max-w-none">{user.district}</div>
+                  <div className="text-xs sm:text-sm text-gray-900 truncate max-w-20 sm:max-w-[120px] md:max-w-none">{user.district}</div>
                 </td>
                 <td className="px-2 xs:px-3 sm:px-4 md:px-6 py-2 xs:py-3 sm:py-4 whitespace-nowrap hidden md:table-cell">
                   <div className="w-20 sm:w-24 md:w-32">
