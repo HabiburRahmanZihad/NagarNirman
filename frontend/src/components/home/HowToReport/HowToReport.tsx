@@ -1,7 +1,6 @@
 "use client";
 
-import { LucideNotebookPen, Sprout } from "lucide-react";
-import React from "react";
+import { LucideNotebookPen } from "lucide-react";
 
 const StepsProgress = () => {
   const steps = [
@@ -92,7 +91,7 @@ const StepsProgress = () => {
             {/* Vertical Line */}
             <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-[#004d40]"></div>
 
-            {steps.map((step, index) => (
+            {steps.map((step) => (
               <div key={step.id} className="relative flex items-start mb-8 pl-16">
                 {/* Step Circle */}
                 <div className="absolute left-0 w-12 h-12 rounded-full bg-white border border-[#004d40] shadow-lg flex items-center justify-center z-10">
