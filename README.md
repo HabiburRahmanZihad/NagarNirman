@@ -703,7 +703,7 @@ System Config → User Role Management → Platform Oversight → Security Audit
 *Role-based dashboard with statistics and quick actions*
 
 ### Report Creation
-![Create Report Form](https://via.placeholder.com/800x400/f2a921/ffffff?text=Report+Creation+Form)
+![Create Report Form](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145431_xgjjvf.png)
 *Easy-to-use form with image upload and location selection*
 
 ### Interactive Map
