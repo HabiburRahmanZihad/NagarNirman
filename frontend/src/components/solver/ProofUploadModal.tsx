@@ -104,6 +104,7 @@ export default function ProofUploadModal({ task, onClose, onSubmit }: ProofUploa
                 <p className="text-green-100 text-sm mt-1">Task: {task.title}</p>
               </div>
               <button
+                title="Cross"
                 onClick={onClose}
                 className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
               >
@@ -138,6 +139,7 @@ export default function ProofUploadModal({ task, onClose, onSubmit }: ProofUploa
                 </div>
                 
                 <input
+                  title="Upload Completion Photos"
                   ref={fileInputRef}
                   type="file"
                   multiple
@@ -191,6 +193,7 @@ export default function ProofUploadModal({ task, onClose, onSubmit }: ProofUploa
                             className="w-full h-24 object-cover rounded-lg shadow-sm group-hover:shadow-md transition-all"
                           />
                           <button
+                            title="Remove Image"
                             onClick={(e) => {
                               e.stopPropagation();
                               removeImage(index);

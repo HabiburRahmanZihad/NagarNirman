@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { Search, Filter, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import divisionsData from "@/data/divisionsData.json";
-import categoryOptions from "@/data/categoryOptions.json";
 import Button from "@/components/common/Button";
 
 interface Filters {
@@ -35,24 +33,6 @@ const severityOptions = [
   { value: "high", label: "High" }
 ];
 
-// Generate division options from data
-const divisionOptions = [
-  { value: "all", label: "All Divisions" },
-  ...divisionsData.map(div => ({ value: div.division, label: div.division }))
-];
-
-// Generate all district options from data
-const getAllDistricts = () => {
-  const districts: { value: string; label: string }[] = [{ value: "all", label: "All Districts" }];
-  divisionsData.forEach(div => {
-    div.districts.forEach(dist => {
-      districts.push({ value: dist.name, label: dist.name });
-    });
-  });
-  return districts;
-};
-
-const districtOptions = getAllDistricts();
 
 // Generate category options based on backend problemType values
 const categoryOptionsList = [
@@ -77,7 +57,7 @@ export default function TaskFilterBar({ filters, onFiltersChange }: TaskFilterBa
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [searchTerm]);
+  }, [searchTerm, filters, onFiltersChange]);
 
   const activeFiltersCount = [
     filters.status !== 'all',

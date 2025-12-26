@@ -133,14 +133,6 @@ export default function SolversPage() {
     }
   }
 
-  // Typed sort options
-  type SortKey = 'rating' | 'completedTasks' | 'successRate' | 'createdAt';
-  const sortOptions: { value: SortKey; label: string }[] = [
-    { value: 'rating', label: '⭐ Highest Rating' },
-    { value: 'completedTasks', label: '✅ Most Tasks' },
-    { value: 'successRate', label: '🎯 Success Rate' },
-    { value: 'createdAt', label: '🆕 Newest' }
-  ];
 
   // Filter and sort solvers
   const filteredSolvers = solvers

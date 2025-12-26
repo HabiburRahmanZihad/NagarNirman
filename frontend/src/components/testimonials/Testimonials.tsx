@@ -124,7 +124,7 @@ export default function Testimonials() {
               <div className="h-12 w-px bg-gray-300 hidden sm:block" />
 
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-500 flex items-center justify-center text-white text-xl">
+                <div className="w-12 h-12 rounded-full bg-linear-to-tr from-yellow-400 to-amber-500 flex items-center justify-center text-white text-xl">
                   ★
                 </div>
                 <div>

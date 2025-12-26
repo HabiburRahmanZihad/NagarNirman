@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import type { Dispatch, SetStateAction } from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
 import divisionsData from '@/data/divisionsData.json';
@@ -9,7 +10,7 @@ import Card from '@/components/common/Card';
 
 type Filters = {
   role: string;
-  division?: string;
+  division: string;
   district: string;
   status: string;
 };
@@ -20,7 +21,7 @@ interface UserFilterBarProps {
   filters: Filters;
   setFilters?: (filters: Filters) => void;
   onSearch?: (term: string) => void;
-  onFilterChange?: (filters: Filters) => void;
+  onFilterChange?: ((filters: Filters) => void) | Dispatch<SetStateAction<Filters>>;
   divisions?: string[];
   districts?: string[];
   userDivision?: string | null;
