@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, Sprout } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import Button from "@/components/common/Button";
 import { FaQuestionCircle } from "react-icons/fa";
