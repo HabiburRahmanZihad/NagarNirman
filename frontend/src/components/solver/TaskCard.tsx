@@ -90,7 +90,7 @@ const statusConfig = {
   }
 };
 
-export default function TaskCard({ task, onStatusUpdate }: TaskCardProps) {
+export default function TaskCard({ task }: TaskCardProps) {
   const severity = task.priority || task.report?.severity || 'medium';
   const StatusIcon = statusConfig[task.status].icon;
 

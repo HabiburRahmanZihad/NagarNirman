@@ -1,21 +1,9 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, User, Lightbulb, Shield, Check } from "lucide-react";
+import { X, User as UserIcon, Lightbulb, Shield, Check } from "lucide-react";
 import { useState } from "react";
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  role: "user" | "problemSolver" | "authority";
-  district: string;
-  points: number;
-  approved: boolean;
-  isActive: boolean;
-  avatar: string;
-  createdAt: string;
-}
+import type { User } from "@/types";
 
 interface ChangeRoleModalProps {
   user: User;
@@ -32,7 +20,7 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
     {
       value: "user",
       label: "👤 User",
-      icon: User,
+      icon: UserIcon,
       description: "Basic user permissions",
       badge: "Standard Access",
       color: "from-blue-500 to-cyan-500",
@@ -142,7 +130,7 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                   </span>
                 </div>
                 <p className="text-info font-semibold mb-1">{user.email}</p>
-                <p className="text-neutral/60 text-sm">📍 {user.district} • 🗓️ Joined {new Date(user.createdAt).toLocaleDateString()}</p>
+                <p className="text-neutral/60 text-sm">📍 {user.district} • 🗓️ Joined {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : ''}</p>
               </div>
             </div>
           </div>
@@ -168,8 +156,8 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     className={`relative p-6 border-2 rounded-2xl cursor-pointer transition-all duration-300 group overflow-hidden ${isSelected
-                        ? 'border-accent bg-linear-to-r from-accent/10 to-secondary/10 shadow-xl'
-                        : 'border-accent/20 hover:border-accent/50 hover:bg-base-200/50'
+                      ? 'border-accent bg-linear-to-r from-accent/10 to-secondary/10 shadow-xl'
+                      : 'border-accent/20 hover:border-accent/50 hover:bg-base-200/50'
                       } ${isCurrent ? 'ring-2 ring-secondary ring-opacity-50' : ''}`}
                   >
                     {/* Background gradient on hover */}
@@ -231,8 +219,8 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
                                 visible: { opacity: 1, scale: 1 },
                               }}
                               className={`inline-flex items-center px-3 py-2 rounded-lg text-xs font-bold border-2 transition-all ${isSelected
-                                  ? `bg-linear-to-r ${role.color} text-white border-accent/50 shadow-md`
-                                  : 'bg-base-200 text-neutral/70 border-accent/20'
+                                ? `bg-linear-to-r ${role.color} text-white border-accent/50 shadow-md`
+                                : 'bg-base-200 text-neutral/70 border-accent/20'
                                 }`}
                             >
                               {feature}
@@ -274,8 +262,8 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
               onClick={handleSave}
               disabled={selectedRole === currentRole || isSaving}
               className={`px-8 py-3 rounded-xl font-bold text-lg flex items-center gap-2 transition-all duration-200 shadow-lg ${selectedRole === currentRole || isSaving
-                  ? 'bg-neutral/30 text-neutral/50 cursor-not-allowed'
-                  : 'bg-linear-to-r from-accent to-secondary text-white hover:shadow-xl'
+                ? 'bg-neutral/30 text-neutral/50 cursor-not-allowed'
+                : 'bg-linear-to-r from-accent to-secondary text-white hover:shadow-xl'
                 }`}
             >
               {isSaving ? (

@@ -19,7 +19,8 @@ export interface User {
   profilePicture?: string;
   points?: number;
   approved?: boolean; // for NGO/problemSolver applications
-  createdAt?: Date;
+  isActive?: boolean;
+  createdAt?: string | Date;
 }
 
 export interface Location {

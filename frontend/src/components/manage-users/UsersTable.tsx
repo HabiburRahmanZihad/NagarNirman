@@ -9,20 +9,7 @@ import ToggleStatusSwitch from "./ToggleStatusSwitch";
 import Card from "@/components/common/Card";
 import { InlineLoading } from "@/components/common";
 
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  role: "user" | "problemSolver" | "authority" | "superAdmin";
-  division: string;
-  district: string;
-  points: number;
-  approved: boolean;
-  isActive: boolean;
-  avatar?: string;
-  profilePicture?: string;
-  createdAt: string;
-}
+import type { User } from "@/types";
 
 interface UsersTableProps {
   users: User[];
@@ -43,13 +30,11 @@ export default function UsersTable({
   onRoleChange,
   onStatusToggle,
   onDeleteUser,
-  onApprove,
   onDelete,
   currentPage,
   totalPages,
   onPageChange,
   isLoading = false,
-  isSuperAdmin = false
 }: UsersTableProps) {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showRoleModal, setShowRoleModal] = useState(false);
@@ -65,8 +50,10 @@ export default function UsersTable({
     setShowDeleteModal(true);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+  const formatDate = (date?: string | Date | undefined) => {
+    if (!date) return '';
+    const d = typeof date === 'string' ? new Date(date) : date;
+    return new Date(d).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -196,7 +183,7 @@ export default function UsersTable({
                     <td className="px-3 xs:px-4 sm:px-6 py-2.5 xs:py-3 sm:py-4">
                       <div className="flex items-center space-x-1.5 xs:space-x-2 sm:space-x-3">
                         <ToggleStatusSwitch
-                          isActive={user.isActive}
+                          isActive={!!user.isActive}
                           onToggle={(isActive) => onStatusToggle?.(user._id, isActive)}
                         />
                         <span className={`text-[10px] xs:text-xs sm:text-sm font-bold flex items-center gap-0.5 xs:gap-1 ${user.isActive ? 'text-green-600' : 'text-red-600'}`}>
@@ -300,12 +287,12 @@ export default function UsersTable({
 
       {showRoleModal && selectedUser && (
         <ChangeRoleModal
-          user={selectedUser}
-          currentRole={selectedUser.role}
+          user={selectedUser!}
+          currentRole={selectedUser!.role}
           onClose={() => setShowRoleModal(false)}
           onSave={(newRole) => {
             if (onRoleChange) {
-              onRoleChange(selectedUser._id, newRole);
+              onRoleChange(selectedUser!._id, newRole);
             }
             setShowRoleModal(false);
           }}
@@ -314,13 +301,13 @@ export default function UsersTable({
 
       {showDeleteModal && selectedUser && (
         <DeleteUserModal
-          user={selectedUser}
+          user={selectedUser!}
           onClose={() => setShowDeleteModal(false)}
           onConfirm={() => {
             if (onDeleteUser) {
-              onDeleteUser(selectedUser._id);
+              onDeleteUser(selectedUser!._id);
             } else if (onDelete) {
-              onDelete(selectedUser._id);
+              onDelete(selectedUser!._id);
             }
             setShowDeleteModal(false);
           }}

@@ -32,6 +32,7 @@ interface User {
 
 interface FilterState {
   role: string;
+  division: string;
   district: string;
   status: string;
 }
@@ -55,6 +56,7 @@ export default function ManageUsersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     role: "",
+    division: "",
     district: "",
     status: ""
   });

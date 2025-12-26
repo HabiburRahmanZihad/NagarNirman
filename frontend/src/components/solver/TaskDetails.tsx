@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Calendar, AlertTriangle, User, Award, Clock, Navigation, Clock3, CheckCircle2, Image as ImageIcon } from "lucide-react";
+import { MapPin, AlertTriangle, User, Award, Clock, Navigation, Clock3, CheckCircle2, Image as ImageIcon } from "lucide-react";
 import Button from '@/components/common/Button';
 import Image from "next/image";
 

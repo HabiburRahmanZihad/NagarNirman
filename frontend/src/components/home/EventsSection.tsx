@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MapPin, Clock, ArrowRight, Sprout, Calendar } from "lucide-react";
+import { MapPin, Clock, Sprout, Calendar } from "lucide-react";
 import Button from "@/components/common/Button";
 import Image from "next/image";
 import { MdEventNote } from "react-icons/md";
