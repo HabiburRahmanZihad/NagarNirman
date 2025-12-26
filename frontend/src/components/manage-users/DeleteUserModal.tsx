@@ -1,22 +1,10 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, AlertTriangle, User, Trash2 } from "lucide-react";
+import { X, AlertTriangle, Trash2 } from "lucide-react";
 import { useState } from "react";
 import Button from '@/components/common/Button';
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  role: "user" | "problemSolver" | "authority";
-  district: string;
-  points: number;
-  approved: boolean;
-  isActive: boolean;
-  avatar: string;
-  createdAt: string;
-}
+import type { User } from "@/types";
 
 interface DeleteUserModalProps {
   user: User;
