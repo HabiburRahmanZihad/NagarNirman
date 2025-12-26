@@ -757,23 +757,6 @@ NEXT_PUBLIC_API_URL=https://your-backend-url.com/api
 
 ### Backend Deployment (Railway/Render/Heroku)
 
-#### Using Railway:
-
-1. **Install Railway CLI**:
-```bash
-npm install -g @railway/cli
-```
-
-2. **Login and Deploy**:
-```bash
-cd backend
-railway login
-railway init
-railway up
-```
-
-3. **Add Environment Variables** in Railway dashboard
-
 #### Using Render:
 
 1. Create new Web Service
@@ -944,36 +927,9 @@ Use the included test scripts:
 - [ ] Map functionality
 
 ---
-
-## 📈 Roadmap
-
-### Version 2.0 (Planned)
-
-- [ ] Real-time notifications with WebSockets
-- [ ] Mobile app (React Native)
-- [ ] Push notifications
-- [ ] Advanced analytics dashboard
-- [ ] Google Maps integration
-- [ ] Multi-language support (Bengali, English)
-- [ ] SMS notifications
-- [ ] QR code scanning for reports
-- [ ] Offline mode support
-- [ ] Social media integration
-
-### Version 3.0 (Future)
-
-- [ ] AI-powered problem detection
-- [ ] Blockchain for transparency
-- [ ] IoT sensor integration
-- [ ] Predictive maintenance
-- [ ] Government API integration
-- [ ] Budget tracking
-- [ ] Contractor management
-- [ ] Public polls and voting
-
 ---
 
-## � Meet the Dream Team
+##  Meet the Dream Team 🦖
 
 <div align="center">
 
@@ -1041,7 +997,7 @@ If you find this project helpful, please consider:
 
 **Report • Resolve • Rebuild**
 
-[![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red?style=for-the-badge)](https://github.com/yourusername/nagarnirman)
+[![Made with Love](https://img.shields.io/badge/Made%20with-💚-red?style=for-the-badge)](https://github.com/yourusername/nagarnirman)
 
 **[⬆ Back to Top](#-nagarnirman---report-resolve-rebuild)**
 
@@ -1052,15 +1008,6 @@ If you find this project helpful, please consider:
 ## 📝 Changelog
 
 ### Version 1.0.0 (Current)
-- ✅ Initial release
-- ✅ Complete authentication system
-- ✅ Report management with image uploads
-- ✅ Task assignment system
-- ✅ Email notifications
-- ✅ Earthquake monitoring
-- ✅ Leaderboard and rewards
-- ✅ Responsive UI with Tailwind CSS
-- ✅ Comprehensive documentation
 
 ---
 
