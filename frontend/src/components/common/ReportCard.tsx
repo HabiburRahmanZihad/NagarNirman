@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaMapMarkerAlt, FaClock, FaThumbsUp, FaEye, FaExclamationCircle, FaImages } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaClock, FaThumbsUp, FaImages } from 'react-icons/fa';
 import Button from '@/components/common/Button';
 
 interface ReportCardProps {
