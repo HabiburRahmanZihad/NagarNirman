@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, AlertTriangle, User, Trash2, Shield } from "lucide-react";
+import { X, AlertTriangle, User, Trash2 } from "lucide-react";
 import { useState } from "react";
 import Button from '@/components/common/Button';
 

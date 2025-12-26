@@ -43,7 +43,8 @@ export default function MyReportsPage() {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
       const token = localStorage.getItem('nn_auth_token');
-      const userId = localStorage.getItem('user_id') || (user as any)._id || (user as any).id;
+      const storedUserId = localStorage.getItem('user_id');
+      const userId: string = storedUserId ?? user._id ?? (user as unknown as { id?: string }).id ?? '';
 
       const res = await fetch(`${apiUrl}/api/reports/user/${userId}`, {
         method: 'GET',
@@ -68,9 +69,10 @@ export default function MyReportsPage() {
         setReports([]);
         setFilteredReports([]);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching reports:', error);
-      toast.error(error.message || 'Failed to load your reports. Please check your connection.');
+      const message = error instanceof Error ? error.message : String(error ?? '');
+      toast.error(message || 'Failed to load your reports. Please check your connection.');
       setReports([]);
       setFilteredReports([]);
     } finally {
@@ -354,7 +356,7 @@ export default function MyReportsPage() {
             </div>
           </>
         )}
-        
+
       </div>
     </div>
   );

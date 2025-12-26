@@ -33,6 +33,20 @@ interface Earthquake {
   affectedAreas: string[];
 }
 
+// Minimal typing for USGS GeoJSON feature used by the client
+interface USGSFeature {
+  properties?: {
+    mag?: number | null;
+    ids?: string | null;
+    code?: string | null;
+    place?: string | null;
+    time?: number | null;
+  };
+  geometry?: {
+    coordinates?: [number, number, number];
+  };
+}
+
 const getAlertColor = (alertLevel: string) => {
   switch (alertLevel) {
     case 'Green':
@@ -103,29 +117,31 @@ const isBangladeshEarthquake = (latitude: number, longitude: number): boolean =>
 };
 
 // Transform USGS API response to our format
-const transformUSGSData = (usgsFeatures: any[]): Earthquake[] => {
+const transformUSGSData = (usgsFeatures: USGSFeature[]): Earthquake[] => {
   return usgsFeatures.map((feature) => {
-    const props = feature.properties;
-    const coords = feature.geometry.coordinates;
-    const magnitude = props.mag || 0;
+    const props = feature.properties ?? {};
+    const coords = feature.geometry?.coordinates ?? [0, 0, 0];
+    const magnitude = Number(props.mag ?? 0);
+
+    const id = props.ids ? String(props.ids).split(',')[0] : props.code ?? `USGS-unknown`;
 
     return {
-      _id: props.ids?.split(',')[0] || props.code,
-      eventId: props.code || `USGS-${props.ids?.split(',')[0] || 'unknown'}`,
-      magnitude: magnitude,
-      depth: coords[2] || 0, // depth in km
-      location: props.place || 'Unknown Location',
-      latitude: coords[1],
-      longitude: coords[0],
-      timestamp: new Date(props.time).toISOString(),
+      _id: id,
+      eventId: String(props.code ?? `USGS-${id}`),
+      magnitude,
+      depth: Number(coords[2] ?? 0), // depth in km
+      location: String(props.place ?? 'Unknown Location'),
+      latitude: Number(coords[1] ?? 0),
+      longitude: Number(coords[0] ?? 0),
+      timestamp: new Date(Number(props.time ?? Date.now())).toISOString(),
       intensity: getIntensity(magnitude),
       alertLevel: getAlertLevel(magnitude),
       casualties: 0,
-      affectedAreas: [props.place || 'Unknown'],
+      affectedAreas: [String(props.place ?? 'Unknown')],
       description: `Magnitude ${magnitude} earthquake`,
       reportedDamage: 'No damage data available',
       source: 'USGS Earthquake Hazards Program',
-    };
+    } as Earthquake;
   });
 };
 
@@ -306,7 +322,7 @@ export default function EarthquakesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {filteredEarthquakes.map((earthquake, index) => (
                 <motion.div
-                  key={earthquake._id}
+                  key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
@@ -379,7 +395,7 @@ export default function EarthquakesPage() {
                   </div>
 
                   {/* View Details Button */}
-                  <Link href={`/earthquakes/${earthquake._id}`} className="w-full">
+                  <Link href={`/earthquakes/${earthquake.eventId}`} className="w-full">
                     <Button variant="primary" fullWidth>
                       View Details
                     </Button>

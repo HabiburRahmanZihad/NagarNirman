@@ -7,14 +7,11 @@ import { ExportFilters } from './types';
 import { generateCSV, generatePDF } from './api';
 import toast from 'react-hot-toast';
 
-interface ReportExportPanelProps {
-  onExport: (filters: ExportFilters) => void;
-}
 
 const divisions = ['All Divisions', 'Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna', 'Barishal', 'Rangpur', 'Mymensingh'];
 const districts = ['All Districts', 'Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna', 'Barishal', 'Rangpur', 'Mymensingh', 'Comilla', 'Noakhali'];
 
-const ReportExportPanel = ({ onExport }: ReportExportPanelProps) => {
+const ReportExportPanel = () => {
   const [filters, setFilters] = useState<ExportFilters>({
     startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
     endDate: new Date(),

@@ -63,7 +63,7 @@ interface TaskReview {
 }
 
 // Add ApiResponse interface
-interface ApiResponse<T = any> {
+interface ApiResponse<T = unknown> {
   success: boolean;
   data: T;
   message?: string;

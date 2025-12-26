@@ -1,4 +1,4 @@
-import { Sprout, Users } from "lucide-react";
+import {  Users } from "lucide-react";
 import { FaHandHoldingHeart } from "react-icons/fa";
 import Image from "next/image";
 import { BiSolidCity } from "react-icons/bi";

@@ -173,13 +173,7 @@ const Navbar: React.FC = () => {
     return 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50';
   };
 
-  // Get user menu text color
-  const getUserTextColor = () => {
-    if (isHomePage && isDesktop && !isScrolled) {
-      return 'text-white';
-    }
-    return 'text-gray-700';
-  };
+
 
   // Get user subtext color
   const getUserSubtextColor = () => {

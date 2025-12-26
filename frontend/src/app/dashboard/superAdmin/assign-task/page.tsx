@@ -67,7 +67,7 @@ interface SolverFilters {
 }
 
 // Add ApiResponse interfaces
-interface ApiResponse<T = any> {
+interface ApiResponse<T = unknown> {
   success: boolean;
   data: T;
   message?: string;
@@ -83,7 +83,7 @@ interface UserApiResponse {
 
 interface TaskApiResponse {
   success: boolean;
-  data?: any;
+  data?: unknown;
   message?: string;
   error?: string;
 }

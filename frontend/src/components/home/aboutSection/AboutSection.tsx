@@ -3,8 +3,7 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import Button from "@/components/common/Button";
 import { FaPlay, FaChartLine, FaLightbulb, FaThumbsUp, FaUsers, FaTrophy } from "react-icons/fa";
-import { Sprout } from "lucide-react";
-import { BsFillInfoCircleFill, BsInfoCircle } from "react-icons/bs";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 import CountUp from "react-countup";
 import Link from "next/link";
 

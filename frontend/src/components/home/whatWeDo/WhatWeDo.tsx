@@ -3,7 +3,7 @@
 import { motion, Variants } from "framer-motion";
 import {
   Droplets, Lightbulb, Recycle,
-  Route, Sprout, Waves, Wrench
+  Route,  Waves, Wrench
 } from "lucide-react";
 import Image from "next/image";
 import { FaBuildingWheat } from "react-icons/fa6";

@@ -25,13 +25,6 @@ interface Report {
   createdAt: string;
 }
 
-// Add ApiResponse interfaces
-interface ApiResponse<T = any> {
-  success: boolean;
-  data: T;
-  message?: string;
-  error?: string;
-}
 
 interface DashboardResponse {
   success: boolean;
