@@ -711,7 +711,7 @@ System Config → User Role Management → Platform Oversight → Security Audit
 *Leaflet-powered map showing all reports and earthquakes*
 
 ### Leaderboard
-![Leaderboard](https://via.placeholder.com/800x400/aef452/333333?text=Top+Problem+Solvers)
+![Leaderboard](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145612_cnfx4i.png)
 *Gamified leaderboard showcasing top contributors*
 
 ---
