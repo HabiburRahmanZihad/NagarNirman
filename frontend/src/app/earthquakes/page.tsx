@@ -322,7 +322,7 @@ export default function EarthquakesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {filteredEarthquakes.map((earthquake, index) => (
                 <motion.div
-                  key={earthquake._id}
+                  key={index}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
@@ -395,7 +395,7 @@ export default function EarthquakesPage() {
                   </div>
 
                   {/* View Details Button */}
-                  <Link href={`/earthquakes/${earthquake._id}`} className="w-full">
+                  <Link href={`/earthquakes/${earthquake.eventId}`} className="w-full">
                     <Button variant="primary" fullWidth>
                       View Details
                     </Button>
