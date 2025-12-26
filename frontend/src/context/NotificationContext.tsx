@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { notificationAPI } from '@/utils/api';
 import { useAuth } from './AuthContext';
 
-interface Notification {
+export interface Notification {
   _id: string;
   id?: string;
   title: string;
