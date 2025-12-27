@@ -464,7 +464,7 @@ export default function AllReportsPage() {
                   aria-label="Filter reports by problem type"
                   value={filters.problemType}
                   onChange={(e) => setFilters({ ...filters, problemType: e.target.value })}
-                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                 >
                   <option value="">All Types</option>
                   <option value="road">Road</option>
