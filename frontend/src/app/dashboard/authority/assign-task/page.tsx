@@ -474,7 +474,7 @@ const AssignTaskPage = () => {
                     value={filters.district}
                     onChange={(e) => setFilters({ ...filters, district: e.target.value })}
                     disabled={!filters.division}
-                    className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-base-200 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-colors disabled:bg-base-200 disabled:cursor-not-allowed font-medium"
+                    className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-base-200 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-colors disabled:bg-base-200 disabled:cursor-not-allowed font-medium outline-none"
                   >
                     <option value="">All Districts</option>
                     {availableDistricts.map(district => (
