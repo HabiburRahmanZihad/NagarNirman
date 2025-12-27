@@ -392,7 +392,7 @@ export default function SolverStatisticsPage() {
                 title='sort-by'
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all col-span-2 sm:col-span-1 lg:col-span-2"
+                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all col-span-2 sm:col-span-1 lg:col-span-2 outline-none"
               >
                 <option value="total">Total Tasks</option>
                 <option value="completed">Completed</option>
