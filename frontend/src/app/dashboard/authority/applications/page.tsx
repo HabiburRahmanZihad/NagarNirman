@@ -305,8 +305,7 @@ export default function ProblemSolverApplications() {
           {/* Total Display */}
           <div className="flex items-end">
             <div className="w-full p-3 xs:p-4 bg-linear-to-br from-primary/5 to-secondary/5 rounded-lg xs:rounded-xl border border-primary/10">
-              <p className="text-xs xs:text-sm font-bold text-neutral/70 uppercase tracking-wide mb-1.5 xs:mb-2">Total Applications</p>
-              <p className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-info">{pagination.total}</p>
+              <p className="text-xs xs:text-sm font-bold text-neutral/70 uppercase tracking-wide mb-1.5 xs:mb-2">Total Applications : {pagination.total}</p>
             </div>
           </div>
         </div>
