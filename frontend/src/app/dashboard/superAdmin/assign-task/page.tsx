@@ -360,7 +360,7 @@ export default function SuperAdminAssignTaskPage() {
                 aria-label="Filter by status"
                 value={reportFilter.status}
                 onChange={(e) => setReportFilter({ ...reportFilter, status: e.target.value })}
-                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-100 font-medium text-neutral cursor-pointer hover:border-secondary/50 transition-all"
+                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-100 font-medium text-neutral cursor-pointer hover:border-secondary/50 transition-all outline-none"
               >
                 <option value="pending">⏳ Pending Only</option>
                 <option value="">All Statuses</option>
