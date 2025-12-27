@@ -329,41 +329,62 @@ export default function SolversPage() {
             </div>
           </div>
 
-          {/* District Filter */}
-          <div>
-            <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">
-              Filter by District
-            </label>
-            {/* Division Filter (optional) */}
-            <div className="mb-3">
+          {/* Division & District Filters - improved layout */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
               <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">
                 Filter by Division
               </label>
-              <select
-                aria-label="Filter by division"
-                value={filterDivision}
-                onChange={(e) => { setFilterDivision(e.target.value); setFilterDistrict(''); }}
-                disabled={!!authUser?.division}
-                className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium outline-none"
-              >
-                <option value="">All Divisions</option>
-                {divisions.map((div) => (
-                  <option key={div.division} value={div.division}>{div.division}</option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2">
+                <select
+                  aria-label="Filter by division"
+                  value={filterDivision}
+                  onChange={(e) => { setFilterDivision(e.target.value); setFilterDistrict(''); }}
+                  disabled={!!authUser?.division}
+                  className="flex-1 w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium outline-none"
+                >
+                  <option value="">All Divisions</option>
+                  {divisions.map((div) => (
+                    <option key={div.division} value={div.division}>{div.division}</option>
+                  ))}
+                </select>
+                {/* Clear button shown when division is selectable and a value exists */}
+                {!authUser?.division && filterDivision && (
+                  <button
+                    onClick={() => { setFilterDivision(''); setFilterDistrict(''); }}
+                    className="px-3 py-2 bg-white border border-accent/20 rounded-lg text-xs font-semibold hover:bg-base-200"
+                    aria-label="Clear division filter"
+                    title="Clear division"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              {authUser?.division && (
+                <p className="mt-2 text-[11px] text-neutral/60">Fixed to your division: <span className="font-semibold">{authUser.division}</span></p>
+              )}
             </div>
 
-            <select
-              aria-label="Filter by district"
-              value={filterDistrict}
-              onChange={(e) => setFilterDistrict(e.target.value)}
-              className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium outline-none"
-            >
-              <option value="">All Districts</option>
-              {districts.map(district => (
-                <option key={district} value={district}>{district}</option>
-              ))}
-            </select>
+            <div>
+              <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">
+                Filter by District
+              </label>
+              <select
+                aria-label="Filter by district"
+                value={filterDistrict}
+                onChange={(e) => setFilterDistrict(e.target.value)}
+                disabled={districts.length === 0}
+                className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium outline-none disabled:opacity-60"
+              >
+                <option value="">All Districts</option>
+                {districts.map(district => (
+                  <option key={district} value={district}>{district}</option>
+                ))}
+              </select>
+              {districts.length === 0 && (
+                <p className="mt-2 text-[11px] text-neutral/60">No districts available for the selected division.</p>
+              )}
+            </div>
           </div>
 
           {/* Sort Options */}
