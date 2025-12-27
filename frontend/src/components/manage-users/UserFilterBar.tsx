@@ -176,23 +176,22 @@ export default function UserFilterBar({
             </select>
           </div>
 
-          {/* Division Filter (SuperAdmin only) */}
-          {isSuperAdmin && (
-            <div>
-              <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">Division</label>
-              <select
-                value={localFilters.division || ""}
-                onChange={(e) => handleFilterChange('division', e.target.value)}
-                className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium appearance-none transition-all"
-                aria-label="Filter by division"
-              >
-                <option value="">All Divisions</option>
-                {divisions.map(division => (
-                  <option key={division} value={division}>{division}</option>
-                ))}
-              </select>
-            </div>
-          )}
+          {/* Division Filter (visible to all; disabled when userDivision is set) */}
+          <div>
+            <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">Division (Select Division)</label>
+            <select
+              value={localFilters.division || userDivision || ""}
+              onChange={(e) => handleFilterChange('division', e.target.value)}
+              className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium appearance-none transition-all"
+              aria-label="Filter by division"
+              disabled={!isSuperAdmin && Boolean(userDivision)}
+            >
+              <option value="">All Divisions</option>
+              {divisions.map(division => (
+                <option key={division} value={division}>{division}</option>
+              ))}
+            </select>
+          </div>
 
           {/* District Filter */}
           <div>
