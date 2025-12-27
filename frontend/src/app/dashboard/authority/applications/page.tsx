@@ -293,7 +293,7 @@ export default function ProblemSolverApplications() {
               aria-label="Filter by status"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium text-xs xs:text-sm sm:text-base"
+              className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium text-xs xs:text-sm sm:text-base outline-none transition-all"
             >
               <option value="all">All Applications</option>
               <option value="pending">⏳ Pending</option>
@@ -305,8 +305,7 @@ export default function ProblemSolverApplications() {
           {/* Total Display */}
           <div className="flex items-end">
             <div className="w-full p-3 xs:p-4 bg-linear-to-br from-primary/5 to-secondary/5 rounded-lg xs:rounded-xl border border-primary/10">
-              <p className="text-xs xs:text-sm font-bold text-neutral/70 uppercase tracking-wide mb-1.5 xs:mb-2">Total Applications</p>
-              <p className="text-xl xs:text-2xl sm:text-3xl font-extrabold text-info">{pagination.total}</p>
+              <p className="text-xs xs:text-sm font-bold text-neutral/70 uppercase tracking-wide mb-1.5 xs:mb-2">Total Applications : {pagination.total}</p>
             </div>
           </div>
         </div>

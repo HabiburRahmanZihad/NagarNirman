@@ -68,20 +68,22 @@ export default function SolversPage() {
   const [loading, setLoading] = useState(true);
   const [filterRole, setFilterRole] = useState<'all' | 'problemSolver'>('all');
   const [filterDistrict, setFilterDistrict] = useState<string>('');
+  const [filterDivision, setFilterDivision] = useState<string>(authUser?.division || '');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'completedTasks' | 'successRate' | 'createdAt'>('rating');
 
   useEffect(() => {
-    if (authUser?.division) {
+    if (authUser?.division || filterDivision) {
       fetchSolvers();
     }
-  }, [authUser]);
+  }, [authUser, filterDivision]);
 
   const fetchSolvers = async (showToast = true) => {
     try {
       setLoading(true);
+      const divisionToUse = filterDivision || authUser?.division;
       const response = await userAPI.getSolvers({
-        division: authUser?.division,
+        ...(divisionToUse ? { division: divisionToUse } : {}),
         limit: 100
       });
 
@@ -120,14 +122,18 @@ export default function SolversPage() {
   };
 
 
-  // Get all districts for the authority's division
+  // Get all districts for the selected division (authority's division or manual selection)
   let districts: string[] = [];
-  if (authUser?.division) {
-    // Normalize division names for robust matching (trim, lowercase, remove unicode spaces)
-    const normalize = (str: string) => str.replace(/\s+/g, ' ').trim().toLowerCase();
-    const userDivision = normalize(authUser.division);
-    type DivisionShape = { division: string; districts: { name: string }[] };
-    const divisionObj = (divisionsData as DivisionShape[]).find(d => normalize(d.division) === userDivision);
+  // Normalize division names for robust matching (trim, lowercase, remove unicode spaces)
+  const normalize = (str: string) => str.replace(/\s+/g, ' ').trim().toLowerCase();
+  const activeDivision = filterDivision || authUser?.division || '';
+  // Typed divisions array to satisfy TypeScript (avoid `any`)
+  type District = { name: string; latitude?: number; longitude?: number };
+  type Division = { division: string; latitude?: number; longitude?: number; districts: District[] };
+  const divisions = divisionsData as Division[];
+  if (activeDivision) {
+    const userDivision = normalize(activeDivision);
+    const divisionObj = divisions.find(d => normalize(d.division) === userDivision);
     if (divisionObj) {
       districts = divisionObj.districts.map((d) => d.name);
     }
@@ -299,7 +305,7 @@ export default function SolversPage() {
                 placeholder="Search by name, email, organization, or district..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium"
+                className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium outline-none"
               />
             </div>
 
@@ -315,7 +321,7 @@ export default function SolversPage() {
                   const val = e.target.value;
                   setFilterRole(val === 'problemSolver' ? 'problemSolver' : 'all');
                 }}
-                className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium"
+                className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium outline-none "
               >
                 <option value="all">All Types</option>
                 <option value="problemSolver">💡 Problem Solvers</option>
@@ -323,22 +329,62 @@ export default function SolversPage() {
             </div>
           </div>
 
-          {/* District Filter */}
-          <div>
-            <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">
-              Filter by District
-            </label>
-            <select
-              aria-label="Filter by district"
-              value={filterDistrict}
-              onChange={(e) => setFilterDistrict(e.target.value)}
-              className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium"
-            >
-              <option value="">All Districts</option>
-              {districts.map(district => (
-                <option key={district} value={district}>{district}</option>
-              ))}
-            </select>
+          {/* Division & District Filters - improved layout */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">
+                Filter by Division
+              </label>
+              <div className="flex items-center gap-2">
+                <select
+                  aria-label="Filter by division"
+                  value={filterDivision}
+                  onChange={(e) => { setFilterDivision(e.target.value); setFilterDistrict(''); }}
+                  disabled={!!authUser?.division}
+                  className="flex-1 w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium outline-none"
+                >
+                  <option value="">All Divisions</option>
+                  {divisions.map((div) => (
+                    <option key={div.division} value={div.division}>{div.division}</option>
+                  ))}
+                </select>
+                {/* Clear button shown when division is selectable and a value exists */}
+                {!authUser?.division && filterDivision && (
+                  <button
+                    onClick={() => { setFilterDivision(''); setFilterDistrict(''); }}
+                    className="px-3 py-2 bg-white border border-accent/20 rounded-lg text-xs font-semibold hover:bg-base-200"
+                    aria-label="Clear division filter"
+                    title="Clear division"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              {authUser?.division && (
+                <p className="mt-2 text-[11px] text-neutral/60">Fixed to your division: <span className="font-semibold">{authUser.division}</span></p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">
+                Filter by District
+              </label>
+              <select
+                aria-label="Filter by district"
+                value={filterDistrict}
+                onChange={(e) => setFilterDistrict(e.target.value)}
+                disabled={districts.length === 0}
+                className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium outline-none disabled:opacity-60"
+              >
+                <option value="">All Districts</option>
+                {districts.map(district => (
+                  <option key={district} value={district}>{district}</option>
+                ))}
+              </select>
+              {districts.length === 0 && (
+                <p className="mt-2 text-[11px] text-neutral/60">No districts available for the selected division.</p>
+              )}
+            </div>
           </div>
 
           {/* Sort Options */}
@@ -394,7 +440,7 @@ export default function SolversPage() {
             <p className="text-neutral/50 mt-0.5 xs:mt-1 text-xs xs:text-sm">Try adjusting your filters</p>
           </motion.div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4 sm:gap-6">
             {filteredSolvers.map((solver, index) => (
               <motion.div
                 key={solver._id}
@@ -421,8 +467,8 @@ export default function SolversPage() {
                       </div>
                     )}
                     <div className="min-w-0">
-                      <h3 className="font-bold text-info text-sm xs:text-base sm:text-lg truncate">{solver.name}</h3>
-                      <p className="text-[10px] xs:text-xs sm:text-sm text-neutral/60 truncate">{solver.email}</p>
+                      <h3 className="font-bold text-info text-sm xs:text-base sm:text-lg">{solver.name}</h3>
+                      <p className="text-[10px] xs:text-xs sm:text-sm text-neutral/60 ">{solver.email}</p>
                     </div>
                   </div>
                 </div>

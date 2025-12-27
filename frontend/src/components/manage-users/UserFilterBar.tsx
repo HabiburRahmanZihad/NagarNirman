@@ -43,6 +43,11 @@ export default function UserFilterBar({
   const [internalSearchTerm, setInternalSearchTerm] = useState("");
   const [localFilters, setLocalFilters] = useState<Filters>(filters);
 
+  // Sync localFilters with external filters prop
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
+
   const searchTerm = externalSearchTerm !== undefined ? externalSearchTerm : internalSearchTerm;
   const setSearchTerm = externalSetSearchTerm || setInternalSearchTerm;
 
@@ -64,7 +69,11 @@ export default function UserFilterBar({
   }, [searchTerm, onSearch]);
 
   const handleFilterChange = (key: keyof Filters, value: string) => {
-    const newFilters = { ...localFilters, [key]: value } as Filters;
+    let newFilters = { ...localFilters, [key]: value } as Filters;
+    // If division changes, reset district
+    if (key === 'division') {
+      newFilters = { ...newFilters, district: "" };
+    }
     setLocalFilters(newFilters);
     if (externalSetFilters) {
       externalSetFilters(newFilters);
@@ -73,11 +82,15 @@ export default function UserFilterBar({
     }
   };
 
-  // Get districts and divisions
+  // Get divisions
   const divisions = externalDivisions || divisionsData.map(d => d.division);
-  const districts = externalDistricts || (userDivision
-    ? (divisionsData.find(d => d.division === userDivision)?.districts.map(d => d.name) || [])
-    : []);
+
+  // Get districts based on division selection (use localFilters.division first)
+  const selectedDivision = localFilters.division || userDivision || null;
+  const districts = externalDistricts
+    || (selectedDivision
+      ? (divisionsData.find(d => d.division === selectedDivision)?.districts.map(d => d.name) || [])
+      : divisionsData.flatMap(d => d.districts.map(dist => dist.name)));
   const roles = [
     { value: "user", label: "👤 User" },
     { value: "problemSolver", label: "💡 Problem Solver" },
@@ -100,7 +113,11 @@ export default function UserFilterBar({
   };
 
   const removeFilter = (key: keyof Filters) => {
-    const newFilters = { ...localFilters, [key]: "" } as Filters;
+    let newFilters = { ...localFilters, [key]: "" } as Filters;
+    // If removing division, also clear district
+    if (key === 'division') {
+      newFilters = { ...newFilters, district: "" };
+    }
     setLocalFilters(newFilters);
     if (externalSetFilters) {
       externalSetFilters(newFilters);
@@ -135,7 +152,8 @@ export default function UserFilterBar({
             placeholder="Search users by name, email, or district..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="block w-full pl-10 xs:pl-12 pr-3 xs:pr-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl bg-base-200 focus:ring-2 focus:ring-secondary focus:border-secondary text-neutral placeholder:text-neutral/50 font-medium transition-all duration-200"
+            className="block w-full pl-10 xs:pl-12 pr-3 xs:pr-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl bg-base-200 focus:ring-2 focus:ring-secondary focus:border-secondary text-neutral placeholder:text-neutral/50 font-medium transition-all duration-200 outline-none"
+            aria-label="Search users"
           />
         </div>
 
@@ -147,7 +165,7 @@ export default function UserFilterBar({
             <select
               value={localFilters.role}
               onChange={(e) => handleFilterChange('role', e.target.value)}
-              className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium appearance-none transition-all"
+              className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium appearance-none transition-all outline-none"
               aria-label="Filter by role"
             >
               <option value="">All Roles</option>
@@ -159,23 +177,22 @@ export default function UserFilterBar({
             </select>
           </div>
 
-          {/* Division Filter (SuperAdmin only) */}
-          {isSuperAdmin && (
-            <div>
-              <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">Division</label>
-              <select
-                value={localFilters.division || ""}
-                onChange={(e) => handleFilterChange('division', e.target.value)}
-                className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium appearance-none transition-all"
-                aria-label="Filter by division"
-              >
-                <option value="">All Divisions</option>
-                {divisions.map(division => (
-                  <option key={division} value={division}>{division}</option>
-                ))}
-              </select>
-            </div>
-          )}
+          {/* Division Filter (visible to all; disabled when userDivision is set) */}
+          <div>
+            <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">Division (Select Division)</label>
+            <select
+              value={localFilters.division || userDivision || ""}
+              onChange={(e) => handleFilterChange('division', e.target.value)}
+              className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium appearance-none transition-all outline-none"
+              aria-label="Filter by division"
+              disabled={!isSuperAdmin && Boolean(userDivision)}
+            >
+              <option value="">All Divisions</option>
+              {divisions.map(division => (
+                <option key={division} value={division}>{division}</option>
+              ))}
+            </select>
+          </div>
 
           {/* District Filter */}
           <div>
@@ -183,10 +200,11 @@ export default function UserFilterBar({
             <select
               value={localFilters.district}
               onChange={(e) => handleFilterChange('district', e.target.value)}
-              className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium appearance-none transition-all"
+              className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium appearance-none transition-all outline-none"
               aria-label="Filter by district"
+              disabled={districts.length === 0}
             >
-              <option value="">{userDivision ? `All Districts` : 'All Districts'}</option>
+              <option value="">All Districts</option>
               {districts.map(district => (
                 <option key={district} value={district}>{district}</option>
               ))}
@@ -199,7 +217,7 @@ export default function UserFilterBar({
             <select
               value={localFilters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium appearance-none transition-all"
+              className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium appearance-none transition-all outline-none"
               aria-label="Filter by status"
             >
               <option value="">All Status</option>
@@ -225,7 +243,6 @@ export default function UserFilterBar({
               size="sm"
               className="text-neutral hover:text-primary border border-neutral/20"
             >
-              <X className="w-4 h-4" />
               Clear All Filters
             </Button>
           </motion.div>
@@ -280,7 +297,7 @@ export default function UserFilterBar({
                 animate={{ opacity: 1, scale: 1 }}
                 className="inline-flex items-center gap-1.5 xs:gap-2 px-2 xs:px-3 sm:px-4 py-1 xs:py-1.5 sm:py-2 rounded-full text-[10px] xs:text-xs sm:text-sm font-bold bg-accent/20 text-accent border border-accent/40"
               >
-                📍 {localFilters.district}
+                {localFilters.district}
                 <button
                   onClick={() => removeFilter('district')}
                   className="hover:text-accent/70 transition-colors"
