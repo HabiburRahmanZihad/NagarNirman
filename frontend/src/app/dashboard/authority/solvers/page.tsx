@@ -68,20 +68,22 @@ export default function SolversPage() {
   const [loading, setLoading] = useState(true);
   const [filterRole, setFilterRole] = useState<'all' | 'problemSolver'>('all');
   const [filterDistrict, setFilterDistrict] = useState<string>('');
+  const [filterDivision, setFilterDivision] = useState<string>(authUser?.division || '');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'completedTasks' | 'successRate' | 'createdAt'>('rating');
 
   useEffect(() => {
-    if (authUser?.division) {
+    if (authUser?.division || filterDivision) {
       fetchSolvers();
     }
-  }, [authUser]);
+  }, [authUser, filterDivision]);
 
   const fetchSolvers = async (showToast = true) => {
     try {
       setLoading(true);
+      const divisionToUse = filterDivision || authUser?.division;
       const response = await userAPI.getSolvers({
-        division: authUser?.division,
+        ...(divisionToUse ? { division: divisionToUse } : {}),
         limit: 100
       });
 
@@ -120,14 +122,18 @@ export default function SolversPage() {
   };
 
 
-  // Get all districts for the authority's division
+  // Get all districts for the selected division (authority's division or manual selection)
   let districts: string[] = [];
-  if (authUser?.division) {
-    // Normalize division names for robust matching (trim, lowercase, remove unicode spaces)
-    const normalize = (str: string) => str.replace(/\s+/g, ' ').trim().toLowerCase();
-    const userDivision = normalize(authUser.division);
-    type DivisionShape = { division: string; districts: { name: string }[] };
-    const divisionObj = (divisionsData as DivisionShape[]).find(d => normalize(d.division) === userDivision);
+  // Normalize division names for robust matching (trim, lowercase, remove unicode spaces)
+  const normalize = (str: string) => str.replace(/\s+/g, ' ').trim().toLowerCase();
+  const activeDivision = filterDivision || authUser?.division || '';
+  // Typed divisions array to satisfy TypeScript (avoid `any`)
+  type District = { name: string; latitude?: number; longitude?: number };
+  type Division = { division: string; latitude?: number; longitude?: number; districts: District[] };
+  const divisions = divisionsData as Division[];
+  if (activeDivision) {
+    const userDivision = normalize(activeDivision);
+    const divisionObj = divisions.find(d => normalize(d.division) === userDivision);
     if (divisionObj) {
       districts = divisionObj.districts.map((d) => d.name);
     }
@@ -328,6 +334,25 @@ export default function SolversPage() {
             <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">
               Filter by District
             </label>
+            {/* Division Filter (optional) */}
+            <div className="mb-3">
+              <label className="block text-xs xs:text-sm font-bold text-info mb-2 xs:mb-3 uppercase tracking-wide">
+                Filter by Division
+              </label>
+              <select
+                aria-label="Filter by division"
+                value={filterDivision}
+                onChange={(e) => { setFilterDivision(e.target.value); setFilterDistrict(''); }}
+                disabled={!!authUser?.division}
+                className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium outline-none"
+              >
+                <option value="">All Divisions</option>
+                {divisions.map((div) => (
+                  <option key={div.division} value={div.division}>{div.division}</option>
+                ))}
+              </select>
+            </div>
+
             <select
               aria-label="Filter by district"
               value={filterDistrict}
