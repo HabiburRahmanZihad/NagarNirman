@@ -57,6 +57,7 @@ export default function AllReportsPage() {
     resolved: 0,
   });
   const [filters, setFilters] = useState({
+    division: '',
     district: '',
     status: '',
     severity: '',
@@ -80,6 +81,7 @@ export default function AllReportsPage() {
       const params = new URLSearchParams({
         page: '1',
         limit: '1000', // Get all reports in one go for stats
+        ...(filters.division && { division: filters.division }),
         ...(filters.district && { district: filters.district }),
         ...(filters.status && { status: filters.status }),
         ...(filters.severity && { severity: filters.severity }),
@@ -125,6 +127,7 @@ export default function AllReportsPage() {
       const params = new URLSearchParams({
         page: String(page),
         limit: String(pagination.reportsPerPage),
+        ...(filters.division && { division: filters.division }),
         ...(filters.district && { district: filters.district }),
         ...(filters.status && { status: filters.status }),
         ...(filters.severity && { severity: filters.severity }),
@@ -201,6 +204,7 @@ export default function AllReportsPage() {
   const handleResetFilters = () => {
     setSearchTerm('');
     setFilters({
+      division: '',
       district: '',
       status: '',
       severity: '',
@@ -268,6 +272,11 @@ export default function AllReportsPage() {
   const allDistricts = Array.from(
     new Set(divisionData.flatMap((div) => div.districts.map((d) => d.name)))
   ).sort();
+
+  // Districts list depends on selected division (if any)
+  const districtsForSelect = filters.division
+    ? (divisionData.find((d) => d.division === filters.division)?.districts.map((dd) => dd.name) || [])
+    : allDistricts;
 
   if (isLoading) {
     return (
@@ -360,13 +369,33 @@ export default function AllReportsPage() {
                 <FaSync className="text-sm xs:text-base" />
               </button>
             </div>
-            
+
           </div>
 
           {/* Filter Options */}
           {showFilters && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 mt-4 xs:mt-5 sm:mt-6 pt-4 xs:pt-5 sm:pt-6 border-t border-gray-200">
-              {/* District Filter */}
+              {/* Division Filter */}
+              <div>
+                <label className="block text-xs xs:text-sm font-medium text-[#002E2E] mb-1.5 xs:mb-2">
+                  Division
+                </label>
+                <select
+                  aria-label="Filter reports by division"
+                  value={filters.division}
+                  onChange={(e) => setFilters({ ...filters, division: e.target.value, district: '' })}
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                >
+                  <option value="">All Divisions</option>
+                  {divisionData.map((div) => (
+                    <option key={div.division} value={div.division}>
+                      {div.division}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* District Filter (depends on Division) */}
               <div>
                 <label className="block text-xs xs:text-sm font-medium text-[#002E2E] mb-1.5 xs:mb-2">
                   District
@@ -375,10 +404,11 @@ export default function AllReportsPage() {
                   aria-label="Filter reports by district"
                   value={filters.district}
                   onChange={(e) => setFilters({ ...filters, district: e.target.value })}
-                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  disabled={districtsForSelect.length === 0}
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50"
                 >
                   <option value="">All Districts</option>
-                  {allDistricts.map((district) => (
+                  {districtsForSelect.map((district) => (
                     <option key={district} value={district}>
                       {district}
                     </option>
