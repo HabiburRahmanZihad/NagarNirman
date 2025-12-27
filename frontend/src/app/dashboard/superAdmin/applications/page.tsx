@@ -282,7 +282,7 @@ export default function SuperAdminApplications() {
             aria-label="Filter by status"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 xs:px-4 sm:px-5 py-2 xs:py-2.5 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-100 font-medium text-neutral cursor-pointer hover:border-accent/40 transition-all w-full xs:w-auto"
+            className="px-3 xs:px-4 sm:px-5 py-2 xs:py-2.5 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-100 font-medium text-neutral cursor-pointer hover:border-accent/40 transition-all w-full xs:w-auto outline-none"
           >
             <option value="all">All Applications</option>
             <option value="pending">Pending</option>

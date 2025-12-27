@@ -57,6 +57,7 @@ export default function AllReportsPage() {
     resolved: 0,
   });
   const [filters, setFilters] = useState({
+    division: '',
     district: '',
     status: '',
     severity: '',
@@ -80,6 +81,7 @@ export default function AllReportsPage() {
       const params = new URLSearchParams({
         page: '1',
         limit: '1000', // Get all reports in one go for stats
+        ...(filters.division && { division: filters.division }),
         ...(filters.district && { district: filters.district }),
         ...(filters.status && { status: filters.status }),
         ...(filters.severity && { severity: filters.severity }),
@@ -125,6 +127,7 @@ export default function AllReportsPage() {
       const params = new URLSearchParams({
         page: String(page),
         limit: String(pagination.reportsPerPage),
+        ...(filters.division && { division: filters.division }),
         ...(filters.district && { district: filters.district }),
         ...(filters.status && { status: filters.status }),
         ...(filters.severity && { severity: filters.severity }),
@@ -201,6 +204,7 @@ export default function AllReportsPage() {
   const handleResetFilters = () => {
     setSearchTerm('');
     setFilters({
+      division: '',
       district: '',
       status: '',
       severity: '',
@@ -269,6 +273,11 @@ export default function AllReportsPage() {
     new Set(divisionData.flatMap((div) => div.districts.map((d) => d.name)))
   ).sort();
 
+  // Districts list depends on selected division (if any)
+  const districtsForSelect = filters.division
+    ? (divisionData.find((d) => d.division === filters.division)?.districts.map((dd) => dd.name) || [])
+    : allDistricts;
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-linear-to-b from-[#F6FFF9] to-white flex items-center justify-center">
@@ -306,6 +315,7 @@ export default function AllReportsPage() {
 
         {/* Search and Filter Bar */}
         <Card className="mb-6 xs:mb-7 sm:mb-8 p-4 xs:p-5 sm:p-6 md:p-7">
+
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 flex gap-2">
@@ -317,7 +327,9 @@ export default function AllReportsPage() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyPress={handleSearchSubmit}
-                  className="w-full pl-10 xs:pl-11 sm:pl-12 pr-3 xs:pr-4 py-2 xs:py-2.5 sm:py-3 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2
+                  className="w-full pl-10 flex items-center justify-center 
+                  xs:pl-11 sm:pl-12 pr-3 xs:pr-4 py-2 xs:py-2.5 sm:py-4 text-xs xs:text-sm 
+                  border border-gray-300 rounded-lg focus:ring-2
                   outline-none focus:ring-primary focus:border-primary transition"
                 />
               </div>
@@ -357,12 +369,33 @@ export default function AllReportsPage() {
                 <FaSync className="text-sm xs:text-base" />
               </button>
             </div>
+
           </div>
 
           {/* Filter Options */}
           {showFilters && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 mt-4 xs:mt-5 sm:mt-6 pt-4 xs:pt-5 sm:pt-6 border-t border-gray-200">
-              {/* District Filter */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 xs:gap-4 mt-4 xs:mt-5 sm:mt-6 pt-4 xs:pt-5 sm:pt-6 border-t border-gray-200">
+              {/* Division Filter */}
+              <div>
+                <label className="block text-xs xs:text-sm font-medium text-[#002E2E] mb-1.5 xs:mb-2">
+                  Division
+                </label>
+                <select
+                  aria-label="Filter reports by division"
+                  value={filters.division}
+                  onChange={(e) => setFilters({ ...filters, division: e.target.value, district: '' })}
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                >
+                  <option value="">All Divisions</option>
+                  {divisionData.map((div) => (
+                    <option key={div.division} value={div.division}>
+                      {div.division}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* District Filter (depends on Division) */}
               <div>
                 <label className="block text-xs xs:text-sm font-medium text-[#002E2E] mb-1.5 xs:mb-2">
                   District
@@ -371,10 +404,11 @@ export default function AllReportsPage() {
                   aria-label="Filter reports by district"
                   value={filters.district}
                   onChange={(e) => setFilters({ ...filters, district: e.target.value })}
-                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  disabled={districtsForSelect.length === 0}
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 outline-none"
                 >
                   <option value="">All Districts</option>
-                  {allDistricts.map((district) => (
+                  {districtsForSelect.map((district) => (
                     <option key={district} value={district}>
                       {district}
                     </option>
@@ -391,7 +425,7 @@ export default function AllReportsPage() {
                   aria-label="Filter reports by status"
                   value={filters.status}
                   onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                 >
                   <option value="">All Status</option>
                   <option value="pending">Pending</option>
@@ -411,7 +445,7 @@ export default function AllReportsPage() {
                   aria-label="Filter reports by severity"
                   value={filters.severity}
                   onChange={(e) => setFilters({ ...filters, severity: e.target.value })}
-                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                 >
                   <option value="">All Severity</option>
                   <option value="low">🟢 Low</option>
@@ -430,7 +464,7 @@ export default function AllReportsPage() {
                   aria-label="Filter reports by problem type"
                   value={filters.problemType}
                   onChange={(e) => setFilters({ ...filters, problemType: e.target.value })}
-                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                 >
                   <option value="">All Types</option>
                   <option value="road">Road</option>
@@ -445,7 +479,7 @@ export default function AllReportsPage() {
               </div>
 
               {/* Reset Button */}
-              <div className="sm:col-span-2 lg:col-span-4">
+              <div className="sm:col-span-2 lg:col-span-5">
                 <button
                   onClick={handleResetFilters}
                   className="w-full xs:w-auto px-4 xs:px-5 sm:px-6 py-1.5 xs:py-2 bg-linear-to-br from-primary to-[#1e5d22] text-white rounded-lg font-bold text-xs xs:text-sm transition-all duration-300 hover:shadow-lg"

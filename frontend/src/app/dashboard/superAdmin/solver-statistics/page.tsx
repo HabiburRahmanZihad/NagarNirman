@@ -7,6 +7,7 @@ import { FullPageLoading } from '@/components/common';
 import { taskAPI } from '@/utils/api';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import divisionsData from '@/data/divisionsData.json';
 import {
   Users,
   CheckCircle2,
@@ -72,6 +73,8 @@ export default function SolverStatisticsPage() {
   const [loading, setLoading] = useState(true);
   const [filterRole, setFilterRole] = useState<'all' | 'problemSolver'>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'free'>('all');
+  const [filterDivision, setFilterDivision] = useState<string>('');
+  const [filterDistrict, setFilterDistrict] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('total');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
@@ -87,6 +90,14 @@ export default function SolverStatisticsPage() {
 
     if (filterRole !== 'all') {
       filtered = filtered.filter((s) => s.role === filterRole);
+    }
+
+    if (filterDivision) {
+      filtered = filtered.filter((s) => (s.division || '').toLowerCase() === filterDivision.toLowerCase());
+    }
+
+    if (filterDistrict) {
+      filtered = filtered.filter((s) => (s.district || '').toLowerCase() === filterDistrict.toLowerCase());
     }
 
     if (filterStatus === 'free') {
@@ -358,21 +369,44 @@ export default function SolverStatisticsPage() {
                 placeholder="Search by name, email, district, or division..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 xs:pl-12 pr-3 xs:pr-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral placeholder-neutral/50 transition-all"
+                className="w-full pl-10 xs:pl-12 pr-3 xs:pr-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral placeholder-neutral/50 transition-all outline-none"
               />
             </div>
 
             {/* Filter Controls */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 xs:gap-3 sm:gap-4">
               {/* Role Filter */}
+              {/* Division Filter */}
               <select
-                title='all-roles'
-                value={filterRole}
-                onChange={(e) => setFilterRole(e.target.value as 'all' | 'problemSolver')}
-                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all"
+                title="division-filter"
+                value={filterDivision}
+                onChange={(e) => {
+                  setFilterDivision(e.target.value);
+                  setFilterDistrict('');
+                }}
+                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all outline-none"
               >
-                <option value="all">All Roles</option>
-                <option value="problemSolver">Problem Solvers</option>
+                <option value="">All Divisions</option>
+                {divisionsData.map((d) => (
+                  <option key={d.division} value={d.division}>{d.division}</option>
+                ))}
+              </select>
+
+              {/* District Filter */}
+              <select
+                title="district-filter"
+                value={filterDistrict}
+                onChange={(e) => setFilterDistrict(e.target.value)}
+                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all outline-none"
+                disabled={!filterDivision}
+              >
+                <option value="">All Districts</option>
+                {(filterDivision
+                  ? divisionsData.find(d => d.division === filterDivision)?.districts.map(x => x.name) || []
+                  : divisionsData.flatMap(d => d.districts.map(x => x.name))
+                ).map((dist) => (
+                  <option key={dist} value={dist}>{dist}</option>
+                ))}
               </select>
 
               {/* Status Filter */}
@@ -380,7 +414,7 @@ export default function SolverStatisticsPage() {
                 title='status-filter'
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value as 'all' | 'active' | 'free')}
-                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all"
+                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all outline-none"
               >
                 <option value="all">All Status</option>
                 <option value="active">Active (Busy)</option>
@@ -392,7 +426,7 @@ export default function SolverStatisticsPage() {
                 title='sort-by'
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all col-span-2 sm:col-span-1 lg:col-span-2"
+                className="px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral transition-all col-span-2 sm:col-span-1 lg:col-span-1 outline-none"
               >
                 <option value="total">Total Tasks</option>
                 <option value="completed">Completed</option>

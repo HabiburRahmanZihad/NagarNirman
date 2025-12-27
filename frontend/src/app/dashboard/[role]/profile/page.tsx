@@ -311,7 +311,7 @@ const ProfilePage = () => {
                         placeholder="01XXXXXXXXX"
                         maxLength={11}
                         pattern="^01[0-9]{9}$"
-                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 text-xs xs:text-sm transition"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 text-xs xs:text-sm transition outline-none"
                       />
                       <p className="text-[10px] xs:text-xs text-gray-500 mt-1">11 digits starting with 01 (e.g., 01712345678)</p>
                     </div>
@@ -342,7 +342,7 @@ const ProfilePage = () => {
                         name="division"
                         value={profileData.division}
                         onChange={handleDivisionChange}
-                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 text-xs xs:text-sm transition"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 text-xs xs:text-sm transition outline-none"
                       >
                         <option value="">Select Division</option>
                         {divisionsData.map((division) => (
@@ -361,7 +361,7 @@ const ProfilePage = () => {
                         value={profileData.district}
                         onChange={handleChange}
                         disabled={!profileData.division}
-                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed text-xs xs:text-sm transition"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed text-xs xs:text-sm transition outline-none"
                       >
                         <option value="">Select District</option>
                         {districts.map((district) => (
@@ -379,7 +379,7 @@ const ProfilePage = () => {
                         value={profileData.address}
                         onChange={handleChange}
                         rows={3}
-                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 text-xs xs:text-sm transition resize-none"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 text-xs xs:text-sm transition resize-none outline-none"
                         placeholder="Enter your complete address (street, building, area, etc.)"
                       />
                     </div>
