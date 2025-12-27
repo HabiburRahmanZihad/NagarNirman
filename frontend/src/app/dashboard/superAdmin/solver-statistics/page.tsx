@@ -358,7 +358,7 @@ export default function SolverStatisticsPage() {
                 placeholder="Search by name, email, district, or division..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 xs:pl-12 pr-3 xs:pr-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral placeholder-neutral/50 transition-all"
+                className="w-full pl-10 xs:pl-12 pr-3 xs:pr-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 focus:border-accent rounded-lg xs:rounded-xl focus:ring-2 focus:ring-accent/30 bg-base-100 font-semibold text-neutral placeholder-neutral/50 transition-all outline-none"
               />
             </div>
 
