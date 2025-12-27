@@ -405,7 +405,7 @@ export default function AllReportsPage() {
                   value={filters.district}
                   onChange={(e) => setFilters({ ...filters, district: e.target.value })}
                   disabled={districtsForSelect.length === 0}
-                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50"
+                  className="w-full px-3 xs:px-4 py-1.5 xs:py-2 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 outline-none"
                 >
                   <option value="">All Districts</option>
                   {districtsForSelect.map((district) => (
