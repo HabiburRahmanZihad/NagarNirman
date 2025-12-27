@@ -306,6 +306,7 @@ export default function AllReportsPage() {
 
         {/* Search and Filter Bar */}
         <Card className="mb-6 xs:mb-7 sm:mb-8 p-4 xs:p-5 sm:p-6 md:p-7">
+
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 flex gap-2">
@@ -317,7 +318,9 @@ export default function AllReportsPage() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyPress={handleSearchSubmit}
-                  className="w-full pl-10 xs:pl-11 sm:pl-12 pr-3 xs:pr-4 py-2 xs:py-2.5 sm:py-3 text-xs xs:text-sm border border-gray-300 rounded-lg focus:ring-2
+                  className="w-full pl-10 flex items-center justify-center 
+                  xs:pl-11 sm:pl-12 pr-3 xs:pr-4 py-2 xs:py-2.5 sm:py-4 text-xs xs:text-sm 
+                  border border-gray-300 rounded-lg focus:ring-2
                   outline-none focus:ring-primary focus:border-primary transition"
                 />
               </div>
@@ -357,6 +360,7 @@ export default function AllReportsPage() {
                 <FaSync className="text-sm xs:text-base" />
               </button>
             </div>
+            
           </div>
 
           {/* Filter Options */}
