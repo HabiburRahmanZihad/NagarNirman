@@ -242,7 +242,6 @@ export default function UserFilterBar({
               size="sm"
               className="text-neutral hover:text-primary border border-neutral/20"
             >
-              <X className="w-4 h-4" />
               Clear All Filters
             </Button>
           </motion.div>
