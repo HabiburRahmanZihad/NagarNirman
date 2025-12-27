@@ -450,7 +450,10 @@ export default function AuthorityDashboard() {
               <div className="w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-xs xs:text-sm">✨</div>
               Authority Workflow
             </h3>
+
+
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4">
+
               <div className="flex items-start gap-1.5 xs:gap-2 sm:gap-3">
                 <div className="shrink-0 w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xs xs:text-sm">1</div>
                 <div>
@@ -458,6 +461,7 @@ export default function AuthorityDashboard() {
                   <p className="text-[10px] xs:text-xs text-neutral/70 hidden xs:block">Assess incoming infrastructure issues</p>
                 </div>
               </div>
+
               <div className="flex items-start gap-1.5 xs:gap-2 sm:gap-3">
                 <div className="shrink-0 w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-secondary text-white rounded-full flex items-center justify-center font-bold text-xs xs:text-sm">2</div>
                 <div>
@@ -465,6 +469,7 @@ export default function AuthorityDashboard() {
                   <p className="text-[10px] xs:text-xs text-neutral/70 hidden xs:block">Delegate to problem solvers</p>
                 </div>
               </div>
+
               <div className="flex items-start gap-1.5 xs:gap-2 sm:gap-3">
                 <div className="shrink-0 w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-accent text-info rounded-full flex items-center justify-center font-bold text-xs xs:text-sm">3</div>
                 <div>
@@ -472,13 +477,15 @@ export default function AuthorityDashboard() {
                   <p className="text-[10px] xs:text-xs text-neutral/70 hidden xs:block">Review submitted solutions</p>
                 </div>
               </div>
-              <div className="flex items-start gap-1.5 xs:gap-2 sm:gap-3">
+
+              <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-3">
                 <div className="shrink-0 w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xs xs:text-sm">4</div>
                 <div>
                   <p className="font-bold text-info text-xs xs:text-sm">Mark Resolved</p>
                   <p className="text-[10px] xs:text-xs text-neutral/70 hidden xs:block">Close and monitor outcomes</p>
                 </div>
               </div>
+
             </div>
           </Card>
         </motion.div>
