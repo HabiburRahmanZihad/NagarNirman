@@ -152,7 +152,8 @@ export default function UserFilterBar({
             placeholder="Search users by name, email, or district..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="block w-full pl-10 xs:pl-12 pr-3 xs:pr-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl bg-base-200 focus:ring-2 focus:ring-secondary focus:border-secondary text-neutral placeholder:text-neutral/50 font-medium transition-all duration-200"
+            className="block w-full pl-10 xs:pl-12 pr-3 xs:pr-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl bg-base-200 focus:ring-2 focus:ring-secondary focus:border-secondary text-neutral placeholder:text-neutral/50 font-medium transition-all duration-200 outline-none"
+            aria-label="Search users"
           />
         </div>
 
