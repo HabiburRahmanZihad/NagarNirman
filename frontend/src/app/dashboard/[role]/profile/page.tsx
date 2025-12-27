@@ -342,7 +342,7 @@ const ProfilePage = () => {
                         name="division"
                         value={profileData.division}
                         onChange={handleDivisionChange}
-                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 text-xs xs:text-sm transition"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 text-xs xs:text-sm transition outline-none"
                       >
                         <option value="">Select Division</option>
                         {divisionsData.map((division) => (
