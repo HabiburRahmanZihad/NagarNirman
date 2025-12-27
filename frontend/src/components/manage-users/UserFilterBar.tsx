@@ -43,6 +43,11 @@ export default function UserFilterBar({
   const [internalSearchTerm, setInternalSearchTerm] = useState("");
   const [localFilters, setLocalFilters] = useState<Filters>(filters);
 
+  // Sync localFilters with external filters prop
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
+
   const searchTerm = externalSearchTerm !== undefined ? externalSearchTerm : internalSearchTerm;
   const setSearchTerm = externalSetSearchTerm || setInternalSearchTerm;
 
@@ -64,7 +69,11 @@ export default function UserFilterBar({
   }, [searchTerm, onSearch]);
 
   const handleFilterChange = (key: keyof Filters, value: string) => {
-    const newFilters = { ...localFilters, [key]: value } as Filters;
+    let newFilters = { ...localFilters, [key]: value } as Filters;
+    // If division changes, reset district
+    if (key === 'division') {
+      newFilters = { ...newFilters, district: "" };
+    }
     setLocalFilters(newFilters);
     if (externalSetFilters) {
       externalSetFilters(newFilters);
@@ -73,11 +82,15 @@ export default function UserFilterBar({
     }
   };
 
-  // Get districts and divisions
+  // Get divisions
   const divisions = externalDivisions || divisionsData.map(d => d.division);
-  const districts = externalDistricts || (userDivision
-    ? (divisionsData.find(d => d.division === userDivision)?.districts.map(d => d.name) || [])
-    : []);
+
+  // Get districts based on division selection (use localFilters.division first)
+  const selectedDivision = localFilters.division || userDivision || null;
+  const districts = externalDistricts
+    || (selectedDivision
+      ? (divisionsData.find(d => d.division === selectedDivision)?.districts.map(d => d.name) || [])
+      : divisionsData.flatMap(d => d.districts.map(dist => dist.name)));
   const roles = [
     { value: "user", label: "👤 User" },
     { value: "problemSolver", label: "💡 Problem Solver" },
@@ -100,7 +113,11 @@ export default function UserFilterBar({
   };
 
   const removeFilter = (key: keyof Filters) => {
-    const newFilters = { ...localFilters, [key]: "" } as Filters;
+    let newFilters = { ...localFilters, [key]: "" } as Filters;
+    // If removing division, also clear district
+    if (key === 'division') {
+      newFilters = { ...newFilters, district: "" };
+    }
     setLocalFilters(newFilters);
     if (externalSetFilters) {
       externalSetFilters(newFilters);
@@ -185,8 +202,9 @@ export default function UserFilterBar({
               onChange={(e) => handleFilterChange('district', e.target.value)}
               className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium appearance-none transition-all"
               aria-label="Filter by district"
+              disabled={districts.length === 0}
             >
-              <option value="">{userDivision ? `All Districts` : 'All Districts'}</option>
+              <option value="">All Districts</option>
               {districts.map(district => (
                 <option key={district} value={district}>{district}</option>
               ))}
