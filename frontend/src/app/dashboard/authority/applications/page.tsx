@@ -293,7 +293,7 @@ export default function ProblemSolverApplications() {
               aria-label="Filter by status"
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium text-xs xs:text-sm sm:text-base"
+              className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 border-accent/20 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-secondary focus:border-secondary bg-base-200 text-neutral font-medium text-xs xs:text-sm sm:text-base outline-none transition-all"
             >
               <option value="all">All Applications</option>
               <option value="pending">⏳ Pending</option>
