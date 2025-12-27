@@ -440,7 +440,7 @@ export default function SolversPage() {
             <p className="text-neutral/50 mt-0.5 xs:mt-1 text-xs xs:text-sm">Try adjusting your filters</p>
           </motion.div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4 sm:gap-6">
             {filteredSolvers.map((solver, index) => (
               <motion.div
                 key={solver._id}
@@ -467,8 +467,8 @@ export default function SolversPage() {
                       </div>
                     )}
                     <div className="min-w-0">
-                      <h3 className="font-bold text-info text-sm xs:text-base sm:text-lg truncate">{solver.name}</h3>
-                      <p className="text-[10px] xs:text-xs sm:text-sm text-neutral/60 truncate">{solver.email}</p>
+                      <h3 className="font-bold text-info text-sm xs:text-base sm:text-lg">{solver.name}</h3>
+                      <p className="text-[10px] xs:text-xs sm:text-sm text-neutral/60 ">{solver.email}</p>
                     </div>
                   </div>
                 </div>
