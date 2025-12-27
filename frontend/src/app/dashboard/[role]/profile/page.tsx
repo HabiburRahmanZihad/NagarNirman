@@ -379,7 +379,7 @@ const ProfilePage = () => {
                         value={profileData.address}
                         onChange={handleChange}
                         rows={3}
-                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 text-xs xs:text-sm transition resize-none"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-white text-gray-900 text-xs xs:text-sm transition resize-none outline-none"
                         placeholder="Enter your complete address (street, building, area, etc.)"
                       />
                     </div>
