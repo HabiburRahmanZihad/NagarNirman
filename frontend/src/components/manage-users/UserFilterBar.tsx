@@ -297,7 +297,7 @@ export default function UserFilterBar({
                 animate={{ opacity: 1, scale: 1 }}
                 className="inline-flex items-center gap-1.5 xs:gap-2 px-2 xs:px-3 sm:px-4 py-1 xs:py-1.5 sm:py-2 rounded-full text-[10px] xs:text-xs sm:text-sm font-bold bg-accent/20 text-accent border border-accent/40"
               >
-                📍 {localFilters.district}
+                {localFilters.district}
                 <button
                   onClick={() => removeFilter('district')}
                   className="hover:text-accent/70 transition-colors"
