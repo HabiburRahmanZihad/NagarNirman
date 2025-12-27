@@ -454,7 +454,7 @@ export default function AuthorityDashboard() {
 
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4">
 
-              <div className="flex items-start gap-1.5 xs:gap-2 sm:gap-3">
+              <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-3">
                 <div className="shrink-0 w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xs xs:text-sm">1</div>
                 <div>
                   <p className="font-bold text-info text-xs xs:text-sm">Review Reports</p>
