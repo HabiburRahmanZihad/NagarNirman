@@ -116,7 +116,7 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
 
         {/* Role Selection - Scrollable */}
         <div className="p-8 flex-1 overflow-y-auto">
-          <h3 className="text-xl font-extrabold text-neutral mb-6 flex items-center gap-2 sticky top-0 bg-white pb-4">
+          <h3 className="text-xl font-extrabold text-neutral mb-6 flex items-center gap-2   bg-white pb-4">
             <Shield className="w-6 h-6 text-secondary" />
             Select New Role
           </h3>
