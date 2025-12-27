@@ -509,7 +509,7 @@ const AssignTaskPage = () => {
                     aria-label="Filter by severity"
                     value={filters.severity}
                     onChange={(e) => setFilters({ ...filters, severity: e.target.value })}
-                    className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-base-200 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-colors font-medium"
+                    className="w-full px-3 xs:px-4 py-2 xs:py-3 text-sm xs:text-base border-2 border-base-200 rounded-lg xs:rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-colors font-medium outline-none"
                   >
                     <option value="">All Severity</option>
                     <option value="low">🟢 Low</option>
