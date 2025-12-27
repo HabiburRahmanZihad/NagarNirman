@@ -374,7 +374,7 @@ export default function AllReportsPage() {
 
           {/* Filter Options */}
           {showFilters && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 mt-4 xs:mt-5 sm:mt-6 pt-4 xs:pt-5 sm:pt-6 border-t border-gray-200">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 xs:gap-4 mt-4 xs:mt-5 sm:mt-6 pt-4 xs:pt-5 sm:pt-6 border-t border-gray-200">
               {/* Division Filter */}
               <div>
                 <label className="block text-xs xs:text-sm font-medium text-[#002E2E] mb-1.5 xs:mb-2">
@@ -479,7 +479,7 @@ export default function AllReportsPage() {
               </div>
 
               {/* Reset Button */}
-              <div className="sm:col-span-2 lg:col-span-4">
+              <div className="sm:col-span-2 lg:col-span-5">
                 <button
                   onClick={handleResetFilters}
                   className="w-full xs:w-auto px-4 xs:px-5 sm:px-6 py-1.5 xs:py-2 bg-linear-to-br from-primary to-[#1e5d22] text-white rounded-lg font-bold text-xs xs:text-sm transition-all duration-300 hover:shadow-lg"
