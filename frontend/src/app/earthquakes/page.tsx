@@ -278,7 +278,7 @@ export default function EarthquakesPage() {
                   setSearchTerm(e.target.value);
                   setCurrentPage(1); // Reset to page 1 when search changes
                 }}
-                className="w-full pl-12 pr-4 py-3 border-2 border-base-200 rounded-xl focus:outline-none focus:border-primary transition-colors"
+                className="w-full pl-12 pr-4 py-3 border-2 border-base-200 rounded-xl focus:outline-none focus:border-primary transition-colors outline-none"
               />
             </div>
 

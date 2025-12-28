@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Button, FullPageLoading, ReportCard, RefreshButton } from '@/components/common';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { FaPlus, FaChartLine, FaFilter, FaFire, FaCheckCircle, FaClock, FaSync, FaArrowUp } from 'react-icons/fa';
+import { FaChartLine, FaFilter, FaFire, FaCheckCircle, FaClock, FaSync, FaArrowUp } from 'react-icons/fa';
 
 interface Report {
   _id: string;
@@ -312,7 +312,6 @@ export default function MyReportsPage() {
             {reports.length === 0 && (
               <Link href="/dashboard/user/reports/new">
                 <Button variant="primary" className="inline-flex items-center gap-1.5 xs:gap-2 px-4 xs:px-6 sm:px-8 py-2.5 xs:py-3 sm:py-4 text-sm xs:text-base sm:text-lg font-bold">
-                  <FaPlus />
                   Create Your First Report
                 </Button>
               </Link>

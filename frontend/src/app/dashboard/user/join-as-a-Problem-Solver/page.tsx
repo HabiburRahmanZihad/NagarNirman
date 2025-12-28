@@ -882,7 +882,7 @@ export default function ApplyProblemSolver() {
                       <select
                         id="gender"
                         {...register('gender', { required: 'Gender is required' })}
-                        className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base outline-none"
                       >
                         <option value="">Select Gender</option>
                         {genderOptions.map((gender) => (
@@ -916,7 +916,7 @@ export default function ApplyProblemSolver() {
                             setValue('profession', customProfession, { shouldValidate: true });
                           }
                         }}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors outline-none"
                       >
                         {professionOptions.map((option) => (
                           <option key={option.value} value={option.value}>
@@ -990,7 +990,7 @@ export default function ApplyProblemSolver() {
                         <select
                           id="division"
                           {...register('division', { required: 'Division is required' })}
-                          className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
+                          className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base outline-none"
                         >
                           <option value="">Select Division</option>
                           {divisionsData.map((division) => (
@@ -1014,7 +1014,7 @@ export default function ApplyProblemSolver() {
                           id="district"
                           {...register('district', { required: 'District is required' })}
                           disabled={!selectedDivision}
-                          className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed text-sm xs:text-base"
+                          className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed text-sm outline-none xs:text-base"
                         >
                           <option value="">{selectedDivision ? 'Select District' : 'First select division'}</option>
                           {districts.map((district) => (
@@ -1106,7 +1106,7 @@ export default function ApplyProblemSolver() {
                             {...register('emergencyContactRelation', {
                               required: 'Relation is required',
                             })}
-                            className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
+                            className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base outline-none"
                           >
                             {relationOptions.map((option) => (
                               <option key={option.value} value={option.value}>
@@ -1194,7 +1194,7 @@ export default function ApplyProblemSolver() {
                             setValue('educationLevel', customEducationLevel, { shouldValidate: true });
                           }
                         }}
-                        className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base outline-none"
                       >
                         {educationLevelOptions.map((option) => (
                           <option key={option.value} value={option.value}>
@@ -1233,7 +1233,7 @@ export default function ApplyProblemSolver() {
                       <select
                         id="availability"
                         {...register('availability')}
-                        className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base outline-none"
                       >
                         {availabilityOptions.map((option) => (
                           <option key={option.value} value={option.value}>
@@ -1338,7 +1338,7 @@ export default function ApplyProblemSolver() {
                           message: 'Motivation must be at least 50 characters',
                         },
                       })}
-                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none font-medium text-sm xs:text-base"
+                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none font-medium text-sm xs:text-base outline-none"
                       placeholder="Share your motivation and passion for community development..."
                     />
                     {errors.motivation && (
@@ -1356,7 +1356,7 @@ export default function ApplyProblemSolver() {
                       id="experience"
                       rows={3}
                       {...register('experience')}
-                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none text-sm xs:text-base"
+                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none text-sm xs:text-base outline-none"
                       placeholder="Describe any relevant work experience..."
                     />
                   </div>
@@ -1371,7 +1371,7 @@ export default function ApplyProblemSolver() {
                       id="previousVolunteerWork"
                       rows={3}
                       {...register('previousVolunteerWork')}
-                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none text-sm xs:text-base"
+                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none text-sm xs:text-base outline-none"
                       placeholder="Describe any previous volunteer work or community service..."
                     />
                   </div>

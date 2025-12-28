@@ -318,7 +318,7 @@ const Footer: React.FC = () => {
             <div className="flex flex-col sm:flex-col lg:flex-row justify-center lg:justify-between items-center gap-3 sm:gap-4">
               <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2 sm:gap-3 md:gap-4 text-center sm:text-left order-1 md:order">
                 <p className="text-xs sm:text-sm md:text-base font-semibold whitespace-nowrap">
-                  &copy; 2025 NagarNirman. All rights reserved.
+                  &copy; 2026 NagarNirman. All rights reserved.
                 </p>
                 <span className="hidden sm:inline text-white/60">|</span>
                 <div className="flex items-center gap-1 sm:gap-1.5 bg-white/10 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full whitespace-nowrap">

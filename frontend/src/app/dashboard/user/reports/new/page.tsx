@@ -450,58 +450,55 @@ export default function NewReportPage() {
                 <div className="h-4 bg-blue-200 rounded w-3/4"></div>
               </div>
             ) : weeklyLimit && (
-              <div className={`border-l-4 p-4 rounded-lg ${weeklyLimit.remaining === 0
-                ? 'bg-red-50 border-red-500'
-                : weeklyLimit.remaining === 1
-                  ? 'bg-orange-50 border-orange-500'
-                  : 'bg-blue-50 border-blue-500'
-                }`}>
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl mt-1">
-                    {weeklyLimit.remaining === 0 ? '🔴' : weeklyLimit.remaining === 1 ? '🟠' : '🟢'}
-                  </span>
-                  <div className="flex-1">
-                    <h3 className={`font-bold mb-3 text-lg ${weeklyLimit.remaining === 0
-                      ? 'text-red-900'
-                      : weeklyLimit.remaining === 1
-                        ? 'text-orange-900'
-                        : 'text-blue-900'
-                      }`}>
-                      📊 Weekly Report Status
-                    </h3>
-                    <div className="grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 mb-2 xs:mb-3">
-                      <div className={`p-2 xs:p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
-                        <p className="text-[10px] xs:text-xs font-medium opacity-75">Submitted</p>
-                        <p className="text-lg xs:text-xl sm:text-2xl font-bold">{weeklyLimit.submittedThisWeek}/{weeklyLimit.weeklyLimit}</p>
-                      </div>
-                      <div className={`p-2 xs:p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
-                        <p className="text-[10px] xs:text-xs font-medium opacity-75">Remaining</p>
-                        <p className="text-lg xs:text-xl sm:text-2xl font-bold">{weeklyLimit.remaining}</p>
-                      </div>
-                      <div className={`p-2 xs:p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
-                        <p className="text-[10px] xs:text-xs font-medium opacity-75">Completed</p>
-                        <p className="text-lg xs:text-xl sm:text-2xl font-bold">{weeklyLimit.completedThisWeek}</p>
+              // compute safe values to avoid showing undefined
+              (() => {
+                const submitted = Number(weeklyLimit.submittedThisWeek ?? 0);
+                const limit = Number(weeklyLimit.weeklyLimit ?? 2);
+                const completed = Number(weeklyLimit.completedThisWeek ?? 0);
+                const remaining = typeof weeklyLimit.remaining === 'number' ? weeklyLimit.remaining : Math.max(0, limit - submitted);
+                const percent = Math.min(100, Math.round((submitted / (limit || 1)) * 100));
+                const statusClass = remaining === 0 ? 'red' : remaining === 1 ? 'orange' : 'blue';
+
+                return (
+                  <div className={`border-l-4 p-4 rounded-lg ${statusClass === 'red' ? 'bg-red-50 border-red-500' : statusClass === 'orange' ? 'bg-orange-50 border-orange-500' : 'bg-blue-50 border-blue-500'}`}>
+                    <div className="flex items-start gap-3">
+                      <span className="text-2xl mt-1">{statusClass === 'red' ? '🔴' : statusClass === 'orange' ? '🟠' : '🟢'}</span>
+                      <div className="flex-1">
+                        <h3 className={`font-bold mb-3 text-lg ${statusClass === 'red' ? 'text-red-900' : statusClass === 'orange' ? 'text-orange-900' : 'text-blue-900'}`}>
+                          📊 Weekly Report Status
+                        </h3>
+
+                        <div className="grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 mb-2 xs:mb-3">
+                          <div className={`p-2 xs:p-3 rounded-lg ${statusClass === 'red' ? 'bg-red-100' : statusClass === 'orange' ? 'bg-orange-100' : 'bg-blue-100'}`}>
+                            <p className="text-[10px] xs:text-xs font-medium opacity-75">Submitted</p>
+                            <p className="text-lg xs:text-xl sm:text-2xl font-bold">{submitted}/{limit}</p>
+                          </div>
+                          <div className={`p-2 xs:p-3 rounded-lg ${statusClass === 'red' ? 'bg-red-100' : statusClass === 'orange' ? 'bg-orange-100' : 'bg-blue-100'}`}>
+                            <p className="text-[10px] xs:text-xs font-medium opacity-75">Remaining</p>
+                            <p className="text-lg xs:text-xl sm:text-2xl font-bold">{remaining}</p>
+                          </div>
+                          <div className={`p-2 xs:p-3 rounded-lg ${statusClass === 'red' ? 'bg-red-100' : statusClass === 'orange' ? 'bg-orange-100' : 'bg-blue-100'}`}>
+                            <p className="text-[10px] xs:text-xs font-medium opacity-75">Completed</p>
+                            <p className="text-lg xs:text-xl sm:text-2xl font-bold">{completed}</p>
+                          </div>
+                        </div>
+
+                        {/* Progress bar computed from submitted/limit */}
+                        <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
+                          <div
+                            className={`h-full transition-all duration-500 ${statusClass === 'red' ? 'bg-red-500' : statusClass === 'orange' ? 'bg-orange-500' : 'bg-green-500'}`}
+                            style={{ width: `${percent}%` }}
+                          />
+                        </div>
+
+                        {remaining === 0 && (
+                          <p className="text-xs text-red-700 mt-3 pt-3 border-t border-red-200">💡 Complete your current reports to unlock more submissions!</p>
+                        )}
                       </div>
                     </div>
-                    {/* Progress bar */}
-                    <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
-                      <div
-                        className={`h-full transition-all duration-500 ${weeklyLimit.remaining === 0
-                          ? 'bg-red-500 w-full'
-                          : weeklyLimit.remaining === 1
-                            ? 'bg-orange-500 w-[80%]'
-                            : 'bg-green-500 w-[40%]'
-                          }`}
-                      ></div>
-                    </div>
-                    {weeklyLimit.remaining === 0 && (
-                      <p className="text-xs text-red-700 mt-3 pt-3 border-t border-red-200">
-                        💡 Complete your current reports to unlock more submissions!
-                      </p>
-                    )}
                   </div>
-                </div>
-              </div>
+                );
+              })()
             )}
 
             {/* Important Notice Banner */}
@@ -530,7 +527,7 @@ export default function NewReportPage() {
                   </label>
                   <select
                     {...register("category", { required: "Category is required" })}
-                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base ${errors.category ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base ${errors.category ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400 outline-none"
                       }`}
                   >
                     <option value="">📋 Select category</option>
@@ -554,7 +551,7 @@ export default function NewReportPage() {
                   <select
                     {...register("subcategory", { required: "Subcategory is required" })}
                     disabled={!selectedCategory}
-                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.subcategory ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base disabled:bg-gray-100 disabled:cursor-not-allowed outline-none ${errors.subcategory ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
                       }`}
                   >
                     <option value="">
@@ -590,7 +587,7 @@ export default function NewReportPage() {
                       maxLength: { value: 100, message: "Title must not exceed 100 characters" }
                     })}
                     placeholder="e.g. Street light not working on Main Road"
-                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition text-sm xs:text-base ${errors.title ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition text-sm xs:text-base ${errors.title ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400 outline-none"
                       }`}
                   />
                   {errors.title && (
@@ -607,7 +604,7 @@ export default function NewReportPage() {
                   </label>
                   <select
                     {...register("severity", { required: "Severity is required" })}
-                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base ${errors.severity ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base ${errors.severity ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400 outline-none"
                       }`}
                   >
                     <option value="">⚠️ Select severity</option>
@@ -637,7 +634,7 @@ export default function NewReportPage() {
                   })}
                   placeholder="Describe the issue clearly... (minimum 20 characters)"
                   rows={4}
-                  className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg resize-none focus:ring-2 focus:ring-primary focus:border-primary transition text-sm xs:text-base ${errors.description ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                  className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg resize-none focus:ring-2 focus:ring-primary focus:border-primary transition text-sm xs:text-base ${errors.description ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400 outline-none"
                     }`}
                 ></textarea>
                 {errors.description && (
@@ -682,7 +679,7 @@ export default function NewReportPage() {
                     {...register("division", { required: "Division is required" })}
                     value={selectedDivision}
                     onChange={handleDivisionChange}
-                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base ${errors.division ? "border-red-500 bg-red-50" : selectedDivision ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary outline-none focus:border-primary transition font-medium text-sm xs:text-base ${errors.division ? "border-red-500 bg-red-50" : selectedDivision ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-gray-400"
                       }`}
                   >
                     <option value="">Select division</option>
@@ -712,7 +709,7 @@ export default function NewReportPage() {
                     {...register("district", { required: "District is required" })}
                     onChange={handleDistrictChange}
                     disabled={!selectedDivision}
-                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.district ? "border-red-500 bg-red-50" : watch("district") ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary outline-none focus:border-primary transition font-medium text-sm xs:text-base disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.district ? "border-red-500 bg-red-50" : watch("district") ? "border-green-500 bg-green-50" : "border-gray-300 hover:border-gray-400"
                       }`}
                   >
                     <option value="">
@@ -747,7 +744,7 @@ export default function NewReportPage() {
                     minLength: { value: 10, message: "Address must be at least 10 characters" }
                   })}
                   placeholder="e.g. House 27, Road 5, Dhanmondi, Dhaka"
-                  className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition text-sm xs:text-base ${errors.address ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                  className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition text-sm xs:text-base ${errors.address ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400 outline-none"
                     }`}
                 />
                 {errors.address && (
@@ -771,7 +768,7 @@ export default function NewReportPage() {
                       {...register("latitude", { required: "Please fetch your location" })}
                       placeholder="Will be filled automatically"
                       readOnly
-                      className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg bg-white font-mono text-xs xs:text-sm ${errors.latitude ? "border-red-500 bg-red-50" : "border-blue-300"
+                      className={`w-full px-3 outline-none xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg bg-white font-mono text-xs xs:text-sm ${errors.latitude ? "border-red-500 bg-red-50" : "border-blue-300"
                         }`}
                     />
                   </div>
@@ -781,7 +778,7 @@ export default function NewReportPage() {
                       {...register("longitude", { required: "Please fetch your location" })}
                       placeholder="Will be filled automatically"
                       readOnly
-                      className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg bg-white font-mono text-xs xs:text-sm ${errors.longitude ? "border-red-500 bg-red-50" : "border-blue-300"
+                      className={`w-full px-3 xs:px-4 py-2 outline-none xs:py-2.5 sm:py-3 border-2 rounded-lg bg-white font-mono text-xs xs:text-sm ${errors.longitude ? "border-red-500 bg-red-50" : "border-blue-300"
                         }`}
                     />
                   </div>
