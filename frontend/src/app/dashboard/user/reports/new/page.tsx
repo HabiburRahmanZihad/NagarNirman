@@ -607,7 +607,7 @@ export default function NewReportPage() {
                   </label>
                   <select
                     {...register("severity", { required: "Severity is required" })}
-                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base ${errors.severity ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base ${errors.severity ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400 outline-none"
                       }`}
                   >
                     <option value="">⚠️ Select severity</option>
