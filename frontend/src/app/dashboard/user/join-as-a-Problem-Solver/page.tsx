@@ -916,7 +916,7 @@ export default function ApplyProblemSolver() {
                             setValue('profession', customProfession, { shouldValidate: true });
                           }
                         }}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors outline-none"
                       >
                         {professionOptions.map((option) => (
                           <option key={option.value} value={option.value}>
