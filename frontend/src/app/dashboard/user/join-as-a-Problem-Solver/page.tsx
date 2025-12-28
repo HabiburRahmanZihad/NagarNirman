@@ -1014,7 +1014,7 @@ export default function ApplyProblemSolver() {
                           id="district"
                           {...register('district', { required: 'District is required' })}
                           disabled={!selectedDivision}
-                          className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed text-sm xs:text-base"
+                          className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed text-sm outline-none xs:text-base"
                         >
                           <option value="">{selectedDivision ? 'Select District' : 'First select division'}</option>
                           {districts.map((district) => (
