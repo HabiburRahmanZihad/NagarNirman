@@ -771,7 +771,7 @@ export default function NewReportPage() {
                       {...register("latitude", { required: "Please fetch your location" })}
                       placeholder="Will be filled automatically"
                       readOnly
-                      className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg bg-white font-mono text-xs xs:text-sm ${errors.latitude ? "border-red-500 bg-red-50" : "border-blue-300"
+                      className={`w-full px-3 outline-none xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg bg-white font-mono text-xs xs:text-sm ${errors.latitude ? "border-red-500 bg-red-50" : "border-blue-300"
                         }`}
                     />
                   </div>
