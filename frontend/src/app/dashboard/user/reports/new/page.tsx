@@ -554,7 +554,7 @@ export default function NewReportPage() {
                   <select
                     {...register("subcategory", { required: "Subcategory is required" })}
                     disabled={!selectedCategory}
-                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base disabled:bg-gray-100 disabled:cursor-not-allowed ${errors.subcategory ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
+                    className={`w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition font-medium text-sm xs:text-base disabled:bg-gray-100 disabled:cursor-not-allowed outline-none ${errors.subcategory ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"
                       }`}
                   >
                     <option value="">
