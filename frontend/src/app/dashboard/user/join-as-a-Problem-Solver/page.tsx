@@ -1338,7 +1338,7 @@ export default function ApplyProblemSolver() {
                           message: 'Motivation must be at least 50 characters',
                         },
                       })}
-                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none font-medium text-sm xs:text-base"
+                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none font-medium text-sm xs:text-base outline-none"
                       placeholder="Share your motivation and passion for community development..."
                     />
                     {errors.motivation && (
