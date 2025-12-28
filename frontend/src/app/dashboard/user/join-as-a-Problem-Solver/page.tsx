@@ -1371,7 +1371,7 @@ export default function ApplyProblemSolver() {
                       id="previousVolunteerWork"
                       rows={3}
                       {...register('previousVolunteerWork')}
-                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none text-sm xs:text-base"
+                      className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors resize-none text-sm xs:text-base outline-none"
                       placeholder="Describe any previous volunteer work or community service..."
                     />
                   </div>
