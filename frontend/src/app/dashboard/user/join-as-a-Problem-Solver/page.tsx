@@ -1194,7 +1194,7 @@ export default function ApplyProblemSolver() {
                             setValue('educationLevel', customEducationLevel, { shouldValidate: true });
                           }
                         }}
-                        className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base"
+                        className="w-full px-3 xs:px-4 py-2 xs:py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2a7d2f] focus:border-[#2a7d2f] transition-colors text-sm xs:text-base outline-none"
                       >
                         {educationLevelOptions.map((option) => (
                           <option key={option.value} value={option.value}>
