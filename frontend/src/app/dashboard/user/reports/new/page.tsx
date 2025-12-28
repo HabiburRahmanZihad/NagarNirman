@@ -450,58 +450,55 @@ export default function NewReportPage() {
                 <div className="h-4 bg-blue-200 rounded w-3/4"></div>
               </div>
             ) : weeklyLimit && (
-              <div className={`border-l-4 p-4 rounded-lg ${weeklyLimit.remaining === 0
-                ? 'bg-red-50 border-red-500'
-                : weeklyLimit.remaining === 1
-                  ? 'bg-orange-50 border-orange-500'
-                  : 'bg-blue-50 border-blue-500'
-                }`}>
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl mt-1">
-                    {weeklyLimit.remaining === 0 ? '🔴' : weeklyLimit.remaining === 1 ? '🟠' : '🟢'}
-                  </span>
-                  <div className="flex-1">
-                    <h3 className={`font-bold mb-3 text-lg ${weeklyLimit.remaining === 0
-                      ? 'text-red-900'
-                      : weeklyLimit.remaining === 1
-                        ? 'text-orange-900'
-                        : 'text-blue-900'
-                      }`}>
-                      📊 Weekly Report Status
-                    </h3>
-                    <div className="grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 mb-2 xs:mb-3">
-                      <div className={`p-2 xs:p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
-                        <p className="text-[10px] xs:text-xs font-medium opacity-75">Submitted</p>
-                        <p className="text-lg xs:text-xl sm:text-2xl font-bold">{weeklyLimit.submittedThisWeek}/{weeklyLimit.weeklyLimit}</p>
-                      </div>
-                      <div className={`p-2 xs:p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
-                        <p className="text-[10px] xs:text-xs font-medium opacity-75">Remaining</p>
-                        <p className="text-lg xs:text-xl sm:text-2xl font-bold">{weeklyLimit.remaining}</p>
-                      </div>
-                      <div className={`p-2 xs:p-3 rounded-lg ${weeklyLimit.remaining === 0 ? 'bg-red-100' : weeklyLimit.remaining === 1 ? 'bg-orange-100' : 'bg-blue-100'}`}>
-                        <p className="text-[10px] xs:text-xs font-medium opacity-75">Completed</p>
-                        <p className="text-lg xs:text-xl sm:text-2xl font-bold">{weeklyLimit.completedThisWeek}</p>
+              // compute safe values to avoid showing undefined
+              (() => {
+                const submitted = Number(weeklyLimit.submittedThisWeek ?? 0);
+                const limit = Number(weeklyLimit.weeklyLimit ?? 2);
+                const completed = Number(weeklyLimit.completedThisWeek ?? 0);
+                const remaining = typeof weeklyLimit.remaining === 'number' ? weeklyLimit.remaining : Math.max(0, limit - submitted);
+                const percent = Math.min(100, Math.round((submitted / (limit || 1)) * 100));
+                const statusClass = remaining === 0 ? 'red' : remaining === 1 ? 'orange' : 'blue';
+
+                return (
+                  <div className={`border-l-4 p-4 rounded-lg ${statusClass === 'red' ? 'bg-red-50 border-red-500' : statusClass === 'orange' ? 'bg-orange-50 border-orange-500' : 'bg-blue-50 border-blue-500'}`}>
+                    <div className="flex items-start gap-3">
+                      <span className="text-2xl mt-1">{statusClass === 'red' ? '🔴' : statusClass === 'orange' ? '🟠' : '🟢'}</span>
+                      <div className="flex-1">
+                        <h3 className={`font-bold mb-3 text-lg ${statusClass === 'red' ? 'text-red-900' : statusClass === 'orange' ? 'text-orange-900' : 'text-blue-900'}`}>
+                          📊 Weekly Report Status
+                        </h3>
+
+                        <div className="grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 mb-2 xs:mb-3">
+                          <div className={`p-2 xs:p-3 rounded-lg ${statusClass === 'red' ? 'bg-red-100' : statusClass === 'orange' ? 'bg-orange-100' : 'bg-blue-100'}`}>
+                            <p className="text-[10px] xs:text-xs font-medium opacity-75">Submitted</p>
+                            <p className="text-lg xs:text-xl sm:text-2xl font-bold">{submitted}/{limit}</p>
+                          </div>
+                          <div className={`p-2 xs:p-3 rounded-lg ${statusClass === 'red' ? 'bg-red-100' : statusClass === 'orange' ? 'bg-orange-100' : 'bg-blue-100'}`}>
+                            <p className="text-[10px] xs:text-xs font-medium opacity-75">Remaining</p>
+                            <p className="text-lg xs:text-xl sm:text-2xl font-bold">{remaining}</p>
+                          </div>
+                          <div className={`p-2 xs:p-3 rounded-lg ${statusClass === 'red' ? 'bg-red-100' : statusClass === 'orange' ? 'bg-orange-100' : 'bg-blue-100'}`}>
+                            <p className="text-[10px] xs:text-xs font-medium opacity-75">Completed</p>
+                            <p className="text-lg xs:text-xl sm:text-2xl font-bold">{completed}</p>
+                          </div>
+                        </div>
+
+                        {/* Progress bar computed from submitted/limit */}
+                        <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
+                          <div
+                            className={`h-full transition-all duration-500 ${statusClass === 'red' ? 'bg-red-500' : statusClass === 'orange' ? 'bg-orange-500' : 'bg-green-500'}`}
+                            style={{ width: `${percent}%` }}
+                          />
+                        </div>
+
+                        {remaining === 0 && (
+                          <p className="text-xs text-red-700 mt-3 pt-3 border-t border-red-200">💡 Complete your current reports to unlock more submissions!</p>
+                        )}
                       </div>
                     </div>
-                    {/* Progress bar */}
-                    <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
-                      <div
-                        className={`h-full transition-all duration-500 ${weeklyLimit.remaining === 0
-                          ? 'bg-red-500 w-full'
-                          : weeklyLimit.remaining === 1
-                            ? 'bg-orange-500 w-[80%]'
-                            : 'bg-green-500 w-[40%]'
-                          }`}
-                      ></div>
-                    </div>
-                    {weeklyLimit.remaining === 0 && (
-                      <p className="text-xs text-red-700 mt-3 pt-3 border-t border-red-200">
-                        💡 Complete your current reports to unlock more submissions!
-                      </p>
-                    )}
                   </div>
-                </div>
-              </div>
+                );
+              })()
             )}
 
             {/* Important Notice Banner */}
