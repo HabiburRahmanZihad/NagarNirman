@@ -1,5 +1,6 @@
 import { AnalyticsData, ExportFilters, Report } from './types';
 
+// Dummy data for simulation
 const dummyReports: Report[] = [
   {
     _id: "1",
@@ -78,6 +79,7 @@ const districts = ['Dhaka', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna', 'Baris
 const categories = ['public property', 'road issues', 'sanitation', 'drainage', 'fire hazard', 'electrical', 'water supply'];
 const solvers = ['solver1', 'solver2', 'solver3', 'solver4', 'solver5'];
 
+// Simulated API functions
 export const fetchReportAnalytics = async (): Promise<AnalyticsData> => {
   await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -137,6 +139,8 @@ export const fetchReportAnalytics = async (): Promise<AnalyticsData> => {
   };
 };
 
+
+// Simulated export functions
 export const generateCSV = (filters: ExportFilters): string => {
   const headers = ['Month', 'Total Reports', 'Completed', 'Completion Rate', 'Division', 'District'];
   const data = Array.from({ length: 12 }, (_, i) => [
@@ -153,6 +157,8 @@ export const generateCSV = (filters: ExportFilters): string => {
   ).join('\n');
 };
 
+
+// Simulated PDF generation function
 export const generatePDF = async (filters: ExportFilters): Promise<Blob> => {
   await new Promise(resolve => setTimeout(resolve, 2000));
 
