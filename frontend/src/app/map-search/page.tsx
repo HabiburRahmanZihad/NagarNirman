@@ -18,6 +18,8 @@ interface District {
   color: string;
 }
 
+
+// Division with districts
 interface Division {
   id: string;
   name: string;
@@ -45,6 +47,8 @@ interface DivisionStats {
   }>;
 }
 
+
+// MapStatsResponse Interfaces
 interface MapStatsResponse {
   success: boolean;
   data: {
@@ -53,6 +57,9 @@ interface MapStatsResponse {
   message?: string;
 }
 
+
+
+// DivisionDistrictsResponse Interfaces
 interface DivisionDistrictsResponse {
   success: boolean;
   data: Array<{
@@ -64,6 +71,9 @@ interface DivisionDistrictsResponse {
   }>;
   message?: string;
 }
+
+
+// SummaryStatsResponse Interfaces
 
 interface SummaryStatsResponse {
   success: boolean;
@@ -77,12 +87,15 @@ interface SummaryStatsResponse {
   message?: string;
 }
 
+// Selected Item Interface
 interface SelectedItem {
   type: 'division' | 'district';
   data: Division | District;
   division?: Division;
 }
 
+
+// DynamicMap Props Interface
 interface DynamicMapProps {
   divisions: Division[];
   selectedItem: SelectedItem | null;
@@ -107,6 +120,8 @@ const transformDivisionsData = (): Division[] => {
     '#06B6D4'  // Cyan
   ];
 
+
+  // Map through JSON data and enhance with coordinates
   return divisionsDataJson.map((divisionData, index) => ({
     id: divisionData.division.toLowerCase().replace(/\s+/g, '-'),
     name: `${divisionData.division} Division`,
@@ -930,6 +945,8 @@ export default function MapSearchPage() {
     fetchDivisionsStats();
   }, []);
 
+
+  // ✅ FIXED: Memoized filtered divisions based on search query
   const filteredDivisions = useMemo(() => {
     if (!searchQuery) return divisionsData;
 
@@ -939,6 +956,8 @@ export default function MapSearchPage() {
     );
   }, [searchQuery, divisionsData]);
 
+
+  // ✅ FIXED: Clear search handler
   const handleClearSearch = () => {
     setSearchQuery('');
     setShowDistricts(false);
@@ -946,6 +965,7 @@ export default function MapSearchPage() {
     setShowAlert(false);
   };
 
+  // ✅ FIXED: handleInvalidSearch with proper typing
   const handleInvalidSearch = useCallback(() => {
     setAlertMessage(`"${searchQuery}" - এই নামে কোন বিভাগ বা জেলা পাওয়া যায়নি।`);
     setShowAlert(true);
@@ -1025,6 +1045,7 @@ export default function MapSearchPage() {
     }
   }, []);
 
+  // ✅ FIXED: handleDistrictClick function with proper typing
   const handleDistrictClick = useCallback((district: District, division: Division) => {
     const updatedDistrict: District = {
       ...district,
@@ -1036,11 +1057,14 @@ export default function MapSearchPage() {
     setSelectedItem({ type: 'district', data: updatedDistrict, division });
   }, []);
 
+  // ✅ FIXED: handleCloseSidebar function
   const handleCloseSidebar = () => {
     setSelectedItem(null);
     setShowDistricts(false);
   };
 
+
+  // ✅ FIXED: Summary statistics state with proper typing
   const [summaryStats, setSummaryStats] = useState({
     total: 0,
     pending: 0,
@@ -1073,6 +1097,8 @@ export default function MapSearchPage() {
     fetchSummaryStats();
   }, []);
 
+
+  // ✅ FIXED: Searched location data function
   const getSearchedLocationData = (query: string): SelectedItem | null => {
     if (!query.trim()) return null;
 
@@ -1111,6 +1137,8 @@ export default function MapSearchPage() {
     };
   };
 
+
+  // ✅ FIXED: Memoized searched location data
   const searchedLocationData = useMemo(() => {
     return getSearchedLocationData(searchQuery);
   }, [searchQuery]);
@@ -1126,6 +1154,7 @@ export default function MapSearchPage() {
         <div className="absolute inset-0" />
       </div>
 
+      
       <header
         className={`bg-primary relative backdrop-blur-xl ${isDark
           ? ' border-gray-800/50'
