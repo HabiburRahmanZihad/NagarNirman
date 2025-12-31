@@ -13,6 +13,8 @@ export default function ContactPage() {
     message: ''
   });
 
+
+  // HANDLE INPUT CHANGE
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
@@ -20,6 +22,7 @@ export default function ContactPage() {
     });
   };
 
+  // FORM SUBMISSION
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission
