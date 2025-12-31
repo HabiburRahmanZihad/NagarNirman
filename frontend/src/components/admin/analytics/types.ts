@@ -1,5 +1,7 @@
 import { HistoryEntry } from '@/types';
 
+
+// Report interface representing a user-submitted report
 export interface Report {
   _id: string;
   title: string;
@@ -20,6 +22,9 @@ export interface Report {
   history: HistoryEntry[];
 }
 
+
+
+// Analytics data structures
 export interface AnalyticsData {
   totalReports: number;
   completedReports: number;
@@ -33,12 +38,17 @@ export interface AnalyticsData {
   solverPerformance: SolverPerformance[];
 }
 
+
+// Individual analytics data types
 export interface MonthlyStat {
   month: string;
   reports: number;
   completed: number;
 }
 
+
+
+// Individual district statistics
 export interface DistrictStat {
   district: string;
   division: string;
@@ -46,18 +56,24 @@ export interface DistrictStat {
   completed: number;
 }
 
+
+// Individual category statistics
 export interface CategoryStat {
   category: string;
   count: number;
   percentage: number;
 }
 
+
+// Individual status statistics
 export interface StatusStat {
   status: string;
   count: number;
   percentage: number;
 }
 
+
+// Individual solver performance statistics
 export interface SolverPerformance {
   solverId: string;
   name: string;
@@ -67,6 +83,8 @@ export interface SolverPerformance {
   rating: number;
 }
 
+
+// Export filters interface
 export interface ExportFilters {
   startDate: Date;
   endDate: Date;
