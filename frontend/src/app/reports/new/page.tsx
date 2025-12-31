@@ -12,6 +12,7 @@ import divisionData from "@/data/divisionsData.json";
 import { FullPageLoading } from '@/components/common';
 import Button from '@/components/common/Button';
 
+// Define the form data type
 type ReportFormData = {
   category: string;
   subcategory: string;
@@ -53,6 +54,8 @@ export default function NewReportPage() {
     }
   }, [isAuthenticated, user, isLoading, router]);
 
+
+  // Handle division change
   const handleDivisionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const div = e.target.value;
     setValue("division", div);
@@ -65,6 +68,8 @@ export default function NewReportPage() {
     }
   };
 
+
+  // Handle district change
   const handleDistrictChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const districtName = e.target.value;
     setValue("district", districtName);
@@ -82,6 +87,8 @@ export default function NewReportPage() {
     }
   };
 
+
+  // Handle location fetch
   const handleLocationFetch = () => {
     if (!navigator.geolocation) {
       toast.error("Geolocation is not supported by your browser.");
@@ -114,6 +121,7 @@ export default function NewReportPage() {
     );
   };
 
+  // Handle form submission
   const onSubmit = async (data: ReportFormData) => {
     // Double-check user role before submission
     if (!user || user.role !== "user") {
