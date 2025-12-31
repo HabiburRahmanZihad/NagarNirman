@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
+
+// Typing for Earthquake data used in the app
 interface Earthquake {
   _id: string;
   eventId: string;
@@ -49,6 +51,8 @@ interface USGSFeature {
   };
 }
 
+
+// Props for StatCard component
 interface StatCardProps {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   title: string;
@@ -57,6 +61,8 @@ interface StatCardProps {
   color?: 'primary' | 'success' | 'warning' | 'error' | 'info';
 }
 
+
+// Typing for statistics data
 interface Statistics {
   total: number;
   bangladesh: number;
@@ -73,10 +79,14 @@ interface Statistics {
   lastUpdated: string;
 }
 
+
+// Function to determine if an earthquake is in Bangladesh region
 const isBangladeshEarthquake = (latitude: number, longitude: number): boolean => {
   return latitude >= 20 && latitude <= 27 && longitude >= 88 && longitude <= 93;
 };
 
+
+// Function to get alert level based on magnitude
 const getAlertLevel = (magnitude: number): string => {
   if (magnitude >= 7.0) return 'Red';
   if (magnitude >= 6.0) return 'Orange';
@@ -84,6 +94,7 @@ const getAlertLevel = (magnitude: number): string => {
   return 'Green';
 };
 
+// Function to get intensity based on magnitude
 const getIntensity = (magnitude: number): string => {
   if (magnitude >= 8.0) return 'Extreme';
   if (magnitude >= 7.0) return 'Violent';
@@ -95,6 +106,7 @@ const getIntensity = (magnitude: number): string => {
   return 'Not Felt';
 };
 
+// Function to transform USGS data to Earthquake format
 const transformUSGSData = (usgsFeatures: USGSFeature[]): Earthquake[] => {
   return usgsFeatures.map((feature) => {
     const props = feature.properties ?? {};
@@ -124,6 +136,8 @@ export default function EarthquakeAnalyticsPage() {
   const [earthquakes, setEarthquakes] = useState<Earthquake[]>([]);
   const [loading, setLoading] = useState(true);
 
+
+  // State for statistics
   const [stats, setStats] = useState<Statistics>({
     total: 0,
     bangladesh: 0,
@@ -140,10 +154,14 @@ export default function EarthquakeAnalyticsPage() {
     lastUpdated: new Date().toLocaleString(),
   });
 
+
+  // Fetch and analyze earthquake data on component mount
   useEffect(() => {
     fetchAndAnalyze();
   }, []);
 
+
+  // Function to fetch earthquake data and compute statistics
   const fetchAndAnalyze = async () => {
     setLoading(true);
     try {
@@ -223,6 +241,9 @@ export default function EarthquakeAnalyticsPage() {
     }
   };
 
+
+
+  // StatCard component for displaying individual statistics
   const StatCard = ({ icon: Icon, title, value, subtitle, color = 'primary' }: StatCardProps) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
