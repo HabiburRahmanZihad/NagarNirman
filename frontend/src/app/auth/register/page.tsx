@@ -48,6 +48,8 @@ export default function RegisterPage() {
     }
   }, [isAuthenticated, user, router, redirectTo]);
 
+
+  // HANDLE INPUT CHANGE
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -58,6 +60,8 @@ export default function RegisterPage() {
     }
   };
 
+
+  // HANDLE DIVISION CHANGE
   const handleDivisionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedDivision = e.target.value;
     setFormData((prev) => ({
@@ -81,6 +85,8 @@ export default function RegisterPage() {
     }
   };
 
+
+  // FORM VALIDATION
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
 
@@ -118,6 +124,7 @@ export default function RegisterPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // FORM SUBMISSION
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setApiError("");
