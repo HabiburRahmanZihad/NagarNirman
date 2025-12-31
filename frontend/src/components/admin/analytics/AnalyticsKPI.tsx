@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion';
 import { TrendingUp, CheckCircle, Clock, Target} from 'lucide-react';
 
+
+// Props for AnalyticsKPI component
 interface AnalyticsKPIProps {
   totalReports: number;
   completedReports: number;
@@ -11,7 +13,10 @@ interface AnalyticsKPIProps {
   completionRate: number;
 }
 
+
 const AnalyticsKPI = ({ totalReports, completedReports, ongoingReports, completionRate }: AnalyticsKPIProps) => {
+
+  // Define KPI cards data
   const kpis = [
     {
       label: 'Total Reports',
