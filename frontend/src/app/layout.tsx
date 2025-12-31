@@ -8,12 +8,16 @@ import ClientLayout from "@/components/common/ClientLayout";
 import RouteLoader from "@/components/Loader/RouteLoader";
 import Script from "next/script";
 
+
+// Urbanist font configuration
 const urbanist = Urbanist({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-urbanist",
 });
 
+
+// Metadata for the application
 export const metadata: Metadata = {
   title: "NagarNirman - Report. Resolve. Rebuild.",
   description: "Citizen-powered platform for reporting and tracking public infrastructure issues in Bangladesh",
@@ -36,7 +40,8 @@ export default function RootLayout({
         suppressHydrationWarning
       >
 
-        
+
+        {/* Authentication and Notification Providers */}
         <AuthProvider>
           <NotificationProvider>
             <Toaster position="top-right" />
@@ -48,10 +53,7 @@ export default function RootLayout({
         </AuthProvider>
 
 
-
-
-
-
+        {/* Chatbase Integration */}
         <Script id="chatbase-init">
           {`
             (function(){
