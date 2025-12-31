@@ -4,6 +4,8 @@ import { X, User as UserIcon, Lightbulb, Shield, Check } from "lucide-react";
 import { useState } from "react";
 import type { User } from "@/types";
 
+
+// Props for ChangeRoleModal component
 interface ChangeRoleModalProps {
   user: User;
   currentRole: string;
@@ -15,6 +17,8 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
   const [selectedRole, setSelectedRole] = useState(currentRole);
   const [isSaving, setIsSaving] = useState(false);
 
+
+  // Role options with details
   const roles = [
     {
       value: "user",
@@ -45,6 +49,8 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
     }
   ];
 
+
+  // Handle saving the new role
   const handleSave = async () => {
     if (selectedRole !== currentRole) {
       setIsSaving(true);
@@ -58,6 +64,8 @@ export default function ChangeRoleModal({ user, currentRole, onClose, onSave }: 
   };
 
 
+
+  // Get text color classes based on role
   const getRoleTextColor = (role: User['role'] | string): string => {
     switch (role) {
       case 'authority': return 'text-red-700 bg-red-100';

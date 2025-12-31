@@ -22,6 +22,8 @@ import Image from 'next/image';
 import { useMemo, useEffect } from 'react';
 
 export default function PrivacyPage() {
+
+  // Format current date for display
   const currentDateShow = useMemo(() => {
     return new Date().toLocaleDateString('en-US', {
       year: 'numeric',
@@ -30,6 +32,7 @@ export default function PrivacyPage() {
     });
   }, []);
 
+  // Smooth scroll to section on internal link click
   useEffect(() => {
     const handleLinkClick = (e: Event) => {
       const target = e.currentTarget as HTMLAnchorElement;
@@ -62,6 +65,8 @@ export default function PrivacyPage() {
     };
   }, []);
 
+
+  // Define privacy policy sections
   const sections = [
     {
       icon: <FileText className="w-5 h-5" />,

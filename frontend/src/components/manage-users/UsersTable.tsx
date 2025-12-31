@@ -11,6 +11,8 @@ import { InlineLoading } from "@/components/common";
 
 import type { User } from "@/types";
 
+
+// Props for UsersTable component
 interface UsersTableProps {
   users: User[];
   onRoleChange?: (userId: string, newRole: string) => void;
@@ -40,16 +42,22 @@ export default function UsersTable({
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+
+  // Handlers for role change and delete actions
   const handleRoleChange = (user: User) => {
     setSelectedUser(user);
     setShowRoleModal(true);
   };
 
+
+  // Handler for delete action
   const handleDeleteClick = (user: User) => {
     setSelectedUser(user);
     setShowDeleteModal(true);
   };
 
+
+  // Format date to readable string
   const formatDate = (date?: string | Date | undefined) => {
     if (!date) return '';
     const d = typeof date === 'string' ? new Date(date) : date;
@@ -60,6 +68,8 @@ export default function UsersTable({
     });
   };
 
+
+  // Get role-based badge color, icon, and label
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case 'authority': return 'bg-red-500/10 text-red-700 border border-red-200';
@@ -68,6 +78,7 @@ export default function UsersTable({
     }
   };
 
+  // Get role icon
   const getRoleIcon = (role: string) => {
     switch (role) {
       case 'authority': return '👑';
@@ -76,6 +87,8 @@ export default function UsersTable({
     }
   };
 
+
+  // Get role label
   const getRoleLabel = (role: string) => {
     switch (role) {
       case 'authority': return 'Authority';

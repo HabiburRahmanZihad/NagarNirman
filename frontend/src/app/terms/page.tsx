@@ -18,6 +18,8 @@ export default function TermsPage() {
   const [expandedSections, setExpandedSections] = useState<number[]>([1]);
   const sectionRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
+
+  // Format current date
   const currentDateShow = useMemo(() => {
     return new Date().toLocaleDateString('en-US', {
       year: 'numeric',
@@ -26,6 +28,8 @@ export default function TermsPage() {
     });
   }, []);
 
+
+  // Scroll to section function
   const scrollToSection = (sectionId: number) => {
     if (expandedSections.includes(sectionId) && expandedSections.length === 1) {
       setExpandedSections([]);
@@ -43,6 +47,8 @@ export default function TermsPage() {
     }, 100);
   };
 
+
+  // Toggle section expansion
   const toggleSection = (section: number) => {
     setExpandedSections((prev) => {
       if (prev.includes(section)) {
@@ -52,6 +58,8 @@ export default function TermsPage() {
     });
   };
 
+
+  // Terms sections data
   const sections = [
     {
       id: 1,
@@ -139,6 +147,8 @@ export default function TermsPage() {
     },
   ];
 
+
+  // Quick stats data
   const stats = [
     { number: '12', label: 'Key Sections', desc: 'Comprehensive coverage' },
     { number: '100%', label: 'Transparent', desc: 'Clear & simple language' },

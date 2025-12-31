@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 
 type UserRole = 'user' | 'authority' | 'superAdmin' | 'problemSolver';
 
+
+// Options for useRoleProtection hook
 interface UseRoleProtectionOptions {
   allowedRoles: UserRole[];
   redirectTo?: string;

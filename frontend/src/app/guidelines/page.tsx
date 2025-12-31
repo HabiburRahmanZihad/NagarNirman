@@ -6,6 +6,8 @@ import { useMemo } from 'react';
 import { FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
 
 export default function GuidelinesPage() {
+
+  // Memoized current date for "Last Updated" section
   const currentDateShow = useMemo(() => {
     return new Date().toLocaleDateString('en-US', {
       year: 'numeric',
@@ -49,6 +51,8 @@ export default function GuidelinesPage() {
       </section>
       {/* -------- the hero section placed here => end -------- */}
 
+
+      {/* Reporting Guidelines Section */}
       <div className="container mx-auto px-4">
         <div className="bg-base-100 rounded-2xl shadow-lg p-8 md:p-12 border border-base-200">
           <div className="space-y-12">

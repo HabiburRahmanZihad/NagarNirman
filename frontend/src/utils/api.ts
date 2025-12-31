@@ -8,10 +8,14 @@ interface FetchOptions extends RequestInit {
 // Typed API error with optional status and data fields
 type ApiError = Error & { status?: number; data?: unknown };
 
+
+// Type guard to check if error has status property
 function hasStatus(err: unknown): err is { status?: number } {
   return typeof err === 'object' && err !== null && 'status' in err;
 }
 
+
+// Generic API client function
 export const apiClient = async <T = unknown>(
   endpoint: string,
   options: FetchOptions = {}

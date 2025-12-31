@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 
+
+// Props for ToggleStatusSwitch component
 interface ToggleStatusSwitchProps {
   isActive: boolean;
   onToggle: (isActive: boolean) => void;
@@ -11,6 +13,8 @@ interface ToggleStatusSwitchProps {
 export default function ToggleStatusSwitch({ isActive, onToggle }: ToggleStatusSwitchProps) {
   const [loading, setLoading] = useState(false);
 
+
+  // Handle toggle action
   const handleToggle = async () => {
     setLoading(true);
     try {

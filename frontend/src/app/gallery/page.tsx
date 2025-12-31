@@ -30,6 +30,8 @@ import {
   Clock
 } from 'lucide-react';
 
+
+// Report and GalleryItem interfaces
 interface Report {
   _id?: string;
   title: string;
@@ -100,6 +102,8 @@ const GalleryPage = () => {
   // Extract unique problem types for filters
   const [filters, setFilters] = useState<string[]>(['All']);
 
+
+  // Fetch reports from API
   const fetchReports = useCallback(async () => {
     try {
       setLoading(true);
@@ -164,6 +168,7 @@ const GalleryPage = () => {
     }
   }, []);
 
+  // Initial fetch
   useEffect(() => {
     fetchReports();
   }, [fetchReports]);
@@ -219,10 +224,12 @@ const GalleryPage = () => {
     touchStartX.current = e.targetTouches[0].clientX;
   };
 
+  // Handle touch move
   const handleTouchMove = (e: React.TouchEvent) => {
     touchEndX.current = e.targetTouches[0].clientX;
   };
 
+  // Handle touch end
   const handleTouchEnd = () => {
     const swipeDistance = touchStartX.current - touchEndX.current;
     if (Math.abs(swipeDistance) > minSwipeDistance) {

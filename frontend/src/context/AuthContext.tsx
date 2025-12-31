@@ -1,9 +1,11 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import  { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, AuthResponse, LoginCredentials, RegisterData } from '@/types';
 import { STORAGE_KEYS, API_ENDPOINTS } from '@/constants';
 
+
+// Define the shape of the AuthContext
 interface AuthContextType {
   user: User | null;
   token: string | null;
@@ -15,8 +17,12 @@ interface AuthContextType {
   isAuthenticated: boolean;
 }
 
+
+// Create the AuthContext
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+
+// AuthProvider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -130,6 +136,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// Custom hook to use the AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

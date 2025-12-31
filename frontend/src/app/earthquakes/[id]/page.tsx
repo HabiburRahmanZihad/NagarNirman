@@ -20,6 +20,8 @@ import {
 import Link from 'next/link';
 import { Button } from '@/components/common';
 
+
+// Typing for Earthquake data used in the app
 interface Earthquake {
   _id: string;
   eventId: string;
@@ -52,6 +54,8 @@ interface USGSFeature {
   };
 }
 
+
+// Function to get gradient color based on alert level
 const getAlertColor = (alertLevel: string) => {
   switch (alertLevel) {
     case 'Green':
@@ -76,6 +80,8 @@ const getAlertLevel = (magnitude: number): string => {
   return 'Green';
 };
 
+
+// Function to determine intensity based on magnitude
 const getIntensity = (magnitude: number): string => {
   if (magnitude >= 8.0) return 'Extreme';
   if (magnitude >= 7.0) return 'Violent';
@@ -94,10 +100,14 @@ export default function EarthquakeDetailPage() {
   const [allEarthquakes, setAllEarthquakes] = useState<Earthquake[]>([]);
   const [loading, setLoading] = useState(true);
 
+
+  // Fetch earthquakes when component mounts or earthquakeId changes
   useEffect(() => {
     fetchEarthquakes();
   }, [earthquakeId]);
 
+
+  // Function to fetch earthquakes from USGS and find the specific one
   const fetchEarthquakes = async () => {
     try {
       // Fetch from USGS API directly

@@ -16,14 +16,20 @@ interface ReportExportPanelProps {
 }
 
 export default function ReportExportPanel({ onExport }: ReportExportPanelProps) {
+
+  // State for export filters and exporting status
   const [filters, setFilters] = useState<ExportFilters>({
     startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
     endDate: new Date(),
     division: 'All Divisions',
     district: 'All Districts'
   });
+
+  // 'csv' | 'pdf' | null
   const [exporting, setExporting] = useState<'csv' | 'pdf' | null>(null);
 
+
+  // Handlers for exporting CSV and PDF
   const handleExportCSV = async () => {
     setExporting('csv');
     try {
@@ -48,6 +54,8 @@ export default function ReportExportPanel({ onExport }: ReportExportPanelProps) 
     }
   };
 
+
+  // Handler for exporting PDF
   const handleExportPDF = async () => {
     setExporting('pdf');
     try {

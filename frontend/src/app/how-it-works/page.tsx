@@ -135,6 +135,8 @@ interface CountUpProps {
   prefix?: string;
 }
 
+
+// CountUp Component
 function CountUp({ end, duration = 2000, suffix = '', prefix = '' }: CountUpProps) {
   const [count, setCount] = useState(0);
   const countRef = useRef<HTMLSpanElement>(null);
@@ -181,8 +183,9 @@ function CountUp({ end, duration = 2000, suffix = '', prefix = '' }: CountUpProp
   );
 }
 
-export default function HowItWorksPage() {
 
+// Step Data
+export default function HowItWorksPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-gray-50 to-white overflow-hidden">
       {/* Inject custom styles */}

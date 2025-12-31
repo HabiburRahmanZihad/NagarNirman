@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { Button } from '@/components/common';
 
 
+// Typing for Earthquake data used by the client
 interface Earthquake {
   _id: string;
   eventId: string;
@@ -47,6 +48,8 @@ interface USGSFeature {
   };
 }
 
+
+// Helper functions for alert colors and intensity emojis
 const getAlertColor = (alertLevel: string) => {
   switch (alertLevel) {
     case 'Green':
@@ -62,6 +65,8 @@ const getAlertColor = (alertLevel: string) => {
   }
 };
 
+
+// Helper function for alert badge colors
 const getAlertBadgeColor = (alertLevel: string) => {
   switch (alertLevel) {
     case 'Green':
@@ -77,6 +82,8 @@ const getAlertBadgeColor = (alertLevel: string) => {
   }
 };
 
+
+// Helper function to get intensity emoji
 const getIntensityEmoji = (intensity: string) => {
   const emojiMap: { [key: string]: string } = {
     'Not Felt': '😴',
@@ -92,6 +99,7 @@ const getIntensityEmoji = (intensity: string) => {
   return emojiMap[intensity] || '🌍';
 };
 
+
 // Helper functions to transform USGS data
 const getAlertLevel = (magnitude: number): string => {
   if (magnitude >= 7.0) return 'Red';
@@ -100,6 +108,8 @@ const getAlertLevel = (magnitude: number): string => {
   return 'Green';
 };
 
+
+// Function to get intensity based on magnitude
 const getIntensity = (magnitude: number): string => {
   if (magnitude >= 8.0) return 'Extreme';
   if (magnitude >= 7.0) return 'Violent';

@@ -11,6 +11,7 @@ import {
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 
+// FAQ data
 const faqs = [
   {
     q: 'Is NagarNirman officially connected with municipal authorities?',
@@ -44,10 +45,13 @@ const faqs = [
 
 export default function Faq() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  // Toggle FAQ item open/close
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index);
   };
 
+  // Memoized current date for "Last Updated" display
   const currentDateShow = useMemo(() => {
     return new Date().toLocaleDateString('en-US', {
       year: 'numeric',
@@ -59,6 +63,8 @@ export default function Faq() {
   return (
     <div>
       <section className="pb-20 bg-linear-to-br from-gray-50 to-[#f8f8f8]">
+
+        {/* Hero Section */}
         <section className="relative overflow-hidden mb-10">
           <div className="absolute inset-0">
             <Image
@@ -90,6 +96,8 @@ export default function Faq() {
             </div>
           </div>
         </section>
+
+        {/* FAQ Section */}
         <div className="container mx-auto px-4 mt-16">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* FAQ Column */}
@@ -107,17 +115,15 @@ export default function Faq() {
                       {faq.q}
                     </h3>
                     <div
-                      className={`w-10 h-10 bg-[#004d40]/10 rounded-full flex items-center justify-center shrink-0 transition-transform ${
-                        openFaq === index ? 'rotate-180' : ''
-                      }`}
+                      className={`w-10 h-10 bg-[#004d40]/10 rounded-full flex items-center justify-center shrink-0 transition-transform ${openFaq === index ? 'rotate-180' : ''
+                        }`}
                     >
                       <ChevronDown className="w-5 h-5 text-[#004d40]" />
                     </div>
                   </button>
                   <div
-                    className={`px-6 overflow-hidden transition-all duration-300 ${
-                      openFaq === index ? 'max-h-96 pb-6' : 'max-h-0'
-                    }`}
+                    className={`px-6 overflow-hidden transition-all duration-300 ${openFaq === index ? 'max-h-96 pb-6' : 'max-h-0'
+                      }`}
                   >
                     <p className="text-gray-600 leading-relaxed">{faq.a}</p>
                   </div>
