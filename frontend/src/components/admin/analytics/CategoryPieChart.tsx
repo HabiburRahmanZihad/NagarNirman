@@ -4,10 +4,14 @@ import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend, PieLabelRenderProps } from 'recharts';
 import { CategoryStat } from './types';
 
+
+// Props for the CategoryPieChart component
 interface CategoryPieChartProps {
   data: CategoryStat[];
 }
 
+
+// Color palette for the pie chart segments
 const COLORS = [
   '#2563eb', '#2a7d2f', '#f59e0b', '#dc2626',
   '#7c3aed', '#0891b2', '#ea580c', '#65a30d'

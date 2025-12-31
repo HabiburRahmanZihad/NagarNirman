@@ -5,6 +5,8 @@ import toast from 'react-hot-toast';
 import { notificationAPI } from '@/utils/api';
 import { useAuth } from './AuthContext';
 
+
+// Define Notification type
 export interface Notification {
   _id: string;
   id?: string;
@@ -17,6 +19,7 @@ export interface Notification {
   actionUrl?: string;
 }
 
+// Define the shape of the NotificationContext
 interface NotificationContextType {
   notifications: Notification[];
   unreadCount: number;
@@ -32,6 +35,7 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
+// NotificationProvider component
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -115,6 +119,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
   }, [isAuthenticated, fetchNotifications]);
 
+  // Add a new notification
   const addNotification = useCallback((notification: Omit<Notification, '_id' | 'id' | 'timestamp' | 'read'>) => {
     const id = `notif-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const newNotification: Notification = {
@@ -154,6 +159,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
   }, []);
 
+
+  // Mark a notification as read
   const markAsRead = useCallback(async (id: string) => {
     if (!id) return;
 
@@ -170,6 +177,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
   }, []);
 
+  // Mark all notifications as read
   const markAllAsRead = useCallback(async () => {
     // Update local state immediately
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
@@ -182,6 +190,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
   }, []);
 
+
+  // Clear a specific notification
   const clearNotification = useCallback(async (id: string) => {
     if (!id) return;
 
@@ -196,6 +206,9 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
   }, []);
 
+
+
+  // Clear all notifications
   const clearAllNotifications = useCallback(async () => {
     try {
       // Delete all from backend
@@ -207,6 +220,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     }
   }, []);
 
+
+  // Show toast notification
   const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
     switch (type) {
       case 'success':
@@ -243,6 +258,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   );
 };
 
+
+// Custom hook to use the NotificationContext
 export const useNotifications = () => {
   const context = useContext(NotificationContext);
   if (context === undefined) {

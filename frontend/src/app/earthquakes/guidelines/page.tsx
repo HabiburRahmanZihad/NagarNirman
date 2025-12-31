@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
+// Typing for guideline sections
 interface GuidelineSection {
   title: string;
   icon: React.ReactNode;
@@ -30,6 +31,7 @@ interface GuidelineSection {
   tips: string[];
 }
 
+// Guidelines data
 const guidelines: GuidelineSection[] = [
   {
     title: 'Before an Earthquake',

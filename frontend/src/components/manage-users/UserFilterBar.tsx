@@ -8,6 +8,8 @@ import divisionsData from '@/data/divisionsData.json';
 import Button from '@/components/common/Button';
 import Card from '@/components/common/Card';
 
+
+// Filter structure
 type Filters = {
   role: string;
   division: string;
@@ -15,6 +17,8 @@ type Filters = {
   status: string;
 };
 
+
+// Props for UserFilterBar component
 interface UserFilterBarProps {
   searchTerm?: string;
   setSearchTerm?: (term: string) => void;
@@ -27,6 +31,7 @@ interface UserFilterBarProps {
   userDivision?: string | null;
   isSuperAdmin?: boolean;
 }
+
 
 export default function UserFilterBar({
   searchTerm: externalSearchTerm,
@@ -68,6 +73,8 @@ export default function UserFilterBar({
     }
   }, [searchTerm, onSearch]);
 
+
+  // Handle filter changes
   const handleFilterChange = (key: keyof Filters, value: string) => {
     let newFilters = { ...localFilters, [key]: value } as Filters;
     // If division changes, reset district
@@ -101,6 +108,8 @@ export default function UserFilterBar({
     { value: "inactive", label: "🔴 Inactive" }
   ];
 
+
+  // Clear all filters
   const clearAllFilters = () => {
     const clearedFilters: Filters = { role: "", division: "", district: "", status: "" };
     setLocalFilters(clearedFilters);
@@ -112,6 +121,8 @@ export default function UserFilterBar({
     setSearchTerm("");
   };
 
+
+  // Remove individual filter
   const removeFilter = (key: keyof Filters) => {
     let newFilters = { ...localFilters, [key]: "" } as Filters;
     // If removing division, also clear district

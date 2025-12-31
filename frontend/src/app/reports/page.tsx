@@ -13,6 +13,8 @@ import {
 import divisionData from '@/data/divisionsData.json';
 import Image from 'next/image';
 
+
+// Report interface
 interface Report {
   _id: string;
   title: string;
@@ -31,6 +33,8 @@ interface Report {
   category?: string;
 }
 
+
+// Pagination data interface
 interface PaginationData {
   currentPage: number;
   totalPages: number;
@@ -186,18 +190,24 @@ export default function AllReportsPage() {
     }
   }, [filters, searchTerm, pagination.reportsPerPage]);
 
+
+  // Fetch reports and stats on filters/search change
   useEffect(() => {
     setCurrentPage(1);
     fetchAllReportsStats();
     fetchReports(1);
   }, [filters, searchTerm, fetchAllReportsStats, fetchReports]);
 
+
+  // Fetch reports on page change
   useEffect(() => {
     if (currentPage >= 1) {
       fetchReports(currentPage);
     }
   }, [currentPage, fetchReports]);
 
+
+  // Reset all filters
   const handleResetFilters = () => {
     setSearchTerm('');
     setFilters({

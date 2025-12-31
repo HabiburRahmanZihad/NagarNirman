@@ -39,6 +39,8 @@ import {
   FaExpand,
 } from 'react-icons/fa';
 
+
+// Interface for report comment
 interface ReportComment {
   _id: string;
   user?: {
@@ -51,6 +53,8 @@ interface ReportComment {
   createdAt: string;
 }
 
+
+// Interface for report details
 interface Report {
   _id: string;
   title: string;
@@ -161,6 +165,8 @@ export default function ReportDetailsPage() {
     }
   };
 
+
+  // Initial fetch
   useEffect(() => {
     if (reportId) {
       fetchReportDetails();
@@ -306,12 +312,6 @@ export default function ReportDetailsPage() {
     }
   };
 
-  // Handle report inappropriate
-  const handleReport = () => {
-    toast('Report submitted for review', {
-      icon: '🚩',
-    });
-  };
 
   // Handle image click
   const handleImageClick = (image: string) => {

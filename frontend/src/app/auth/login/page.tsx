@@ -43,6 +43,7 @@ export default function LoginPage() {
     }
   }, [isAuthenticated, user, router, redirectTo]);
 
+  // HANDLE INPUT CHANGE
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -52,6 +53,8 @@ export default function LoginPage() {
     }
   };
 
+
+  // FORM VALIDATION
   const validate = (): boolean => {
     const newErrors: { email?: string; password?: string } = {};
 
@@ -69,6 +72,8 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
+
+  // FORM SUBMISSION
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setApiError("");

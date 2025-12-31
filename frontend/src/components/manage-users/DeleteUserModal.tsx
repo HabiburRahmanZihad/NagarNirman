@@ -6,6 +6,8 @@ import { useState } from "react";
 import Button from '@/components/common/Button';
 import type { User } from "@/types";
 
+
+// Props for DeleteUserModal component
 interface DeleteUserModalProps {
   user: User;
   onClose: () => void;
@@ -15,6 +17,8 @@ interface DeleteUserModalProps {
 export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUserModalProps) {
   const [isDeleting, setIsDeleting] = useState(false);
 
+
+  // Handle confirm deletion
   const handleConfirm = async () => {
     setIsDeleting(true);
     // Simulate API call delay
@@ -23,6 +27,8 @@ export default function DeleteUserModal({ user, onClose, onConfirm }: DeleteUser
     setIsDeleting(false);
   };
 
+
+  // Get role-based color classes
   const getRoleColor = (role: string) => {
     switch (role) {
       case 'authority': return 'bg-red-500/20 text-red-700 border-red-200';

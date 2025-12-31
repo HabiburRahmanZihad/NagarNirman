@@ -12,6 +12,8 @@ export const COLORS = {
   textBody: '#374151',
 } as const;
 
+
+// Problem Types and Subcategories
 export const PROBLEM_TYPES = [
   {
     value: 'road_infrastructure',
@@ -68,7 +70,10 @@ export const PROBLEM_TYPES = [
 // API Base URL
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
+
+// API Endpoints
 export const API_ENDPOINTS = {
+
   // Auth
   REGISTER: `${API_BASE_URL}/api/auth/register`,
   LOGIN: `${API_BASE_URL}/api/auth/login`,
@@ -109,6 +114,8 @@ export const API_ENDPOINTS = {
   REJECT_TASK: (id: string) => `${API_BASE_URL}/api/tasks/${id}/reject`,
 } as const;
 
+
+// Storage Keys
 export const STORAGE_KEYS = {
   TOKEN: 'nn_auth_token',
   USER: 'nn_user',
