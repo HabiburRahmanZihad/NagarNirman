@@ -8,6 +8,8 @@ import { useMemo } from 'react';
 import { FaEnvelope, FaPhone, FaQuestionCircle, FaChartLine, FaUsers, FaHistory, FaArrowRight } from 'react-icons/fa';
 
 export default function HelpPage() {
+
+  // Memoized current date in a readable format
   const currentDateShow = useMemo(() => {
     return new Date().toLocaleDateString('en-US', {
       year: 'numeric',
@@ -16,6 +18,8 @@ export default function HelpPage() {
     });
   }, []);
 
+
+  // Help Cards Data
   const helpCards = [
     {
       title: 'Report an Issue',
@@ -52,6 +56,7 @@ export default function HelpPage() {
     }
   ];
 
+  // FAQs Data
   const faqs = [
     {
       question: 'How do I report a civic issue?',
@@ -77,6 +82,7 @@ export default function HelpPage() {
 
   return (
     <div className="min-h-screen bg-[#F6FFF9] pb-10">
+      {/* Hero Section */}
       <section className="relative overflow-hidden mb-10">
         <div className="absolute inset-0">
           <Image
@@ -107,6 +113,7 @@ export default function HelpPage() {
         </div>
       </section>
 
+      {/* Quick Actions Section */}
       <div className="container mx-auto px-4  mb-10">
         <section className="mb-12">
           <div className="text-center mb-10">
