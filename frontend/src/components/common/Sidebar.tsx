@@ -6,6 +6,8 @@ import { useAuth } from '@/context/AuthContext';
 import Image from 'next/image';
 import { LayoutDashboard, User, MapPin, Search, FileText, Edit, Lightbulb, BarChart3, Trophy, Settings, Users, FileCheck, LogOut, X } from 'lucide-react';
 
+
+// Sidebar link structure
 interface SidebarLink {
   href: string;
   icon: string;
@@ -13,6 +15,8 @@ interface SidebarLink {
   badge?: number;
 }
 
+
+// Sidebar component props
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
@@ -80,6 +84,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   const links = getUserLinks();
 
+
+  // Function to check if a link is active
   const isActive = (href: string) => {
     if (href === `/dashboard/${user?.role}`) {
       return pathname === href;
@@ -87,6 +93,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     return pathname.startsWith(href);
   };
 
+
+  // Function to get icon component based on icon name
   const getIconComponent = (iconName: string) => {
     const iconProps = { className: 'w-5 h-5' };
     const icons: { [key: string]: React.ReactNode } = {
