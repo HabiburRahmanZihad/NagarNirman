@@ -663,7 +663,7 @@ export default function DonatePage() {
                         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
                             <Link href="#" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                                 <Button variant="accent" size="lg" iconPosition="right" className="w-full sm:w-auto">
-                                    <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                                    <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-2 mb-1 inline-flex items-center" />
                                     Donate Now
                                 </Button>
                             </Link>
