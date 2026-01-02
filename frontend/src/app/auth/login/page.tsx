@@ -112,7 +112,7 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setForgotPasswordSuccess("Password reset instructions have been sent to your email.");
+        setForgotPasswordSuccess(data.message || "Password reset instructions have been sent to your email.");
         // Reset form after success
         setTimeout(() => {
           setShowForgotPassword(false);
@@ -222,10 +222,8 @@ export default function LoginPage() {
                       Send Reset Instructions
                     </Button>
 
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full"
+                    <button
+                      className="w-full btn rounded-full border-primary"
                       onClick={() => {
                         setShowForgotPassword(false);
                         setForgotPasswordError("");
@@ -233,7 +231,7 @@ export default function LoginPage() {
                       }}
                     >
                       Back to Login
-                    </Button>
+                    </button>
                   </div>
                 </form>
               </>
