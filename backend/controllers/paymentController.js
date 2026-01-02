@@ -15,6 +15,7 @@ import {
     getDonations
 } from '../models/Donation.js';
 import { v4 as uuidv4 } from 'uuid';
+import { sendDonationSuccessEmail } from '../services/emailService.js';
 
 // Lazy initialization for Stripe and SSLCommerz
 let stripe = null;
@@ -172,6 +173,31 @@ export const stripeWebhook = asyncHandler(async (req, res) => {
             });
 
             console.log('✅ Donation completed via Stripe:', session.id);
+
+            // Send success email
+            try {
+                const donation = await getDonationBySessionId(session.id);
+                if (donation && donation.email) {
+                    await sendDonationSuccessEmail(donation.email, {
+                        donorName: donation.isAnonymous ? 'Anonymous Donor' : (donation.donorName || 'Valued Donor'),
+                        amount: donation.amount,
+                        currency: donation.currency || 'USD',
+                        transactionId: session.payment_intent || session.id,
+                        paymentMethod: 'Stripe - Card Payment',
+                        donationDate: new Date().toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        }),
+                        category: donation.category || 'General Fund',
+                        message: donation.message || null
+                    });
+                    console.log('📧 Donation success email sent to:', donation.email);
+                }
+            } catch (emailError) {
+                console.error('Failed to send donation success email:', emailError);
+                // Don't fail the transaction if email fails
+            }
             break;
         }
 
@@ -395,6 +421,31 @@ export const sslcommerzSuccess = asyncHandler(async (req, res) => {
             });
 
             console.log('✅ Donation completed via SSLCommerz:', tran_id);
+
+            // Send success email
+            try {
+                const donation = await getDonationByTransactionId(tran_id);
+                if (donation && donation.email) {
+                    await sendDonationSuccessEmail(donation.email, {
+                        donorName: donation.isAnonymous ? 'Anonymous Donor' : (donation.donorName || 'Valued Donor'),
+                        amount: donation.amount,
+                        currency: donation.currency || 'BDT',
+                        transactionId: tran_id,
+                        paymentMethod: `SSLCommerz - ${card_type || 'Online Payment'}`,
+                        donationDate: new Date().toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        }),
+                        category: donation.category || 'General Fund',
+                        message: donation.message || null
+                    });
+                    console.log('📧 Donation success email sent to:', donation.email);
+                }
+            } catch (emailError) {
+                console.error('Failed to send donation success email:', emailError);
+                // Don't fail the transaction if email fails
+            }
 
             // Redirect to success page
             res.redirect(`${process.env.FRONTEND_URL}/donate/success?tran_id=${tran_id}&status=success`);
