@@ -232,10 +232,20 @@ export const verifyStripePayment = asyncHandler(async (req, res) => {
             success: true,
             status: session.payment_status === 'paid' ? 'completed' : donation.status,
             donation: {
+                _id: donation._id,
                 amount: donation.amount,
+                currency: donation.currency || 'BDT',
                 donorName: donation.isAnonymous ? 'Anonymous' : donation.donorName,
+                donorEmail: donation.isAnonymous ? null : donation.donorEmail,
+                donorPhone: donation.isAnonymous ? null : donation.donorPhone,
                 isMonthly: donation.isMonthly,
-                transactionId: session.payment_intent || session.subscription
+                isAnonymous: donation.isAnonymous,
+                transactionId: session.payment_intent || session.subscription || donation.sessionId,
+                paymentMethod: donation.paymentMethod,
+                paymentProvider: donation.paymentProvider || 'card',
+                message: donation.message,
+                completedAt: donation.completedAt,
+                createdAt: donation.createdAt
             }
         });
     } catch (error) {
@@ -495,10 +505,20 @@ export const verifySSLCommerzPayment = asyncHandler(async (req, res) => {
             success: true,
             status: donation.status,
             donation: {
+                _id: donation._id,
                 amount: donation.amount,
+                currency: donation.currency || 'BDT',
                 donorName: donation.isAnonymous ? 'Anonymous' : donation.donorName,
+                donorEmail: donation.isAnonymous ? null : donation.donorEmail,
+                donorPhone: donation.isAnonymous ? null : donation.donorPhone,
                 isMonthly: donation.isMonthly,
-                transactionId: donation.transactionId
+                isAnonymous: donation.isAnonymous,
+                transactionId: donation.transactionId,
+                paymentMethod: donation.paymentMethod,
+                paymentProvider: donation.paymentProvider,
+                message: donation.message,
+                completedAt: donation.completedAt,
+                createdAt: donation.createdAt
             },
             verification: verificationResponse
         });

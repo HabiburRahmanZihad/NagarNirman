@@ -145,8 +145,9 @@ export default function DonatePage() {
         name: string;
         amount: number;
         message?: string;
-        date: string;
+        date: string | null;
     }>>([]);
+    const [donorsLoading, setDonorsLoading] = useState(true);
     const [donationStats, setDonationStats] = useState<{
         totalAmount: number;
         totalDonations: number;
@@ -163,20 +164,27 @@ export default function DonatePage() {
     // Fetch recent donations and stats on mount
     useEffect(() => {
         const fetchDonationData = async () => {
+            setDonorsLoading(true);
             try {
                 const [donorsResponse, statsResponse] = await Promise.all([
                     paymentAPI.getRecentDonations(5),
                     paymentAPI.getDonationStats()
                 ]);
 
+                console.log('Donors response:', donorsResponse);
+                console.log('Stats response:', statsResponse);
+
                 if ((donorsResponse as { success: boolean; donations: typeof recentDonors }).success) {
-                    setRecentDonors((donorsResponse as { donations: typeof recentDonors }).donations || []);
+                    const donations = (donorsResponse as { donations: typeof recentDonors }).donations || [];
+                    setRecentDonors(donations);
                 }
                 if ((statsResponse as { success: boolean; stats: typeof donationStats }).success) {
                     setDonationStats((statsResponse as { stats: typeof donationStats }).stats || null);
                 }
             } catch (err) {
                 console.error('Failed to fetch donation data:', err);
+            } finally {
+                setDonorsLoading(false);
             }
         };
 
@@ -224,10 +232,14 @@ export default function DonatePage() {
             return;
         }
 
-        // Validate required fields for SSLCommerz
+        // Validate required fields for SSLCommerz (email and phone always required, name only if not anonymous)
         if (paymentMethod.gateway === 'sslcommerz') {
-            if (!donorName || !donorEmail || !donorPhone) {
-                setError('Name, email, and phone are required for this payment method');
+            if (!donorEmail || !donorPhone) {
+                setError('Email and phone are required for this payment method');
+                return;
+            }
+            if (!isAnonymous && !donorName) {
+                setError('Name is required (or check "Donate Anonymously")');
                 return;
             }
         }
@@ -545,29 +557,37 @@ export default function DonatePage() {
                                     </div>
 
                                     {!isAnonymous && (
-                                        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+                                        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
                                             <input
                                                 type="text"
                                                 value={donorName}
                                                 onChange={(e) => setDonorName(e.target.value)}
-                                                placeholder="Full Name"
-                                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm sm:text-base"
-                                            />
-                                            <input
-                                                type="email"
-                                                value={donorEmail}
-                                                onChange={(e) => setDonorEmail(e.target.value)}
-                                                placeholder="Email Address"
-                                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm sm:text-base"
-                                            />
-                                            <input
-                                                type="tel"
-                                                value={donorPhone}
-                                                onChange={(e) => setDonorPhone(e.target.value)}
-                                                placeholder="Phone Number"
-                                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all sm:col-span-2 text-sm sm:text-base"
+                                                placeholder="Full Name *"
+                                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm sm:text-base sm:col-span-2"
                                             />
                                         </div>
+                                    )}
+
+                                    <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+                                        <input
+                                            type="email"
+                                            value={donorEmail}
+                                            onChange={(e) => setDonorEmail(e.target.value)}
+                                            placeholder={`Email Address ${getSelectedPaymentMethod()?.gateway === 'sslcommerz' ? '*' : ''}`}
+                                            className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm sm:text-base"
+                                        />
+                                        <input
+                                            type="tel"
+                                            value={donorPhone}
+                                            onChange={(e) => setDonorPhone(e.target.value)}
+                                            placeholder={`Phone Number ${getSelectedPaymentMethod()?.gateway === 'sslcommerz' ? '*' : ''}`}
+                                            className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-sm sm:text-base"
+                                        />
+                                    </div>
+                                    {isAnonymous && (
+                                        <p className="text-xs text-gray-500 mt-2">
+                                            Your name won&apos;t be shown publicly, but email/phone may be required for payment processing.
+                                        </p>
                                     )}
                                 </div>
 
@@ -677,35 +697,49 @@ export default function DonatePage() {
                                     Recent Supporters
                                 </h3>
                                 <div className="space-y-3 sm:space-y-4">
-                                    {(recentDonors.length > 0 ? recentDonors : testimonials).map((donor, index) => (
-                                        <div key={index} className="flex items-start gap-2 sm:gap-3 pb-3 sm:pb-4 border-b border-gray-100 last:border-0 last:pb-0">
-                                            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                                                <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center justify-between gap-2">
-                                                    <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">
-                                                        {'name' in donor ? donor.name : (donor as { donorName?: string }).donorName || 'Anonymous'}
-                                                    </p>
-                                                    <span className="text-xs sm:text-sm font-bold text-primary shrink-0">
-                                                        ৳{typeof donor.amount === 'number' ? donor.amount.toLocaleString() : donor.amount}
-                                                    </span>
-                                                </div>
-                                                {'location' in donor && (
-                                                    <p className="text-xs text-gray-500">{(donor as { location?: string }).location}</p>
-                                                )}
-                                                {'date' in donor && (
-                                                    <p className="text-xs text-gray-500">
-                                                        {new Date(donor.date).toLocaleDateString()}
-                                                    </p>
-                                                )}
-                                            </div>
+                                    {donorsLoading ? (
+                                        <div className="flex items-center justify-center py-8">
+                                            <Loader2 className="w-6 h-6 animate-spin text-primary" />
                                         </div>
-                                    ))}
+                                    ) : recentDonors.length > 0 ? (
+                                        recentDonors.map((donor, index) => (
+                                            <div key={donor.id || index} className="flex items-start gap-2 sm:gap-3 pb-3 sm:pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                                                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                                                    <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between gap-2">
+                                                        <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                                                            {donor.name || 'Anonymous'}
+                                                        </p>
+                                                        <span className="text-xs sm:text-sm font-bold text-primary shrink-0">
+                                                            ৳{donor.amount.toLocaleString()}
+                                                        </span>
+                                                    </div>
+                                                    {donor.date && (
+                                                        <p className="text-xs text-gray-500">
+                                                            {new Date(donor.date).toLocaleDateString('en-BD', {
+                                                                day: 'numeric',
+                                                                month: 'short',
+                                                                year: 'numeric'
+                                                            })}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-center py-6 text-gray-500">
+                                            <Heart className="w-10 h-10 mx-auto mb-2 text-gray-300" />
+                                            <p className="text-sm">Be the first supporter!</p>
+                                        </div>
+                                    )}
                                 </div>
-                                <Link href="#" className="block text-center text-primary font-medium mt-3 sm:mt-4 text-sm sm:text-base hover:text-accent transition-colors">
-                                    View All Donors →
-                                </Link>
+                                {recentDonors.length > 0 && (
+                                    <Link href="#" className="block text-center text-primary font-medium mt-3 sm:mt-4 text-sm sm:text-base hover:text-accent transition-colors">
+                                        View All Donors →
+                                    </Link>
+                                )}
                             </div>
 
                             {/* Trust Badges */}

@@ -46,7 +46,14 @@ export const createDonationIndexes = async () => {
         const collection = getDonationsCollection();
         await collection.createIndex({ status: 1 });
         await collection.createIndex({ donorEmail: 1 });
-        await collection.createIndex({ transactionId: 1 }, { unique: true, sparse: true });
+        // Use partial filter to only index documents where transactionId exists and is not null
+        await collection.createIndex(
+            { transactionId: 1 },
+            {
+                unique: true,
+                partialFilterExpression: { transactionId: { $type: 'string' } }
+            }
+        );
         await collection.createIndex({ sessionId: 1 }, { sparse: true });
         await collection.createIndex({ createdAt: -1 });
         await collection.createIndex({ paymentMethod: 1 });
