@@ -129,6 +129,7 @@ const Navbar: React.FC = () => {
       subLinks: [
         { href: '/about', label: 'About Us' },
         { href: '/about-team', label: 'Meet the Team' },
+        { href: '/donate', label: 'Donate' },
       ],
     },
     {
@@ -194,43 +195,39 @@ const Navbar: React.FC = () => {
       className={`sticky top-0 z-50 transition-all duration-300 ${getNavbarBackground()}`}
     >
       <div
-        className={`container mx-auto ${
-          isSmallMobile
+        className={`container mx-auto ${isSmallMobile
             ? 'px-2'
             : isMobile
-            ? 'px-3'
-            : isTablet
-            ? 'px-4'
-            : 'px-0'
-        }`}
+              ? 'px-3'
+              : isTablet
+                ? 'px-4'
+                : 'px-0'
+          }`}
       >
         <div
-          className={`flex items-center justify-between ${
-            isSmallMobile
+          className={`flex items-center justify-between ${isSmallMobile
               ? 'h-14'
               : isMobile
-              ? 'h-16'
-              : isTablet
-              ? 'h-18'
-              : 'h-20'
-          }`}
+                ? 'h-16'
+                : isTablet
+                  ? 'h-18'
+                  : 'h-20'
+            }`}
         >
           {/* Logo */}
           <Link href="/" className="shrink-0 flex-1 md:flex-initial">
             <div
-              className={`relative ${
-                isSmallMobile
+              className={`relative ${isSmallMobile
                   ? 'w-32 h-10'
                   : isMobile
-                  ? 'w-40 h-12'
-                  : isTablet
-                  ? 'w-44 h-13'
-                  : 'w-50 h-15'
-              } ${
-                isHomePage && isDesktop && !isScrolled
+                    ? 'w-40 h-12'
+                    : isTablet
+                      ? 'w-44 h-13'
+                      : 'w-50 h-15'
+                } ${isHomePage && isDesktop && !isScrolled
                   ? 'bg-white/35 backdrop-blur-sm rounded-lg p-2'
                   : ''
-              }`}
+                }`}
             >
               <Image
                 src="/logo/logo.png"
@@ -270,11 +267,10 @@ const Navbar: React.FC = () => {
                               <Link
                                 key={subLink.href}
                                 href={subLink.href}
-                                className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50/80 font-medium transition-colors text-sm ${
-                                  isActiveLink(subLink.href)
+                                className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50/80 font-medium transition-colors text-sm ${isActiveLink(subLink.href)
                                     ? 'text-[#004d40] font-semibold'
                                     : ''
-                                }`}
+                                  }`}
                               >
                                 {subLink.label}
                               </Link>
@@ -291,11 +287,10 @@ const Navbar: React.FC = () => {
                     <div key={link.href} className="relative group">
                       <Link
                         href={link.href}
-                        className={`flex items-center gap-2 px-3 xl:px-4 py-3 rounded-lg font-medium transition-all duration-200 whitespace-nowrap text-sm xl:text-base ${
-                          isActiveLink(link.href)
+                        className={`flex items-center gap-2 px-3 xl:px-4 py-3 rounded-lg font-medium transition-all duration-200 whitespace-nowrap text-sm xl:text-base ${isActiveLink(link.href)
                             ? 'text-[#004d40] font-semibold bg-gray-100'
                             : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'
-                        }`}
+                          }`}
                       >
                         {link.icon}
                         <span className="hidden sm:inline">{link.label}</span>
@@ -312,11 +307,10 @@ const Navbar: React.FC = () => {
                               <Link
                                 key={subLink.href}
                                 href={subLink.href}
-                                className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50 font-medium transition-colors text-sm ${
-                                  isActiveLink(subLink.href)
+                                className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50 font-medium transition-colors text-sm ${isActiveLink(subLink.href)
                                     ? 'text-[#004d40] font-semibold'
                                     : ''
-                                }`}
+                                  }`}
                               >
                                 {subLink.label}
                               </Link>
@@ -336,11 +330,10 @@ const Navbar: React.FC = () => {
             {/* Desktop User/Auth Section */}
             {isDesktop && (
               <div
-                className={`flex items-center gap-2 ${
-                  isHomePage && !isScrolled
+                className={`flex items-center gap-2 ${isHomePage && !isScrolled
                     ? 'bg-white/30 backdrop-blur-sm rounded-lg px-2 py-1 h-15'
                     : ''
-                }`}
+                  }`}
               >
                 {isAuthenticated && user ? (
                   <>
@@ -353,11 +346,10 @@ const Navbar: React.FC = () => {
                         className={`flex items-center gap-2 px-2 xl:px-4 xl:py-3 rounded-lg`}
                       >
                         <div
-                          className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 overflow-hidden ${
-                            isHomePage && !isScrolled
+                          className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 overflow-hidden ${isHomePage && !isScrolled
                               ? 'bg-white/20 text-white'
                               : 'bg-[#004d40] text-white'
-                          }`}
+                            }`}
                         >
                           {user.profilePicture ? (
                             <Image
@@ -382,9 +374,8 @@ const Navbar: React.FC = () => {
                           </span>
                         </div>
                         <FaChevronDown
-                          className={`w-3 h-3 transition-transform duration-200 hidden xl:block ${
-                            isUserMenuOpen ? 'rotate-180' : ''
-                          } ${getUserSubtextColor()}`}
+                          className={`w-3 h-3 transition-transform duration-200 hidden xl:block ${isUserMenuOpen ? 'rotate-180' : ''
+                            } ${getUserSubtextColor()}`}
                         />
                       </button>
 
@@ -425,11 +416,10 @@ const Navbar: React.FC = () => {
                           <div className="p-2">
                             <Link
                               href={getDashboardPath()}
-                              className={`flex items-center gap-3 px-3 py-2 text-xs lg:text-sm rounded-lg transition-colors ${
-                                isActiveLink(getDashboardPath())
+                              className={`flex items-center gap-3 px-3 py-2 text-xs lg:text-sm rounded-lg transition-colors ${isActiveLink(getDashboardPath())
                                   ? 'text-[#004d40] font-semibold bg-gray-50'
                                   : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'
-                              }`}
+                                }`}
                               onClick={() => setIsUserMenuOpen(false)}
                             >
                               <FaTachometerAlt className="w-4 h-4 shrink-0" />
@@ -525,22 +515,19 @@ const Navbar: React.FC = () => {
             className="lg:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-100 shadow-lg z-40 max-h-[calc(100vh-70px)] overflow-y-auto"
           >
             <div
-              className={`container mx-auto ${isMobile ? 'px-3' : 'px-4'} ${
-                isMobile ? 'py-3' : 'py-4'
-              }`}
+              className={`container mx-auto ${isMobile ? 'px-3' : 'px-4'} ${isMobile ? 'py-3' : 'py-4'
+                }`}
             >
               {/* User Info */}
               {isAuthenticated && user && (
                 <div
-                  className={`mb-4 pb-4 border-b border-gray-100 ${
-                    isMobile ? 'mb-3 pb-3' : ''
-                  }`}
+                  className={`mb-4 pb-4 border-b border-gray-100 ${isMobile ? 'mb-3 pb-3' : ''
+                    }`}
                 >
                   <div className="flex items-center gap-3 p-3 lg:p-4 bg-gray-50 rounded-lg">
                     <div
-                      className={`${
-                        isMobile ? 'w-10 h-10' : 'w-12 h-12'
-                      } bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold shrink-0`}
+                      className={`${isMobile ? 'w-10 h-10' : 'w-12 h-12'
+                        } bg-[#004d40] rounded-full flex items-center justify-center text-white font-semibold shrink-0`}
                     >
                       {user.profilePicture ? (
                         <Image
@@ -574,10 +561,9 @@ const Navbar: React.FC = () => {
                     <Link
                       href={getDashboardPath()}
                       className={`flex flex-col items-center justify-center p-2 lg:p-3 rounded-lg transition-colors text-xs lg:text-sm
-                        ${
-                          isActiveLink(getDashboardPath())
-                            ? 'bg-[#004d40] text-white'
-                            : 'bg-gray-50 hover:bg-[#004d40] hover:text-white'
+                        ${isActiveLink(getDashboardPath())
+                          ? 'bg-[#004d40] text-white'
+                          : 'bg-gray-50 hover:bg-[#004d40] hover:text-white'
                         }`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -606,11 +592,10 @@ const Navbar: React.FC = () => {
                   <div key={link.href} className="mb-0.5">
                     <Link
                       href={link.href}
-                      className={`flex items-center gap-3 px-3 lg:px-4 py-2 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm lg:text-base ${
-                        isActiveLink(link.href)
+                      className={`flex items-center gap-3 px-3 lg:px-4 py-2 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm lg:text-base ${isActiveLink(link.href)
                           ? 'text-[#004d40] bg-gray-50 font-semibold'
                           : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'
-                      }`}
+                        }`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {link.icon}
@@ -624,11 +609,10 @@ const Navbar: React.FC = () => {
                           <Link
                             key={subLink.href}
                             href={subLink.href}
-                            className={`flex items-center gap-3 px-4 py-2 text-xs lg:text-sm rounded-lg transition-colors ${
-                              isActiveLink(subLink.href)
+                            className={`flex items-center gap-3 px-4 py-2 text-xs lg:text-sm rounded-lg transition-colors ${isActiveLink(subLink.href)
                                 ? 'text-[#004d40] font-semibold'
                                 : 'text-gray-600 hover:text-[#004d40]'
-                            }`}
+                              }`}
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
                             <div className="w-1 h-1 bg-[#004d40] rounded-full shrink-0"></div>
@@ -647,11 +631,10 @@ const Navbar: React.FC = () => {
                   >
                     <Link
                       href="/donate"
-                      className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg font-medium transition-colors text-sm lg:text-base ${
-                        isActiveLink('/donate')
+                      className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg font-medium transition-colors text-sm lg:text-base ${isActiveLink('/donate')
                           ? 'bg-accent text-white'
                           : 'bg-accent text-white hover:bg-accent/90'
-                      }`}
+                        }`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <FaHeart className="w-4 h-4" />
@@ -659,11 +642,10 @@ const Navbar: React.FC = () => {
                     </Link>
                     <Link
                       href="/auth/login"
-                      className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg border font-medium transition-colors text-sm lg:text-base ${
-                        isActiveLink('/auth/login')
+                      className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg border font-medium transition-colors text-sm lg:text-base ${isActiveLink('/auth/login')
                           ? 'border-[#004d40] text-[#004d40]'
                           : 'border-gray-300 text-gray-700 hover:border-[#004d40] hover:text-[#004d40]'
-                      }`}
+                        }`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <FaUser className="w-4 h-4" />
@@ -671,11 +653,10 @@ const Navbar: React.FC = () => {
                     </Link>
                     <Link
                       href="/auth/register"
-                      className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg font-medium transition-colors text-sm lg:text-base ${
-                        isActiveLink('/auth/register')
+                      className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg font-medium transition-colors text-sm lg:text-base ${isActiveLink('/auth/register')
                           ? 'bg-[#004d40] text-white'
                           : 'bg-[#004d40] text-white hover:bg-[#004d40]/90'
-                      }`}
+                        }`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       <FaUser className="w-4 h-4" />
