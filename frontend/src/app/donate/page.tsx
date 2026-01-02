@@ -8,6 +8,7 @@ import {
     Gift,
     Globe,
     Heart,
+    HelpCircle,
     Landmark,
     Leaf,
     Shield,
@@ -297,8 +298,12 @@ export default function DonatePage() {
             <section className="py-20 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                            Make Your <span className="text-primary">Contribution</span>
+                        <div className="flex items-center justify-center gap-2 text-primary mb-4">
+                            <Heart className="w-5 h-5" />
+                            <span className="text-sm font-medium tracking-wide">Support Our Civic Mission</span>
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-bold text-[#002E2E] mb-4">
+                            Make Your Contribution
                         </h2>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                             Choose an amount and payment method to support our mission of building better cities
@@ -568,8 +573,12 @@ export default function DonatePage() {
             <section className="py-20 bg-white">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                            Where Your Money <span className="text-primary">Goes</span>
+                        <div className="flex items-center justify-center gap-2 text-primary mb-4">
+                            <Target className="w-5 h-5" />
+                            <span className="text-sm font-medium tracking-wide">Transparent Fund Allocation</span>
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-bold text-[#002E2E] mb-4">
+                            Where Your Money Goes
                         </h2>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                             Every donation is carefully allocated to maximize impact on civic improvements
@@ -597,8 +606,12 @@ export default function DonatePage() {
             <section className="py-20 bg-linear-to-br from-gray-50 to-white">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                            Stories from Our <span className="text-primary">Donors</span>
+                        <div className="flex items-center justify-center gap-2 text-primary mb-4">
+                            <Users className="w-5 h-5" />
+                            <span className="text-sm font-medium tracking-wide">Community Voices</span>
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-bold text-[#002E2E] mb-4">
+                            Stories from Our Donors
                         </h2>
                         <p className="text-lg text-gray-600">
                             Hear from people who have made a difference
@@ -668,8 +681,12 @@ export default function DonatePage() {
             <section className="py-20 bg-gray-50">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                            Donation <span className="text-primary">FAQs</span>
+                        <div className="flex items-center justify-center gap-2 text-primary mb-4">
+                            <HelpCircle className="w-5 h-5" />
+                            <span className="text-sm font-medium tracking-wide">Got Questions?</span>
+                        </div>
+                        <h2 className="text-3xl md:text-4xl font-bold text-[#002E2E] mb-4">
+                            Donation FAQs
                         </h2>
                     </div>
 
