@@ -447,6 +447,224 @@ export const sendRewardEmail = async (user, task, points) => {
 };
 
 
+// Send Donation Success Email
+export const sendDonationSuccessEmail = async (donation) => {
+  try {
+    const transporter = createTransporter();
+
+    const formatDate = (date) => {
+      return new Date(date).toLocaleDateString('en-BD', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    };
+
+    const getPaymentMethodName = (donation) => {
+      const providers = {
+        'bkash': 'bKash',
+        'nagad': 'Nagad',
+        'rocket': 'Rocket',
+        'card': 'Credit/Debit Card',
+        'bank': 'Bank Transfer'
+      };
+      if (donation.paymentProvider) {
+        return providers[donation.paymentProvider] || donation.paymentProvider;
+      }
+      if (donation.paymentMethod === 'stripe') return 'Credit/Debit Card (Stripe)';
+      if (donation.paymentMethod === 'sslcommerz') return 'SSLCommerz';
+      return 'Online Payment';
+    };
+
+    const content = `
+      <p>Dear <strong>${donation.isAnonymous ? 'Generous Donor' : donation.donorName}</strong>,</p>
+      
+      <p>Thank you for your generous donation to <strong>NagarNirman</strong>! Your contribution helps us build better cities through community action.</p>
+
+      <div class="divider"></div>
+
+      <h3>🧾 Donation Receipt</h3>
+      
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666;">Transaction ID</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right; font-family: monospace; font-size: 13px;">${donation.transactionId || 'N/A'}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666;">Date</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right;">${formatDate(donation.completedAt || donation.createdAt)}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666;">Payment Method</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right;">${getPaymentMethodName(donation)}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666;">Donation Type</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right;">${donation.isMonthly ? 'Monthly Recurring' : 'One-Time'}</td>
+        </tr>
+        <tr>
+          <td style="padding: 16px 0; color: #333; font-weight: 600; font-size: 16px;">Total Amount</td>
+          <td style="padding: 16px 0; text-align: right; color: #004540; font-weight: 700; font-size: 24px;">৳${donation.amount.toLocaleString()}</td>
+        </tr>
+      </table>
+
+      ${donation.message ? `
+        <div style="background: #fff8e6; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f2a921;">
+          <p style="margin: 0; font-style: italic; color: #666;">"${donation.message}"</p>
+        </div>
+      ` : ''}
+
+      <div class="divider"></div>
+
+      <h3>💚 Your Impact</h3>
+      <p>Your donation will help us:</p>
+      <ul>
+        <li>Resolve civic issues faster in communities</li>
+        <li>Train and support local problem solvers</li>
+        <li>Improve urban infrastructure and safety</li>
+        <li>Promote sustainable city development</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <p style="text-align: center;">
+        <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/donate" class="button" style="color: white; text-decoration: none;">Make Another Donation</a>
+      </p>
+
+      <p style="margin-top: 30px; font-size: 13px; color: #888; text-align: center;">
+        This receipt is for your records. Please save it for tax purposes.<br>
+        If you have any questions, contact us at <a href="mailto:donate@nagarnirman.org" style="color: #004540;">donate@nagarnirman.org</a>
+      </p>
+    `;
+
+    const mailOptions = {
+      from: `"NagarNirman" <${process.env.SMTP_USER}>`,
+      to: donation.donorEmail,
+      subject: `🎉 Thank You for Your Donation of ৳${donation.amount.toLocaleString()} - NagarNirman`,
+      html: emailTemplate('Donation Successful! 🎉', content),
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Donation success email sent to ${donation.donorEmail}`);
+  } catch (error) {
+    console.error('❌ Error sending donation success email:', error);
+  }
+};
+
+
+// Send Donation Admin Notification Email
+export const sendDonationAdminNotificationEmail = async (adminEmail, donation) => {
+  try {
+    const transporter = createTransporter();
+
+    const formatDate = (date) => {
+      return new Date(date).toLocaleDateString('en-BD', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    };
+
+    const getPaymentMethodName = (donation) => {
+      const providers = {
+        'bkash': 'bKash',
+        'nagad': 'Nagad',
+        'rocket': 'Rocket',
+        'card': 'Credit/Debit Card',
+        'bank': 'Bank Transfer'
+      };
+      if (donation.paymentProvider) {
+        return providers[donation.paymentProvider] || donation.paymentProvider;
+      }
+      if (donation.paymentMethod === 'stripe') return 'Credit/Debit Card (Stripe)';
+      if (donation.paymentMethod === 'sslcommerz') return 'SSLCommerz';
+      return 'Online Payment';
+    };
+
+    const content = `
+      <p>Hello <strong>Admin</strong>,</p>
+      
+      <p>🎉 Great news! A new donation has been received on <strong>NagarNirman</strong>.</p>
+
+      <div class="divider"></div>
+
+      <h3>💰 Donation Details</h3>
+      
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666;">Donor Name</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right; font-weight: 600;">${donation.isAnonymous ? 'Anonymous Donor' : donation.donorName}</td>
+        </tr>
+        ${!donation.isAnonymous ? `
+        <tr>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666;">Donor Email</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right;">${donation.donorEmail}</td>
+        </tr>
+        ${donation.donorPhone ? `
+        <tr>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666;">Donor Phone</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right;">${donation.donorPhone}</td>
+        </tr>
+        ` : ''}
+        ` : ''}
+        <tr>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666;">Transaction ID</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right; font-family: monospace; font-size: 13px;">${donation.transactionId || 'N/A'}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666;">Date & Time</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right;">${formatDate(donation.completedAt || donation.createdAt)}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666;">Payment Method</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right;">${getPaymentMethodName(donation)}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; color: #666;">Donation Type</td>
+          <td style="padding: 12px 0; border-bottom: 1px solid #eee; text-align: right;">${donation.isMonthly ? '🔄 Monthly Recurring' : '💵 One-Time'}</td>
+        </tr>
+        <tr style="background: #f0fdf4;">
+          <td style="padding: 16px; color: #333; font-weight: 600; font-size: 16px;">Amount Received</td>
+          <td style="padding: 16px; text-align: right; color: #16a34a; font-weight: 700; font-size: 24px;">৳${donation.amount.toLocaleString()}</td>
+        </tr>
+      </table>
+
+      ${donation.message ? `
+        <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #0ea5e9;">
+          <p style="margin: 0 0 5px 0; font-weight: 600; color: #0369a1;">Donor's Message:</p>
+          <p style="margin: 0; font-style: italic; color: #666;">"${donation.message}"</p>
+        </div>
+      ` : ''}
+
+      <div class="divider"></div>
+
+      <p style="text-align: center;">
+        <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard/superAdmin/donations" class="button" style="color: white; text-decoration: none;">View All Donations</a>
+      </p>
+
+      <p style="margin-top: 30px; font-size: 13px; color: #888; text-align: center;">
+        This is an automated notification from NagarNirman donation system.
+      </p>
+    `;
+
+    const mailOptions = {
+      from: `"NagarNirman Donations" <${process.env.SMTP_USER}>`,
+      to: adminEmail,
+      subject: `💰 New Donation: ৳${donation.amount.toLocaleString()} from ${donation.isAnonymous ? 'Anonymous' : donation.donorName}`,
+      html: emailTemplate('New Donation Received! 💰', content),
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`✅ Donation admin notification email sent to ${adminEmail}`);
+  } catch (error) {
+    console.error('❌ Error sending donation admin notification email:', error);
+  }
+};
+
 
 export default {
   sendWelcomeEmail,
@@ -454,4 +672,6 @@ export default {
   sendReportStatusEmail,
   sendApprovalEmail,
   sendRewardEmail,
+  sendDonationSuccessEmail,
+  sendDonationAdminNotificationEmail,
 };

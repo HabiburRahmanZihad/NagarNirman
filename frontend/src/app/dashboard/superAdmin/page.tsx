@@ -306,7 +306,7 @@ export default function SuperAdminDashboard() {
           { title: '👥 Manage Users', link: '/dashboard/superAdmin/users', color: 'from-green-500 to-emerald-500' },
           { title: '📄 Review Applications', link: '/dashboard/superAdmin/applications', color: 'from-purple-500 to-pink-500' },
           { title: '📊 Solver Statistics', link: '/dashboard/superAdmin/solver-statistics', color: 'from-cyan-500 to-blue-500' },
-          { title: '📈 System Stats', link: '/dashboard/problemSolver/statistics', color: 'from-yellow-500 to-orange-500' }
+          { title: '� Donations', link: '/dashboard/superAdmin/donations', color: 'from-emerald-500 to-teal-500' },
         ].map((action, idx) => (
           <Link key={idx} href={action.link}>
             <motion.div

@@ -43,6 +43,7 @@ export const isValidNotificationType = (type) => {
     'application_approved',
     'application_rejected',
     'points_awarded',
+    'donation_received',
     'system',
   ];
   return validTypes.includes(type);
