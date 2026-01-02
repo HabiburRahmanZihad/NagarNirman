@@ -1,12 +1,10 @@
 // app/api/tasks/[id]/proof/route.ts
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(
-
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
-)
-
-{
+) {
   try {
     const { id } = await params;
 
