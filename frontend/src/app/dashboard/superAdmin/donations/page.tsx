@@ -26,12 +26,12 @@ import {
 interface Donation {
     _id: string;
     donorName?: string;
-    email?: string;
-    phone?: string;
+    donorEmail?: string;
+    donorPhone?: string;
     amount: number;
     currency: string;
     paymentMethod: string;
-    status: 'pending' | 'completed' | 'failed' | 'cancelled';
+    status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
     transactionId?: string;
     sessionId?: string;
     isAnonymous?: boolean;
@@ -201,9 +201,9 @@ export default function DonationsPage() {
         const search = searchTerm.toLowerCase();
         return (
             donation.donorName?.toLowerCase().includes(search) ||
-            donation.email?.toLowerCase().includes(search) ||
+            donation.donorEmail?.toLowerCase().includes(search) ||
             donation.transactionId?.toLowerCase().includes(search) ||
-            donation.phone?.includes(search)
+            donation.donorPhone?.includes(search)
         );
     });
 
@@ -212,8 +212,8 @@ export default function DonationsPage() {
         const rows = donations.map(d => [
             formatDate(d.createdAt),
             d.isAnonymous ? 'Anonymous' : (d.donorName || 'N/A'),
-            d.email || 'N/A',
-            d.phone || 'N/A',
+            d.donorEmail || 'N/A',
+            d.donorPhone || 'N/A',
             d.amount.toString(),
             d.currency,
             d.paymentMethod,
@@ -450,8 +450,8 @@ export default function DonationsPage() {
                                                 </div>
                                             </td>
                                             <td className="py-4 px-4">
-                                                <div className="text-sm text-gray-600">{donation.email || '-'}</div>
-                                                <div className="text-xs text-gray-400">{donation.phone || '-'}</div>
+                                                <div className="text-sm text-gray-600">{donation.donorEmail || '-'}</div>
+                                                <div className="text-xs text-gray-400">{donation.donorPhone || '-'}</div>
                                             </td>
                                             <td className="py-4 px-4">
                                                 <span className="text-sm font-semibold text-gray-900">
@@ -510,8 +510,8 @@ export default function DonationsPage() {
                                                 key={pageNum}
                                                 onClick={() => fetchDonations(pageNum)}
                                                 className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${pagination.page === pageNum
-                                                        ? 'bg-primary text-white'
-                                                        : 'hover:bg-gray-100 text-gray-700'
+                                                    ? 'bg-primary text-white'
+                                                    : 'hover:bg-gray-100 text-gray-700'
                                                     }`}
                                             >
                                                 {pageNum}

@@ -452,16 +452,6 @@ const Navbar: React.FC = () => {
                   </>
                 ) : (
                   <>
-                    <Link href="/donate">
-                      <Button
-                        variant="accent"
-                        size="sm"
-                        className="h-10 bg-accent hover:bg-accent-dark text-white"
-                      >
-                        <FaHeart className="w-3 h-3 mr-1" />
-                        Donate
-                      </Button>
-                    </Link>
                     <Link href="/auth/login">
                       <Button
                         variant="secondary"
