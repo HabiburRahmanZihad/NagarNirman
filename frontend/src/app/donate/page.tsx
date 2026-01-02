@@ -320,8 +320,8 @@ export default function DonatePage() {
                                         type="button"
                                         onClick={() => setIsMonthly(false)}
                                         className={`px-6 py-3 rounded-full font-semibold transition-all ${!isMonthly
-                                                ? 'bg-primary text-white shadow-md'
-                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                            ? 'bg-primary text-white shadow-md'
+                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                             }`}
                                     >
                                         One-Time
@@ -330,8 +330,8 @@ export default function DonatePage() {
                                         type="button"
                                         onClick={() => setIsMonthly(true)}
                                         className={`px-6 py-3 rounded-full font-semibold transition-all flex items-center gap-2 ${isMonthly
-                                                ? 'bg-primary text-white shadow-md'
-                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                            ? 'bg-primary text-white shadow-md'
+                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                             }`}
                                     >
                                         <Heart className="w-4 h-4" />
@@ -351,8 +351,8 @@ export default function DonatePage() {
                                                 type="button"
                                                 onClick={() => handleAmountSelect(amount.value)}
                                                 className={`p-4 rounded-xl border-2 transition-all ${selectedAmount === amount.value && !customAmount
-                                                        ? 'border-primary bg-primary/5 shadow-md'
-                                                        : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
+                                                    ? 'border-primary bg-primary/5 shadow-md'
+                                                    : 'border-gray-200 hover:border-primary/50 hover:bg-gray-50'
                                                     }`}
                                             >
                                                 <p className="text-xl font-bold text-gray-900">{amount.label}</p>
@@ -386,8 +386,8 @@ export default function DonatePage() {
                                                 type="button"
                                                 onClick={() => setSelectedPayment(method.id)}
                                                 className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${selectedPayment === method.id
-                                                        ? 'border-primary bg-primary/5 shadow-md'
-                                                        : 'border-gray-200 hover:border-primary/50'
+                                                    ? 'border-primary bg-primary/5 shadow-md'
+                                                    : 'border-gray-200 hover:border-primary/50'
                                                     }`}
                                             >
                                                 <div className={`w-10 h-10 ${method.color} rounded-lg flex items-center justify-center`}>
