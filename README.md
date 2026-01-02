@@ -58,6 +58,7 @@ To create a transparent, efficient, and community-driven system for reporting an
 ## ✨ Key Features
 
 ### 🔐 **Authentication & Authorization**
+
 - Secure JWT-based authentication
 - Role-based access control (4 user roles)
 - Password encryption with bcryptjs
@@ -65,6 +66,7 @@ To create a transparent, efficient, and community-driven system for reporting an
 - User profile management
 
 ### 📋 **Intelligent Report Management**
+
 - **Create Reports**: Citizens can submit infrastructure problems with:
   - Title, description, and severity levels
   - Multiple image uploads (up to 5 per report)
@@ -77,6 +79,7 @@ To create a transparent, efficient, and community-driven system for reporting an
 - **Audit Trail**: Complete history of status changes and updates
 
 ### 📝 **Task Assignment System**
+
 - Authorities can assign tasks to verified problem solvers
 - Task priority levels (Low, Medium, High, Critical)
 - Deadline management with notifications
@@ -85,6 +88,7 @@ To create a transparent, efficient, and community-driven system for reporting an
 - Automated reward distribution
 
 ### 👥 **Comprehensive User System**
+
 - **User Profiles**: Custom avatars, divisions, contact details
 - **Problem Solver Applications**: Apply and get verified by authorities
 - **Leaderboard**: Top contributors ranked by reward points
@@ -92,7 +96,9 @@ To create a transparent, efficient, and community-driven system for reporting an
 - **Status Management**: Active/Inactive user control
 
 ### 📧 **Email Notification System**
+
 Professional HTML email templates for:
+
 - Welcome emails on registration
 - Task assignment notifications
 - Report status update alerts
@@ -100,6 +106,7 @@ Professional HTML email templates for:
 - Task completion and reward notifications
 
 ### 🌍 **Earthquake Monitoring & Alerts**
+
 - Real-time earthquake data integration with USGS API
 - Interactive map visualization with Leaflet
 - Magnitude-based color coding
@@ -108,6 +115,7 @@ Professional HTML email templates for:
 - Location-based filtering
 
 ### 📊 **Analytics & Statistics**
+
 - User activity dashboards
 - Report statistics by division/type
 - Task completion rates
@@ -115,6 +123,7 @@ Professional HTML email templates for:
 - Trend analysis and charts (Recharts)
 
 ### 📱 **Modern UI/UX**
+
 - Responsive design for mobile, tablet, and desktop
 - Tailwind CSS v4 with DaisyUI components
 - Smooth animations with Framer Motion
@@ -124,12 +133,14 @@ Professional HTML email templates for:
 - Loading states and error handling
 
 ### 🗺️ **Interactive Maps**
+
 - Leaflet-based map integration
 - Report location visualization
 - Earthquake epicenter mapping
 - Clickable markers with detailed info
 
 ### 📄 **Comprehensive Pages**
+
 - Homepage with hero section and features
 - About Us & Team pages
 - How It Works guide
@@ -144,36 +155,40 @@ Professional HTML email templates for:
 ## 🛠️ Tech Stack
 
 ### **Frontend**
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Next.js | 16.0.10 | React framework with App Router |
-| React | 19.2.0 | UI library |
-| TypeScript | 5.0+ | Type safety |
-| Tailwind CSS | 4.1.16 | Utility-first styling |
-| DaisyUI | 5.4.5 | Component library |
-| Framer Motion | 12.23.24 | Animations |
-| React Hook Form | 7.66.0 | Form management |
-| Leaflet | 1.9.4 | Interactive maps |
-| Recharts | 3.4.1 | Data visualization |
-| Lucide React | 0.553.0 | Icon library |
+
+| Technology      | Version  | Purpose                         |
+| --------------- | -------- | ------------------------------- |
+| Next.js         | 16.0.10  | React framework with App Router |
+| React           | 19.2.0   | UI library                      |
+| TypeScript      | 5.0+     | Type safety                     |
+| Tailwind CSS    | 4.1.16   | Utility-first styling           |
+| DaisyUI         | 5.4.5    | Component library               |
+| Framer Motion   | 12.23.24 | Animations                      |
+| React Hook Form | 7.66.0   | Form management                 |
+| Leaflet         | 1.9.4    | Interactive maps                |
+| Recharts        | 3.4.1    | Data visualization              |
+| Lucide React    | 0.553.0  | Icon library                    |
 
 ### **Backend**
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| Node.js | 18+ | JavaScript runtime |
-| Express.js | 4.18.2 | Web framework |
-| MongoDB | 6.20.0 | NoSQL database |
-| JWT | 9.0.2 | Authentication |
-| Bcrypt.js | 2.4.3 | Password hashing |
-| Nodemailer | 6.9.7 | Email service |
-| Node Fetch | 3.3.2 | HTTP requests |
+
+| Technology | Version | Purpose            |
+| ---------- | ------- | ------------------ |
+| Node.js    | 18+     | JavaScript runtime |
+| Express.js | 4.18.2  | Web framework      |
+| MongoDB    | 6.20.0  | NoSQL database     |
+| JWT        | 9.0.2   | Authentication     |
+| Bcrypt.js  | 2.4.3   | Password hashing   |
+| Nodemailer | 6.9.7   | Email service      |
+| Node Fetch | 3.3.2   | HTTP requests      |
 
 ### **Cloud Services**
+
 - **Database**: MongoDB Atlas (Cloud Database)
 - **File Storage**: Cloudinary (Image CDN)
 - **Email**: Gmail SMTP (Transactional emails)
 
 ### **DevOps**
+
 - **Version Control**: Git
 - **Package Manager**: npm
 - **Development**: Nodemon (Backend), Next.js Dev Server
@@ -187,6 +202,7 @@ Professional HTML email templates for:
 ### Prerequisites
 
 Before you begin, ensure you have:
+
 - **Node.js** 18.0 or higher ([Download](https://nodejs.org/))
 - **npm** or **yarn** package manager
 - **MongoDB Atlas** account ([Sign up free](https://www.mongodb.com/cloud/atlas))
@@ -229,26 +245,32 @@ Edit `backend/.env` with your credentials (see [Configuration](#-configuration) 
 ### Step 4: Start Development Servers
 
 **Terminal 1 - Backend Server:**
+
 ```bash
 cd backend
 npm run dev
 ```
+
 ✅ Backend running at: `http://localhost:5000`
 
 **Terminal 2 - Frontend Server:**
+
 ```bash
 npm run dev
 ```
+
 ✅ Frontend running at: `http://localhost:3000`
 
 ### Step 5: Verify Installation
 
 Test the backend API:
+
 ```bash
 curl http://localhost:5000/api/health
 ```
 
 Expected response:
+
 ```json
 {
   "success": true,
@@ -300,6 +322,7 @@ ALLOWED_FILE_TYPES=image/jpeg,image/jpg,image/png,image/gif,image/webp
 ### Getting Credentials
 
 #### 1️⃣ MongoDB Atlas Setup
+
 1. Visit [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
 2. Create a free cluster (M0 tier)
 3. Create database user with password
@@ -308,6 +331,7 @@ ALLOWED_FILE_TYPES=image/jpeg,image/jpg,image/png,image/gif,image/webp
 6. Replace `<username>`, `<password>`, and database name
 
 #### 2️⃣ Cloudinary Setup
+
 1. Visit [Cloudinary](https://cloudinary.com/) and sign up
 2. Navigate to **Dashboard**
 3. Copy:
@@ -316,6 +340,7 @@ ALLOWED_FILE_TYPES=image/jpeg,image/jpg,image/png,image/gif,image/webp
    - **API Secret**
 
 #### 3️⃣ Gmail App Password
+
 1. Go to [Google Account Security](https://myaccount.google.com/security)
 2. Enable **2-Step Verification**
 3. Navigate to **App passwords**
@@ -323,6 +348,7 @@ ALLOWED_FILE_TYPES=image/jpeg,image/jpg,image/png,image/gif,image/webp
 5. Copy the 16-digit password
 
 #### 4️⃣ JWT Secret Generation
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
@@ -332,10 +358,12 @@ node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 Update API endpoint in `frontend/src/constants/index.ts`:
 
 ```typescript
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 ```
 
 For production, create `frontend/.env.local`:
+
 ```env
 NEXT_PUBLIC_API_URL=https://your-backend-domain.com/api
 ```
@@ -348,7 +376,7 @@ NEXT_PUBLIC_API_URL=https://your-backend-domain.com/api
 
 1. **Register**: Create an account at `/auth/register`
 2. **Login**: Sign in at `/auth/login`
-3. **Report Issues**: 
+3. **Report Issues**:
    - Navigate to **Dashboard** → **Create Report**
    - Fill in problem details
    - Upload photos (max 5)
@@ -391,6 +419,7 @@ NEXT_PUBLIC_API_URL=https://your-backend-domain.com/api
 ## 🔌 API Reference
 
 ### Base URL
+
 ```
 http://localhost:5000/api
 ```
@@ -398,6 +427,7 @@ http://localhost:5000/api
 ### Authentication Endpoints
 
 #### Register User
+
 ```http
 POST /api/auth/register
 Content-Type: application/json
@@ -412,6 +442,7 @@ Content-Type: application/json
 ```
 
 #### Login
+
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -423,6 +454,7 @@ Content-Type: application/json
 ```
 
 #### Get Current User
+
 ```http
 GET /api/auth/me
 Authorization: Bearer <your_jwt_token>
@@ -431,11 +463,13 @@ Authorization: Bearer <your_jwt_token>
 ### Report Endpoints
 
 #### Get All Reports
+
 ```http
 GET /api/reports?status=pending&severity=high&page=1&limit=10
 ```
 
 #### Create Report
+
 ```http
 POST /api/reports
 Authorization: Bearer <your_jwt_token>
@@ -456,6 +490,7 @@ Content-Type: application/json
 ```
 
 #### Update Report Status
+
 ```http
 PATCH /api/reports/:id/status
 Authorization: Bearer <authority_token>
@@ -470,6 +505,7 @@ Content-Type: application/json
 ### Task Endpoints
 
 #### Assign Task
+
 ```http
 POST /api/tasks/assign
 Authorization: Bearer <authority_token>
@@ -485,6 +521,7 @@ Content-Type: application/json
 ```
 
 #### Complete Task
+
 ```http
 POST /api/tasks/:id/complete
 Authorization: Bearer <solver_token>
@@ -497,11 +534,13 @@ comments: "Task completed successfully"
 ### User Endpoints
 
 #### Get Leaderboard
+
 ```http
 GET /api/users/leaderboard?limit=10
 ```
 
 #### Apply as Problem Solver
+
 ```http
 POST /api/users/apply-problem-solver
 Authorization: Bearer <user_token>
@@ -621,9 +660,11 @@ nagarnirman/
 ## 👥 User Roles & Workflows
 
 ### 1️⃣ **Regular User** (Citizen)
+
 **Default role upon registration**
 
 **Permissions**:
+
 - ✅ Create and submit infrastructure reports
 - ✅ Upload images with reports
 - ✅ View all public reports
@@ -633,14 +674,17 @@ nagarnirman/
 - ✅ View leaderboard
 
 **Workflow**:
+
 ```
 Register → Login → Create Report → Track Status → Engage with Community
 ```
 
 ### 2️⃣ **Authority** (Government Official)
+
 **Assigned by system administrator**
 
 **Permissions**:
+
 - ✅ All user permissions
 - ✅ Review and approve/reject reports
 - ✅ Update report status
@@ -650,15 +694,18 @@ Register → Login → Create Report → Track Status → Engage with Community
 - ✅ View analytics and statistics
 
 **Workflow**:
+
 ```
-Login → Review Pending Reports → Approve Reports → Assign Tasks → 
+Login → Review Pending Reports → Approve Reports → Assign Tasks →
 Verify Completed Work → Grant Rewards
 ```
 
 ### 3️⃣ **Problem Solver** (Verified Contributor)
+
 **Applied by user, approved by authority**
 
 **Permissions**:
+
 - ✅ All user permissions
 - ✅ View assigned tasks
 - ✅ Accept tasks
@@ -667,15 +714,18 @@ Verify Completed Work → Grant Rewards
 - ✅ Appear on leaderboard
 
 **Workflow**:
+
 ```
-Apply as Solver → Wait for Approval → View Assigned Tasks → 
+Apply as Solver → Wait for Approval → View Assigned Tasks →
 Accept Task → Complete Work → Submit Proof → Earn Rewards
 ```
 
 ### 4️⃣ **Super Admin** (System Manager)
+
 **Highest level unique access**
 
 **Permissions**:
+
 - ✅ **Full System Access**
 - ✅ Manage all user roles (User → Authority)
 - ✅ Manage system configuration
@@ -685,34 +735,39 @@ Accept Task → Complete Work → Submit Proof → Earn Rewards
 - ✅ Manage platform content (banners, announcements)
 
 **Workflow**:
+
 ```
 System Config → User Role Management → Platform Oversight → Security Audits
 ```
-
 
 ---
 
 ## 📸 Screenshots
 
 ### Homepage
+
 ![Homepage Hero Section](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145228_ghmqkj.png)
-*Clean, modern homepage with call-to-action*
+_Clean, modern homepage with call-to-action_
 
 ### Dashboard
+
 ![User Dashboard](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145405_am4bka.png)
-*Role-based dashboard with statistics and quick actions*
+_Role-based dashboard with statistics and quick actions_
 
 ### Report Creation
+
 ![Create Report Form](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145431_xgjjvf.png)
-*Easy-to-use form with image upload and location selection*
+_Easy-to-use form with image upload and location selection_
 
 ### Interactive Map
+
 ![Map View](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145520_du0hgq.png)
-*Leaflet-powered map showing all reports and earthquakes*
+_Leaflet-powered map showing all reports and earthquakes_
 
 ### Leaderboard
+
 ![Leaderboard](https://res.cloudinary.com/dvq3pcykn/image/upload/Screenshot_2025-12-26_145612_cnfx4i.png)
-*Gamified leaderboard showcasing top contributors*
+_Gamified leaderboard showcasing top contributors_
 
 ---
 
@@ -720,17 +775,18 @@ System Config → User Role Management → Platform Oversight → Security Audit
 
 Comprehensive documentation is available:
 
-| Document | Description | Link |
-|----------|-------------|------|
-| **Complete Setup Guide** | Detailed installation and configuration | [COMPLETE_SETUP_GUIDE.md](./COMPLETE_SETUP_GUIDE.md) |
-| **Quick Start Guide** | Email & Notification System Manual | [QUICK_START_GUIDE.md](./QUICK_START_GUIDE.md) |
-| **API Reference** | All API endpoints with examples | [API_REFERENCE.md](./API_REFERENCE.md) |
-| **API Testing Guide** | Task Workflow Validation Manual | [API_TESTING_GUIDE.md](./API_TESTING_GUIDE.md) |
-| **Frontend Structure** | Component architecture and state management | [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md) |
-| **Routes Map** | Complete route mapping | [ROUTES.md](./ROUTES.md) |
-| **Frontend Documentation** | Components and Design System | [frontend/README.md](./frontend/README.md) |
-| **Backend Documentation** | Detailed backend architecture | [backend/README.md](./backend/README.md) |
-| **Security Policy** | Legal protocols & copyright | [SECURITY.md](./SECURITY.md) |
+| Document                   | Description                                 | Link                                                   |
+| -------------------------- | ------------------------------------------- | ------------------------------------------------------ |
+| **Complete Setup Guide**   | Detailed installation and configuration     | [COMPLETE_SETUP_GUIDE.md](./COMPLETE_SETUP_GUIDE.md)   |
+| **Quick Start Guide**      | Email & Notification System Manual          | [QUICK_START_GUIDE.md](./QUICK_START_GUIDE.md)         |
+| **API Reference**          | All API endpoints with examples             | [API_REFERENCE.md](./API_REFERENCE.md)                 |
+| **API Testing Guide**      | Task Workflow Validation Manual             | [API_TESTING_GUIDE.md](./API_TESTING_GUIDE.md)         |
+| **Payment Testing Guide**  | Stripe & SSLCommerz Integration Testing     | [PAYMENT_TESTING_GUIDE.md](./PAYMENT_TESTING_GUIDE.md) |
+| **Frontend Structure**     | Component architecture and state management | [FRONTEND_STRUCTURE.md](./FRONTEND_STRUCTURE.md)       |
+| **Routes Map**             | Complete route mapping                      | [ROUTES.md](./ROUTES.md)                               |
+| **Frontend Documentation** | Components and Design System                | [frontend/README.md](./frontend/README.md)             |
+| **Backend Documentation**  | Detailed backend architecture               | [backend/README.md](./backend/README.md)               |
+| **Security Policy**        | Legal protocols & copyright                 | [SECURITY.md](./SECURITY.md)                           |
 
 ---
 
@@ -739,18 +795,21 @@ Comprehensive documentation is available:
 ### Frontend Deployment (Vercel)
 
 1. **Install Vercel CLI**:
+
 ```bash
 npm install -g vercel
 ```
 
 2. **Deploy**:
+
 ```bash
 cd frontend
 vercel
 ```
 
 3. **Environment Variables**:
-Add in Vercel dashboard:
+   Add in Vercel dashboard:
+
 ```env
 NEXT_PUBLIC_API_URL=https://your-backend-url.com/api
 ```
@@ -794,31 +853,37 @@ We welcome contributions to NagarNirman! Here's how you can help:
 ### How to Contribute
 
 1. **Fork the Repository**
+
 ```bash
 git clone https://github.com/yourusername/nagarnirman.git
 ```
 
 2. **Create Feature Branch**
+
 ```bash
 git checkout -b feature/amazing-feature
 ```
 
 3. **Make Changes**
+
 - Write clean, documented code
 - Follow existing code style
 - Add tests if applicable
 
 4. **Commit Changes**
+
 ```bash
 git commit -m "Add amazing feature"
 ```
 
 5. **Push to Branch**
+
 ```bash
 git push origin feature/amazing-feature
 ```
 
 6. **Open Pull Request**
+
 - Provide clear description
 - Reference any related issues
 - Wait for code review
@@ -845,17 +910,17 @@ git push origin feature/amazing-feature
 
 ## 📊 Project Statistics
 
-| Metric | Count |
-|--------|-------|
-| **Total Files** | 130+ |
-| **Lines of Code** | 8,000+ |
-| **Frontend Components** | 40+ |
-| **Backend Endpoints** | 35+ |
-| **User Roles** | 4 |
-| **Database Models** | 3 |
-| **API Routes** | 5 |
-| **Email Templates** | 5 |
-| **Documentation Files** | 30+ |
+| Metric                  | Count  |
+| ----------------------- | ------ |
+| **Total Files**         | 130+   |
+| **Lines of Code**       | 8,000+ |
+| **Frontend Components** | 40+    |
+| **Backend Endpoints**   | 35+    |
+| **User Roles**          | 4      |
+| **Database Models**     | 3      |
+| **API Routes**          | 5      |
+| **Email Templates**     | 5      |
+| **Documentation Files** | 30+    |
 
 ---
 
@@ -927,15 +992,16 @@ Use the included test scripts:
 - [ ] Map functionality
 
 ---
+
 ---
 
-##  Meet the Dream Team 🦖
+## Meet the Dream Team 🦖
 
 <div align="center">
 
-| | | | |
-|:---:|:---:|:---:|:---:|
-| <img src="https://res.cloudinary.com/dvq3pcykn/image/upload/WhatsApp_Image_2025-12-18_at_16.09.59_fqnwho.jpg" width="160" height="160" style="border-radius: 50%"> <br> **Habibur Rahman Zihad** <br> <sub>Founder & Community Director</sub> <br> *Vision & Strategy Lead* <br> [GitHub](https://github.com/HabiburRahmanZihad) • [LinkedIn](https://linkedin.com/in/habiburrahmanzihad) | <img src="https://avatars.githubusercontent.com/u/102473526?v=4" width="160" height="160" style="border-radius: 50%"> <br> **Md. Shahariar Hafiz** <br> <sub>Co-Founder & Tech Lead</sub> <br> *Full Stack & Architecture* <br> [GitHub](https://github.com/mdshahariarhafizofficial) • [LinkedIn](https://www.linkedin.com/in/devshahariarhafiz) | <img src="https://avatars.githubusercontent.com/u/193724330?v=4" width="160" height="160" style="border-radius: 50%"> <br> **MD Mizanur Malita** <br> <sub>Operations Manager</sub> <br> *Process & Quality Lead* <br> [GitHub](https://github.com/mizanur2734) • [LinkedIn](https://www.linkedin.com/in/md-mizanur-malita) | <img src="https://res.cloudinary.com/dfm0bhtyb/image/upload/v1765699151/qmbjzklvweuy3brrnt3v.png" width="160" height="160" style="border-radius: 50%"> <br> **Mohammad Bin Amin** <br> <sub>Outreach Coordinator</sub> <br> *Community & Growth Lead* <br> [GitHub](https://github.com/Mohammad7558/) • [LinkedIn](https://www.linkedin.com/in/iammohammad) |
+|                                                                                                                                                                                                                                                                                                                                                                                           |                                                                                                                                                                                                                                                                                                                                                   |                                                                                                                                                                                                                                                                                                                             |                                                                                                                                                                                                                                                                                                                                                             |
+| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| <img src="https://res.cloudinary.com/dvq3pcykn/image/upload/WhatsApp_Image_2025-12-18_at_16.09.59_fqnwho.jpg" width="160" height="160" style="border-radius: 50%"> <br> **Habibur Rahman Zihad** <br> <sub>Founder & Community Director</sub> <br> _Vision & Strategy Lead_ <br> [GitHub](https://github.com/HabiburRahmanZihad) • [LinkedIn](https://linkedin.com/in/habiburrahmanzihad) | <img src="https://avatars.githubusercontent.com/u/102473526?v=4" width="160" height="160" style="border-radius: 50%"> <br> **Md. Shahariar Hafiz** <br> <sub>Co-Founder & Tech Lead</sub> <br> _Full Stack & Architecture_ <br> [GitHub](https://github.com/mdshahariarhafizofficial) • [LinkedIn](https://www.linkedin.com/in/devshahariarhafiz) | <img src="https://avatars.githubusercontent.com/u/193724330?v=4" width="160" height="160" style="border-radius: 50%"> <br> **MD Mizanur Malita** <br> <sub>Operations Manager</sub> <br> _Process & Quality Lead_ <br> [GitHub](https://github.com/mizanur2734) • [LinkedIn](https://www.linkedin.com/in/md-mizanur-malita) | <img src="https://res.cloudinary.com/dfm0bhtyb/image/upload/v1765699151/qmbjzklvweuy3brrnt3v.png" width="160" height="160" style="border-radius: 50%"> <br> **Mohammad Bin Amin** <br> <sub>Outreach Coordinator</sub> <br> _Community & Growth Lead_ <br> [GitHub](https://github.com/Mohammad7558/) • [LinkedIn](https://www.linkedin.com/in/iammohammad) |
 
 </div>
 
@@ -957,8 +1023,8 @@ Use the included test scripts:
 
 **© 2026 NagarNirman. All Rights Reserved.**
 
-This project is **PROPRIETARY** and is protected by copyright laws. 
-Unauthorized copying, modification, distribution, or use of this software is strictly prohibited. 
+This project is **PROPRIETARY** and is protected by copyright laws.
+Unauthorized copying, modification, distribution, or use of this software is strictly prohibited.
 See the [SECURITY.md](SECURITY.md) file for more details.
 
 ---
