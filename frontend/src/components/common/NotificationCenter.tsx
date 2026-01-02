@@ -23,6 +23,7 @@ export const NotificationCenter: React.FC = () => {
       case 'application_approved': return '🎊';
       case 'application_rejected': return '⚠️';
       case 'points_awarded': return '⭐';
+      case 'donation_received': return '💰';
       case 'success': return '✅';
       case 'error': return '❌';
       case 'warning': return '⚠️';
@@ -35,6 +36,7 @@ export const NotificationCenter: React.FC = () => {
     if (type.includes('rejected')) return 'bg-red-50 border-red-200';
     if (type.includes('submitted')) return 'bg-blue-50 border-blue-200';
     if (type.includes('assigned')) return 'bg-purple-50 border-purple-200';
+    if (type.includes('donation')) return 'bg-emerald-50 border-emerald-200';
     if (type === 'success') return 'bg-green-50 border-green-200';
     if (type === 'error') return 'bg-red-50 border-red-200';
     if (type === 'warning') return 'bg-yellow-50 border-yellow-200';

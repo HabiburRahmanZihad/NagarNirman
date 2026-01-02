@@ -15,7 +15,9 @@ import {
     getDonations
 } from '../models/Donation.js';
 import { v4 as uuidv4 } from 'uuid';
-import { sendDonationSuccessEmail } from '../services/emailService.js';
+import { sendDonationSuccessEmail, sendDonationAdminNotificationEmail } from '../services/emailService.js';
+import { findUsers } from '../models/User.js';
+import { createNotification } from '../models/Notification.js';
 
 // Lazy initialization for Stripe and SSLCommerz
 let stripe = null;
@@ -193,6 +195,45 @@ export const stripeWebhook = asyncHandler(async (req, res) => {
                         message: donation.message || null
                     });
                     console.log('📧 Donation success email sent to:', donation.email);
+                }
+
+                // Notify all super admins
+                try {
+                    const { users: superAdmins } = await findUsers({ role: 'superAdmin' }, { limit: 100 });
+                    const donationData = donation || await getDonationBySessionId(session.id);
+
+                    console.log(`Found ${superAdmins?.length || 0} super admin(s) to notify`);
+
+                    for (const admin of superAdmins || []) {
+                        // Send email notification
+                        if (admin.email) {
+                            await sendDonationAdminNotificationEmail(admin.email, {
+                                ...donationData,
+                                donorEmail: donationData.email,
+                                transactionId: session.payment_intent || session.id,
+                                paymentMethod: 'stripe',
+                                completedAt: new Date()
+                            });
+                        }
+
+                        // Create in-app notification
+                        await createNotification({
+                            userId: admin._id,
+                            title: `New Donation: ৳${donationData.amount.toLocaleString()}`,
+                            message: `${donationData.isAnonymous ? 'Anonymous donor' : donationData.donorName} has donated ৳${donationData.amount.toLocaleString()} via Stripe.`,
+                            type: 'donation_received',
+                            actionUrl: '/dashboard/superAdmin/donations',
+                            metadata: {
+                                donationId: donationData._id,
+                                amount: donationData.amount,
+                                donorName: donationData.isAnonymous ? 'Anonymous' : donationData.donorName,
+                                paymentMethod: 'stripe'
+                            }
+                        });
+                    }
+                    console.log(`📧 Admin notifications sent to ${superAdmins?.length || 0} super admin(s)`);
+                } catch (adminNotifyError) {
+                    console.error('Failed to send admin notifications:', adminNotifyError);
                 }
             } catch (emailError) {
                 console.error('Failed to send donation success email:', emailError);
@@ -441,6 +482,47 @@ export const sslcommerzSuccess = asyncHandler(async (req, res) => {
                         message: donation.message || null
                     });
                     console.log('📧 Donation success email sent to:', donation.email);
+                }
+
+                // Notify all super admins
+                try {
+                    const { users: superAdmins } = await findUsers({ role: 'superAdmin' }, { limit: 100 });
+                    const donationData = donation || await getDonationByTransactionId(tran_id);
+
+                    console.log(`Found ${superAdmins?.length || 0} super admin(s) to notify`);
+
+                    for (const admin of superAdmins || []) {
+                        // Send email notification
+                        if (admin.email) {
+                            await sendDonationAdminNotificationEmail(admin.email, {
+                                ...donationData,
+                                donorEmail: donationData.email,
+                                transactionId: tran_id,
+                                paymentMethod: 'sslcommerz',
+                                paymentProvider: card_type || 'online',
+                                completedAt: new Date()
+                            });
+                        }
+
+                        // Create in-app notification
+                        await createNotification({
+                            userId: admin._id,
+                            title: `New Donation: ৳${donationData.amount.toLocaleString()}`,
+                            message: `${donationData.isAnonymous ? 'Anonymous donor' : donationData.donorName} has donated ৳${donationData.amount.toLocaleString()} via ${card_type || 'SSLCommerz'}.`,
+                            type: 'donation_received',
+                            actionUrl: '/dashboard/superAdmin/donations',
+                            metadata: {
+                                donationId: donationData._id,
+                                amount: donationData.amount,
+                                donorName: donationData.isAnonymous ? 'Anonymous' : donationData.donorName,
+                                paymentMethod: 'sslcommerz',
+                                paymentProvider: card_type
+                            }
+                        });
+                    }
+                    console.log(`📧 Admin notifications sent to ${superAdmins?.length || 0} super admin(s)`);
+                } catch (adminNotifyError) {
+                    console.error('Failed to send admin notifications:', adminNotifyError);
                 }
             } catch (emailError) {
                 console.error('Failed to send donation success email:', emailError);
