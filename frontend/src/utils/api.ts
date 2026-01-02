@@ -572,3 +572,82 @@ export const leaderboardAPI = {
     );
   },
 };
+
+// Payment API functions
+export const paymentAPI = {
+  // Stripe payment
+  createStripeSession: (data: {
+    amount: number;
+    donorName?: string;
+    donorEmail?: string;
+    donorPhone?: string;
+    isMonthly?: boolean;
+    isAnonymous?: boolean;
+    message?: string;
+    paymentProvider?: string;
+  }) => {
+    return apiClient(API_ENDPOINTS.STRIPE_CREATE_SESSION, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  verifyStripePayment: (sessionId: string) => {
+    return apiClient(API_ENDPOINTS.STRIPE_VERIFY(sessionId), {
+      method: 'GET',
+    });
+  },
+
+  // SSLCommerz payment
+  initSSLCommerz: (data: {
+    amount: number;
+    donorName: string;
+    donorEmail: string;
+    donorPhone: string;
+    isMonthly?: boolean;
+    isAnonymous?: boolean;
+    message?: string;
+    paymentProvider?: string;
+  }) => {
+    return apiClient(API_ENDPOINTS.SSLCOMMERZ_INIT, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  verifySSLCommerzPayment: (transactionId: string) => {
+    return apiClient(API_ENDPOINTS.SSLCOMMERZ_VERIFY(transactionId), {
+      method: 'GET',
+    });
+  },
+
+  // Donation data
+  getRecentDonations: (limit = 5) => {
+    return apiClient(`${API_ENDPOINTS.DONATIONS_RECENT}?limit=${limit}`, {
+      method: 'GET',
+    });
+  },
+
+  getDonationStats: () => {
+    return apiClient(API_ENDPOINTS.DONATIONS_STATS, {
+      method: 'GET',
+    });
+  },
+
+  getAllDonations: (filters?: { page?: number; limit?: number; status?: string; paymentMethod?: string }) => {
+    const params = new URLSearchParams();
+    if (filters?.page) params.append('page', String(filters.page));
+    if (filters?.limit) params.append('limit', String(filters.limit));
+    if (filters?.status) params.append('status', filters.status);
+    if (filters?.paymentMethod) params.append('paymentMethod', filters.paymentMethod);
+
+    const queryString = params.toString();
+    const url = queryString ? `${API_ENDPOINTS.DONATIONS_ALL}?${queryString}` : API_ENDPOINTS.DONATIONS_ALL;
+
+    return apiClient(url, {
+      method: 'GET',
+      requiresAuth: true,
+    });
+  },
+};
+
