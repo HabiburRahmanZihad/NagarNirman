@@ -474,7 +474,7 @@ export default function DonatePage() {
                                         className="w-full"
                                         iconPosition="right"
                                     >
-                                        <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                                        <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-2 inline-flex items-center mb-1" />
                                         {isMonthly ? 'Start Monthly Donation' : 'Donate Now'}
                                     </Button>
                                     <p className="text-center text-xs sm:text-sm text-gray-500 mt-3 sm:mt-4">
