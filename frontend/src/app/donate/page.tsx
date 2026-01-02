@@ -740,11 +740,7 @@ export default function DonatePage() {
                                         </div>
                                     )}
                                 </div>
-                                {recentDonors.length > 0 && (
-                                    <Link href="#" className="block text-center text-primary font-medium mt-3 sm:mt-4 text-sm sm:text-base hover:text-accent transition-colors">
-                                        View All Donors →
-                                    </Link>
-                                )}
+
                             </div>
 
                             {/* Trust Badges */}
