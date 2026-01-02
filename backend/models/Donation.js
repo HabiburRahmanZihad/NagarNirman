@@ -261,13 +261,43 @@ export const getDonationStats = async () => {
         }
     ]).toArray();
 
+    // Get unique donors this month (by email)
+    const thisMonthDonors = await collection.aggregate([
+        {
+            $match: {
+                status: 'completed',
+                completedAt: { $gte: startOfMonth },
+                email: { $exists: true, $ne: null }
+            }
+        },
+        {
+            $group: {
+                _id: '$email'
+            }
+        },
+        {
+            $count: 'uniqueDonors'
+        }
+    ]).toArray();
+
+    // Calculate days left in the month
+    const now = new Date();
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const daysLeft = Math.ceil((endOfMonth.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+    // Monthly goal (can be configured via environment variable or database)
+    const monthlyGoal = parseInt(process.env.MONTHLY_DONATION_GOAL) || 1000000; // Default: 10,00,000 (in paisa/cents)
+
     return {
         totalAmount: stats[0]?.totalAmount || 0,
         totalDonations: stats[0]?.totalDonations || 0,
         averageDonation: Math.round(stats[0]?.averageDonation || 0),
         monthlyDonors: stats[0]?.monthlyDonors || 0,
         thisMonthAmount: monthlyStats[0]?.monthlyAmount || 0,
-        thisMonthCount: monthlyStats[0]?.monthlyCount || 0
+        thisMonthCount: monthlyStats[0]?.monthlyCount || 0,
+        thisMonthDonors: thisMonthDonors[0]?.uniqueDonors || 0,
+        daysLeft: Math.max(0, daysLeft),
+        monthlyGoal: monthlyGoal
     };
 };
 

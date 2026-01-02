@@ -153,6 +153,9 @@ export default function DonatePage() {
         totalDonations: number;
         thisMonthAmount: number;
         thisMonthCount: number;
+        thisMonthDonors: number;
+        daysLeft: number;
+        monthlyGoal: number;
     } | null>(null);
 
     // Intersection observer for stats animation
@@ -373,30 +376,32 @@ export default function DonatePage() {
                                     </div>
                                     <div className="mb-4 sm:mb-6">
                                         <div className="flex justify-between text-white mb-2 text-xs sm:text-sm md:text-base">
-                                            <span>৳{donationStats ? (donationStats.thisMonthAmount / 100).toLocaleString() : '7,50,000'} raised</span>
-                                            <span>৳10,00,000</span>
+                                            <span>৳{(donationStats?.thisMonthAmount ?? 0).toLocaleString()} raised</span>
+                                            <span>৳{(donationStats?.monthlyGoal ?? 1000000).toLocaleString()}</span>
                                         </div>
                                         <div className="w-full bg-white/20 rounded-full h-3 sm:h-4 overflow-hidden">
                                             <div
                                                 className="bg-linear-to-r from-[#f2a921] to-[#ffc850] h-full rounded-full transition-all duration-1000"
-                                                style={{ width: `${Math.min(donationStats ? (donationStats.thisMonthAmount / 1000000) * 100 : 75, 100)}%` }}
+                                                style={{ width: `${donationStats?.monthlyGoal ? Math.min(((donationStats?.thisMonthAmount ?? 0) / donationStats.monthlyGoal) * 100, 100) : 0}%` }}
                                             />
                                         </div>
                                         <p className="text-center text-white/80 mt-2 text-sm">
                                             <span className="font-semibold text-[#f2a921]">
-                                                {donationStats ? Math.round((donationStats.thisMonthAmount / 1000000) * 100) : 75}%
+                                                {donationStats?.monthlyGoal ? Math.round(((donationStats?.thisMonthAmount ?? 0) / donationStats.monthlyGoal) * 100) : 0}%
                                             </span> of goal reached
                                         </p>
                                     </div>
                                     <div className="grid grid-cols-2 gap-3 sm:gap-4 text-center">
                                         <div className="bg-white/10 rounded-xl p-3 sm:p-4">
                                             <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">
-                                                {donationStats ? donationStats.totalDonations.toLocaleString() : '1,250'}+
+                                                {(donationStats?.thisMonthDonors ?? 0).toLocaleString()}+
                                             </p>
                                             <p className="text-xs sm:text-sm text-white/80">Donors</p>
                                         </div>
                                         <div className="bg-white/10 rounded-xl p-3 sm:p-4">
-                                            <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">15</p>
+                                            <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">
+                                                {donationStats?.daysLeft ?? 0}
+                                            </p>
                                             <p className="text-xs sm:text-sm text-white/80">Days Left</p>
                                         </div>
                                     </div>
