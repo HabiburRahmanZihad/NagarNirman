@@ -10,6 +10,7 @@ import {
   FaBars,
   FaChevronDown,
   FaFileAlt,
+  FaHeart,
   FaHome,
   FaInfoCircle,
   FaMapMarkedAlt,
@@ -461,6 +462,16 @@ const Navbar: React.FC = () => {
                   </>
                 ) : (
                   <>
+                    <Link href="/donate">
+                      <Button
+                        variant="accent"
+                        size="sm"
+                        className="h-10 bg-accent hover:bg-accent-dark text-white"
+                      >
+                        <FaHeart className="w-3 h-3 mr-1" />
+                        Donate
+                      </Button>
+                    </Link>
                     <Link href="/auth/login">
                       <Button
                         variant="secondary"
@@ -634,6 +645,18 @@ const Navbar: React.FC = () => {
                   <div
                     className={`flex flex-col gap-2 mt-3 lg:mt-4 pt-3 lg:pt-4 border-t border-gray-100`}
                   >
+                    <Link
+                      href="/donate"
+                      className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg font-medium transition-colors text-sm lg:text-base ${
+                        isActiveLink('/donate')
+                          ? 'bg-accent text-white'
+                          : 'bg-accent text-white hover:bg-accent/90'
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <FaHeart className="w-4 h-4" />
+                      Donate
+                    </Link>
                     <Link
                       href="/auth/login"
                       className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg border font-medium transition-colors text-sm lg:text-base ${

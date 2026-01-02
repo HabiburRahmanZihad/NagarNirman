@@ -5,6 +5,7 @@ export const PUBLIC_ROUTES = {
   ABOUT: '/about',
   ABOUT_TEAM: '/about-team',
   CONTACT: '/contact',
+  DONATE: '/donate',
   REPORT: '/reports',
   REPORT_MAP: '/reports/map',
   HELP: '/help',

@@ -29,8 +29,8 @@ const Footer: React.FC = () => {
         { label: "About Us", href: PUBLIC_ROUTES.ABOUT },
         { label: "Our Team", href: PUBLIC_ROUTES.ABOUT_TEAM },
         { label: "Map View", href: PUBLIC_ROUTES.REPORT_MAP },
+        { label: "Donate", href: PUBLIC_ROUTES.DONATE },
         { label: "Login", href: AUTH_ROUTES.LOGIN },
-        { label: "Register", href: AUTH_ROUTES.REGISTER },
         { label: "FAQ", href: PUBLIC_ROUTES.FAQ },
       ];
     }
@@ -39,6 +39,7 @@ const Footer: React.FC = () => {
       { label: "About Us", href: PUBLIC_ROUTES.ABOUT },
       { label: "Our Team", href: PUBLIC_ROUTES.ABOUT_TEAM },
       { label: "Map View", href: PUBLIC_ROUTES.REPORT_MAP },
+      { label: "Donate", href: PUBLIC_ROUTES.DONATE },
     ];
 
     if (user.role === 'authority') {
