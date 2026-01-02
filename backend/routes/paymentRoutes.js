@@ -58,6 +58,6 @@ router.get('/donations/recent', getRecentDonationsController);
 router.get('/donations/stats', getDonationStatsController);
 
 // Get all donations (admin only)
-router.get('/donations', protect, authorize('admin'), getAllDonations);
+router.get('/donations', protect, authorize('admin', 'superAdmin'), getAllDonations);
 
 export default router;

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Image from 'next/image';
-import { LayoutDashboard, User, MapPin, Search, FileText, Edit, Lightbulb, BarChart3, Trophy, Settings, Users, FileCheck, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, User, MapPin, Search, FileText, Edit, Lightbulb, BarChart3, Trophy, Settings, Users, FileCheck, LogOut, X, CreditCard } from 'lucide-react';
 
 
 // Sidebar link structure
@@ -75,6 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { href: '/dashboard/superAdmin/review-tasks', icon: 'filecheck', label: 'Review Tasks' },
         { href: '/dashboard/superAdmin/solver-statistics', icon: 'barchart', label: 'Solver Statistics' },
         { href: '/dashboard/superAdmin/all-reports', icon: 'filetext', label: 'All Reports' },
+        { href: '/dashboard/superAdmin/donations', icon: 'creditcard', label: 'Donations' },
         { href: '/dashboard/superAdmin/map-search', icon: 'map', label: 'Map Search' },
       ];
     }
@@ -111,6 +112,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       trophy: <Trophy {...iconProps} />,
       barchart: <BarChart3 {...iconProps} />,
       edit: <Edit {...iconProps} />,
+      creditcard: <CreditCard {...iconProps} />,
     };
     return icons[iconName] || <LayoutDashboard {...iconProps} />;
   };
