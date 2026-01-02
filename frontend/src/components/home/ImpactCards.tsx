@@ -180,7 +180,7 @@ export default function ImpactCards() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-1 xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {cards.map((card, index) => {
             const isEven = index % 2 === 0;
