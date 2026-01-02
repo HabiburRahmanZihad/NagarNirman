@@ -20,7 +20,9 @@ import {
     DollarSign,
     TrendingUp,
     Users,
-    Calendar
+    Calendar,
+    Eye,
+    X
 } from 'lucide-react';
 
 interface Donation {
@@ -83,6 +85,9 @@ export default function DonationsPage() {
         limit: 10,
         totalPages: 0
     });
+
+    // Selected donation for details modal
+    const [selectedDonation, setSelectedDonation] = useState<Donation | null>(null);
 
     // Filters
     const [statusFilter, setStatusFilter] = useState<string>('');
@@ -411,12 +416,13 @@ export default function DonationsPage() {
                                     <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600">Method</th>
                                     <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600">Status</th>
                                     <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600">Transaction ID</th>
+                                    <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {filteredDonations.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="py-12 text-center text-gray-500">
+                                        <td colSpan={8} className="py-12 text-center text-gray-500">
                                             <CreditCard className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                                             <p className="font-medium">No donations found</p>
                                             <p className="text-sm">Try adjusting your filters</p>
@@ -468,6 +474,15 @@ export default function DonationsPage() {
                                                 <code className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600 font-mono">
                                                     {(donation.transactionId || donation.sessionId || '-').slice(0, 20)}...
                                                 </code>
+                                            </td>
+                                            <td className="py-4 px-4">
+                                                <button
+                                                    onClick={() => setSelectedDonation(donation)}
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors"
+                                                >
+                                                    <Eye className="w-4 h-4" />
+                                                    Details
+                                                </button>
                                             </td>
                                         </motion.tr>
                                     ))
@@ -532,6 +547,154 @@ export default function DonationsPage() {
                     )}
                 </div>
             </motion.div>
+
+            {/* Donation Details Modal */}
+            {selectedDonation && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setSelectedDonation(null)}
+                    />
+
+                    {/* Modal */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
+                    >
+                        {/* Header */}
+                        <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-primary/10 to-green-50">
+                            <div>
+                                <h2 className="text-xl font-bold text-gray-900">Donation Details</h2>
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Transaction: {selectedDonation.transactionId || selectedDonation.sessionId || 'N/A'}
+                                </p>
+                            </div>
+                            <button
+                                title='close'
+                                onClick={() => setSelectedDonation(null)}
+                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            >
+                                <X className="w-5 h-5 text-gray-500" />
+                            </button>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
+                            {/* Status Badge */}
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary to-green-600 flex items-center justify-center text-white text-lg font-bold">
+                                        {selectedDonation.isAnonymous ? 'A' : (selectedDonation.donorName?.charAt(0) || '?')}
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold text-gray-900">
+                                            {selectedDonation.isAnonymous ? 'Anonymous Donor' : (selectedDonation.donorName || 'Unknown Donor')}
+                                        </h3>
+                                        <p className="text-sm text-gray-500">
+                                            {selectedDonation.isMonthly ? 'Monthly Supporter' : 'One-time Donation'}
+                                        </p>
+                                    </div>
+                                </div>
+                                {getStatusBadge(selectedDonation.status)}
+                            </div>
+
+                            {/* Amount */}
+                            <div className="bg-gradient-to-r from-primary/10 to-green-50 rounded-xl p-4 mb-6">
+                                <p className="text-sm text-gray-600 mb-1">Donation Amount</p>
+                                <p className="text-3xl font-bold text-primary">
+                                    {formatAmount(selectedDonation.amount, selectedDonation.currency)}
+                                </p>
+                            </div>
+
+                            {/* Details Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Email</p>
+                                    <p className="text-sm font-medium text-gray-900">{selectedDonation.donorEmail || 'Not provided'}</p>
+                                </div>
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Phone</p>
+                                    <p className="text-sm font-medium text-gray-900">{selectedDonation.donorPhone || 'Not provided'}</p>
+                                </div>
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Payment Method</p>
+                                    <div className="mt-1">{getPaymentMethodBadge(selectedDonation.paymentMethod)}</div>
+                                </div>
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Currency</p>
+                                    <p className="text-sm font-medium text-gray-900">{selectedDonation.currency}</p>
+                                </div>
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Created At</p>
+                                    <p className="text-sm font-medium text-gray-900">{formatDate(selectedDonation.createdAt)}</p>
+                                </div>
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Completed At</p>
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {selectedDonation.completedAt ? formatDate(selectedDonation.completedAt) : 'Not completed'}
+                                    </p>
+                                </div>
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Category</p>
+                                    <p className="text-sm font-medium text-gray-900">{selectedDonation.category || 'General Fund'}</p>
+                                </div>
+                                <div className="bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Anonymous</p>
+                                    <p className="text-sm font-medium text-gray-900">{selectedDonation.isAnonymous ? 'Yes' : 'No'}</p>
+                                </div>
+                            </div>
+
+                            {/* Transaction IDs */}
+                            <div className="mt-4 bg-gray-50 rounded-lg p-4">
+                                <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Transaction ID</p>
+                                <code className="text-sm bg-white px-3 py-2 rounded border border-gray-200 block font-mono text-gray-700 break-all">
+                                    {selectedDonation.transactionId || 'N/A'}
+                                </code>
+                            </div>
+
+                            {selectedDonation.sessionId && (
+                                <div className="mt-4 bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Session ID</p>
+                                    <code className="text-sm bg-white px-3 py-2 rounded border border-gray-200 block font-mono text-gray-700 break-all">
+                                        {selectedDonation.sessionId}
+                                    </code>
+                                </div>
+                            )}
+
+                            {/* Message */}
+                            {selectedDonation.message && (
+                                <div className="mt-4 bg-blue-50 rounded-lg p-4">
+                                    <p className="text-xs text-blue-600 uppercase tracking-wide mb-2">Donor Message</p>
+                                    <p className="text-sm text-gray-700 italic">&ldquo;{selectedDonation.message}&rdquo;</p>
+                                </div>
+                            )}
+
+                            {/* Metadata */}
+                            {selectedDonation.metadata && Object.keys(selectedDonation.metadata).length > 0 && (
+                                <div className="mt-4 bg-gray-50 rounded-lg p-4">
+                                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Additional Metadata</p>
+                                    <pre className="text-xs bg-white px-3 py-2 rounded border border-gray-200 overflow-x-auto font-mono text-gray-600">
+                                        {JSON.stringify(selectedDonation.metadata, null, 2)}
+                                    </pre>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="p-6 border-t border-gray-100 bg-gray-50">
+                            <button
+                                onClick={() => setSelectedDonation(null)}
+                                className="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
         </div>
     );
 }
