@@ -196,34 +196,34 @@ const Navbar: React.FC = () => {
     >
       <div
         className={`container mx-auto ${isSmallMobile
-            ? 'px-2'
-            : isMobile
-              ? 'px-3'
-              : isTablet
-                ? 'px-4'
-                : 'px-0'
+          ? 'px-2'
+          : isMobile
+            ? 'px-3'
+            : isTablet
+              ? 'px-4'
+              : 'px-0'
           }`}
       >
         <div
           className={`flex items-center justify-between ${isSmallMobile
-              ? 'h-14'
-              : isMobile
-                ? 'h-16'
-                : isTablet
-                  ? 'h-18'
-                  : 'h-20'
+            ? 'h-14'
+            : isMobile
+              ? 'h-16'
+              : isTablet
+                ? 'h-18'
+                : 'h-20'
             }`}
         >
           {/* Logo */}
           <Link href="/" className="shrink-0 flex-1 md:flex-initial">
             <div
               className={`relative ${isSmallMobile
-                  ? 'w-32 h-10'
-                  : isMobile
-                    ? 'w-40 h-12'
-                    : isTablet
-                      ? 'w-44 h-13'
-                      : 'w-50 h-15'
+                ? 'w-32 h-10'
+                : isMobile
+                  ? 'w-40 h-12'
+                  : isTablet
+                    ? 'w-44 h-13'
+                    : 'w-50 h-15'
                 } ${isHomePage && isDesktop && !isScrolled
                   ? 'bg-white/35 backdrop-blur-sm rounded-lg p-2'
                   : ''
@@ -268,8 +268,8 @@ const Navbar: React.FC = () => {
                                 key={subLink.href}
                                 href={subLink.href}
                                 className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50/80 font-medium transition-colors text-sm ${isActiveLink(subLink.href)
-                                    ? 'text-[#004d40] font-semibold'
-                                    : ''
+                                  ? 'text-[#004d40] font-semibold'
+                                  : ''
                                   }`}
                               >
                                 {subLink.label}
@@ -288,8 +288,8 @@ const Navbar: React.FC = () => {
                       <Link
                         href={link.href}
                         className={`flex items-center gap-2 px-3 xl:px-4 py-3 rounded-lg font-medium transition-all duration-200 whitespace-nowrap text-sm xl:text-base ${isActiveLink(link.href)
-                            ? 'text-[#004d40] font-semibold bg-gray-100'
-                            : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'
+                          ? 'text-[#004d40] font-semibold bg-gray-100'
+                          : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'
                           }`}
                       >
                         {link.icon}
@@ -308,8 +308,8 @@ const Navbar: React.FC = () => {
                                 key={subLink.href}
                                 href={subLink.href}
                                 className={`block px-4 py-3 text-gray-700 hover:text-[#004d40] hover:bg-gray-50 font-medium transition-colors text-sm ${isActiveLink(subLink.href)
-                                    ? 'text-[#004d40] font-semibold'
-                                    : ''
+                                  ? 'text-[#004d40] font-semibold'
+                                  : ''
                                   }`}
                               >
                                 {subLink.label}
@@ -331,8 +331,8 @@ const Navbar: React.FC = () => {
             {isDesktop && (
               <div
                 className={`flex items-center gap-2 ${isHomePage && !isScrolled
-                    ? 'bg-white/30 backdrop-blur-sm rounded-lg px-2 py-1 h-15'
-                    : ''
+                  ? 'bg-white/30 backdrop-blur-sm rounded-lg px-2 py-1 h-15'
+                  : ''
                   }`}
               >
                 {isAuthenticated && user ? (
@@ -347,8 +347,8 @@ const Navbar: React.FC = () => {
                       >
                         <div
                           className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 overflow-hidden ${isHomePage && !isScrolled
-                              ? 'bg-white/20 text-white'
-                              : 'bg-[#004d40] text-white'
+                            ? 'bg-white/20 text-white'
+                            : 'bg-[#004d40] text-white'
                             }`}
                         >
                           {user.profilePicture ? (
@@ -417,8 +417,8 @@ const Navbar: React.FC = () => {
                             <Link
                               href={getDashboardPath()}
                               className={`flex items-center gap-3 px-3 py-2 text-xs lg:text-sm rounded-lg transition-colors ${isActiveLink(getDashboardPath())
-                                  ? 'text-[#004d40] font-semibold bg-gray-50'
-                                  : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'
+                                ? 'text-[#004d40] font-semibold bg-gray-50'
+                                : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'
                                 }`}
                               onClick={() => setIsUserMenuOpen(false)}
                             >
@@ -593,8 +593,8 @@ const Navbar: React.FC = () => {
                     <Link
                       href={link.href}
                       className={`flex items-center gap-3 px-3 lg:px-4 py-2 lg:py-3 rounded-lg font-medium transition-all duration-200 text-sm lg:text-base ${isActiveLink(link.href)
-                          ? 'text-[#004d40] bg-gray-50 font-semibold'
-                          : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'
+                        ? 'text-[#004d40] bg-gray-50 font-semibold'
+                        : 'text-gray-700 hover:text-[#004d40] hover:bg-gray-50'
                         }`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -610,8 +610,8 @@ const Navbar: React.FC = () => {
                             key={subLink.href}
                             href={subLink.href}
                             className={`flex items-center gap-3 px-4 py-2 text-xs lg:text-sm rounded-lg transition-colors ${isActiveLink(subLink.href)
-                                ? 'text-[#004d40] font-semibold'
-                                : 'text-gray-600 hover:text-[#004d40]'
+                              ? 'text-[#004d40] font-semibold'
+                              : 'text-gray-600 hover:text-[#004d40]'
                               }`}
                             onClick={() => setIsMobileMenuOpen(false)}
                           >
@@ -632,8 +632,8 @@ const Navbar: React.FC = () => {
                     <Link
                       href="/donate"
                       className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg font-medium transition-colors text-sm lg:text-base ${isActiveLink('/donate')
-                          ? 'bg-accent text-white'
-                          : 'bg-accent text-white hover:bg-accent/90'
+                        ? 'bg-accent text-white'
+                        : 'bg-accent text-white hover:bg-accent/90'
                         }`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -643,8 +643,8 @@ const Navbar: React.FC = () => {
                     <Link
                       href="/auth/login"
                       className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg border font-medium transition-colors text-sm lg:text-base ${isActiveLink('/auth/login')
-                          ? 'border-[#004d40] text-[#004d40]'
-                          : 'border-gray-300 text-gray-700 hover:border-[#004d40] hover:text-[#004d40]'
+                        ? 'border-[#004d40] text-[#004d40]'
+                        : 'border-gray-300 text-gray-700 hover:border-[#004d40] hover:text-[#004d40]'
                         }`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -654,8 +654,8 @@ const Navbar: React.FC = () => {
                     <Link
                       href="/auth/register"
                       className={`flex items-center justify-center gap-2 px-4 py-2 lg:py-3 rounded-lg font-medium transition-colors text-sm lg:text-base ${isActiveLink('/auth/register')
-                          ? 'bg-[#004d40] text-white'
-                          : 'bg-[#004d40] text-white hover:bg-[#004d40]/90'
+                        ? 'bg-[#004d40] text-white'
+                        : 'bg-[#004d40] text-white hover:bg-[#004d40]/90'
                         }`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
