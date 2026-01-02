@@ -246,7 +246,7 @@ export default function DonationsPage() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="max-w-7xl mx-auto"
+                className="container mx-auto"
             >
                 {/* Header */}
                 <div className="mb-8">
@@ -263,18 +263,18 @@ export default function DonationsPage() {
                         <div className="flex gap-2">
                             <button
                                 onClick={exportToCSV}
-                                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                                className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm"
                             >
                                 <Download className="w-4 h-4" />
-                                Export CSV
+                                <span className="hidden sm:inline">Export CSV</span>
                             </button>
                             <button
                                 onClick={() => fetchDonations(pagination.page, true)}
                                 disabled={isRefreshing}
-                                className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+                                className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 text-sm"
                             >
                                 <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                                Refresh
+                                <span className="hidden sm:inline">Refresh</span>
                             </button>
                         </div>
                     </div>
@@ -354,26 +354,26 @@ export default function DonationsPage() {
                 )}
 
                 {/* Filters */}
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
-                    <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex-1 relative">
+                <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm border border-gray-100 mb-6">
+                    <div className="flex flex-col gap-3">
+                        <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
                                 type="text"
-                                placeholder="Search by name, email, phone, or transaction ID..."
+                                placeholder="Search by name, email, phone..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-sm"
                             />
                         </div>
-                        <div className="flex gap-3">
-                            <div className="relative">
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                            <div className="relative flex-1 sm:flex-none">
                                 <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                 <select
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
                                     title="Filter by status"
-                                    className="pl-9 pr-8 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none appearance-none bg-white cursor-pointer"
+                                    className="w-full sm:w-auto pl-9 pr-8 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none appearance-none bg-white cursor-pointer text-sm"
                                 >
                                     <option value="">All Status</option>
                                     <option value="completed">Completed</option>
@@ -382,13 +382,13 @@ export default function DonationsPage() {
                                     <option value="cancelled">Cancelled</option>
                                 </select>
                             </div>
-                            <div className="relative">
+                            <div className="relative flex-1 sm:flex-none">
                                 <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                 <select
                                     value={paymentMethodFilter}
                                     onChange={(e) => setPaymentMethodFilter(e.target.value)}
                                     title="Filter by payment method"
-                                    className="pl-9 pr-8 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none appearance-none bg-white cursor-pointer"
+                                    className="w-full sm:w-auto pl-9 pr-8 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none appearance-none bg-white cursor-pointer text-sm"
                                 >
                                     <option value="">All Methods</option>
                                     <option value="stripe">Stripe</option>
@@ -403,9 +403,10 @@ export default function DonationsPage() {
                     </div>
                 </div>
 
-                {/* Donations Table */}
+                {/* Donations - Desktop Table / Mobile Cards */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="overflow-x-auto">
+                    {/* Desktop Table - Hidden on mobile */}
+                    <div className="hidden md:block overflow-x-auto">
                         <table className="w-full">
                             <thead className="bg-gray-50 border-b border-gray-100">
                                 <tr>
@@ -415,14 +416,13 @@ export default function DonationsPage() {
                                     <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600">Amount</th>
                                     <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600">Method</th>
                                     <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600">Status</th>
-                                    <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600">Transaction ID</th>
                                     <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {filteredDonations.length === 0 ? (
                                     <tr>
-                                        <td colSpan={8} className="py-12 text-center text-gray-500">
+                                        <td colSpan={7} className="py-12 text-center text-gray-500">
                                             <CreditCard className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                                             <p className="font-medium">No donations found</p>
                                             <p className="text-sm">Try adjusting your filters</p>
@@ -471,11 +471,6 @@ export default function DonationsPage() {
                                                 {getStatusBadge(donation.status)}
                                             </td>
                                             <td className="py-4 px-4">
-                                                <code className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600 font-mono">
-                                                    {(donation.transactionId || donation.sessionId || '-').slice(0, 20)}...
-                                                </code>
-                                            </td>
-                                            <td className="py-4 px-4">
                                                 <button
                                                     onClick={() => setSelectedDonation(donation)}
                                                     className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors"
@@ -491,40 +486,109 @@ export default function DonationsPage() {
                         </table>
                     </div>
 
+                    {/* Mobile Card View - Shown only on mobile */}
+                    <div className="md:hidden">
+                        {filteredDonations.length === 0 ? (
+                            <div className="py-12 text-center text-gray-500">
+                                <CreditCard className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                                <p className="font-medium">No donations found</p>
+                                <p className="text-sm">Try adjusting your filters</p>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-gray-100">
+                                {filteredDonations.map((donation, index) => (
+                                    <motion.div
+                                        key={donation._id}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: index * 0.03 }}
+                                        className="p-4 hover:bg-gray-50 transition-colors"
+                                    >
+                                        {/* Top Row - Donor & Amount */}
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-linear-to-br from-primary to-green-600 flex items-center justify-center text-white font-medium">
+                                                    {donation.isAnonymous ? 'A' : (donation.donorName?.charAt(0) || '?')}
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-gray-900">
+                                                        {donation.isAnonymous ? 'Anonymous' : (donation.donorName || 'Unknown')}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">{formatDate(donation.createdAt)}</p>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="font-bold text-gray-900">
+                                                    {formatAmount(donation.amount, donation.currency)}
+                                                </p>
+                                                {donation.isMonthly && (
+                                                    <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">Monthly</span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Contact Info */}
+                                        {(donation.donorEmail || donation.donorPhone) && (
+                                            <div className="text-sm text-gray-600 mb-3 pl-13">
+                                                {donation.donorEmail && <p className="truncate">{donation.donorEmail}</p>}
+                                                {donation.donorPhone && <p className="text-xs text-gray-400">{donation.donorPhone}</p>}
+                                            </div>
+                                        )}
+
+                                        {/* Bottom Row - Status, Method, Action */}
+                                        <div className="flex items-center justify-between gap-2">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                {getStatusBadge(donation.status)}
+                                                {getPaymentMethodBadge(donation.paymentMethod)}
+                                            </div>
+                                            <button
+                                                onClick={() => setSelectedDonation(donation)}
+                                                className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-primary bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors flex-shrink-0"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                                <span className="hidden xs:inline">Details</span>
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
                     {/* Pagination */}
                     {pagination.totalPages > 1 && (
-                        <div className="border-t border-gray-100 px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <p className="text-sm text-gray-600">
+                        <div className="border-t border-gray-100 px-3 sm:px-4 py-3 sm:py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+                            <p className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
                                 Showing {(pagination.page - 1) * pagination.limit + 1} to{' '}
                                 {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
-                                {pagination.total} donations
+                                {pagination.total}
                             </p>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1 sm:gap-2">
                                 <button
                                     onClick={() => fetchDonations(pagination.page - 1)}
                                     disabled={pagination.page === 1}
                                     title="Previous page"
-                                    className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="p-1.5 sm:p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <ChevronLeft className="w-5 h-5" />
+                                    <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </button>
                                 <div className="flex gap-1">
-                                    {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                                    {Array.from({ length: Math.min(3, pagination.totalPages) }, (_, i) => {
                                         let pageNum;
-                                        if (pagination.totalPages <= 5) {
+                                        if (pagination.totalPages <= 3) {
                                             pageNum = i + 1;
-                                        } else if (pagination.page <= 3) {
+                                        } else if (pagination.page <= 2) {
                                             pageNum = i + 1;
-                                        } else if (pagination.page >= pagination.totalPages - 2) {
-                                            pageNum = pagination.totalPages - 4 + i;
+                                        } else if (pagination.page >= pagination.totalPages - 1) {
+                                            pageNum = pagination.totalPages - 2 + i;
                                         } else {
-                                            pageNum = pagination.page - 2 + i;
+                                            pageNum = pagination.page - 1 + i;
                                         }
                                         return (
                                             <button
                                                 key={pageNum}
                                                 onClick={() => fetchDonations(pageNum)}
-                                                className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${pagination.page === pageNum
+                                                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg text-xs sm:text-sm font-medium transition-colors ${pagination.page === pageNum
                                                     ? 'bg-primary text-white'
                                                     : 'hover:bg-gray-100 text-gray-700'
                                                     }`}
@@ -538,9 +602,9 @@ export default function DonationsPage() {
                                     onClick={() => fetchDonations(pagination.page + 1)}
                                     disabled={pagination.page === pagination.totalPages}
                                     title="Next page"
-                                    className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="p-1.5 sm:p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    <ChevronRight className="w-5 h-5" />
+                                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </button>
                             </div>
                         </div>
@@ -550,7 +614,7 @@ export default function DonationsPage() {
 
             {/* Donation Details Modal */}
             {selectedDonation && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
                     {/* Backdrop */}
                     <div
                         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
@@ -562,103 +626,105 @@ export default function DonationsPage() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
+                        className="relative bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden"
                     >
                         {/* Header */}
-                        <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gradient-to-r from-primary/10 to-green-50">
-                            <div>
-                                <h2 className="text-xl font-bold text-gray-900">Donation Details</h2>
-                                <p className="text-sm text-gray-500 mt-1">
-                                    Transaction: {selectedDonation.transactionId || selectedDonation.sessionId || 'N/A'}
+                        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100 bg-linear-to-r from-primary/10 to-green-50">
+                            <div className="min-w-0 flex-1">
+                                <h2 className="text-lg sm:text-xl font-bold text-gray-900">Donation Details</h2>
+                                <p className="text-xs sm:text-sm text-gray-500 mt-1 truncate">
+                                    ID: {(selectedDonation.transactionId || selectedDonation.sessionId || 'N/A').slice(0, 20)}...
                                 </p>
                             </div>
                             <button
                                 title='close'
                                 onClick={() => setSelectedDonation(null)}
-                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                className="p-2 hover:bg-gray-100 rounded-lg transition-colors ml-2 flex-shrink-0"
                             >
                                 <X className="w-5 h-5 text-gray-500" />
                             </button>
                         </div>
 
                         {/* Content */}
-                        <div className="p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
+                        <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(95vh-160px)] sm:max-h-[calc(90vh-180px)]">
                             {/* Status Badge */}
-                            <div className="flex items-center justify-between mb-6">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary to-green-600 flex items-center justify-center text-white text-lg font-bold">
+                                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-linear-to-br from-primary to-green-600 flex items-center justify-center text-white text-base sm:text-lg font-bold flex-shrink-0">
                                         {selectedDonation.isAnonymous ? 'A' : (selectedDonation.donorName?.charAt(0) || '?')}
                                     </div>
-                                    <div>
-                                        <h3 className="font-semibold text-gray-900">
+                                    <div className="min-w-0">
+                                        <h3 className="font-semibold text-gray-900 truncate">
                                             {selectedDonation.isAnonymous ? 'Anonymous Donor' : (selectedDonation.donorName || 'Unknown Donor')}
                                         </h3>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-xs sm:text-sm text-gray-500">
                                             {selectedDonation.isMonthly ? 'Monthly Supporter' : 'One-time Donation'}
                                         </p>
                                     </div>
                                 </div>
-                                {getStatusBadge(selectedDonation.status)}
+                                <div className="flex-shrink-0">
+                                    {getStatusBadge(selectedDonation.status)}
+                                </div>
                             </div>
 
                             {/* Amount */}
-                            <div className="bg-gradient-to-r from-primary/10 to-green-50 rounded-xl p-4 mb-6">
-                                <p className="text-sm text-gray-600 mb-1">Donation Amount</p>
-                                <p className="text-3xl font-bold text-primary">
+                            <div className="bg-linear-to-r from-primary/10 to-green-50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
+                                <p className="text-xs sm:text-sm text-gray-600 mb-1">Donation Amount</p>
+                                <p className="text-2xl sm:text-3xl font-bold text-primary">
                                     {formatAmount(selectedDonation.amount, selectedDonation.currency)}
                                 </p>
                             </div>
 
                             {/* Details Grid */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="bg-gray-50 rounded-lg p-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Email</p>
-                                    <p className="text-sm font-medium text-gray-900">{selectedDonation.donorEmail || 'Not provided'}</p>
+                                    <p className="text-sm font-medium text-gray-900 break-all">{selectedDonation.donorEmail || 'Not provided'}</p>
                                 </div>
-                                <div className="bg-gray-50 rounded-lg p-4">
+                                <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Phone</p>
                                     <p className="text-sm font-medium text-gray-900">{selectedDonation.donorPhone || 'Not provided'}</p>
                                 </div>
-                                <div className="bg-gray-50 rounded-lg p-4">
+                                <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Payment Method</p>
                                     <div className="mt-1">{getPaymentMethodBadge(selectedDonation.paymentMethod)}</div>
                                 </div>
-                                <div className="bg-gray-50 rounded-lg p-4">
+                                <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Currency</p>
                                     <p className="text-sm font-medium text-gray-900">{selectedDonation.currency}</p>
                                 </div>
-                                <div className="bg-gray-50 rounded-lg p-4">
+                                <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Created At</p>
                                     <p className="text-sm font-medium text-gray-900">{formatDate(selectedDonation.createdAt)}</p>
                                 </div>
-                                <div className="bg-gray-50 rounded-lg p-4">
+                                <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Completed At</p>
                                     <p className="text-sm font-medium text-gray-900">
                                         {selectedDonation.completedAt ? formatDate(selectedDonation.completedAt) : 'Not completed'}
                                     </p>
                                 </div>
-                                <div className="bg-gray-50 rounded-lg p-4">
+                                <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Category</p>
                                     <p className="text-sm font-medium text-gray-900">{selectedDonation.category || 'General Fund'}</p>
                                 </div>
-                                <div className="bg-gray-50 rounded-lg p-4">
+                                <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">Anonymous</p>
                                     <p className="text-sm font-medium text-gray-900">{selectedDonation.isAnonymous ? 'Yes' : 'No'}</p>
                                 </div>
                             </div>
 
                             {/* Transaction IDs */}
-                            <div className="mt-4 bg-gray-50 rounded-lg p-4">
+                            <div className="mt-3 sm:mt-4 bg-gray-50 rounded-lg p-3 sm:p-4">
                                 <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Transaction ID</p>
-                                <code className="text-sm bg-white px-3 py-2 rounded border border-gray-200 block font-mono text-gray-700 break-all">
+                                <code className="text-xs sm:text-sm bg-white px-2 sm:px-3 py-2 rounded border border-gray-200 block font-mono text-gray-700 break-all">
                                     {selectedDonation.transactionId || 'N/A'}
                                 </code>
                             </div>
 
                             {selectedDonation.sessionId && (
-                                <div className="mt-4 bg-gray-50 rounded-lg p-4">
+                                <div className="mt-3 sm:mt-4 bg-gray-50 rounded-lg p-3 sm:p-4">
                                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Session ID</p>
-                                    <code className="text-sm bg-white px-3 py-2 rounded border border-gray-200 block font-mono text-gray-700 break-all">
+                                    <code className="text-xs sm:text-sm bg-white px-2 sm:px-3 py-2 rounded border border-gray-200 block font-mono text-gray-700 break-all">
                                         {selectedDonation.sessionId}
                                     </code>
                                 </div>
@@ -666,7 +732,7 @@ export default function DonationsPage() {
 
                             {/* Message */}
                             {selectedDonation.message && (
-                                <div className="mt-4 bg-blue-50 rounded-lg p-4">
+                                <div className="mt-3 sm:mt-4 bg-blue-50 rounded-lg p-3 sm:p-4">
                                     <p className="text-xs text-blue-600 uppercase tracking-wide mb-2">Donor Message</p>
                                     <p className="text-sm text-gray-700 italic">&ldquo;{selectedDonation.message}&rdquo;</p>
                                 </div>
@@ -674,9 +740,9 @@ export default function DonationsPage() {
 
                             {/* Metadata */}
                             {selectedDonation.metadata && Object.keys(selectedDonation.metadata).length > 0 && (
-                                <div className="mt-4 bg-gray-50 rounded-lg p-4">
+                                <div className="mt-3 sm:mt-4 bg-gray-50 rounded-lg p-3 sm:p-4">
                                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">Additional Metadata</p>
-                                    <pre className="text-xs bg-white px-3 py-2 rounded border border-gray-200 overflow-x-auto font-mono text-gray-600">
+                                    <pre className="text-xs bg-white px-2 sm:px-3 py-2 rounded border border-gray-200 overflow-x-auto font-mono text-gray-600">
                                         {JSON.stringify(selectedDonation.metadata, null, 2)}
                                     </pre>
                                 </div>
@@ -684,10 +750,10 @@ export default function DonationsPage() {
                         </div>
 
                         {/* Footer */}
-                        <div className="p-6 border-t border-gray-100 bg-gray-50">
+                        <div className="p-4 sm:p-6 border-t border-gray-100 bg-gray-50">
                             <button
                                 onClick={() => setSelectedDonation(null)}
-                                className="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                                className="w-full py-2.5 sm:py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors text-sm sm:text-base"
                             >
                                 Close
                             </button>
