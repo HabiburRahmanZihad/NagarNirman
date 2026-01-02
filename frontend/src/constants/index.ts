@@ -112,6 +112,15 @@ export const API_ENDPOINTS = {
   PENDING_REVIEW_TASKS: `${API_BASE_URL}/api/tasks/review/pending`,
   APPROVE_TASK: (id: string) => `${API_BASE_URL}/api/tasks/${id}/approve`,
   REJECT_TASK: (id: string) => `${API_BASE_URL}/api/tasks/${id}/reject`,
+
+  // Payment & Donations
+  STRIPE_CREATE_SESSION: `${API_BASE_URL}/api/payments/stripe/create-session`,
+  STRIPE_VERIFY: (sessionId: string) => `${API_BASE_URL}/api/payments/stripe/verify/${sessionId}`,
+  SSLCOMMERZ_INIT: `${API_BASE_URL}/api/payments/sslcommerz/init`,
+  SSLCOMMERZ_VERIFY: (transactionId: string) => `${API_BASE_URL}/api/payments/sslcommerz/verify/${transactionId}`,
+  DONATIONS_RECENT: `${API_BASE_URL}/api/payments/donations/recent`,
+  DONATIONS_STATS: `${API_BASE_URL}/api/payments/donations/stats`,
+  DONATIONS_ALL: `${API_BASE_URL}/api/payments/donations`,
 } as const;
 
 

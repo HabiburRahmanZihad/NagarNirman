@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/common';
+import { paymentAPI } from '@/utils/api';
 import {
     Award,
     CheckCircle,
@@ -11,6 +12,7 @@ import {
     HelpCircle,
     Landmark,
     Leaf,
+    Loader2,
     Shield,
     Smartphone,
     Star,
@@ -23,7 +25,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CountUp from 'react-countup';
 import { useInView } from 'react-intersection-observer';
 
@@ -87,11 +89,11 @@ const donationImpact = [
 
 // Payment methods
 const paymentMethods = [
-    { id: 'bkash', name: 'bKash', icon: Smartphone, color: 'bg-pink-500' },
-    { id: 'nagad', name: 'Nagad', icon: Wallet, color: 'bg-orange-500' },
-    { id: 'rocket', name: 'Rocket', icon: Zap, color: 'bg-purple-500' },
-    { id: 'card', name: 'Card', icon: CreditCard, color: 'bg-blue-500' },
-    { id: 'bank', name: 'Bank Transfer', icon: Landmark, color: 'bg-green-600' },
+    { id: 'stripe', name: 'Card (Stripe)', icon: CreditCard, color: 'bg-indigo-600', gateway: 'stripe' },
+    { id: 'bkash', name: 'bKash', icon: Smartphone, color: 'bg-pink-500', gateway: 'sslcommerz' },
+    { id: 'nagad', name: 'Nagad', icon: Wallet, color: 'bg-orange-500', gateway: 'sslcommerz' },
+    { id: 'rocket', name: 'Rocket', icon: Zap, color: 'bg-purple-500', gateway: 'sslcommerz' },
+    { id: 'bank', name: 'Bank', icon: Landmark, color: 'bg-green-600', gateway: 'sslcommerz' },
 ];
 
 // Donor testimonials
@@ -129,13 +131,28 @@ const testimonials = [
 export default function DonatePage() {
     const [selectedAmount, setSelectedAmount] = useState<number | null>(1000);
     const [customAmount, setCustomAmount] = useState<string>('');
-    const [selectedPayment, setSelectedPayment] = useState<string>('bkash');
+    const [selectedPayment, setSelectedPayment] = useState<string>('stripe');
     const [isMonthly, setIsMonthly] = useState(false);
     const [donorName, setDonorName] = useState('');
     const [donorEmail, setDonorEmail] = useState('');
     const [donorPhone, setDonorPhone] = useState('');
     const [isAnonymous, setIsAnonymous] = useState(false);
     const [message, setMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [recentDonors, setRecentDonors] = useState<Array<{
+        id: string;
+        name: string;
+        amount: number;
+        message?: string;
+        date: string;
+    }>>([]);
+    const [donationStats, setDonationStats] = useState<{
+        totalAmount: number;
+        totalDonations: number;
+        thisMonthAmount: number;
+        thisMonthCount: number;
+    } | null>(null);
 
     // Intersection observer for stats animation
     const { ref: statsRef, inView: statsInView } = useInView({
@@ -143,10 +160,38 @@ export default function DonatePage() {
         threshold: 0.1,
     });
 
+    // Fetch recent donations and stats on mount
+    useEffect(() => {
+        const fetchDonationData = async () => {
+            try {
+                const [donorsResponse, statsResponse] = await Promise.all([
+                    paymentAPI.getRecentDonations(5),
+                    paymentAPI.getDonationStats()
+                ]);
+
+                if ((donorsResponse as { success: boolean; donations: typeof recentDonors }).success) {
+                    setRecentDonors((donorsResponse as { donations: typeof recentDonors }).donations || []);
+                }
+                if ((statsResponse as { success: boolean; stats: typeof donationStats }).success) {
+                    setDonationStats((statsResponse as { stats: typeof donationStats }).stats || null);
+                }
+            } catch (err) {
+                console.error('Failed to fetch donation data:', err);
+            }
+        };
+
+        fetchDonationData();
+    }, []);
+
     // Get final donation amount
     const getFinalAmount = () => {
         if (customAmount) return parseInt(customAmount) || 0;
         return selectedAmount || 0;
+    };
+
+    // Get selected payment method details
+    const getSelectedPaymentMethod = () => {
+        return paymentMethods.find(m => m.id === selectedPayment);
     };
 
     // Handle amount selection
@@ -163,15 +208,86 @@ export default function DonatePage() {
     };
 
     // Handle form submission
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
+
         const amount = getFinalAmount();
         if (amount < 10) {
-            alert('Minimum donation amount is ৳10');
+            setError('Minimum donation amount is ৳10');
             return;
         }
-        // Handle donation submission
-        alert(`Thank you for your ${isMonthly ? 'monthly' : 'one-time'} donation of ৳${amount.toLocaleString()}! Redirecting to payment...`);
+
+        const paymentMethod = getSelectedPaymentMethod();
+        if (!paymentMethod) {
+            setError('Please select a payment method');
+            return;
+        }
+
+        // Validate required fields for SSLCommerz
+        if (paymentMethod.gateway === 'sslcommerz') {
+            if (!donorName || !donorEmail || !donorPhone) {
+                setError('Name, email, and phone are required for this payment method');
+                return;
+            }
+        }
+
+        setIsLoading(true);
+
+        try {
+            const paymentData = {
+                amount,
+                donorName: isAnonymous ? 'Anonymous' : donorName,
+                donorEmail,
+                donorPhone,
+                isMonthly,
+                isAnonymous,
+                message,
+                paymentProvider: selectedPayment
+            };
+
+            let response;
+
+            if (paymentMethod.gateway === 'stripe') {
+                // Use Stripe for card payments
+                response = await paymentAPI.createStripeSession(paymentData) as {
+                    success: boolean;
+                    url?: string;
+                    message?: string;
+                };
+
+                if (response.success && response.url) {
+                    // Redirect to Stripe checkout
+                    window.location.href = response.url;
+                } else {
+                    throw new Error(response.message || 'Failed to create payment session');
+                }
+            } else {
+                // Use SSLCommerz for local payment methods
+                response = await paymentAPI.initSSLCommerz({
+                    ...paymentData,
+                    donorName: paymentData.donorName || donorName,
+                    donorEmail,
+                    donorPhone
+                }) as {
+                    success: boolean;
+                    url?: string;
+                    message?: string;
+                };
+
+                if (response.success && response.url) {
+                    // Redirect to SSLCommerz gateway
+                    window.location.href = response.url;
+                } else {
+                    throw new Error(response.message || 'Failed to initialize payment');
+                }
+            }
+        } catch (err) {
+            console.error('Payment error:', err);
+            setError(err instanceof Error ? err.message : 'Payment initialization failed. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -245,21 +361,26 @@ export default function DonatePage() {
                                     </div>
                                     <div className="mb-4 sm:mb-6">
                                         <div className="flex justify-between text-white mb-2 text-xs sm:text-sm md:text-base">
-                                            <span>৳7,50,000 raised</span>
+                                            <span>৳{donationStats ? (donationStats.thisMonthAmount / 100).toLocaleString() : '7,50,000'} raised</span>
                                             <span>৳10,00,000</span>
                                         </div>
                                         <div className="w-full bg-white/20 rounded-full h-3 sm:h-4 overflow-hidden">
                                             <div
-                                                className="bg-linear-to-r from-[#f2a921] to-[#ffc850] h-full rounded-full transition-all duration-1000 w-3/4"
+                                                className="bg-linear-to-r from-[#f2a921] to-[#ffc850] h-full rounded-full transition-all duration-1000"
+                                                style={{ width: `${Math.min(donationStats ? (donationStats.thisMonthAmount / 1000000) * 100 : 75, 100)}%` }}
                                             />
                                         </div>
                                         <p className="text-center text-white/80 mt-2 text-sm">
-                                            <span className="font-semibold text-[#f2a921]">75%</span> of goal reached
+                                            <span className="font-semibold text-[#f2a921]">
+                                                {donationStats ? Math.round((donationStats.thisMonthAmount / 1000000) * 100) : 75}%
+                                            </span> of goal reached
                                         </p>
                                     </div>
                                     <div className="grid grid-cols-2 gap-3 sm:gap-4 text-center">
                                         <div className="bg-white/10 rounded-xl p-3 sm:p-4">
-                                            <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">1,250+</p>
+                                            <p className="text-lg sm:text-xl md:text-2xl font-bold text-white">
+                                                {donationStats ? donationStats.totalDonations.toLocaleString() : '1,250'}+
+                                            </p>
                                             <p className="text-xs sm:text-sm text-white/80">Donors</p>
                                         </div>
                                         <div className="bg-white/10 rounded-xl p-3 sm:p-4">
@@ -464,12 +585,27 @@ export default function DonatePage() {
                                     />
                                 </div>
 
+                                {/* Error Message */}
+                                {error && (
+                                    <div className="mb-4 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg">
+                                        <p className="text-red-600 text-sm sm:text-base flex items-center gap-2">
+                                            <Shield className="w-4 h-4" />
+                                            {error}
+                                        </p>
+                                    </div>
+                                )}
+
                                 {/* Submit Button */}
                                 <div className="border-t border-gray-100 pt-4 sm:pt-6">
                                     <div className="flex items-center justify-between mb-3 sm:mb-4">
-                                        <span className="text-sm sm:text-base text-gray-600">
-                                            {isMonthly ? 'Monthly Donation' : 'One-Time Donation'}
-                                        </span>
+                                        <div>
+                                            <span className="text-sm sm:text-base text-gray-600">
+                                                {isMonthly ? 'Monthly Donation' : 'One-Time Donation'}
+                                            </span>
+                                            <p className="text-xs text-gray-500">
+                                                via {getSelectedPaymentMethod()?.name || 'Card'}
+                                            </p>
+                                        </div>
                                         <span className="text-xl sm:text-2xl font-bold text-primary">
                                             ৳{getFinalAmount().toLocaleString()}
                                         </span>
@@ -480,9 +616,19 @@ export default function DonatePage() {
                                         size="lg"
                                         className="w-full"
                                         iconPosition="right"
+                                        disabled={isLoading}
                                     >
-                                        <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-2 inline-flex items-center mb-1" />
-                                        {isMonthly ? 'Start Monthly Donation' : 'Donate Now'}
+                                        {isLoading ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 inline-flex items-center mb-1 animate-spin" />
+                                                Processing...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-2 inline-flex items-center mb-1" />
+                                                {isMonthly ? 'Start Monthly Donation' : 'Donate Now'}
+                                            </>
+                                        )}
                                     </Button>
                                     <p className="text-center text-xs sm:text-sm text-gray-500 mt-3 sm:mt-4">
                                         <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline mr-1" />
@@ -531,21 +677,28 @@ export default function DonatePage() {
                                     Recent Supporters
                                 </h3>
                                 <div className="space-y-3 sm:space-y-4">
-                                    {testimonials.map((donor, index) => (
+                                    {(recentDonors.length > 0 ? recentDonors : testimonials).map((donor, index) => (
                                         <div key={index} className="flex items-start gap-2 sm:gap-3 pb-3 sm:pb-4 border-b border-gray-100 last:border-0 last:pb-0">
-                                            <Image
-                                                src={donor.avatar}
-                                                alt={donor.name}
-                                                width={36}
-                                                height={36}
-                                                className="rounded-full w-9 h-9 sm:w-10 sm:h-10"
-                                            />
+                                            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                                                <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                                            </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center justify-between gap-2">
-                                                    <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">{donor.name}</p>
-                                                    <span className="text-xs sm:text-sm font-bold text-primary shrink-0">{donor.amount}</span>
+                                                    <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                                                        {'name' in donor ? donor.name : (donor as { donorName?: string }).donorName || 'Anonymous'}
+                                                    </p>
+                                                    <span className="text-xs sm:text-sm font-bold text-primary shrink-0">
+                                                        ৳{typeof donor.amount === 'number' ? donor.amount.toLocaleString() : donor.amount}
+                                                    </span>
                                                 </div>
-                                                <p className="text-xs text-gray-500">{donor.location}</p>
+                                                {'location' in donor && (
+                                                    <p className="text-xs text-gray-500">{(donor as { location?: string }).location}</p>
+                                                )}
+                                                {'date' in donor && (
+                                                    <p className="text-xs text-gray-500">
+                                                        {new Date(donor.date).toLocaleDateString()}
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
                                     ))}
@@ -568,6 +721,14 @@ export default function DonatePage() {
                                     <div className="flex items-center gap-1.5 sm:gap-2 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg">
                                         <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                                         <span className="text-xs sm:text-sm font-medium">Verified NGO</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 sm:gap-2 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg">
+                                        <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
+                                        <span className="text-xs sm:text-sm font-medium">Stripe</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 sm:gap-2 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg">
+                                        <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" />
+                                        <span className="text-xs sm:text-sm font-medium">SSLCommerz</span>
                                     </div>
                                 </div>
                             </div>

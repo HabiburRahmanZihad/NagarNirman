@@ -26,7 +26,9 @@ import statisticsRoutes from './routes/statisticsRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import leaderboardRoutes from './routes/leaderboardRoutes.js';
 import earthquakeRoutes from './routes/earthquakeRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { createDonationIndexes } from './models/Donation.js';
 
 
 
@@ -45,6 +47,7 @@ connectDB().then(async () => {
     const { createNotificationIndexes } = await import('./models/Notification.js');
     await createTaskIndexes();
     await createNotificationIndexes();
+    await createDonationIndexes();
   } catch (error) {
     console.error('Error creating indexes:', error);
   }
@@ -78,6 +81,7 @@ app.use('/api/statistics', statisticsRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/earthquakes', earthquakeRoutes);
+app.use('/api/payments', paymentRoutes);
 
 
 
