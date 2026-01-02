@@ -117,6 +117,13 @@ const testimonials = [
         message: 'Contributing to a cleaner, safer city feels rewarding. Keep up the great work!',
         avatar: 'https://randomuser.me/api/portraits/men/67.jpg',
     },
+    {
+        name: 'Karim Hossain',
+        location: 'Sylhet',
+        amount: '৳10,000',
+        message: 'Contributing to a cleaner, safer city feels rewarding. Keep up the great work!',
+        avatar: 'https://randomuser.me/api/portraits/men/67.jpg',
+    },
 ];
 
 export default function DonatePage() {
@@ -585,7 +592,7 @@ export default function DonatePage() {
                         </p>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 max-w-5xl mx-auto">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6 container mx-auto">
                         {donationImpact.map((item, index) => (
                             <div
                                 key={index}
@@ -618,7 +625,7 @@ export default function DonatePage() {
                         </p>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-5xl mx-auto">
+                    <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 container mx-auto">
                         {testimonials.map((testimonial, index) => (
                             <div
                                 key={index}
@@ -651,7 +658,7 @@ export default function DonatePage() {
             {/* CTA Section */}
             <section className="py-12 sm:py-16 md:py-20 bg-linear-to-r from-[#004d40] to-[#1e5a22]">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <div className="max-w-3xl mx-auto">
+                    <div className="max-w-5xl mx-auto">
                         <Heart className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-[#f2a921] mx-auto mb-4 sm:mb-6" />
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-6">
                             Every Contribution Counts
@@ -690,7 +697,7 @@ export default function DonatePage() {
                         </h2>
                     </div>
 
-                    <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4">
+                    <div className="max-w-6xl mx-auto space-y-3 sm:space-y-4">
                         {[
                             {
                                 q: 'Is my donation tax deductible?',
