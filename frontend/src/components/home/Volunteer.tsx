@@ -17,7 +17,7 @@ const teamMembers = [
     id: 1,
     name: "Habibur Rahman Zihad",
     role: "Founder & Community Director",
-    image: "https://res.cloudinary.com/dvq3pcykn/image/upload/v1758785330/IMG-20241101-WA0192_vyojiv.jpg",
+    image: "https://res.cloudinary.com/dvq3pcykn/image/upload/WhatsApp_Image_2025-12-18_at_16.09.59_fqnwho.jpg",
     social: {
       github: "https://github.com/HabiburRahmanZihad",
       linkedin: "https://linkedin.com/in/habiburrahmanzihad",
