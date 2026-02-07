@@ -62,7 +62,7 @@ export default function AboutSection() {
     { id: "vision", label: "Our Vision" },
   ];
 
-  const youtubeVideoId = "miO5nPX536o"; // Replace with your actual YouTube video ID
+  const youtubeVideoId = "pt03-JtGeY8?si=CnCJXTBzW8c7uYxJ"; // Replace with your actual YouTube video ID
 
   const tabContent = {
     history:

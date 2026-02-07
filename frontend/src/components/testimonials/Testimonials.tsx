@@ -29,7 +29,7 @@ const testimonials: Testimonial[] = [
     text:
       "I was very impressed 😊 involves providing of advice and guidance on energy-related for matters. Understand the advantages hiring professionals to design and maintain your garden. 🧑‍🌾",
     image: "https://i.postimg.cc/BZDJMRqn/thumb-10.webp",
-    videoId: "dQw4w9WgXcQ",
+    videoId: "miO5nPX536o?si=tqnFpyHdqBdqt3ih",
   },
   {
     id: 2,
@@ -40,7 +40,7 @@ const testimonials: Testimonial[] = [
     text:
       "An amazing experience from start to finish! They handled everything with care, precision, and genuine kindness. Every interaction felt meaningful and professional.",
     image: "https://i.postimg.cc/NjNtKc4h/thumb-10-3.webp",
-    videoId: "dQw4w9WgXcQ",
+    videoId: "tRiTHMfSQL4?si=TWiLPbmhkPozRc4R",
   },
   {
     id: 3,
@@ -51,7 +51,7 @@ const testimonials: Testimonial[] = [
     text:
       "Exceptional quality and heartfelt support! Their guidance was clear, practical, and delivered with remarkable patience. What stood out most was the personal care.",
     image: "https://i.postimg.cc/D0Kk9y2m/thumb-10-2.webp",
-    videoId: "dQw4w9WgXcQ",
+    videoId: "39602JBF34w?si=cJayVvOJ-ruItbeX",
   },
 ];
 
