@@ -120,6 +120,34 @@ export default function LoginPage() {
               </p>
             </div>
 
+            {/* DEMO CREDENTIAL BUTTONS */}
+            <div className="mb-6">
+              <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-2 text-center">
+                Quick Login — Demo Accounts
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: "User", email: "dhaka@example.com", password: "Pa$$w0rd!", color: "bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200" },
+                  { label: "Problem Solver", email: "gazipur.solver@nagar.com", password: "Pa$$w0rd!", color: "bg-green-50 hover:bg-green-100 text-green-700 border-green-200" },
+                  { label: "Authority", email: "faridpur.authority@nagar.com", password: "Pa$$w0rd!", color: "bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200" },
+                  { label: "Super Admin", email: "habib@zihad.com", password: "Pa$$w0rd!", color: "bg-purple-50 hover:bg-purple-100 text-purple-700 border-purple-200" },
+                ].map(({ label, email, password, color }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => {
+                      setFormData({ email, password });
+                      setErrors({});
+                      setApiError("");
+                    }}
+                    className={`px-3 py-2 text-xs font-medium border rounded-lg transition-colors cursor-pointer ${color}`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {apiError && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6">
                 {apiError}
